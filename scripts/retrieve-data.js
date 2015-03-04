@@ -1,5 +1,5 @@
 var DataRetriever = function (vals) {
-	var GLOBAL_articleName = vals.articleName;
+	var GLOBAL_title = vals.title;
 	var GLOBAL_linkToAPI = "http://en.wikipedia.org/w/api.php?";
 	var GLOBAL_cntEdits = 0;
 	var GLOBAL_cntEditsHELP = 0;
@@ -19,7 +19,7 @@ var DataRetriever = function (vals) {
 	var dataRetriver = {};
 
 	var resetData = function () {
-		GLOBAL_articleName = "";
+		GLOBAL_title = "";
 		GLOBAL_cntEdits = 0;
 		GLOBAL_cntEditsHELP = 0;
 		GLOBAL_mapUsernames = {};
@@ -38,20 +38,20 @@ var DataRetriever = function (vals) {
 	}
 
 	dataRetriver.getAllMeasures = function () {
-		//GLOBAL_articleName = "Albert Einstein"; //$("#article-name").val();
+		//GLOBAL_title = "Albert Einstein"; //$("#article-name").val();
 		//Calculate Edits:
-		//handleEditDataSync(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_articleName + "&rvlimit=max&rvprop=user&continue");
-		GLOBAL_JSON.articleName = GLOBAL_articleName;
-		console.log("TITLE: " + GLOBAL_articleName);
-		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_articleName + "&rvlimit=max&rvprop=user&continue", handleEditData);
-		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=info&titles=" + GLOBAL_articleName + "&continue", handleArticleLength);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&titles=" + GLOBAL_articleName + "&rvlimit=1&rvprop=user|timestamp&rvdir=older&continue", handleCurrency);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&titles=" + GLOBAL_articleName + "&continue", handleInternalLinks);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_articleName + "&continue", handleExternalLinks);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&titles=" + GLOBAL_articleName + "&lhlimit=max&continue", handleIncomingLinks);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_articleName + "&continue", handleImages);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&rvlimit=1&titles=" + GLOBAL_articleName + "&rvprop=user|timestamp&rvdir=newer&continue", handleArticleAge);
-		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=true&titles=" + GLOBAL_articleName + "&continue", handleFlesch);
+		//handleEditDataSync(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue");
+		GLOBAL_JSON.title = GLOBAL_title;
+		console.log("TITLE: " + GLOBAL_title);
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue", handleEditData);
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=info&titles=" + GLOBAL_title + "&continue", handleArticleLength);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&titles=" + GLOBAL_title + "&rvlimit=1&rvprop=user|timestamp&rvdir=older&continue", handleCurrency);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&titles=" + GLOBAL_title + "&continue", handleInternalLinks);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_title + "&continue", handleExternalLinks);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&titles=" + GLOBAL_title + "&lhlimit=max&continue", handleIncomingLinks);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_title + "&continue", handleImages);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&rvlimit=1&titles=" + GLOBAL_title + "&rvprop=user|timestamp&rvdir=newer&continue", handleArticleAge);
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=true&titles=" + GLOBAL_title + "&continue", handleFlesch);
 
 	}
 
@@ -84,7 +84,6 @@ var DataRetriever = function (vals) {
 		var firstRevision = JSON.parse(JSON.stringify(JSONResponse));
 		var firstRevisionTimeStamp = firstRevision.query.pages[Object.keys(firstRevision.query.pages)[0]].revisions[0].timestamp;
 		var firstRevisionTimeStampCutted = firstRevisionTimeStamp.substring(0, 10);
-		console.log("'" + firstRevisionTimeStampCutted + "'");
 		var mydate = new Date(firstRevisionTimeStampCutted);
 		$("#ArticleAge").text(((new Date() - mydate) / (1000 * 60 * 60 * 24)));
 		GLOBAL_JSON.articleAge = ((new Date() - mydate) / (1000 * 60 * 60 * 24));
@@ -100,7 +99,7 @@ var DataRetriever = function (vals) {
 			if (imageCount.hasOwnProperty("continue")) {
 				if (imageCount.continue.hasOwnProperty("imcontinue")) {
 					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_articleName + "&imcontinue=" + imageCount.continue.imcontinue + "&continue", handleImages);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_title + "&imcontinue=" + imageCount.continue.imcontinue + "&continue", handleImages);
 				} else {}
 			} else {
 				//DONE
@@ -124,7 +123,7 @@ var DataRetriever = function (vals) {
 			if (incomingLinks.hasOwnProperty("continue")) {
 				if (incomingLinks.continue.hasOwnProperty("lhcontinue")) {
 					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&lhlimit=max&titles=" + GLOBAL_articleName + "&lhcontinue=" + incomingLinks.continue.lhcontinue + "&continue", handleIncomingLinks);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&lhlimit=max&titles=" + GLOBAL_title + "&lhcontinue=" + incomingLinks.continue.lhcontinue + "&continue", handleIncomingLinks);
 				} else {}
 			} else {
 				//DONE
@@ -147,7 +146,7 @@ var DataRetriever = function (vals) {
 			if (externalLinks.hasOwnProperty("continue")) {
 				if (externalLinks.continue.hasOwnProperty("eloffset")) {
 					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_articleName + "&eloffset=" + externalLinks.continue.eloffset + "&continue", handleExternalLinks);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_title + "&eloffset=" + externalLinks.continue.eloffset + "&continue", handleExternalLinks);
 				} else {}
 			} else {
 				//DONE
@@ -171,7 +170,7 @@ var DataRetriever = function (vals) {
 				if (internalLinks.continue.hasOwnProperty("iwcontinue")) {
 					//GET REST OF THE DATA:
 					//console.log("IW CONTINUE: " + internalLinks.continue.iwcontinue);
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&titles=" + GLOBAL_articleName + "&iwcontinue=" + internalLinks.continue.iwcontinue + "&continue", handleInternalLinks);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&titles=" + GLOBAL_title + "&iwcontinue=" + internalLinks.continue.iwcontinue + "&continue", handleInternalLinks);
 				} else {}
 			} else {
 				//DONE
@@ -188,7 +187,6 @@ var DataRetriever = function (vals) {
 		var lastUpdateData = JSON.parse(JSON.stringify(JSONResponse));
 		var lastUpdateTimeStamp = lastUpdateData.query.pages[Object.keys(lastUpdateData.query.pages)[0]].revisions[0].timestamp;
 		var lastUpdateTimeStampCutted = lastUpdateTimeStamp.substring(0, 10);
-		console.log("'" + lastUpdateTimeStampCutted + "'");
 		var mydate = new Date(lastUpdateTimeStampCutted);
 		$("#Currency").text(((new Date() - mydate) / (1000 * 60 * 60 * 24)));
 		GLOBAL_JSON.currency = ((new Date() - mydate) / (1000 * 60 * 60 * 24));
@@ -283,7 +281,7 @@ var DataRetriever = function (vals) {
 		if (revisions.hasOwnProperty("continue")) {
 			if (revisions.continue.hasOwnProperty("rvcontinue")) {
 				//GET REST OF THE DATA:
-				retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_articleName + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user&continue", handleEditData);
+				retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user&continue", handleEditData);
 			}
 		} else {
 			console.log("WE ARE AT THE END2");
@@ -302,13 +300,10 @@ var DataRetriever = function (vals) {
 					//WTF :-0
 
 					if (checkIsIPV4(key)) {
-						//	console.log("IN HERE");
 						GLOBAL_anonymousEditCount += GLOBAL_mapUsernames[key][1];
 					} else {
-						//console.log("IN ELSE");
 						GLOBAL_registeredEditCount += GLOBAL_mapUsernames[key][1]; //TODO: COULD ALSO BE AN ADMIN SO I SHOULD CHECK THIS AGAIN!!
 					}
-					//console.log("WTF " + key + " " + GLOBAL_mapUsernames[key][0] + " " + GLOBAL_mapUsernames[key][1]);
 				}
 			}
 
@@ -361,12 +356,12 @@ var DataRetriever = function (vals) {
 //test:
 /*console.log("STARTING FIRST");
 var dr = new DataRetriever({
-articleName : 'Visualization'
+title : 'Visualization'
 });
 dr.getAllMeasures();
 console.log("STARTING SECOND");*/
 /*
-var dr2 = new DataRetriever({articleName: 'New York'});
+var dr2 = new DataRetriever({title: 'New York'});
 dr2.getAllMeasures();
  */
 var test = function () {

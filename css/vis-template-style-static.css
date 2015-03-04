@@ -253,6 +253,10 @@
     box-shadow: inset .2em .2em .5em #ccc, inset -.2em -.2em .5em #ccc;
 }
 
+#eexcess_header_task_section_div{
+	margin: auto;
+}
+
 #eexcess_header_task_section p {
     width: calc(100% - 1em);
     //height: calc(500% - .4em);

@@ -1,5 +1,5 @@
 <?php
-    $dataset = $_POST["dataset"];
+  // $dataset = $_POST["dataset"];
 ?>
 
 
@@ -25,6 +25,7 @@ and open the template in the editor.
         <script type="text/javascript" src="libs/pos/lexicon.js" charset="utf-8"></script>
         <script type="text/javascript" src="libs/pos/POSTagger.js" charset="utf-8"></script>
         <script type="text/javascript" src="libs/pos/pos.js" charset="utf-8"></script>
+		<script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
         <link rel="stylesheet" type="text/css" href="libs/ui/jquery-ui-1.10.4.custom.min.css">
 
         <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
@@ -34,6 +35,8 @@ and open the template in the editor.
         <script type="text/javascript" src="scripts/settings.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/utils.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/taskStorage.js" charset="utf-8"></script>
+		<script type="text/javascript" src="scripts/retrieve-data.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
 
         <link rel="stylesheet" type="text/css" href="css/general-style.css" />
         <link rel="stylesheet" type="text/css" href="css/vis-template-style-static.css" />
@@ -54,8 +57,12 @@ and open the template in the editor.
 	  			<span></span>
 	  		</section>
             <section id="eexcess_header_task_section">
+				<div id="eexcess_header_task_section_div"> Keword: <input type="text" id="article-name" value="Visualization" /> 
+				 Max. number of results: <input type="number" id="max-num" value="5"/>
+				 <button onclick="searchArticle('visualization',50)"> retrieve data from specific article </button> 
+				 <!--<button onclick="showAllDataTest()"> show data </button> </div>
                 <p id="p_task"></p>
-                <p id="p_question"></p>
+                <p id="p_question"></p> -->
 	  		</section>
 	  		<section id="eexcess_header_control_section">
                 <input type="button" id="eexcess_list_button" value="Show List" />
@@ -96,6 +103,7 @@ and open the template in the editor.
                 </div>
 
                 <div id="eexcess_vis_panel_canvas">
+					<div id="output"> </div>
                     <div id="eexcess_content" >
                         <ul class="eexcess_result_list"></ul>
                     </div>
@@ -113,7 +121,7 @@ and open the template in the editor.
                     </div>
                     
                     <div>
-                        <label>Year: </label>
+                        <label>Age: </label>
                         <span id="eexcess_document_details_year"></span>
                     </div>
                     <!--
@@ -136,6 +144,7 @@ and open the template in the editor.
 
         <div id="task_question_message"></div>
         <script type="text/javascript" src="scripts/vis-controller.js" charset="utf-8"></script>
+		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
 
     </body>
 </html>

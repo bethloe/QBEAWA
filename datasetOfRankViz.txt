@@ -1,0 +1,2005 @@
+{
+	"query": "women in workforce",
+	"dataset-id": "T1-30",
+	"topic": "T1 WW",
+	"description": "Topic 1 - 30 items WW",
+	"text": "Restrictions on women's access to and participation in the workforce include the wage gap and the glass ceiling - inequities most identified with industrialized nations with nominal equal opportunity laws -; legal and cultural restrictions on access to education and jobs - inequities most identified with developing nations -; and unequal access to capital - variable but identified as a difficulty in both industrialized and developing nations.",
+	"task": "Select the 5 most relevant recommendations for the following text:",
+	"questions": ["Participation of women in the workforce",
+	"Gender wage gap",
+	"Women in the workforce earning wages or a salary are part of a modern phenomenon, one that developed at the same time as the growth of paid employment for men; yet women have been challenged by inequality in the workforce."],
+	"totalResults": "30",
+	"data": [{
+		"id": "a274e69d-c575-3b86-a5f6-cd0439b3518a",
+		"title": "IT Education and Workforce Participation: A New Era for Women in Kenya?",
+		"uri": "http://www.mendeley.com/catalog/it-education-workforce-participation-new-era-women-kenya/",
+		"eexcessURI": "http://www.mendeley.com/catalog/it-education-workforce-participation-new-era-women-kenya/",
+		"creator": "Victor W. A. Mbarika, Fay Cobb Payton, Lynette Kvasny, Atieno Amadi",
+		"description": "While Sub-Saharan African women have historically assumed the roles of both housewives and subsistence farmers, they have had few opportunities to participate in the modern economies of the region. However, this trend is changing with the exponential growth of information and communications technologies (ICT), giving many Sub-Sahara African women access to computers, the Internet, and other related technologies. Based on the work of a four-member research team from Kenya and the United States, this article examines the integration of female college students into the formal ICT work sector in Kenya. We do so by examining major bottlenecks and enablers to such integration from historical and contemporary perspectives. Using an interpretive approach, we conducted 32 interviews with women in an ICT program offered by a university in Kenya. Our findings indicate that women were highly optimistic, embracing ICT as a practical mechanism for achieving entry into the labor market. However, they perceived significant structural barriers, such as public policies that failed to facilitate the development of the ICT sector, gender discrimination by employers, and training that provided them with insufficient technical skills to enable them to effectively perform in the workplace. These findings largely confirm the gendered perspectives found in similar studies conducted in other countries. However, what appear as global perspectives are informed by the local causes.",
+		"collectionName": "The Information Society",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2007"
+		},
+		"keywords": {
+			"ict": 17.08863341806683,
+			"woman": 17.011539379730912,
+			"kenya": 13.670906734453464,
+			"perspectif": 10.253180050840097,
+			"sub": 6.835453367226732,
+			"integr": 6.835453367226732,
+			"technologi": 6.815683848761648,
+			"work": 6.808446205157384,
+			"comput": 3.417726683613366,
+			"housewif": 3.417726683613366,
+			"subsist": 3.417726683613366,
+			"farmer": 3.417726683613366,
+			"enabl": 3.417726683613366,
+			"bottleneck": 3.417726683613366,
+			"region": 3.417726683613366,
+			"entri": 3.417726683613366,
+			"team": 3.417726683613366,
+			"internet": 3.417726683613366,
+			"commun": 3.417726683613366,
+			"era": 3.417726683613366,
+			"saharan": 3.417726683613366,
+			"sahara": 3.417726683613366,
+			"member": 3.41224721784874,
+			"student": 3.41224721784874,
+			"economi": 3.41224721784874,
+			"skill": 3.4094961844768505,
+			"discrimin": 3.4094961844768505,
+			"trend": 3.4094961844768505,
+			"inform": 3.4094961844768505,
+			"it": 3.4094961844768505,
+			"access": 3.4094961844768505,
+			"train": 3.4094961844768505,
+			"program": 3.4094961844768505,
+			"interview": 3.4094961844768505,
+			"colleg": 3.407841924380824,
+			"role": 3.407841924380824,
+			"barrier": 3.4067375620377707,
+			"labor": 3.4067375620377707,
+			"market": 3.4067375620377707,
+			"univers": 3.4067375620377707,
+			"polici": 3.4067375620377707,
+			"growth": 3.4067375620377707,
+			"workplac": 3.405947984420753,
+			"employ": 3.405947984420753,
+			"opportun": 3.405355391810819,
+			"develop": 3.405355391810819,
+			"educ": 3.405355391810819,
+			"countri": 3.4048942435434815,
+			"femal": 3.404223102578692,
+			"workforc": 3.403417138400468,
+			"gender": 3.4027113864933707
+		}
+	},
+	{
+		"id": "5a28b138-15fb-3733-a8d8-bfe427fb7c63",
+		"title": "Women in the workforce and family structure in Australia",
+		"uri": "http://www.mendeley.com/research/women-workforce-family-structure-australia/",
+		"eexcessURI": "http://www.mendeley.com/research/women-workforce-family-structure-australia/",
+		"creator": "Anne Daly",
+		"description": "The purpose of this paper is to set out some of the changes that have taken place in the economic status of women in Australia and to discuss the relationship between economic factors and family structure.  I look to the position of women in the workforce and examine some of the possible explanations for the increase in female participation.  These include the increase in the female wage, demographic changes and changes in the industrial composition of the economy.  In a final section, I examine some of the evidence for the effect of economic variables, particularly the wage, on fertility.",
+		"collectionName": "Journal of the Australian Population Association",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "1990"
+		},
+		"keywords": {
+			"chang": 10.228488553430552,
+			"woman": 10.206923627838549,
+			"australia": 6.835453367226732,
+			"increas": 6.818992368953701,
+			"structur": 6.815683848761648,
+			"femal": 6.808446205157384,
+			"wage": 6.807516405047658,
+			"workforc": 6.806834276800936,
+			"includ": 3.417726683613366,
+			"section": 3.417726683613366,
+			"economi": 3.41224721784874,
+			"relatship": 3.4094961844768505,
+			"place": 3.4094961844768505,
+			"statu": 3.4094961844768505,
+			"fertil": 3.4094961844768505
+		}
+	},
+	{
+		"id": "5b864b9c-4f63-3641-8ce3-cb20d410d6e0",
+		"title": "The Effects of Parenthood on Workforce Participation and Income for Men and Women",
+		"uri": "http://www.mendeley.com/research/effects-parenthood-workforce-participation-income-men-women/",
+		"eexcessURI": "http://www.mendeley.com/research/effects-parenthood-workforce-participation-income-men-women/",
+		"creator": "Sheree J. Gibb, David M. Fergusson, L. John Horwood, Joseph M. Boden",
+		"description": "This paper examined the effects of parenthood on workforce participation for men and women in the Christchurch Health and Development Study, a 30-year longitudinal study of a birth cohort of 1,265 individuals born in New Zealand in 1977. The findings suggested that the effects of parenthood on workforce participation were different for men and women. For women, parenthood was associated with decreasing participation in paid employment and fewer hours worked. For men, however, parenthood was not associated with decreased workforce participation and in some cases was associated with increased working hours. These findings had consequences for personal income, with 83-90 % of the total gender income gap in this cohort being attributed to gender differences in the effects of parenthood. These findings suggest that parenthood has markedly different effects on workforce participation and income for men and women.",
+		"collectionName": "Journal of Family and Economic Issues",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2013"
+		},
+		"keywords": {
+			"parenthood": 23.92408678529356,
+			"workforc": 17.01708569200234,
+			"man": 17.01475115244785,
+			"woman": 17.011539379730912,
+			"incom": 13.623791937683013,
+			"hour": 6.835453367226732,
+			"cohort": 6.835453367226732,
+			"gender": 6.805422772986741,
+			"zealand": 3.417726683613366,
+			"christchurch": 3.417726683613366,
+			"birth": 3.417726683613366,
+			"consequ": 3.41224721784874,
+			"health": 3.4094961844768505,
+			"individu": 3.4094961844768505,
+			"employ": 3.405947984420753,
+			"develop": 3.405355391810819,
+			"gap": 3.4039713085448806
+		}
+	},
+	{
+		"id": "9436cb92-4aa1-3e3d-af99-bfaa3961d7aa",
+		"title": "The (dis)placement of women in the IT workforce: An investigation of individual career values and organisational interventions",
+		"uri": "http://www.mendeley.com/catalog/displacement-women-it-workforce-investigation-individual-career-values-organisational-interventions/",
+		"eexcessURI": "http://www.mendeley.com/catalog/displacement-women-it-workforce-investigation-individual-career-values-organisational-interventions/",
+		"creator": "Jeria L. Quesenberry, Eileen M. Trauth",
+		"description": "This paper reports on an investigation of career anchors of women in the information technology (IT) workforce that was directed at enhancing within-gender theorising about career motivations of women in the IT profession. Our theoretical lens, the individual differences theory of gender and IT, enabled us to look more critically at how the effects of interventions are embedded in the range of women's career anchors that takes within-gender variation into account. The analysis demonstrates that organisational interventions must be flexible enough to account for the diversity and variation among women. Further, the analysis shows that it is necessary to move away from ‘one size fits all’ organisational interventions that often reflect stereotypes about women in the IT workforce.",
+		"collectionName": "Information Systems Journal",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2012"
+		},
+		"keywords": {
+			"woman": 20.413847255677098,
+			"it": 17.047480922384253,
+			"intervent": 13.637984737907402,
+			"career": 13.621421567243276,
+			"organis": 10.253180050840097,
+			"workforc": 10.210251415201405,
+			"gender": 10.208134159480112,
+			"anchor": 6.835453367226732,
+			"variat": 6.815683848761648,
+			"move": 3.417726683613366,
+			"stereotyp": 3.417726683613366,
+			"len": 3.417726683613366,
+			"displac": 3.417726683613366,
+			"divers": 3.417726683613366,
+			"profess": 3.4094961844768505,
+			"inform": 3.4094961844768505,
+			"technologi": 3.407841924380824
+		}
+	},
+	{
+		"id": "b683e244-ce19-3d40-89c2-bdc86fa99911",
+		"title": "Retaining women in the U.S. IT workforce: theorizing the influence of organizational factors",
+		"uri": "http://www.mendeley.com/catalog/retaining-women-it-workforce-theorizing-influence-organizational-factors/",
+		"eexcessURI": "http://www.mendeley.com/catalog/retaining-women-it-workforce-theorizing-influence-organizational-factors/",
+		"creator": "Eileen M Trauth, Jeria L Quesenberry, Haiyan Huang",
+		"description": "The challenge of meeting the demand for information technology (IT) workers is addressed by examining three important organizational factors that affect women’s retention in the IT field. Much of the research on gender and IT assumes a unilateral effect: all organizational factors affect all women in the same ways. An alternative view that is explored in this research is that within gender differences offer rich insights into the gender imbalance in the IT profession. The individual differences theory of gender and IT enabled us to examine variation in organizational influences on women through analysis of transcripts from in-depth interviews conducted with 92 women in the IT workforce in the U.S.A. The results show that three organizational factors – work–life balance, organizational climate, and mentoring – affected the women’s career development in a range of ways. Our findings shed new light on what has been interpreted by other researchers as contradictory findings because our theoretical starting point is the assumption that women are not all the same, that within-gender variation is expected and that it provides an opportunity to develop a deeper understanding of gender relations in the IT field. Using this theory we were able to identify opportunities for the development of interventions by linking the themes embedded in the three workplace factors to the constructs of the theory. The individual identity construct revealed the ways in which a woman’s demographic and professional characteristics affect her career choices. The individual influences construct focused attention on the ways in which differences in personality, abilities, and influential people shape one’s career. Finally, the environmental influences construct characterized contextual influences on women’s participation in the IT profession. Our findings show that both research and interventions directed at increasing the retention of women must be flexible enough to respond to the variation that exists among women and within IT workplaces.",
+		"collectionName": "European Journal of Information Systems",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2009"
+		},
+		"keywords": {
+			"woman": 37.42538663540801,
+			"it": 34.094961844768505,
+			"gender": 20.416268318960224,
+			"influenc": 17.047480922384253,
+			"variat": 10.223525773142471,
+			"career": 10.216066175432458,
+			"retent": 6.835453367226732,
+			"profess": 6.818992368953701,
+			"intervent": 6.818992368953701,
+			"workplac": 6.811895968841506,
+			"develop": 6.810710783621638,
+			"opportun": 6.810710783621638,
+			"workforc": 6.806834276800936,
+			"theme": 3.417726683613366,
+			"transcript": 3.417726683613366,
+			"depth": 3.417726683613366,
+			"demand": 3.417726683613366,
+			"choic": 3.417726683613366,
+			"lif": 3.417726683613366,
+			"relat": 3.417726683613366,
+			"climat": 3.417726683613366,
+			"offer": 3.417726683613366,
+			"imbal": 3.417726683613366,
+			"light": 3.417726683613366,
+			"contextu": 3.417726683613366,
+			"shape": 3.417726683613366,
+			"balanc": 3.41224721784874,
+			"ident": 3.41224721784874,
+			"attent": 3.41224721784874,
+			"abil": 3.41224721784874,
+			"interview": 3.4094961844768505,
+			"inform": 3.4094961844768505,
+			"worker": 3.407841924380824,
+			"technologi": 3.407841924380824,
+			"work": 3.404223102578692
+		}
+	},
+	{
+		"id": "79b03876-be81-3131-9c90-a02af39aa822",
+		"title": "Women in STEM : A Gender Gap to Innovation",
+		"uri": "http://www.mendeley.com/catalog/women-stem-gender-gap-innovation/",
+		"eexcessURI": "http://www.mendeley.com/catalog/women-stem-gender-gap-innovation/",
+		"creator": "David Beede, Tiffany Julian, David Langdon",
+		"description": "Our science, technology, engineering and math (STEM) workforce is crucial to America’s innovative capacity and global competitiveness. Yet women are vastly underrepresented in STEM jobs and among STEM degree holders despite making up nearly half of the U.S. workforce and half of the college-educated workforce. That leaves an untapped opportunity to expand STEM employment in the United States, even as there is wide agreement that the nation must do more to improve its competitiveness.",
+		"collectionName": "U.S. Department of Commerce, Economics and Statistics Administration",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2011"
+		},
+		"keywords": {
+			"workforc": 10.210251415201405,
+			"competit": 6.835453367226732,
+			"woman": 6.804615751892365,
+			"math": 3.417726683613366,
+			"engineering": 3.417726683613366,
+			"agreem": 3.417726683613366,
+			"innov": 3.417726683613366,
+			"america": 3.417726683613366,
+			"holder": 3.417726683613366,
+			"capac": 3.41224721784874,
+			"scienc": 3.41224721784874,
+			"colleg": 3.407841924380824,
+			"technologi": 3.407841924380824,
+			"nation": 3.407841924380824,
+			"employ": 3.405947984420753,
+			"opportun": 3.405355391810819,
+			"job": 3.404223102578692,
+			"gap": 3.4039713085448806,
+			"gender": 3.4027113864933707
+		}
+	},
+	{
+		"id": "89b6c5a9-c323-320d-89ae-bd06a923141d",
+		"title": "Lifting the barriers? Workplace education and training, women and job progression",
+		"uri": "http://www.mendeley.com/research/lifting-barriers-workplace-education-training-women-job-progression/",
+		"eexcessURI": "http://www.mendeley.com/research/lifting-barriers-workplace-education-training-women-job-progression/",
+		"creator": "Anne McBride",
+		"description": "While workplace education and training may increase women's access to qualifications, their advancement in the workplace may remain impeded. This article draws on material from seven case studies in the National Health Service in England to understand the conditions under which workplace education and training has the most potential to facilitate women's job progression. It illustrates how workforce crises at a local level prompted workforce managers to create different career pathways to areas of workforce shortage while line managers encouraged women's participation along these pathways through workplace education and training. Certain aspects of the government's workforce modernization agenda facilitate these activities but it is the presence of enthusiastic local actors at four points (corporate, workforce development managers, line management and external) that drives and manages these activities. © 2011 Blackwell Publishing Ltd.",
+		"collectionName": "Gender, Work and Organization",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2011"
+		},
+		"keywords": {
+			"workplac": 17.029739922103765,
+			"workforc": 17.01708569200234,
+			"manag": 13.637984737907402,
+			"train": 13.637984737907402,
+			"educ": 13.621421567243276,
+			"woman": 13.60923150378473,
+			"line": 6.835453367226732,
+			"pathwai": 6.82449443569748,
+			"progress": 6.818992368953701,
+			"activ": 6.815683848761648,
+			"job": 6.808446205157384,
+			"england": 3.417726683613366,
+			"materi": 3.417726683613366,
+			"govern": 3.417726683613366,
+			"drive": 3.417726683613366,
+			"servic": 3.417726683613366,
+			"shortag": 3.417726683613366,
+			"blackwel": 3.417726683613366,
+			"agenda": 3.417726683613366,
+			"cri": 3.417726683613366,
+			"modern": 3.417726683613366,
+			"qualif": 3.41224721784874,
+			"health": 3.4094961844768505,
+			"advanc": 3.4094961844768505,
+			"condition": 3.4094961844768505,
+			"access": 3.4094961844768505,
+			"presenc": 3.4094961844768505,
+			"increas": 3.4094961844768505,
+			"nation": 3.407841924380824,
+			"barrier": 3.4067375620377707,
+			"develop": 3.405355391810819,
+			"career": 3.405355391810819
+		}
+	},
+	{
+		"id": "dc521b19-ce3c-3080-8fcb-bb8e32c164a6",
+		"title": "Career Aspirations of Women in the 20th Century",
+		"uri": "http://www.mendeley.com/catalog/career-aspirations-women-20th-century/",
+		"eexcessURI": "http://www.mendeley.com/catalog/career-aspirations-women-20th-century/",
+		"creator": "Desirae M Domenico, Karen H Jones",
+		"description": "Women have increasingly become more involved in the workforce following World War II. Paid employment of women has shifted from primarily traditional female-oriented jobs to more non-traditional, and previously male-oriented careers. Women’s participation in the workforce has lead to the study of career aspirations of women. Career aspirations are influenced by factors such as gender, socioeconomic status, race, parents’ occupation and education level, and parental expectations. This review of literature presents an overview of women’s participation in the workforce and the progress of women’s career development and career aspirations in the latter half of the 20th century.",
+		"collectionName": "Journal of Career and Technical Education",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2006"
+		},
+		"keywords": {
+			"woman": 23.81615513162328,
+			"career": 20.432132350864915,
+			"aspir": 13.64898887139496,
+			"workforc": 10.210251415201405,
+			"parent": 3.417726683613366,
+			"latter": 3.417726683613366,
+			"war": 3.41224721784874,
+			"race": 3.41224721784874,
+			"expect": 3.41224721784874,
+			"progress": 3.4094961844768505,
+			"statu": 3.4094961844768505,
+			"world": 3.407841924380824,
+			"occup": 3.407841924380824,
+			"employ": 3.405947984420753,
+			"educ": 3.405355391810819,
+			"develop": 3.405355391810819,
+			"femal": 3.404223102578692,
+			"job": 3.404223102578692,
+			"gender": 3.4027113864933707
+		}
+	},
+	{
+		"id": "7ce000b8-85e2-322c-bc9c-f64c30b9911e",
+		"title": "Salaries, salary growth, and promotions of men and women in a large, private firm",
+		"uri": "http://www.mendeley.com/research/salaries-salary-growth-promotions-men-women-large-private-firm/",
+		"eexcessURI": "http://www.mendeley.com/research/salaries-salary-growth-promotions-men-women-large-private-firm/",
+		"creator": "BA Gerhart, GT Milkovich",
+		"description": "[Excerpt] Salaries, promotions, and salary growth of men and women in a large, diversified firm were examined for the years 1980 through 1986. Consistent with other studies, men's average salary was higher than women's average salary. However, statistical adjustment for gender differences in education, tenure, time at level, experience, and job level substantially reduced the salary advantage of men over women. Although the average salary of men was higher than that of women in 1980 and 1986, women actually received greater numbers of promotions, as well as larger percentage salary increases between 1980 and 1986. One reason for women's salary growth advantage was the higher average performance ratings of women between 1980 and 1986. One important reason for women's promotion advantage was their greater likelihood of being in (lower) job levels where promotion opportunities were greatest.",
+		"collectionName": "Pay equity: Empirical inquiries",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "1989"
+		},
+		"keywords": {
+			"salari": 34.094961844768505,
+			"woman": 30.620770883515643,
+			"promotion": 17.0612360892437,
+			"man": 17.01475115244785,
+			"growth": 10.220212686113312,
+			"firm": 6.818992368953701,
+			"job": 6.808446205157384,
+			"likelihood": 3.417726683613366,
+			"perform": 3.417726683613366,
+			"excerpt": 3.417726683613366,
+			"tenur": 3.417726683613366,
+			"adjust": 3.417726683613366,
+			"percentag": 3.41224721784874,
+			"increa": 3.41224721784874,
+			"experi": 3.405947984420753,
+			"time": 3.405947984420753,
+			"educ": 3.405355391810819,
+			"opportun": 3.405355391810819,
+			"gender": 3.4027113864933707
+		}
+	},
+	{
+		"id": "105f86de-ad8d-380a-9ea3-fd5b642da9b5",
+		"title": "Will the stork return to Europe and Japan? Understanding fertility within developed nations.",
+		"uri": "http://www.mendeley.com/catalog/stork-return-europe-japan-understanding-fertility-within-developed-nations/",
+		"eexcessURI": "http://www.mendeley.com/catalog/stork-return-europe-japan-understanding-fertility-within-developed-nations/",
+		"creator": "James Feyrer, Bruce Sacerdote, Ariel Dora Stern",
+		"description": "We seek to explain the differences in fertility rates across high-income countries by focusing on the interaction between the increasing status of women in the workforce and their status in the household, particularly with regards to child care and home production. We observe three distinct phases in women's status generated by the gradual increase in women's workforce opportunities. In the earliest phase, characteristic of the 1950s and 1960s in the United States, women earn low wages relative to men and are expected to shoulder all of the child care at home. As a result, most women specialize in home production and raising children. In an intermediate stage, women have improved (but not equal) labor market opportunities, but their household status lags. Women in this stage are still expected to do the majority of child care and household production. Increasing access to market work increases the opportunity cost of having children, and fertility falls. Female labor force participation increases. Working women in this phase of development have the strongest disincentives to having additional children since the entire burden of child care falls on them. In the final phase of development, women's labor market opportunities begin to equal those of men. In addition, the increased household bargaining power that comes from more equal wages results in much higher (if not gender-equal) male participation in household production. Female labor force participation is higher than in the intermediate phase. The increased participation of men in the household also reduces the disincentives for women to have additional children, and fertility rates rise compared to the intermediate phase. The intermediate, low-fertility phase might describe Japan, Italy, and Spain in the present day, while the Scandinavian countries, the Netherlands, and the modern-day United States may be entering the final phase. After presenting the empirical evidence, we predict that high-income countries with the lowest fertility rates are likely to see an increase in fertility in the coming decades.",
+		"collectionName": "The journal of economic perspectives : a journal of the American Economic Association",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2008"
+		},
+		"keywords": {
+			"woman": 34.023078759461825,
+			"child": 27.275969475814804,
+			"fertil": 23.866473291337954,
+			"household": 20.47348330709244,
+			"care": 13.64898887139496,
+			"product": 13.637984737907402,
+			"statu": 13.637984737907402,
+			"labor": 13.626950248151083,
+			"opportun": 13.621421567243276,
+			"home": 10.223525773142471,
+			"market": 10.220212686113312,
+			"countri": 10.214682730630445,
+			"man": 10.20885069146871,
+			"japan": 6.835453367226732,
+			"disincentif": 6.835453367226732,
+			"stage": 6.82449443569748,
+			"increa": 6.82449443569748,
+			"forc": 6.82449443569748,
+			"increas": 6.818992368953701,
+			"incom": 6.811895968841506,
+			"develop": 6.810710783621638,
+			"wage": 6.807516405047658,
+			"workforc": 6.806834276800936,
+			"interact": 3.417726683613366,
+			"pha": 3.417726683613366,
+			"spain": 3.417726683613366,
+			"power": 3.417726683613366,
+			"burden": 3.417726683613366,
+			"netherland": 3.417726683613366,
+			"cost": 3.417726683613366,
+			"stork": 3.417726683613366,
+			"scandinavian": 3.417726683613366,
+			"shoulder": 3.417726683613366,
+			"access": 3.4094961844768505,
+			"rise": 3.4094961844768505,
+			"nation": 3.407841924380824,
+			"europ": 3.407841924380824,
+			"work": 3.404223102578692,
+			"gender": 3.4027113864933707
+		}
+	},
+	{
+		"id": "83aa3dff-95de-356a-ae12-e7f7045d7e06",
+		"title": "Gender differences in salary in a female-dominated profession",
+		"uri": "http://www.mendeley.com/research/gender-differences-salary-femaledominated-profession/",
+		"eexcessURI": "http://www.mendeley.com/research/gender-differences-salary-femaledominated-profession/",
+		"creator": "Laura M. Crothers, Ara J. Schmitt, Tammy L. Hughes, John Lipinski, Lea A. Theodore, Kisha Radliff, Sandra Ward",
+		"description": "Purpose: \nThe purpose of this paper is to examine the salary and promotion negotiation practices of female and male school psychology practitioners and university instructors of school psychology practitioners in order to determine whether salary differences exist between male and female employees in the field of school psychology, which has become a female-dominated profession. \nDesign/methodology/approach: \nA total of 191 female and 115 male faculty members and 148 female and 56 male school psychologists completed a survey regarding salary, negotiation practices, and job satisfaction. \nFindings: \nResults suggest that females earn less than male colleagues, controlling for years of experience and degree attainment. No gender differences were found regarding faculty participants' willingness to negotiate for increased salary; however, males were more likely to negotiate for promotion. Likewise, no gender differences were evident in practitioners' salary and promotion negotiation attempts, although none were expected, given the salary schedule constraints unique to occupations in the field of education. Research limitations/implications: The paper is limited to one profession, albeit both university faculty and school psychology practitioners, and was conducted in the USA, so the findings may have limited generalizability to other professions and/or in other countries. Practical implications: The paper demonstrates that gender pay differences exist despite no differences in males' and females' willingness to negotiate for salary. Consequently, it is likely that pay differences between men and women are due to reasons other than individuals' education levels, years in position, and negotiation practices. \nOriginality/value: \nThis is the first paper that tracks salaries and the negotiating practices of school psychologist trainers and practitioners. It also finds that male/female salary differences carry over into a female-dominated profession. © Emerald Group Publishing Limited.",
+		"collectionName": "Gender in Management: An International Journal",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2010"
+		},
+		"keywords": {
+			"salari": 34.094961844768505,
+			"femal": 34.04223102578692,
+			"school": 20.456977106861103,
+			"practition": 17.08863341806683,
+			"profess": 17.047480922384253,
+			"psychologi": 13.670906734453464,
+			"negoti": 13.670906734453464,
+			"practic": 13.64898887139496,
+			"gender": 13.610845545973483,
+			"promotion": 10.23674165354622,
+			"faculti": 10.23674165354622,
+			"willing": 6.835453367226732,
+			"male": 6.835453367226732,
+			"psychologist": 6.835453367226732,
+			"univers": 6.813475124075541,
+			"educ": 6.810710783621638,
+			"satisfact": 3.417726683613366,
+			"trainer": 3.417726683613366,
+			"constraint": 3.417726683613366,
+			"generaliz": 3.417726683613366,
+			"colleagu": 3.417726683613366,
+			"none": 3.417726683613366,
+			"emerald": 3.417726683613366,
+			"instructor": 3.417726683613366,
+			"attain": 3.41224721784874,
+			"schule": 3.41224721784874,
+			"member": 3.41224721784874,
+			"usa": 3.41224721784874,
+			"order": 3.4094961844768505,
+			"individu": 3.4094961844768505,
+			"occup": 3.407841924380824,
+			"employe": 3.4067375620377707,
+			"experi": 3.405947984420753,
+			"countri": 3.4048942435434815,
+			"job": 3.404223102578692,
+			"man": 3.40295023048957,
+			"woman": 3.4023078759461827
+		}
+	},
+	{
+		"id": "f6be88cf-1f5c-33e2-be1e-6a7604123660",
+		"title": "Growth in Women’ s Relative Wages and Inequality Among Men: One Phenomenon or Two?",
+		"uri": "http://www.mendeley.com/research/growth-women-s-relative-wages-inequality-among-men-one-phenomenon-two/",
+		"eexcessURI": "http://www.mendeley.com/research/growth-women-s-relative-wages-inequality-among-men-one-phenomenon-two/",
+		"creator": "Finis Welch",
+		"description": "In this article, the author examines a competing hypothesis to explain growth in women's relative wages. The two remaining parts of the article deal with trends in wage inequality and the link between them and trends in women's relative wages. The author finds that there is no way of knowing the full story of growth in women's relative wages. Possible factors include increasing participation must be important, the movement of women from the home to the job, growth in education levels of women, the movement of women's college major fields toward areas traditionally dominated by men, and affirmative action programs.",
+		"collectionName": "American Economic Review",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2000"
+		},
+		"keywords": {
+			"woman": 23.81615513162328,
+			"wage": 17.018791012619147,
+			"growth": 13.626950248151083,
+			"trend": 6.818992368953701,
+			"movem": 6.818992368953701,
+			"inequ": 6.813475124075541,
+			"man": 6.80590046097914,
+			"link": 3.41224721784874,
+			"action": 3.41224721784874,
+			"program": 3.4094961844768505,
+			"colleg": 3.407841924380824,
+			"home": 3.407841924380824,
+			"educ": 3.405355391810819,
+			"job": 3.404223102578692
+		}
+	},
+	{
+		"id": "2cd6ab68-5baf-313b-85d1-da00e01c5ac2",
+		"title": "Workforce planning and workplace management",
+		"uri": "http://www.mendeley.com/catalog/workforce-planning-workplace-management/",
+		"eexcessURI": "http://www.mendeley.com/catalog/workforce-planning-workplace-management/",
+		"creator": "L O'Brien-Pallas, S Birch, G T Murphy",
+		"description": "Introduction. Literature is scarce on father attendance to labour and delivery and studies report conflicting results. The aim of the present study was to evaluate the effect of father attendance during labour and delivery on pain, anxiety, stress and other variables (irritability, feeling of inefficiency, agitation, worry, lack of self-confidence and ability to relax) perceived by parturient. Methods. An only post-test quasi-experimental design was used. The sample consisted of 200 women in labour. One hundred women (experimental group) were cared for by their partners in the labour and delivery room; another one hundred (control group) were cared for only by the health professionals. Pain, anxiety, stress and other variables were measured using scales of proven validity and reliability. Results. The parturients of the experimental group had a significantly lower pain, anxiety and stress perception than those of the control group. The parturients of the experimental group were also less irritable, agitated, worried, felt more efficient, self-confident and able to relax. Conclusion. The results of this study confirmed part of the literature on the positive effects of father attendance at labour and delivery. This study also contributed to raise major awareness among the health professionals and hospital managers where the control group was recruited on the importance of the support that partners can provide to parturients. Introduction. The spread of palliative care calls for a careful training of the increasing number of health professionals providing assistance to terminally ill patients and their families. One of the skills needed to improve these patients' quality of life is to develop positive attitudes to-wards end-of-life assistance. Among the various tools that assess training needs and efficacy of training programs, the Frommelt Attitude Toward Care of the Dying Scale (FACTOD Form B ) is an effective and reliable instrument, widely used to analyze this type of attitude among nursing students and health professionals. The aim of the article is to verify the Italian Version (FACTOD Form B-I ), so as to spread the use of these tools also to the palliative care field of our country. Methods. The instrument validation has been developed through the following stages: forward and backward translation, focus groups to assess questions' relevance and vocabulary comprehension, test and retest on a sample of Medicine and Nursing students. Results. The statistical analysis has showed an Interrater Correlation Index between 0.70 and 0.86 for 97% of the items. As for the discriminating capacity, the scale presents good values of asymmetry and kurtosis for most of the items. The internal consistency (Cronbach's Alpha) is 0.83. On average, the questionnaire has been completed in six minutes and the compilation has been rather easy. Conclusions. FACTOD Form B-I results as a comprehensible instrument, fast and practical to complete, with good psychometric proper-ties, showed by very good values of reproducibility and reliability of the whole scale. Its use in Italy is, therefore, recommended to evaluate the attitude of students and healthcare professionals who take care of terminally ill patients. Introduction. The nursing care based on a delicate balance between \"science of nature\" and \"science of spirit\" can be a powerful antidote to individualism of our own modern society. The feeling of confidence/trust, expressed through a variety of languages (verbal, gestural, bodily) can start a meeting, a relationship, to discover and go beyond the unknown side, that both the patient and the nurse have. Issue. The article is going to analyse the feeling of trust and link it, in particular, to the activity of nursing care. In the first part trust is analysed from a sociological point of view, taking into consideration some of the ideas of Georg Simmel and Niklas Lhumann. A trustful attitude always rises, develops and is verified in set units of time and place, starting from the potential the interlocutors show. In the second part of the article, through the nursing remarks by Jean Watson, the presence of trust as a constituent element in the professional acting is analysed. According to the author, trust is a condition that facilitates the relationship of care, opens the way for the dialogue, encouraging the relationship. Conclusions. The trust is an important feeling in interpersonal relationship. Caring practices, woven into daily technical gestures and always acted through a relationship, need to experiment trust to be effective and consent the realization of a caring project. The trust can't be claimed, it can only be offered or accepted, beginning from a decision in a relationship and people that receive it take an opportunity. Introduction. Therapeutic Touch is an energy-based nursing practice, inside Nursing Interventions Classification , linked with NANDA nursing diagnosis of \"Energy field disturbance\". Introduced and developed by Dolores Krieger, Nursing emeritus professor at the New York University, and Dora Kunz, pranotherapist, today is practiced at nursing in more than eighty hospitals in the world, and more than 43,000 nurses are trained in Therapeutic Touch. Problem. Therapeutic Touch is based on the energy techniques, practiced over the centuries in different continents, on quantum physics, and in the nursing theory, on work by Martha Rogers, the Science of Unitarian Human Beings. In the USA, the Therapeutic Touch, has the scientific and professional support by American Nurses Association and the American Holistic Nurses Association. The scientific evidence seem to indicate that the psychosomatic effects of the Therapeutic Touch, are not only attributable to a placebo effect, but to a direct action of the Therapeutic Touch on an human being energy field, with effects of rebalancing on the energy field configuration. Conclusions. Nurses trained in Therapeutic Touch must develop a very open mind, have a holistic understanding of the human being and reality, and develope consciousness states and a transcendental awareness. Introduction. Anxiety and depression in patients before and after a pacemaker implantation has been understudied despite an increased use of pacemaker therapy in Italy and in the world. The purpose of the present study was to describe and examine anxiety and depression and factors associated with them before a pacemaker implantation and within one year of the post implantation time. Methods. A descriptive, correlational and comparative design has been used to study and compare anxiety and depression in a total sample of 154 patients from two hospitals in Rome, Italy, divided in four groups: 43 patients before the pacemaker implantation, and 38, 29 and 44 patients respectively one, six and twelve months after the implantation. A Sociodemographic Questionnaire and the Hospital Anxiety and Depression Scale have been used to measure the study variables. Results. Anxiety and depression significantly decreased from the pre to the post implantation groups. In the 1-month-post-implantation group patients with a ventricular pacing had lower anxiety and depression levels than those with dual chamber pacing. In the 6-month-post-implantation group patients with a rate responsive pacing were more depressed than those without rate responsive pacing. People less old, less educated, with lower income and fewer children were more anxious and depressed before the implantation. Only older people were more depressed after the implantation. Conclusion. This study provides nurses with a first overview on the phenomenon of anxiety and depression before and after a pacemaker implantation. Knowing the level of anxiety and depression before and after a pacemaker implantation as well as factors associated with these variables helps nurses to provide patients with a better and research based care. Introduction. Those of the urinary tract are the most commonly acquired infections in hospitals. Their prevention is based on the use of indwelling catheters only when a clear clinical indication emerges. The goal of this research is to evaluate the ap ropriateness of the nursing actions commonly used in hospitals to manage the need of urinary elimination in the patients. Methods. Our sample included 200 medical records of people hospitalized in a medical ward during September 2006. The sampling technique was based on the admission date; we used a modified version of Brennan's evaluation scale. Results. 4 medical records have been excluded from the analysis. The mean value of our patients' ages was 74.3 years (SD 15.4). 27 patients (13.8%) had developed some type of infection. Our analysis pointed out that catheters were appropriately used in 95.1% of the sample (39 patients) during their hospitalization, and in two over 16 at the admission. Diapers were used incorrectly in 40 patients (63.4%). Bedpans were correctly used in 41 people (77.3%). Discussion. As regards the need of urinary elimination, the mean age is different between self-sufficient patients and people who use catheters, diapers and/or bedpans. Moreover, we found a difference between the two genders: the percentage of self-sufficient patients is higher among men. Women were using devices more often than men. The highest percentage of incorrectly used devices refers to diapers, with several clinical and social consequences. Introduction. Diabetes mellitus has considerable social impact for its invalidating complications and dramatic outcomes. The prevalence range of foot ulcers in diabetic patients is 4% to 10%. The aim of this paper is to clarify if Clinical Pathway can improve clinical outcomes in patients with diabetic foot ulcers. Methods. The Medline and Cinahl databases were searched for articles published between January 1997 and December 2007. Key words used were \"diabetic foot\", \"critical pathway\" e \"clinical protocols\". Studies which had a connection betwe",
+		"collectionName": "International Nursing Perspectives",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2001"
+		},
+		"keywords": {
+			"patient": 68.35453367226732,
+			"implant": 41.01272020336039,
+			"anxieti": 37.59499351974703,
+			"trust": 30.759540152520294,
+			"depress": 27.341813468906928,
+			"care": 27.29797774278992,
+			"hospit": 23.92408678529356,
+			"touch": 23.92408678529356,
+			"pacemak": 20.506360101680194,
+			"nur": 20.506360101680194,
+			"relatship": 20.456977106861103,
+			"profession": 17.08863341806683,
+			"attitud": 17.08863341806683,
+			"energi": 17.08863341806683,
+			"post": 17.08863341806683,
+			"labour": 17.047480922384253,
+			"parturi": 13.670906734453464,
+			"deliveri": 13.670906734453464,
+			"health": 13.637984737907402,
+			"pain": 10.253180050840097,
+			"factod": 10.253180050840097,
+			"instrum": 10.253180050840097,
+			"cathet": 10.253180050840097,
+			"diaper": 10.253180050840097,
+			"attend": 10.253180050840097,
+			"foot": 10.253180050840097,
+			"aim": 10.253180050840097,
+			"human": 10.253180050840097,
+			"scienc": 10.23674165354622,
+			"student": 10.23674165354622,
+			"father": 10.23674165354622,
+			"control": 10.23674165354622,
+			"stress": 10.23674165354622,
+			"train": 10.228488553430552,
+			"woman": 10.206923627838549,
+			"comprehens": 6.835453367226732,
+			"correl": 6.835453367226732,
+			"item": 6.835453367226732,
+			"questnair": 6.835453367226732,
+			"ulcer": 6.835453367226732,
+			"assist": 6.835453367226732,
+			"valid": 6.835453367226732,
+			"infect": 6.835453367226732,
+			"gestur": 6.835453367226732,
+			"reliabl": 6.835453367226732,
+			"ward": 6.835453367226732,
+			"devic": 6.835453367226732,
+			"awar": 6.835453367226732,
+			"bpane": 6.835453367226732,
+			"confid": 6.835453367226732,
+			"spread": 6.835453367226732,
+			"american": 6.835453367226732,
+			"admiss": 6.835453367226732,
+			"elimin": 6.835453367226732,
+			"version": 6.835453367226732,
+			"partner": 6.835453367226732,
+			"record": 6.835453367226732,
+			"tool": 6.835453367226732,
+			"percentag": 6.82449443569748,
+			"social": 6.82449443569748,
+			"practic": 6.82449443569748,
+			"pathwai": 6.82449443569748,
+			"associ": 6.82449443569748,
+			"action": 6.82449443569748,
+			"manag": 6.818992368953701,
+			"life": 6.818992368953701,
+			"world": 6.815683848761648,
+			"time": 6.811895968841506,
+			"man": 6.80590046097914,
+			"jean": 3.417726683613366,
+			"compil": 3.417726683613366,
+			"psychometr": 3.417726683613366,
+			"ty": 3.417726683613366,
+			"reproduc": 3.417726683613366,
+			"healthcar": 3.417726683613366,
+			"word": 3.417726683613366,
+			"ineffici": 3.417726683613366,
+			"natur": 3.417726683613366,
+			"spirit": 3.417726683613366,
+			"antidot": 3.417726683613366,
+			"agit": 3.417726683613366,
+			"preval": 3.417726683613366,
+			"efficaci": 3.417726683613366,
+			"varieti": 3.417726683613366,
+			"languag": 3.417726683613366,
+			"databa": 3.417726683613366,
+			"frommelt": 3.417726683613366,
+			"side": 3.417726683613366,
+			"nurs": 3.417726683613366,
+			"complic": 3.417726683613366,
+			"mellitu": 3.417726683613366,
+			"diabet": 3.417726683613366,
+			"room": 3.417726683613366,
+			"idea": 3.417726683613366,
+			"georg": 3.417726683613366,
+			"simmel": 3.417726683613366,
+			"nikla": 3.417726683613366,
+			"lhumann": 3.417726683613366,
+			"unit": 3.417726683613366,
+			"connect": 3.417726683613366,
+			"protocol": 3.417726683613366,
+			"interlocutor": 3.417726683613366,
+			"remark": 3.417726683613366,
+			"betw": 3.417726683613366,
+			"watson": 3.417726683613366,
+			"cinahl": 3.417726683613366,
+			"constitu": 3.417726683613366,
+			"elem": 3.417726683613366,
+			"mline": 3.417726683613366,
+			"dialogu": 3.417726683613366,
+			"translat": 3.417726683613366,
+			"irrit": 3.417726683613366,
+			"consent": 3.417726683613366,
+			"realiz": 3.417726683613366,
+			"project": 3.417726683613366,
+			"decision": 3.417726683613366,
+			"sd": 3.417726683613366,
+			"vocabulari": 3.417726683613366,
+			"kei": 3.417726683613366,
+			"brennan": 3.417726683613366,
+			"classif": 3.417726683613366,
+			"nanda": 3.417726683613366,
+			"diagnosi": 3.417726683613366,
+			"disturb": 3.417726683613366,
+			"dolor": 3.417726683613366,
+			"krieger": 3.417726683613366,
+			"emeritu": 3.417726683613366,
+			"date": 3.417726683613366,
+			"york": 3.417726683613366,
+			"retest": 3.417726683613366,
+			"dora": 3.417726683613366,
+			"kunz": 3.417726683613366,
+			"pranotherapist": 3.417726683613366,
+			"eighti": 3.417726683613366,
+			"micin": 3.417726683613366,
+			"interrat": 3.417726683613366,
+			"contin": 3.417726683613366,
+			"quantum": 3.417726683613366,
+			"physic": 3.417726683613366,
+			"septemb": 3.417726683613366,
+			"martha": 3.417726683613366,
+			"roger": 3.417726683613366,
+			"unitarian": 3.417726683613366,
+			"decemb": 3.417726683613366,
+			"be": 3.417726683613366,
+			"index": 3.417726683613366,
+			"januari": 3.417726683613366,
+			"clinic": 3.417726683613366,
+			"placebo": 3.417726683613366,
+			"asymmetri": 3.417726683613366,
+			"configur": 3.417726683613366,
+			"mind": 3.417726683613366,
+			"realiti": 3.417726683613366,
+			"kurtosi": 3.417726683613366,
+			"conscious": 3.417726683613366,
+			"consist": 3.417726683613366,
+			"cronbach": 3.417726683613366,
+			"alpha": 3.417726683613366,
+			"therapi": 3.417726683613366,
+			"rome": 3.417726683613366,
+			"twelv": 3.417726683613366,
+			"sociodemograph": 3.417726683613366,
+			"pre": 3.417726683613366,
+			"chamber": 3.417726683613366,
+			"ropriat": 3.417726683613366,
+			"ap": 3.417726683613366,
+			"tract": 3.417726683613366,
+			"quasi": 3.417726683613366,
+			"prevent": 3.417726683613366,
+			"minut": 3.417726683613366,
+			"stage": 3.41224721784874,
+			"link": 3.41224721784874,
+			"usa": 3.41224721784874,
+			"percept": 3.41224721784874,
+			"famili": 3.41224721784874,
+			"professor": 3.41224721784874,
+			"qualiti": 3.41224721784874,
+			"abil": 3.41224721784874,
+			"consider": 3.41224721784874,
+			"consequ": 3.41224721784874,
+			"relev": 3.41224721784874,
+			"capac": 3.41224721784874,
+			"analys": 3.41224721784874,
+			"balanc": 3.41224721784874,
+			"place": 3.4094961844768505,
+			"skill": 3.4094961844768505,
+			"child": 3.4094961844768505,
+			"condition": 3.4094961844768505,
+			"program": 3.4094961844768505,
+			"impact": 3.4094961844768505,
+			"presenc": 3.4094961844768505,
+			"societi": 3.4094961844768505,
+			"individu": 3.4094961844768505,
+			"intervent": 3.4094961844768505,
+			"activ": 3.407841924380824,
+			"univers": 3.4067375620377707,
+			"incom": 3.405947984420753,
+			"workplac": 3.405947984420753,
+			"experi": 3.405947984420753,
+			"develop": 3.405355391810819,
+			"opportun": 3.405355391810819,
+			"countri": 3.4048942435434815,
+			"work": 3.404223102578692,
+			"workforc": 3.403417138400468,
+			"gender": 3.4027113864933707
+		}
+	},
+	{
+		"id": "b7c4d0a8-aef1-3920-9458-c334c9390aea",
+		"title": "Gender wage gap and the glass ceiling effect: a firm-level investigation",
+		"uri": "http://www.mendeley.com/research/gender-wage-gap-glass-ceiling-effect-firmlevel-investigation/",
+		"eexcessURI": "http://www.mendeley.com/research/gender-wage-gap-glass-ceiling-effect-firmlevel-investigation/",
+		"creator": "Christine Barnet-Verzat, François-Charles Wolff",
+		"description": "Purpose \n- The purpose of this paper is to assess the relevance of the glass ceiling effect, according to which the gender log wage gap accelerates in the upper tail of the wage distribution, at the firm level. \nDesign/methodology/approach \n- The empirical analysis is based on a sample of 4,654 employees, working in a French private company from the Defence and Aerospace sector. Quantile wage regressions were used to study whether a glass ceiling effect exits at the firm level. The difference between the male and female wage distributions is also decomposed into two components, one due to differences in labour market characteristics between men and women and one due to differences in rewards to these individual characteristics. \nFindings \n- It was found that the gender wage gap measured through OLS is quite low, less than 8 per cent when controlling for age, experience, qualification and location. It remains rather flat along the wage distribution, a result which casts doubt on the glass ceiling theory. The gender gap is mainly due to differences in labour market characteristics rather than to differences in the rewards of these characteristics, especially among executives. Finally, women face a lower probability of reaching higher hierarchical positions within the firm. \nResearch limitations/implications \n- Taking into account firm effects matters when measuring the magnitude of the gender wage throughout the wage gap distribution. \nOriginality/value \n- This paper presents original estimates of the gender wage gap with an unusual, firm-based sample of workers.",
+		"collectionName": "International Journal of Manpower",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2008"
+		},
+		"keywords": {
+			"wage": 34.037582025238294,
+			"firm": 20.456977106861103,
+			"gap": 20.423827851269284,
+			"gender": 20.416268318960224,
+			"distribut": 13.631367697523295,
+			"glass": 13.61810068701932,
+			"ceil": 13.61810068701932,
+			"reward": 6.82449443569748,
+			"labour": 6.818992368953701,
+			"market": 6.813475124075541,
+			"woman": 6.804615751892365,
+			"defenc": 3.417726683613366,
+			"aerospac": 3.417726683613366,
+			"exit": 3.417726683613366,
+			"doubt": 3.417726683613366,
+			"compon": 3.417726683613366,
+			"tail": 3.417726683613366,
+			"matter": 3.417726683613366,
+			"probabl": 3.417726683613366,
+			"magnitud": 3.417726683613366,
+			"locat": 3.417726683613366,
+			"ol": 3.417726683613366,
+			"cent": 3.417726683613366,
+			"face": 3.417726683613366,
+			"qualif": 3.41224721784874,
+			"compani": 3.41224721784874,
+			"relev": 3.41224721784874,
+			"executif": 3.41224721784874,
+			"worker": 3.407841924380824,
+			"employe": 3.4067375620377707,
+			"experi": 3.405947984420753,
+			"femal": 3.404223102578692,
+			"man": 3.40295023048957
+		}
+	},
+	{
+		"id": "442f9c92-8f3f-3d77-9e95-3121c5423c6f",
+		"title": "Women, War, and Wages: The Effect of Female Labor Supply on the Wage Structure at Midcentury",
+		"uri": "http://www.mendeley.com/catalog/women-war-wages-effect-female-labor-supply-wage-structure-midcentury-15/",
+		"eexcessURI": "http://www.mendeley.com/catalog/women-war-wages-effect-female-labor-supply-wage-structure-midcentury-15/",
+		"creator": "Daron Acemoglu, David H. Autor, David Lyle",
+		"description": "We exploit the military mobilization for World War II to investigate the effects of female labor supply on the wage structure. The mobilization drew many women into the workforce permanently. But the impact was not uniform across states. In states with greater mobilization of men, women worked more after the war and in 1950, though not in 1940. These induced shifts in female labor supply lowered female and male wages and increased earnings inequality between high school– and college‐educated men. It appears that at midcentury, women were closer substitutes for high school men than for those with lower skills.",
+		"collectionName": "Journal of Political Economy",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2004"
+		},
+		"keywords": {
+			"wage": 13.615032810095316,
+			"woman": 13.60923150378473,
+			"mobil": 10.253180050840097,
+			"war": 10.23674165354622,
+			"labor": 10.220212686113312,
+			"femal": 10.212669307736077,
+			"man": 10.20885069146871,
+			"midcenturi": 6.835453367226732,
+			"school": 6.818992368953701,
+			"structur": 6.815683848761648,
+			"ucated": 3.417726683613366,
+			"substitut": 3.417726683613366,
+			"uniform": 3.417726683613366,
+			"shift": 3.417726683613366,
+			"college": 3.417726683613366,
+			"impact": 3.4094961844768505,
+			"skill": 3.4094961844768505,
+			"earning": 3.407841924380824,
+			"world": 3.407841924380824,
+			"inequ": 3.4067375620377707,
+			"workforc": 3.403417138400468
+		}
+	},
+	{
+		"id": "9b0ae1b0-7250-3272-b56b-c73d604f43d6",
+		"title": "Has the 'Glass Ceiling' Cracked? An Exploration of Women Entrepreneurship",
+		"uri": "http://www.mendeley.com/catalog/glass-ceiling-cracked-exploration-women-entrepreneurship/",
+		"eexcessURI": "http://www.mendeley.com/catalog/glass-ceiling-cracked-exploration-women-entrepreneurship/",
+		"creator": "P. Kephart, L. Schumacher",
+		"description": "Many women are saying goodbye to the corporate world in favor of creating their own through entrepreneurship. This paper explores some of the reasons why women in today's workforce change from the rise on the corporate ladder path to the world of entrepreneurship. Issues such as job stress and one of its most notable offshoots - the 'glass ceiling' - are presented. Ultimately, women initiated organizations define the women's movement of the 21st century.",
+		"collectionName": "Journal of Leadership &amp; Organizational Studies",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2005"
+		},
+		"keywords": {
+			"woman": 17.011539379730912,
+			"entrepreneurship": 10.253180050840097,
+			"world": 6.815683848761648,
+			"ladder": 3.417726683613366,
+			"goodby": 3.417726683613366,
+			"st": 3.417726683613366,
+			"favor": 3.417726683613366,
+			"offshoot": 3.417726683613366,
+			"path": 3.417726683613366,
+			"stress": 3.41224721784874,
+			"gla": 3.41224721784874,
+			"rise": 3.4094961844768505,
+			"chang": 3.4094961844768505,
+			"organ": 3.4094961844768505,
+			"movem": 3.4094961844768505,
+			"glass": 3.40452517175483,
+			"ceil": 3.40452517175483,
+			"job": 3.404223102578692,
+			"workforc": 3.403417138400468
+		}
+	},
+	{
+		"id": "549f29df-b80d-3f5c-a716-db89088b3810",
+		"title": "A Meta-Analysis of the International Gender Wage Gap",
+		"uri": "http://www.mendeley.com/catalog/metaanalysis-international-gender-wage-gap/",
+		"eexcessURI": "http://www.mendeley.com/catalog/metaanalysis-international-gender-wage-gap/",
+		"creator": "Doris Weichselbaumer, Rudolf Winter-Ebmer",
+		"description": "Since the early 1970s, a number of authors have calculated gender wage differentials between women and men of equal productivity. This meta-study provides a new quantitative review of this vast amount of empirical literature on gender wage differentials as it concerns not only differences in methodology, data, and time periods, but also different countries. We place particular emphasis on a proper consideration of the quality of the underlying study which is done by a weighting with quality indicators. The results show that data restrictions – i.e. the limitation of the analysis to new entrants, never-marrieds, or one narrow occupation only – have the biggest impact on the resulting gender wage gap. Moreover, we are able to show what effect a misspecification of the underlying wage equation – like the frequent use of potential experience – has on the calculated gender wage gap. Over time, raw wage differentials worldwide have fallen substantially; however, most of this decrease is due to better labor market endowments of females.",
+		"collectionName": "Journal of Economic Surveys",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2005"
+		},
+		"keywords": {
+			"wage": 23.826307417666804,
+			"gender": 17.013556932466855,
+			"differenti": 10.228488553430552,
+			"gap": 10.211913925634642,
+			"meta": 6.835453367226732,
+			"qualiti": 6.82449443569748,
+			"time": 6.811895968841506,
+			"concern": 3.417726683613366,
+			"emphasi": 3.417726683613366,
+			"endow": 3.417726683613366,
+			"misspecif": 3.417726683613366,
+			"marri": 3.417726683613366,
+			"intern": 3.417726683613366,
+			"decreas": 3.417726683613366,
+			"equat": 3.417726683613366,
+			"restrict": 3.417726683613366,
+			"entrant": 3.417726683613366,
+			"consider": 3.41224721784874,
+			"place": 3.4094961844768505,
+			"impact": 3.4094961844768505,
+			"product": 3.4094961844768505,
+			"occup": 3.407841924380824,
+			"market": 3.4067375620377707,
+			"labor": 3.4067375620377707,
+			"experi": 3.405947984420753,
+			"countri": 3.4048942435434815,
+			"femal": 3.404223102578692,
+			"man": 3.40295023048957,
+			"woman": 3.4023078759461827
+		}
+	},
+	{
+		"id": "a7ccd555-bb6a-3872-86a8-b062063d6ad3",
+		"title": "Family Policies, Wage Structures, and Gender Gaps: Sources of Earnings Inequality in 20 Countries",
+		"uri": "http://www.mendeley.com/catalog/family-policies-wage-structures-gender-gaps-sources-earnings-inequality-20-countries/",
+		"eexcessURI": "http://www.mendeley.com/catalog/family-policies-wage-structures-gender-gaps-sources-earnings-inequality-20-countries/",
+		"creator": "H. Mandel, M. Semyonov",
+		"description": "This study uncovers an unexpected effect of family-friendly policies on women’s economic attainments. Using hierarchical linear models, the analysis combines individual-level data (obtained from the Luxembourg Income Study) with country-level data (obtained from secondary sources) to evaluate the effects of family policies on gender earnings inequality across 20 advanced societies. The analysis shows that gender earnings disparities are less pronounced in countries with developed family policies. However, the findings also show that if cross-country differences in the wage structure are controlled, the underlying effect of family policy on the gender gap is exposed. Although “mother-friendly” policies enable more women to become economically active, they exacerbate gender occupational inequality. The authors therefore conclude that the lower earnings differentials between men and women in developed welfare states should be attributed to their more egalitarian wage structures rather than to their family policies.",
+		"collectionName": "American Sociological Review",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2005"
+		},
+		"keywords": {
+			"polici": 23.847162934264396,
+			"gender": 17.013556932466855,
+			"earning": 13.631367697523295,
+			"structur": 10.223525773142471,
+			"inequ": 10.220212686113312,
+			"countri": 10.214682730630445,
+			"wage": 10.211274607571488,
+			"woman": 10.206923627838549,
+			"gap": 6.807942617089761,
+			"uncov": 3.417726683613366,
+			"luxembourg": 3.417726683613366,
+			"mother": 3.417726683613366,
+			"welfar": 3.417726683613366,
+			"attain": 3.41224721784874,
+			"dispar": 3.41224721784874,
+			"societi": 3.4094961844768505,
+			"differenti": 3.4094961844768505,
+			"incom": 3.405947984420753,
+			"man": 3.40295023048957
+		}
+	},
+	{
+		"id": "36c960f1-4602-3923-92be-0b29054ba396",
+		"title": "Gender wage gaps, 'sticky floors' and 'glass ceilings' in Europe",
+		"uri": "http://www.mendeley.com/catalog/gender-wage-gaps-sticky-floors-glass-ceilings-europe/",
+		"eexcessURI": "http://www.mendeley.com/catalog/gender-wage-gaps-sticky-floors-glass-ceilings-europe/",
+		"creator": "Louis N. Christofides, Alexandros Polycarpou, Konstantinos Vrachimis",
+		"description": "We consider and attempt to understand the gender wage gap across 26 European countries, using 2007 data from the European Union Statistics on Income and Living Conditions. The size of the gender wage gap varies considerably across countries, definitions of the gap, and selection-correction mechanisms. Most of the gap cannot be explained by the characteristics available in this data set. Quantile regressions show that, in a number of countries, the wage gap is wider at the top ('glass ceilings') and/or at the bottom of the wage distribution ('sticky floors'). We find larger mean/median gender gaps and more evidence of glass ceilings for full-time full-year employees, suggesting more female disadvantage in 'better' jobs. These features may be related to country-specific policies that cannot be evaluated at the individual-country level, at a point in time. We use the cross-country variation in the unexplained wage gaps of this larger-than-usual sample of states to explore the influence of (i) country policies that reconcile work and family life and (ii) their wage-setting institutions. We find that country policies and institutions are related to features of their unexplained gender wage gaps in systematic, quantitatively important, ways.",
+		"collectionName": "Labour Economics",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2013"
+		},
+		"keywords": {
+			"gap": 30.635741776903927,
+			"countri": 27.23915394834785,
+			"wage": 27.230065620190633,
+			"gender": 17.013556932466855,
+			"polici": 10.220212686113312,
+			"glass": 10.21357551526449,
+			"ceil": 10.21357551526449,
+			"featur": 6.835453367226732,
+			"floor": 6.82449443569748,
+			"institut": 6.818992368953701,
+			"time": 6.811895968841506,
+			"definit": 3.417726683613366,
+			"correct": 3.417726683613366,
+			"cross": 3.417726683613366,
+			"bottom": 3.41224721784874,
+			"union": 3.41224721784874,
+			"life": 3.4094961844768505,
+			"influenc": 3.4094961844768505,
+			"condition": 3.4094961844768505,
+			"europ": 3.407841924380824,
+			"distribut": 3.407841924380824,
+			"variat": 3.407841924380824,
+			"employe": 3.4067375620377707,
+			"incom": 3.405947984420753,
+			"job": 3.404223102578692,
+			"work": 3.404223102578692,
+			"femal": 3.404223102578692
+		}
+	},
+	{
+		"id": "3a7a69a6-c58c-340a-9440-2b63cd30632f",
+		"title": "What lies beyond the glass ceiling?: The glass cliff and the potential precariousness of women's leadership positions",
+		"uri": "http://www.mendeley.com/catalog/lies-beyond-glass-ceiling-glass-cliff-potential-precariousness-womens-leadership-positions/",
+		"eexcessURI": "http://www.mendeley.com/catalog/lies-beyond-glass-ceiling-glass-cliff-potential-precariousness-womens-leadership-positions/",
+		"creator": "Michelle   Ryan ,  Alex   Haslam ",
+		"description": "Purpose \n– This year marks the 20th anniversary of the glass ceiling, but does this metaphor fully describe the experiences of women today? Recent research being conducted at the University of Exeter has identified a further barrier that women must conquer in order to succeed. \nDesign/methodology/approach \n– Looks at “the glass ceiling” over a 20-year period. \nFindings \n– Extending the metaphor of the glass ceiling, we describe the phenomenon of the glass cliff whereby women are more likely to occupy risky or precarious leadership roles than are men. \nOriginality/value \n– Takes the glass ceiling into the twenty-first century. Identifies current challenges facing women now they are in the workforce.",
+		"collectionName": "Human Resource Management International Digest",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2006"
+		},
+		"keywords": {
+			"glass": 23.83167620228381,
+			"ceil": 17.02262585877415,
+			"woman": 17.011539379730912,
+			"metaphor": 6.835453367226732,
+			"cliff": 6.835453367226732,
+			"leadership": 6.82449443569748,
+			"precari": 3.417726683613366,
+			"exet": 3.417726683613366,
+			"mark": 3.417726683613366,
+			"anniversari": 3.41224721784874,
+			"twenti": 3.41224721784874,
+			"order": 3.4094961844768505,
+			"role": 3.407841924380824,
+			"barrier": 3.4067375620377707,
+			"univers": 3.4067375620377707,
+			"experi": 3.405947984420753,
+			"workforc": 3.403417138400468,
+			"man": 3.40295023048957
+		}
+	},
+	{
+		"id": "d164a884-7030-331e-9b48-3c2a36902519",
+		"title": "Is there a glass ceiling over Europe? Exploring the gender pay gap across the wage distribution",
+		"uri": "http://www.mendeley.com/catalog/glass-ceiling-europe-exploring-gender-pay-gap-across-wage-distribution/",
+		"eexcessURI": "http://www.mendeley.com/catalog/glass-ceiling-europe-exploring-gender-pay-gap-across-wage-distribution/",
+		"creator": "Wiji Arulampalam, Alison L. Booth, Mark L. Bryan",
+		"description": "Using harmonised data from the European Union Household Panel, we analyse gender pay gaps by sector across the wages distribution for ten countries. We find that the mean gender\r\npay gap in the raw data typically hides large variations in the gap across the wages distribution. We use quantile regression (QR) techniques to control for the effects of\r\nindividual and job characteristics at different points of the distribution, and calculate the part of the gap attributable to differing returns between men and women. We find that, first, gender pay gaps are typically bigger at the top of the wage distribution, a finding that is consistent with the existence of glass ceilings. For some countries gender pay gaps are also bigger at the bottom of the wage distribution, a finding that is consistent with sticky floors. Third, the gender pay gap is typically higher at the top than the bottom end of the wage distribution, suggesting that glass ceilings are more prevalent than sticky floors and that these prevail in the majority of our countries. Fourth, the gender pay gap differs significantly across the public and the private sector wages distribution for each of our EU countries.",
+		"collectionName": "Industrial and Labor Relations Review",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2007"
+		},
+		"keywords": {
+			"gap": 30.635741776903927,
+			"distribut": 27.26273539504659,
+			"wage": 23.826307417666804,
+			"gender": 23.818979705453593,
+			"countri": 13.619576974173926,
+			"ceil": 10.21357551526449,
+			"glass": 10.21357551526449,
+			"floor": 6.82449443569748,
+			"bottom": 6.82449443569748,
+			"hide": 3.417726683613366,
+			"qr": 3.417726683613366,
+			"eu": 3.417726683613366,
+			"prevail": 3.417726683613366,
+			"control": 3.41224721784874,
+			"analys": 3.41224721784874,
+			"exist": 3.41224721784874,
+			"household": 3.41224721784874,
+			"union": 3.41224721784874,
+			"variat": 3.407841924380824,
+			"europ": 3.407841924380824,
+			"job": 3.404223102578692,
+			"man": 3.40295023048957,
+			"woman": 3.4023078759461827
+		}
+	},
+	{
+		"id": "ed74ddb3-00eb-3c10-8755-03532c39591f",
+		"title": "The Glass Ceiling Effect",
+		"uri": "http://www.mendeley.com/catalog/glass-ceiling-effect/",
+		"eexcessURI": "http://www.mendeley.com/catalog/glass-ceiling-effect/",
+		"creator": "David a Cotter, Joan M Hermsen, Seth Ovadia, Reeve Vanneman",
+		"description": "The popular notion of glass ceiling effects implies that gender (or other) disadvantages are stronger at the top of the hierarchy than at lower levels and that these disadvantages become worse later in a person's career. We define four specific criteria that must be met to conclude that a glass ceiling exists. Using random effects models and data from the Panel Study of Income Dynamics, we examine gender and race inequalities at the 25th, 50th, and 75th percentiles of white male earnings. We find evidence of a glass ceiling for women, but racial inequalities among men do not follow a similar pattern. Thus, we should not describe all systems of differential work rewards as \"class ceilings.\" They appear to be a distinctively gender phenomenon.",
+		"collectionName": "Social Forces",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2001"
+		},
+		"keywords": {
+			"ceil": 13.61810068701932,
+			"glass": 10.21357551526449,
+			"gender": 10.208134159480112,
+			"inequ": 6.813475124075541,
+			"class": 3.417726683613366,
+			"hierarchi": 3.417726683613366,
+			"criteria": 3.417726683613366,
+			"system": 3.417726683613366,
+			"dynamic": 3.417726683613366,
+			"percentil": 3.417726683613366,
+			"gla": 3.41224721784874,
+			"reward": 3.41224721784874,
+			"race": 3.41224721784874,
+			"earning": 3.407841924380824,
+			"incom": 3.405947984420753,
+			"career": 3.405355391810819,
+			"work": 3.404223102578692,
+			"man": 3.40295023048957,
+			"woman": 3.4023078759461827
+		}
+	},
+	{
+		"id": "76862d82-26e6-3f34-bfc7-fb4e5c3f34bf",
+		"title": "Twenty years later: explaining the persistence of the glass ceiling for women leaders",
+		"uri": "http://www.mendeley.com/catalog/twenty-years-later-explaining-persistence-glass-ceiling-women-leaders/",
+		"eexcessURI": "http://www.mendeley.com/catalog/twenty-years-later-explaining-persistence-glass-ceiling-women-leaders/",
+		"creator": "Birgit  Weyer",
+		"description": "Purpose \n– The purpose of this conceptual paper is to provide a theoretical explanation for the persistence of the glass ceiling keeping women from assuming leadership positions. \nDesign/methodology/approach \n– The methodological approach of this paper is to compare and contrast social role theory and expectation states theory as theoretical underpinnings to explain the persistence of a glass ceiling for women leaders. \nFindings \n– Both social role theory and expectation states theory belong to the structural/cultural models describing differences between the genders. Social role theory and expectation states theory explicate diverse reasons for the emergence of these differences. However, both theories propose that gender differences will result in evaluation bias against women. \nPractical implications \n– As a result of evaluation bias against women, the glass ceiling phenomenon keeping women from assuming top leadership positions continues to occur. \nOriginality/value \n– This paper is being written on the 20 year anniversary of the term glass ceiling being coined. It adds to the body of literature by closely examining two structural/cultural theories as possible causes to an invisible barrier which keeps women leaders from entering top level management positions.",
+		"collectionName": "Women In Management Review",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2007"
+		},
+		"keywords": {
+			"woman": 23.81615513162328,
+			"ceil": 17.02262585877415,
+			"glass": 17.02262585877415,
+			"leader": 10.253180050840097,
+			"social": 10.23674165354622,
+			"persist": 10.23674165354622,
+			"expect": 10.23674165354622,
+			"role": 10.223525773142471,
+			"bia": 6.835453367226732,
+			"leadership": 6.82449443569748,
+			"gender": 6.805422772986741,
+			"underpinning": 3.417726683613366,
+			"contrast": 3.417726683613366,
+			"explic": 3.417726683613366,
+			"emerg": 3.417726683613366,
+			"bodi": 3.417726683613366,
+			"anniversari": 3.41224721784874,
+			"twenti": 3.41224721784874,
+			"manag": 3.4094961844768505,
+			"barrier": 3.4067375620377707
+		}
+	},
+	{
+		"id": "7549fff5-5158-32b9-9606-e410b5830528",
+		"title": "The glass ceiling in Europe: Why are women doing badly in the labour market?",
+		"uri": "http://www.mendeley.com/catalog/glass-ceiling-europe-women-doing-badly-labour-market/",
+		"eexcessURI": "http://www.mendeley.com/catalog/glass-ceiling-europe-women-doing-badly-labour-market/",
+		"creator": "Alison L. Booth",
+		"description": "Average gender pay gaps have absorbed the interest of economists for many years. More recently studies have begun to explore the degree to which observed gender wage gaps might differ across the wages distribution. The stylised facts from these studies, summarised in the first part of the paper, are that the gender pay gap in Europe is typically increasing across the wages distribution. This finding - more pronounced in the private than the public sector - has been interpreted as a glass ceiling effect. The existence of this glass ceiling suggests that the average gender pay gap in Europe is mainly due to the gender gap towards the top of the wages distribution. What explains these stylised facts? We briefly outline some relevant hypotheses in the second part of the paper. A fundamental challenge for labour economists is to identify the extent to which these stylised facts are due to policies and institutions, discrimination, to other unobservable factors, or to fundamental differences between men and women. Finally, we briefly summarise the policy initiatives that might be introduced to deal with gender wage gaps.",
+		"collectionName": "Swedish Economic Policy Review",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2007"
+		},
+		"keywords": {
+			"gap": 20.423827851269284,
+			"gender": 20.416268318960224,
+			"wage": 17.018791012619147,
+			"europ": 10.223525773142471,
+			"distribut": 10.223525773142471,
+			"ceil": 10.21357551526449,
+			"glass": 10.21357551526449,
+			"labour": 6.818992368953701,
+			"economist": 6.818992368953701,
+			"polici": 6.813475124075541,
+			"woman": 6.804615751892365,
+			"averag": 3.417726683613366,
+			"initi": 3.417726683613366,
+			"summaris": 3.417726683613366,
+			"unobserv": 3.417726683613366,
+			"outlin": 3.417726683613366,
+			"extent": 3.417726683613366,
+			"exist": 3.41224721784874,
+			"interest": 3.41224721784874,
+			"institut": 3.4094961844768505,
+			"discrimin": 3.4094961844768505,
+			"market": 3.4067375620377707,
+			"man": 3.40295023048957
+		}
+	},
+	{
+		"id": "ae2e2d28-0ac0-315b-8bd1-9055eaebc17d",
+		"title": "Gender gap in the executive suite: CEOs and female executives report on breaking the glass ceiling.",
+		"uri": "http://www.mendeley.com/catalog/gender-gap-executive-suite-ceos-female-executives-report-breaking-glass-ceiling/",
+		"eexcessURI": "http://www.mendeley.com/catalog/gender-gap-executive-suite-ceos-female-executives-report-breaking-glass-ceiling/",
+		"creator": "B. R. Ragins, B. Townsend, M. Mattis",
+		"description": "While businesses are struggling to hold on to their best and brightest women, the persistence of the glass ceiling makes this difficult. Dismantling the glass ceiling requires an accurate understanding of the overt and subtle barriers to advancement faced by women, and the strategies used to overcome these barriers. A large-scale, national survey of Fortune 1000 CEOs and the highest-ranking, most successful women in their companies identified key career strategies used by the women in their rise to the top, and the barriers to advancement they faced in their firms. A startling finding of the study was the disparity in the perceptions of CEOs and the high-ranking women in their firms. The Fortune 1000 CEOs had vastly different perceptions of the organizational and environmental barriers faced by their female employees, and in their companies' progress towards equality in the workplace.",
+		"collectionName": "Academy of Management Perspectives",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "1998"
+		},
+		"keywords": {
+			"woman": 17.011539379730912,
+			"ceo": 13.670906734453464,
+			"barrier": 13.626950248151083,
+			"glass": 10.21357551526449,
+			"ceil": 10.21357551526449,
+			"fortun": 6.835453367226732,
+			"percept": 6.82449443569748,
+			"compani": 6.82449443569748,
+			"firm": 6.818992368953701,
+			"advanc": 6.818992368953701,
+			"femal": 6.808446205157384,
+			"suit": 3.417726683613366,
+			"execut": 3.417726683613366,
+			"busi": 3.417726683613366,
+			"equal": 3.417726683613366,
+			"persist": 3.41224721784874,
+			"executif": 3.41224721784874,
+			"dispar": 3.41224721784874,
+			"rise": 3.4094961844768505,
+			"progress": 3.4094961844768505,
+			"employe": 3.4067375620377707,
+			"workplac": 3.405947984420753,
+			"career": 3.405355391810819,
+			"gap": 3.4039713085448806,
+			"gender": 3.4027113864933707
+		}
+	},
+	{
+		"id": "77dd4ed5-7a8e-3a3d-9f35-f4ef9cfb8bce",
+		"title": "Workforce segregation and the gender wage gap: Is \"women's\" work valued as highly as \"men's\"?",
+		"uri": "http://www.mendeley.com/research/workforce-segregation-gender-wage-gap-womens-work-valued-highly-mens/",
+		"eexcessURI": "http://www.mendeley.com/research/workforce-segregation-gender-wage-gap-womens-work-valued-highly-mens/",
+		"creator": "Christine Alksnis, Serge Desmarais, James Curtis",
+		"description": "This study focuses on gender segregation and its implications for the salaries assigned to male and female-typed jobs. We used a between-subjects design to examine whether participants would assign different pay to 3 types of jobs wherein the actual responsibilities and duties carried out by men and women were the same, but the job was situated in either a traditionally masculine or traditionally feminine domain. We found pay differentials between jobs defined as \"male\" and \"female,\" which suggest that gender-based discrimination, arising from occupational stereotyping and the devaluation of the work typically done by women, influences salary allocation. The ways in which the results fit with contemporary theorizing about sexism and with the shifting standards model (Biernat, 1995, 2003) are discussed.",
+		"collectionName": "Journal of Applied Social Psychology",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2008"
+		},
+		"keywords": {
+			"job": 13.616892410314769,
+			"gender": 10.208134159480112,
+			"woman": 10.206923627838549,
+			"segreg": 6.835453367226732,
+			"salari": 6.818992368953701,
+			"work": 6.808446205157384,
+			"femal": 6.808446205157384,
+			"man": 6.80590046097914,
+			"sexism": 3.417726683613366,
+			"biernat": 3.417726683613366,
+			"standard": 3.417726683613366,
+			"alloc": 3.417726683613366,
+			"devalu": 3.417726683613366,
+			"duti": 3.417726683613366,
+			"subject": 3.41224721784874,
+			"differenti": 3.4094961844768505,
+			"discrimin": 3.4094961844768505,
+			"influenc": 3.4094961844768505,
+			"gap": 3.4039713085448806,
+			"wage": 3.403758202523829,
+			"workforc": 3.403417138400468
+		}
+	},
+	{
+		"id": "1b5f6212-8950-391b-b872-95918420f622",
+		"title": "Inequality and Relative Wages",
+		"uri": "http://www.mendeley.com/catalog/inequality-relative-wages/",
+		"eexcessURI": "http://www.mendeley.com/catalog/inequality-relative-wages/",
+		"creator": "Kevin M Murphy, Finis Welch",
+		"description": "Four years ago the Wall Street Journal splashed the good news across its front page that college pays more than ever before. The evidence was that wages of college graduates were high and rising relative to wages of high-school graduates. Last year Newsweek bemoaned increasing inequality pointing to the low and falling wages of high-school graduates relative to college graduates. The study of wages has been the primary occupation of economists since Adam (Smith, 1776), but the subject has never drawn more attention than it does now. We first trace 1963-1990 trends in wage dispersion among men. We then follow relative wage movements among men distinguished by age and education, between men and women, and between blacks and whites. These two sets of patterns, inequality and relative wages, constitute the basic facts that have drawn so much attention. After summarizing them, we describe the coincident magnification of inequality that has resulted from increasing covariance between wages and time works and between ages of married men and the employment and earnings of their spouses. The magnification that we see for men is even greater for women because growth in participation has covaried more strongly with education.",
+		"collectionName": "The American Economic Review",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "1993"
+		},
+		"keywords": {
+			"wage": 30.63382382271446,
+			"man": 17.01475115244785,
+			"graduat": 13.670906734453464,
+			"inequ": 13.626950248151083,
+			"colleg": 10.223525773142471,
+			"magnif": 6.835453367226732,
+			"attent": 6.82449443569748,
+			"school": 6.818992368953701,
+			"educ": 6.810710783621638,
+			"woman": 6.804615751892365,
+			"spou": 3.417726683613366,
+			"covari": 3.417726683613366,
+			"wall": 3.417726683613366,
+			"smith": 3.417726683613366,
+			"front": 3.417726683613366,
+			"page": 3.417726683613366,
+			"trace": 3.417726683613366,
+			"black": 3.417726683613366,
+			"dispers": 3.417726683613366,
+			"street": 3.417726683613366,
+			"white": 3.417726683613366,
+			"journal": 3.417726683613366,
+			"newsweek": 3.417726683613366,
+			"adam": 3.417726683613366,
+			"subject": 3.41224721784874,
+			"movem": 3.4094961844768505,
+			"trend": 3.4094961844768505,
+			"economist": 3.4094961844768505,
+			"occup": 3.407841924380824,
+			"earning": 3.407841924380824,
+			"growth": 3.4067375620377707,
+			"employ": 3.405947984420753,
+			"time": 3.405947984420753,
+			"work": 3.404223102578692
+		}
+	},
+	{
+		"id": "c700fc3e-20a5-38ab-b05a-b7d8803a4f44",
+		"title": "The Ideal Worker or the Ideal Father: Organizational Structures and Culture in the Gendered University",
+		"uri": "http://www.mendeley.com/research/ideal-worker-ideal-father-organizational-structures-culture-gendered-university/",
+		"eexcessURI": "http://www.mendeley.com/research/ideal-worker-ideal-father-organizational-structures-culture-gendered-university/",
+		"creator": "Margaret W. Sallee",
+		"description": "While literature has focused on the ways in which organizational structures exclude women from the workplace, this article suggests that the inverse is also true: organizational structures and culture prevent men from being involved in the home. Using theories of gendered organizations as a guide, this article draws on interviews with 70 faculty fathers at four research universities to explore the tension that many men feel navigating their responsibilities in the home while simultaneously aiming to fulfill the norms of the ideal worker, which holds that employees are always available to perform work and have few responsibilities in the home. Data suggest that institutions and those within them penalize men who appear too committed to their families. Some participants crafted identities for themselves that separated their roles as professor and father while others struggled to reconcile their two roles. In short, institutional structures and culture play a critical role in shaping faculty identity, both on and off-campus.",
+		"collectionName": "Research in Higher Education",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2012"
+		},
+		"keywords": {
+			"structur": 13.631367697523295,
+			"cultur": 10.253180050840097,
+			"father": 10.23674165354622,
+			"role": 10.223525773142471,
+			"home": 10.223525773142471,
+			"man": 10.20885069146871,
+			"faculti": 6.82449443569748,
+			"ident": 6.82449443569748,
+			"ideal": 6.82449443569748,
+			"worker": 6.815683848761648,
+			"univers": 6.813475124075541,
+			"guid": 3.417726683613366,
+			"campu": 3.417726683613366,
+			"tension": 3.417726683613366,
+			"norm": 3.417726683613366,
+			"famili": 3.41224721784874,
+			"professor": 3.41224721784874,
+			"interview": 3.4094961844768505,
+			"organ": 3.4094961844768505,
+			"institut": 3.4094961844768505,
+			"employe": 3.4067375620377707,
+			"workplac": 3.405947984420753,
+			"work": 3.404223102578692,
+			"woman": 3.4023078759461827
+		}
+	},
+	{
+		"id": "4e646a6c-af00-3103-9141-663a185f2780",
+		"title": "Fertility and Women's Employment in Industrialized Nations",
+		"uri": "http://www.mendeley.com/catalog/fertility-womens-employment-industrialized-nations/",
+		"eexcessURI": "http://www.mendeley.com/catalog/fertility-womens-employment-industrialized-nations/",
+		"creator": "Karin L. Brewster, Ronald R. Rindfuss",
+		"description": "Thirty years ago, Bumpass & Westoff (1970:95) asked, “Do women limit their fertility in order to have time to pursue their nonfamily-oriented interests, or do women work if their fertility permits them to do so?” In the ensuing decades, sociologists, demographers, and economists have learned much about the relationship between fertility and women’s employment, and yet the answer to this fundamental question remains elusive. Even so, women’s labor force behavior lies at the heart of most explanations of fertility and fertility change, and many nations, both industrialized and developing, have formulated policies based on the inverse association between these two central aspects of women’s lives. The association between fertility and women’s labor force activity reflects the incompatibility between caring for children and participating in economically productive work that typifies industrialized societies (Weller 1977). Prior to industrialization, work and child rearing tasks could be performed more or less simultaneously. In historical and contemporary preindustrial societies, nonmechanized agricultural tasks and piecework could be combined with child supervision with relatively little danger to the child or marked loss of economic productivity (Degler 1980, Roos 1985, Stycos &Weller 1967). As industrialization proceeded, however, childcare and economically productive work became increasingly incompatible. Today, work sites are usually some distance from home, and work schedules, set by employers, lack the flexibility required by children. The presence",
+		"collectionName": "Annual Review of Sociology",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2000"
+		},
+		"keywords": {
+			"fertil": 23.866473291337954,
+			"woman": 23.81615513162328,
+			"work": 20.425338615472153,
+			"child": 17.047480922384253,
+			"employ": 10.21784395326226,
+			"task": 6.835453367226732,
+			"industri": 6.835453367226732,
+			"weller": 6.835453367226732,
+			"forc": 6.82449443569748,
+			"associ": 6.82449443569748,
+			"societi": 6.818992368953701,
+			"labor": 6.813475124075541,
+			"thirti": 3.417726683613366,
+			"bumpass": 3.417726683613366,
+			"behavior": 3.417726683613366,
+			"heart": 3.417726683613366,
+			"degler": 3.417726683613366,
+			"distanc": 3.417726683613366,
+			"westoff": 3.417726683613366,
+			"flexibl": 3.417726683613366,
+			"site": 3.417726683613366,
+			"incompat": 3.417726683613366,
+			"styco": 3.417726683613366,
+			"childcar": 3.417726683613366,
+			"sociologist": 3.417726683613366,
+			"demograph": 3.417726683613366,
+			"roo": 3.417726683613366,
+			"preindustri": 3.417726683613366,
+			"piecework": 3.417726683613366,
+			"supervis": 3.417726683613366,
+			"danger": 3.417726683613366,
+			"loss": 3.417726683613366,
+			"schule": 3.41224721784874,
+			"answer": 3.41224721784874,
+			"interest": 3.41224721784874,
+			"life": 3.4094961844768505,
+			"presenc": 3.4094961844768505,
+			"product": 3.4094961844768505,
+			"economist": 3.4094961844768505,
+			"relatship": 3.4094961844768505,
+			"order": 3.4094961844768505,
+			"chang": 3.4094961844768505,
+			"activ": 3.407841924380824,
+			"home": 3.407841924380824,
+			"nation": 3.407841924380824,
+			"polici": 3.4067375620377707,
+			"time": 3.405947984420753
+		}
+	},
+	{
+		"id": "b9602262-e7ac-3c79-97b5-f40faba6df65",
+		"title": "The Myth of the Ideal Worker: Does Doing All The Right Things Really Get Women Ahead? ",
+		"uri": "http://www.mendeley.com/research/myth-ideal-worker-doing-right-things-really-women-ahead/",
+		"eexcessURI": "http://www.mendeley.com/research/myth-ideal-worker-doing-right-things-really-women-ahead/",
+		"creator": "N M Carter, C Silva",
+		"description": "In this report we address the question of whether the gender gap persists because women and men adopt different strategies to advance their careers. Is it the case that men are more proactive, articulating their aspirations and asking for more opportunities? Are men more likely to be an ‘ideal worker’, doing ‘all the right things’ to get ahead? The short answer is no. Among the high potentials we studied, more than half of both women and men had adopted the full range of advancement strategies attributed to an ideal worker. Furthermore, half of those exemplifying an ideal worker were also including in their repertories external scanning activities - seeking advancement opportunities whether in their current organization or elsewhere-. However, men benefited more than women when they adopted the proactive strategies of the proverbial ideal worker. Even when women used the same career advancement strategies - doing all the things they have been told will help them get ahead - they advanced less than their male counterparts and had slower pay growth.",
+		"collectionName": "Catalyst",
+		"facets": {
+			"provider": "mendeley",
+			"type": "unkown",
+			"language": "unkown",
+			"year": "2011"
+		},
+		"keywords": {
+			"worker": 17.03920962190412,
+			"man": 17.01475115244785,
+			"woman": 17.011539379730912,
+			"advanc": 13.637984737907402,
+			"thing": 10.253180050840097,
+			"proactiv": 6.835453367226732,
+			"career": 6.810710783621638,
+			"opportun": 6.810710783621638,
+			"myth": 3.417726683613366,
+			"counterpart": 3.417726683613366,
+			"potenti": 3.417726683613366,
+			"repertori": 3.417726683613366,
+			"ideal": 3.41224721784874,
+			"aspir": 3.41224721784874,
+			"answer": 3.41224721784874,
+			"organ": 3.4094961844768505,
+			"activ": 3.407841924380824,
+			"growth": 3.4067375620377707,
+			"gap": 3.4039713085448806,
+			"gender": 3.4027113864933707
+		}
+	}],
+	"keywords": [{
+		"stem": "woman",
+		"term": "woman",
+		"repeated": 29,
+		"variations": {
+			"woman": 127
+		}
+	},
+	{
+		"stem": "gender",
+		"term": "gender",
+		"repeated": 19,
+		"variations": {
+			"gender": 65
+		}
+	},
+	{
+		"stem": "man",
+		"term": "man",
+		"repeated": 18,
+		"variations": {
+			"man": 43
+		}
+	},
+	{
+		"stem": "workforc",
+		"term": "workforce",
+		"repeated": 13,
+		"variations": {
+			"workforce": 31
+		}
+	},
+	{
+		"stem": "wage",
+		"term": "wage",
+		"repeated": 12,
+		"variations": {
+			"wage": 63
+		}
+	},
+	{
+		"stem": "work",
+		"term": "work",
+		"repeated": 10,
+		"variations": {
+			"work": 16
+		}
+	},
+	{
+		"stem": "job",
+		"term": "job",
+		"repeated": 9,
+		"variations": {
+			"job": 15
+		}
+	},
+	{
+		"stem": "femal",
+		"term": "female",
+		"repeated": 9,
+		"variations": {
+			"female": 24
+		}
+	},
+	{
+		"stem": "ceil",
+		"term": "ceiling",
+		"repeated": 9,
+		"variations": {
+			"ceiling": 31
+		}
+	},
+	{
+		"stem": "gap",
+		"term": "gap",
+		"repeated": 9,
+		"variations": {
+			"gap": 40
+		}
+	},
+	{
+		"stem": "glass",
+		"term": "glass",
+		"repeated": 9,
+		"variations": {
+			"glass": 32
+		}
+	},
+	{
+		"stem": "countri",
+		"term": "country",
+		"repeated": 7,
+		"variations": {
+			"country": 22
+		}
+	},
+	{
+		"stem": "career",
+		"term": "career",
+		"repeated": 7,
+		"variations": {
+			"career": 18
+		}
+	},
+	{
+		"stem": "educ",
+		"term": "education",
+		"repeated": 6,
+		"variations": {
+			"education": 12
+		}
+	},
+	{
+		"stem": "incom",
+		"term": "income",
+		"repeated": 6,
+		"variations": {
+			"income": 10
+		}
+	},
+	{
+		"stem": "time",
+		"term": "time",
+		"repeated": 5,
+		"variations": {
+			"time": 9
+		}
+	},
+	{
+		"stem": "growth",
+		"term": "growth",
+		"repeated": 4,
+		"variations": {
+			"growth": 10
+		}
+	},
+	{
+		"stem": "polici",
+		"term": "policy",
+		"repeated": 4,
+		"variations": {
+			"policy": 14
+		}
+	},
+	{
+		"stem": "distribut",
+		"term": "distribution",
+		"repeated": 4,
+		"variations": {
+			"distribution": 16
+		}
+	},
+	{
+		"stem": "workplac",
+		"term": "workplace",
+		"repeated": 4,
+		"variations": {
+			"workplace": 11
+		}
+	},
+	{
+		"stem": "technologi",
+		"term": "technology",
+		"repeated": 4,
+		"variations": {
+			"technology": 5
+		}
+	},
+	{
+		"stem": "labor",
+		"term": "labor",
+		"repeated": 4,
+		"variations": {
+			"labor": 11
+		}
+	},
+	{
+		"stem": "home",
+		"term": "home",
+		"repeated": 4,
+		"variations": {
+			"home": 8
+		}
+	},
+	{
+		"stem": "market",
+		"term": "market",
+		"repeated": 4,
+		"variations": {
+			"market": 8
+		}
+	},
+	{
+		"stem": "structur",
+		"term": "structure",
+		"repeated": 4,
+		"variations": {
+			"structure": 11
+		}
+	},
+	{
+		"stem": "activ",
+		"term": "activity",
+		"repeated": 4,
+		"variations": {
+			"activity": 5
+		}
+	},
+	{
+		"stem": "salari",
+		"term": "salary",
+		"repeated": 3,
+		"variations": {
+			"salary": 22
+		}
+	},
+	{
+		"stem": "influenc",
+		"term": "influence",
+		"repeated": 3,
+		"variations": {
+			"influence": 7
+		}
+	},
+	{
+		"stem": "variat",
+		"term": "variation",
+		"repeated": 3,
+		"variations": {
+			"variation": 7
+		}
+	},
+	{
+		"stem": "child",
+		"term": "child",
+		"repeated": 3,
+		"variations": {
+			"child": 14
+		}
+	},
+	{
+		"stem": "increas",
+		"term": "increase",
+		"repeated": 3,
+		"variations": {
+			"increase": 5
+		}
+	},
+	{
+		"stem": "manag",
+		"term": "management",
+		"repeated": 3,
+		"variations": {
+			"manager": 4,
+			"management": 3
+		}
+	},
+	{
+		"stem": "earning",
+		"term": "earning",
+		"repeated": 3,
+		"variations": {
+			"earning": 7
+		}
+	},
+	{
+		"stem": "inequ",
+		"term": "inequality",
+		"repeated": 3,
+		"variations": {
+			"inequality": 12
+		}
+	},
+	{
+		"stem": "intervent",
+		"term": "intervention",
+		"repeated": 3,
+		"variations": {
+			"intervention": 7
+		}
+	},
+	{
+		"stem": "opportun",
+		"term": "opportunity",
+		"repeated": 3,
+		"variations": {
+			"opportunity": 12
+		}
+	},
+	{
+		"stem": "progress",
+		"term": "progression",
+		"repeated": 3,
+		"variations": {
+			"progression": 2,
+			"progress": 2
+		}
+	},
+	{
+		"stem": "product",
+		"term": "production",
+		"repeated": 3,
+		"variations": {
+			"production": 4,
+			"productivity": 2
+		}
+	},
+	{
+		"stem": "chang",
+		"term": "change",
+		"repeated": 3,
+		"variations": {
+			"change": 5
+		}
+	},
+	{
+		"stem": "school",
+		"term": "school",
+		"repeated": 3,
+		"variations": {
+			"school": 9
+		}
+	},
+	{
+		"stem": "differenti",
+		"term": "differential",
+		"repeated": 3,
+		"variations": {
+			"differential": 5
+		}
+	},
+	{
+		"stem": "world",
+		"term": "world",
+		"repeated": 3,
+		"variations": {
+			"world": 6
+		}
+	},
+	{
+		"stem": "life",
+		"term": "life",
+		"repeated": 3,
+		"variations": {
+			"life": 4
+		}
+	},
+	{
+		"stem": "labour",
+		"term": "labour",
+		"repeated": 3,
+		"variations": {
+			"labour": 9
+		}
+	},
+	{
+		"stem": "fertil",
+		"term": "fertility",
+		"repeated": 2,
+		"variations": {
+			"fertility": 15
+		}
+	},
+	{
+		"stem": "father",
+		"term": "father",
+		"repeated": 2,
+		"variations": {
+			"father": 6
+		}
+	},
+	{
+		"stem": "stress",
+		"term": "stress",
+		"repeated": 2,
+		"variations": {
+			"stress": 4
+		}
+	},
+	{
+		"stem": "social",
+		"term": "social",
+		"repeated": 2,
+		"variations": {
+			"social": 5
+		}
+	},
+	{
+		"stem": "associ",
+		"term": "association",
+		"repeated": 2,
+		"variations": {
+			"association": 4
+		}
+	},
+	{
+		"stem": "relatship",
+		"term": "relationship",
+		"repeated": 2,
+		"variations": {
+			"relationship": 8
+		}
+	},
+	{
+		"stem": "faculti",
+		"term": "faculty",
+		"repeated": 2,
+		"variations": {
+			"faculty": 5
+		}
+	},
+	{
+		"stem": "practic",
+		"term": "practice",
+		"repeated": 2,
+		"variations": {
+			"practice": 6
+		}
+	},
+	{
+		"stem": "firm",
+		"term": "firm",
+		"repeated": 2,
+		"variations": {
+			"firm": 10
+		}
+	},
+	{
+		"stem": "care",
+		"term": "care",
+		"repeated": 2,
+		"variations": {
+			"care": 12
+		}
+	},
+	{
+		"stem": "household",
+		"term": "household",
+		"repeated": 2,
+		"variations": {
+			"household": 7
+		}
+	},
+	{
+		"stem": "control",
+		"term": "control",
+		"repeated": 2,
+		"variations": {
+			"control": 4
+		}
+	},
+	{
+		"stem": "promotion",
+		"term": "promotion",
+		"repeated": 2,
+		"variations": {
+			"promotion": 8
+		}
+	},
+	{
+		"stem": "aspir",
+		"term": "aspiration",
+		"repeated": 2,
+		"variations": {
+			"aspiration": 5
+		}
+	},
+	{
+		"stem": "pathwai",
+		"term": "pathway",
+		"repeated": 2,
+		"variations": {
+			"pathway": 4
+		}
+	},
+	{
+		"stem": "train",
+		"term": "training",
+		"repeated": 2,
+		"variations": {
+			"training": 8
+		}
+	},
+	{
+		"stem": "it",
+		"term": "IT",
+		"repeated": 2,
+		"variations": {
+			"IT": 16
+		}
+	},
+	{
+		"stem": "leadership",
+		"term": "leadership",
+		"repeated": 2,
+		"variations": {
+			"leadership": 4
+		}
+	},
+	{
+		"stem": "persist",
+		"term": "persistence",
+		"repeated": 2,
+		"variations": {
+			"persistence": 4
+		}
+	},
+	{
+		"stem": "role",
+		"term": "role",
+		"repeated": 2,
+		"variations": {
+			"role": 8
+		}
+	},
+	{
+		"stem": "advanc",
+		"term": "advancement",
+		"repeated": 2,
+		"variations": {
+			"advancement": 6,
+			"advance": 1
+		}
+	},
+	{
+		"stem": "ideal",
+		"term": "ideal",
+		"repeated": 2,
+		"variations": {
+			"ideal": 3
+		}
+	},
+	{
+		"stem": "worker",
+		"term": "worker",
+		"repeated": 2,
+		"variations": {
+			"worker": 9
+		}
+	}],
+	"task-number": null,
+	"tool-aided": "yes"
+}
