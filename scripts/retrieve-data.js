@@ -42,7 +42,6 @@ var DataRetriever = function (vals) {
 		//Calculate Edits:
 		//handleEditDataSync(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue");
 		GLOBAL_JSON.title = GLOBAL_title;
-		console.log("TITLE: " + GLOBAL_title);
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue", handleEditData);
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=info&titles=" + GLOBAL_title + "&continue", handleArticleLength);
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&titles=" + GLOBAL_title + "&rvlimit=1&rvprop=user|timestamp&rvdir=older&continue", handleCurrency);

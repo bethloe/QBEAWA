@@ -28,10 +28,10 @@ function Settings(){
 
             a[i] = ranking[i];
             a[i]['title']       = data[a[i].originalIndex]['title'];
-            a[i]['id']          = data[a[i].originalIndex]['id'];
-            a[i]['uri']         = data[a[i].originalIndex]['uri'];
-            a[i]['facets']      = new Array();
-            a[i]['facets']      = data[a[i].originalIndex]['facets'];
+            //a[i]['id']          = data[a[i].originalIndex]['id'];
+            //a[i]['uri']         = data[a[i].originalIndex]['uri'];
+            //a[i]['facets']      = new Array();
+            //a[i]['facets']      = data[a[i].originalIndex]['facets'];
 
             var x0 = 0;
             var maxWeightedScoreFound = false;
@@ -75,15 +75,15 @@ function Settings(){
         var dataArray = [];
         data.forEach(function(d){
             var obj = {};
-            obj['id'] = d.id;
+            //obj['id'] = d.id;
             obj['title'] = d.title;
-            obj['uri'] = d.uri;
-            obj['facets'] = new Array();
-            obj['facets']['language'] = d.facets.language || 'en';
-            obj['facets']['provider'] = d.facets.provider;
-            obj['facets']['year'] = parseDate(String(d.facets.year));
-            obj['facets']['country'] = d.facets.country || "";
-            obj['keywords'] = d.keywords || [];
+            //obj['uri'] = d.uri;
+            //obj['facets'] = new Array();
+            //obj['facets']['language'] = d.facets.language || 'en';
+            //obj['facets']['provider'] = d.facets.provider;
+            //obj['facets']['year'] = parseDate(String(d.facets.year));
+            //obj['facets']['country'] = d.facets.country || "";
+            //obj['keywords'] = d.keywords || [];
 
             dataArray.push(obj);
         });

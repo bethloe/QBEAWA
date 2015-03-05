@@ -214,6 +214,7 @@ var VisController = function () {
 		if (isOverDroppable) {
 			$(this).draggable('destroy');
 			var keywordTerm = d3.select(draggedItem[0]).text();
+			console.log("EVTHANDLER.dragStopped");
 			LIST.rankRecommendations();
 		}
 	};
@@ -1376,14 +1377,14 @@ var VisController = function () {
 		.html('<span>' + text + '</span>');
 		//TODO GO ON HERE
 	}
-	
+
 	visController.showPreparingMessage = function (text) {
 		$('#task_question_message')
 		.fadeIn(1)
 		.html('<span>' + text + '</span>')
 		.dimBackground();
 	}
-	
+
 	visController.hidePreparingMessage = function () {
 		$('#task_question_message').fadeOut('slow');
 		$('#task_question_message').undim();
@@ -1397,9 +1398,9 @@ var VisController = function () {
 
 		console.log("TEST");
 		var IQMetrics = JSON.parse("[{\"stem\":\"woman\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"persist\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																		{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"advanc\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-																																		{\"stem\":\"ideal\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"worker\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-																																		{\"stem\":\"worker\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"advanc\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
+																																														{\"stem\":\"ideal\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"worker\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
+																																														{\"stem\":\"worker\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		keywords = IQMetrics; //dataset['keywords'];
 		console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();
@@ -1461,3 +1462,5 @@ var VisController = function () {
 	};
 	return visController;
 }
+
+$('#task_question_message').hide();
