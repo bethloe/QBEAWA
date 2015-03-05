@@ -37,6 +37,8 @@ var RankingModel = (function () {
 				//console.log("d[q.term]: " + d[q.term]);
 				//console.log("parseFloat(q.weight)) : " + parseFloat(q.weight));
 				var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
+				if (QMscore < 0)
+					QMscore = 0;
 				//console.log("QMscore: " + QMscore);
 				ranking[i].overallScore += QMscore;
 				ranking[i].maxScore = QMscore > ranking[i].maxScore ? QMscore : ranking[i].maxScore;
@@ -67,7 +69,7 @@ var RankingModel = (function () {
 		console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
 		return acumSquares;
 	};
-	
+
 	var getEuclidenNorm = function (docKeywords) {
 
 		var acumSquares = 0;

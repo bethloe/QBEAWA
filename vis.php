@@ -136,7 +136,7 @@ and open the template in the editor.
                     -->
                 </div>
                 <div id="eexcess_document_viewer">
-                    <p></p>
+                    <p> </p>
                 </div>
             </div>
 

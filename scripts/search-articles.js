@@ -92,6 +92,8 @@ var showAllDataAsList = function () {
 	//----------------------------------------------------------------------
 	if (done) {
 		clearInterval(GLOBAL_interval);
+		
+		visController.updateHeaderInfoSection("Generation done!");
 		var articles = {
 			data : []
 		};

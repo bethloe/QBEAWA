@@ -354,7 +354,7 @@ var VisController = function () {
 
 	HEADER.showInfoInHeader = function () {
 		// Display number of results on the left of header
-		$(headerInfoSection).html("Number of Items: " + data.length);
+		//$(headerInfoSection).html("Number of Items: " + data.length);
 
 		// Display task on the left of header
 		// $(headerTaskSection).find('#p_task').html('TASK: ' + task);
@@ -1277,7 +1277,15 @@ var VisController = function () {
 		$(documentDetailsYear).html(data[index].articleAge);
 		//$(documentDetailsLanguage).html(data[index].facets.language);
 		//$(documentDetailsProvider).html(data[index].facets.provider);
-		//$(documentViewer).html(this.internal.highlightKeywordsInText(data[index].description));
+		var QMData = "Volatility: " + data[index].Volatility.round(3) + "<br />" +
+		"Authority: " + data[index].Authority.round(3)  + "<br />" +
+		"Complexity: " + data[index].Complexity.round(3)  + "<br />" +
+		"Informativeness: " + data[index].Informativeness.round(3)  + "<br />" +
+		"Consistency: " + data[index].Consistency.round(3)  + "<br />" +
+		"Currency: " + data[index].Currency.round(3)  + "<br />" +
+		"Completeness: " + data[index].Completeness.round(3) ;
+		
+		$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
 		$(documentViewer + ' p').hide();
 		$(documentViewer + ' p').fadeIn('slow');
 		$(documentViewer).scrollTo('top');
@@ -1428,6 +1436,7 @@ var VisController = function () {
 		//  TAGCLOUD.buildTagCloud();
 		// VISPANEL.resetRanking();
 		showRanking = true;
+		
 		/*} else {
 		$('#eexcess_main_panel').css('justifyContent', 'center');
 		$('#eexcess_controls_left_panel').css('display', 'none');
