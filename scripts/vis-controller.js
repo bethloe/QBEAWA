@@ -542,7 +542,6 @@ var VisController = function () {
 		var sumWidth = 0;
 		$(".eexcess_keyword_tag_in_box").each(function (index) {
 			sumWidth += $(this).width();
-			console.log("WIDTH: " + $(this).width());
 		});
 
 		var height = $('#eexcess_vis_panel_controls').height();

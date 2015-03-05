@@ -68,24 +68,36 @@ var DataRetriever = function (vals) {
 		var text = JSON.parse(JSON.stringify(JSONResponse));
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
 		//console.log(extractPlainText);
-		var stat = new textstatistics(extractPlainText);
-		var flesch = stat.fleschKincaidReadingEase();
-		var kincaid = stat.fleschKincaidGradeLevel();
-		//console.log(flesch);
-		//console.log(kincaid);
-		$("#Flesch").text(flesch);
-		$("#Kincaid").text(kincaid);
-		GLOBAL_JSON.flesch = flesch;
-		GLOBAL_JSON.kincaid = kincaid;
+		if (extractPlainText != undefined) {
+			var stat = new textstatistics(extractPlainText);
+			var flesch = stat.fleschKincaidReadingEase();
+			var kincaid = stat.fleschKincaidGradeLevel();
+			//console.log(flesch);
+			//console.log(kincaid);
+			$("#Flesch").text(flesch);
+			$("#Kincaid").text(kincaid);
+			GLOBAL_JSON.flesch = flesch;
+			GLOBAL_JSON.kincaid = kincaid;
+		} else {
+			$("#Flesch").text("0");
+			$("#Kincaid").text("0");
+			GLOBAL_JSON.flesch = 0;
+			GLOBAL_JSON.kincaid = 0;
+		}
 	}
 
 	var handleArticleAge = function (JSONResponse) {
 		var firstRevision = JSON.parse(JSON.stringify(JSONResponse));
-		var firstRevisionTimeStamp = firstRevision.query.pages[Object.keys(firstRevision.query.pages)[0]].revisions[0].timestamp;
-		var firstRevisionTimeStampCutted = firstRevisionTimeStamp.substring(0, 10);
-		var mydate = new Date(firstRevisionTimeStampCutted);
-		$("#ArticleAge").text(((new Date() - mydate) / (1000 * 60 * 60 * 24)));
-		GLOBAL_JSON.articleAge = ((new Date() - mydate) / (1000 * 60 * 60 * 24));
+		if (firstRevision.query.pages[Object.keys(firstRevision.query.pages)[0]].hasOwnProperty("revisions")) {
+			var firstRevisionTimeStamp = firstRevision.query.pages[Object.keys(firstRevision.query.pages)[0]].revisions[0].timestamp;
+			var firstRevisionTimeStampCutted = firstRevisionTimeStamp.substring(0, 10);
+			var mydate = new Date(firstRevisionTimeStampCutted);
+			$("#ArticleAge").text(((new Date() - mydate) / (1000 * 60 * 60 * 24)));
+			GLOBAL_JSON.articleAge = ((new Date() - mydate) / (1000 * 60 * 60 * 24));
+		} else {
+			$("#ArticleAge").text("0");
+			GLOBAL_JSON.articleAge = 0;
+		}
 	}
 
 	var handleImages = function (JSONResponse) {
@@ -184,23 +196,34 @@ var DataRetriever = function (vals) {
 
 	var handleCurrency = function (JSONResponse) {
 		var lastUpdateData = JSON.parse(JSON.stringify(JSONResponse));
-		var lastUpdateTimeStamp = lastUpdateData.query.pages[Object.keys(lastUpdateData.query.pages)[0]].revisions[0].timestamp;
-		var lastUpdateTimeStampCutted = lastUpdateTimeStamp.substring(0, 10);
-		var mydate = new Date(lastUpdateTimeStampCutted);
-		$("#Currency").text(((new Date() - mydate) / (1000 * 60 * 60 * 24)));
-		GLOBAL_JSON.currency = ((new Date() - mydate) / (1000 * 60 * 60 * 24));
-		var rightNow = new Date();
+		if (lastUpdateData.query.pages[Object.keys(lastUpdateData.query.pages)[0]].hasOwnProperty("revisions")) {
+			var lastUpdateTimeStamp = lastUpdateData.query.pages[Object.keys(lastUpdateData.query.pages)[0]].revisions[0].timestamp;
 
-		$("#CurrentTimestamp").text(
-			rightNow.toISOString().substring(0, 10));
+			var lastUpdateTimeStampCutted = lastUpdateTimeStamp.substring(0, 10);
+			var mydate = new Date(lastUpdateTimeStampCutted);
+			$("#Currency").text(((new Date() - mydate) / (1000 * 60 * 60 * 24)));
+			GLOBAL_JSON.currency = ((new Date() - mydate) / (1000 * 60 * 60 * 24));
+			var rightNow = new Date();
+
+			$("#CurrentTimestamp").text(
+				rightNow.toISOString().substring(0, 10));
+		} else {
+			GLOBAL_JSON.currency = 0;
+			$("#CurrentTimestamp").text("0");
+		}
 	}
 
 	var handleArticleLength = function (JSONResponse) {
 		//console.log(JSON.stringify(JSONResponse));
 		var articleData = JSON.parse(JSON.stringify(JSONResponse));
 		var articleLength = articleData.query.pages[Object.keys(articleData.query.pages)[0]].length;
+		if(articleLength != undefined){
 		$("#ArticleLength").text(articleLength);
 		GLOBAL_JSON.articleLength = articleLength;
+		}else{
+		$("#ArticleLength").text("0");
+		GLOBAL_JSON.articleLength = 0;
+		}
 	}
 
 	var handleUserData = function (JSONResponse) {
@@ -256,70 +279,89 @@ var DataRetriever = function (vals) {
 	var handleEditData = function (JSONResponse) {
 		var revisions = JSON.parse(JSON.stringify(JSONResponse));
 		var JSONrevisions = revisions.query.pages[Object.keys(revisions.query.pages)[0]].revisions;
-		GLOBAL_cntEdits += JSONrevisions.length;
-		$("#totalNumEdits").text(GLOBAL_cntEdits);
-		$("#NumOfAnonymousUserEdits").text(GLOBAL_anonymousEditCount);
-		GLOBAL_JSON.numEdits = GLOBAL_cntEdits;
-		GLOBAL_JSON.numAnonymousUserEdits = GLOBAL_anonymousEditCount;
-
-		for (var i = 0; i < JSONrevisions.length; i++) {
-			//get username:
-			var username = JSON.stringify(JSONrevisions[0].user);
-			username = username.substring(1, username.length - 1);
-			if (GLOBAL_mapUsernames.hasOwnProperty(username)) {
-				GLOBAL_mapUsernames[username][1] += 1;
-				GLOBAL_cntEditsHELP += 1;
-			} else {
-				//console.log("user " + username + "is not in list");
-				//Get all userdata (admin, registered or anonymous)
-				GLOBAL_mapUsernames[username] = ['', 0]; // Asynchronous that's why I do it!
-				retrieveData(GLOBAL_linkToAPI + "action=query&format=json&list=users&ususers=" + username + "&usprop=groups&continue", handleUserData);
-				GLOBAL_uniqueEditors += 1;
-			}
-		}
-		if (revisions.hasOwnProperty("continue")) {
-			if (revisions.continue.hasOwnProperty("rvcontinue")) {
-				//GET REST OF THE DATA:
-				retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user&continue", handleEditData);
-			}
-		} else {
-			console.log("WE ARE AT THE END2");
+		//TODO PERFORM A CHECK
+		if (JSONrevisions != undefined) {
+			GLOBAL_cntEdits += JSONrevisions.length;
 			$("#totalNumEdits").text(GLOBAL_cntEdits);
-
+			$("#NumOfAnonymousUserEdits").text(GLOBAL_anonymousEditCount);
 			GLOBAL_JSON.numEdits = GLOBAL_cntEdits;
-			for (var key in GLOBAL_mapUsernames) {
-				if (GLOBAL_mapUsernames[key][0] == VAL_ANONYMOUS) {
-					GLOBAL_anonymousEditCount += GLOBAL_mapUsernames[key][1];
-					GLOBAL_uniqueEditors -= 1;
-				} else if (GLOBAL_mapUsernames[key][0] == VAL_REG) {
-					GLOBAL_registeredEditCount += GLOBAL_mapUsernames[key][1];
-				} else if (GLOBAL_mapUsernames[key][0] == VAL_ADMIN) {
-					GLOBAL_adminEditCount += GLOBAL_mapUsernames[key][1];
-				} else {
-					//WTF :-0
+			GLOBAL_JSON.numAnonymousUserEdits = GLOBAL_anonymousEditCount;
 
-					if (checkIsIPV4(key)) {
-						GLOBAL_anonymousEditCount += GLOBAL_mapUsernames[key][1];
-					} else {
-						GLOBAL_registeredEditCount += GLOBAL_mapUsernames[key][1]; //TODO: COULD ALSO BE AN ADMIN SO I SHOULD CHECK THIS AGAIN!!
-					}
+			for (var i = 0; i < JSONrevisions.length; i++) {
+				//get username:
+				var username = JSON.stringify(JSONrevisions[0].user);
+				username = username.substring(1, username.length - 1);
+				if (GLOBAL_mapUsernames.hasOwnProperty(username)) {
+					GLOBAL_mapUsernames[username][1] += 1;
+					GLOBAL_cntEditsHELP += 1;
+				} else {
+					//console.log("user " + username + "is not in list");
+					//Get all userdata (admin, registered or anonymous)
+					GLOBAL_mapUsernames[username] = ['', 0]; // Asynchronous that's why I do it!
+					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&list=users&ususers=" + username + "&usprop=groups&continue", handleUserData);
+					GLOBAL_uniqueEditors += 1;
 				}
 			}
+			if (revisions.hasOwnProperty("continue")) {
+				if (revisions.continue.hasOwnProperty("rvcontinue")) {
+					//GET REST OF THE DATA:
+					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user&continue", handleEditData);
+				}
+			} else {
+				console.log("WE ARE AT THE END2");
+				$("#totalNumEdits").text(GLOBAL_cntEdits);
 
-			$("#NumOfAnonymousUserEdits").text(GLOBAL_anonymousEditCount);
-			$("#NumOfRegisteredUserEdits").text(GLOBAL_registeredEditCount);
-			$("#NumOfAdminEdits").text(GLOBAL_adminEditCount);
-			$("#AdminEditShare").text(GLOBAL_adminEditCount / GLOBAL_cntEdits);
-			$("#NumOfUniqueEditors").text(GLOBAL_uniqueEditors);
-			$("#Diversity").text(GLOBAL_uniqueEditors / GLOBAL_cntEdits);
+				GLOBAL_JSON.numEdits = GLOBAL_cntEdits;
+				for (var key in GLOBAL_mapUsernames) {
+					if (GLOBAL_mapUsernames[key][0] == VAL_ANONYMOUS) {
+						GLOBAL_anonymousEditCount += GLOBAL_mapUsernames[key][1];
+						GLOBAL_uniqueEditors -= 1;
+					} else if (GLOBAL_mapUsernames[key][0] == VAL_REG) {
+						GLOBAL_registeredEditCount += GLOBAL_mapUsernames[key][1];
+					} else if (GLOBAL_mapUsernames[key][0] == VAL_ADMIN) {
+						GLOBAL_adminEditCount += GLOBAL_mapUsernames[key][1];
+					} else {
+						//WTF :-0
 
-			GLOBAL_JSON.numAnonymousUserEdits = GLOBAL_anonymousEditCount;
-			GLOBAL_JSON.numRegisteredUserEdits = GLOBAL_registeredEditCount;
-			GLOBAL_JSON.numAdminUserEdits = GLOBAL_adminEditCount;
-			GLOBAL_JSON.adminEditShare = GLOBAL_adminEditCount / GLOBAL_cntEdits;
-			GLOBAL_JSON.numUniqueEditors = GLOBAL_uniqueEditors;
-			GLOBAL_JSON.diversity = GLOBAL_uniqueEditors / GLOBAL_cntEdits;
+						if (checkIsIPV4(key)) {
+							GLOBAL_anonymousEditCount += GLOBAL_mapUsernames[key][1];
+						} else {
+							GLOBAL_registeredEditCount += GLOBAL_mapUsernames[key][1]; //TODO: COULD ALSO BE AN ADMIN SO I SHOULD CHECK THIS AGAIN!!
+						}
+					}
+				}
 
+				$("#NumOfAnonymousUserEdits").text(GLOBAL_anonymousEditCount);
+				$("#NumOfRegisteredUserEdits").text(GLOBAL_registeredEditCount);
+				$("#NumOfAdminEdits").text(GLOBAL_adminEditCount);
+				$("#AdminEditShare").text(GLOBAL_adminEditCount / GLOBAL_cntEdits);
+				$("#NumOfUniqueEditors").text(GLOBAL_uniqueEditors);
+				$("#Diversity").text(GLOBAL_uniqueEditors / GLOBAL_cntEdits);
+
+				GLOBAL_JSON.numAnonymousUserEdits = GLOBAL_anonymousEditCount;
+				GLOBAL_JSON.numRegisteredUserEdits = GLOBAL_registeredEditCount;
+				GLOBAL_JSON.numAdminUserEdits = GLOBAL_adminEditCount;
+				GLOBAL_JSON.adminEditShare = GLOBAL_adminEditCount / GLOBAL_cntEdits;
+				GLOBAL_JSON.numUniqueEditors = GLOBAL_uniqueEditors;
+				GLOBAL_JSON.diversity = GLOBAL_uniqueEditors / GLOBAL_cntEdits;
+			}
+
+		} else {
+
+			$("#NumOfAnonymousUserEdits").text("0");
+			$("#NumOfRegisteredUserEdits").text("0");
+			$("#NumOfAdminEdits").text("0");
+			$("#AdminEditShare").text("0");
+			$("#NumOfUniqueEditors").text("0");
+			$("#Diversity").text("0");
+
+			GLOBAL_JSON.numAnonymousUserEdits = 0;
+			GLOBAL_JSON.numRegisteredUserEdits = 0;
+			GLOBAL_JSON.numAdminUserEdits = 0;
+			GLOBAL_JSON.adminEditShare = 0;
+			GLOBAL_JSON.numUniqueEditors = 0;
+			GLOBAL_JSON.diversity = 0;
+			GLOBAL_JSON.numEdits = 0;
 		}
 	}
 
