@@ -35,6 +35,7 @@ var VisController = function () {
 	var btnReset = "#eexcess_btnreset"; // Selector for reset button in vis control panel
 	var btnRankByOverall = "#eexcess_btn_sort_by_overall_score"; // Button that triggers ranking by overall score criteria
 	var btnRankByMax = "#eexcess_btn_sort_by_max_score"; // Button to rank by max score criteria
+	var tagBoxHeight = 1;
 
 	var visPanelCanvas = "#eexcess_vis_panel_canvas";
 	var contentPanel = "#eexcess_content"; // Selector for content div on the right side
@@ -536,15 +537,41 @@ var VisController = function () {
 	 * Re-build tag dropped in tag box, add slider and delete icon
 	 *
 	 * */
+	TAGCLOUD.checkHeight = function () {
+		// Change Height of eexcess_vis_panel_controls
+		var sumWidth = 0;
+		$(".eexcess_keyword_tag_in_box").each(function (index) {
+			sumWidth += $(this).width();
+			console.log("WIDTH: " + $(this).width());
+		});
+
+		if (sumWidth > ($(tagBox).width() * tagBoxHeight)) {
+			var height = $('#eexcess_vis_panel_controls').height();
+			console.log("HEIGHT: " + height);
+			tagBoxHeight += 1;
+			$('#eexcess_vis_panel_controls').css('height', height * tagBoxHeight);
+		}
+		if (sumWidth < ($(tagBox).width() * (tagBoxHeight - 1))) {
+			console.log("INTO THAT IF1!!!");
+			var height = $('#eexcess_vis_panel_controls').height();
+			var help = height / tagBoxHeight;
+			tagBoxHeight -= 1;
+			$('#eexcess_vis_panel_controls').css('height', height - help);
+		}
+	}
+
 	TAGCLOUD.buildDroppedTag = function (tag) {
 
 		// Append dragged tag onto tag box
 		$(tagBox).append(tag);
 
+
 		// Change tag's class
 		tag.removeClass("eexcess_keyword_tag").addClass("eexcess_keyword_tag_in_box")
 		.attr('is-selected', true);
-
+		
+		TAGCLOUD.checkHeight(); 
+		
 		// Append "delete" icon to tag and bind event handler
 		$("<img class=\"eexcess_tag_img\" src=\"" + DELETE_ICON_IMG + "\" />").appendTo(tag)
 		.click(function () {
@@ -600,7 +627,7 @@ var VisController = function () {
 	 *
 	 * */
 	TAGCLOUD.deleteTagInBox = function (tag) {
-
+		console.log("DELETE TAG IN BOX");
 		TAGCLOUD.restoreTagFromBoxToCloud(tag[0]);
 
 		var index = 0;
@@ -618,6 +645,8 @@ var VisController = function () {
 		} else {
 			LIST.rankRecommendations();
 		}
+		
+		TAGCLOUD.checkHeight(); 
 	};
 
 	/**
@@ -1278,13 +1307,13 @@ var VisController = function () {
 		//$(documentDetailsLanguage).html(data[index].facets.language);
 		//$(documentDetailsProvider).html(data[index].facets.provider);
 		var QMData = "Volatility: " + data[index].Volatility.round(3) + "<br />" +
-		"Authority: " + data[index].Authority.round(3)  + "<br />" +
-		"Complexity: " + data[index].Complexity.round(3)  + "<br />" +
-		"Informativeness: " + data[index].Informativeness.round(3)  + "<br />" +
-		"Consistency: " + data[index].Consistency.round(3)  + "<br />" +
-		"Currency: " + data[index].Currency.round(3)  + "<br />" +
-		"Completeness: " + data[index].Completeness.round(3) ;
-		
+			"Authority: " + data[index].Authority.round(3) + "<br />" +
+			"Complexity: " + data[index].Complexity.round(3) + "<br />" +
+			"Informativeness: " + data[index].Informativeness.round(3) + "<br />" +
+			"Consistency: " + data[index].Consistency.round(3) + "<br />" +
+			"Currency: " + data[index].Currency.round(3) + "<br />" +
+			"Completeness: " + data[index].Completeness.round(3);
+
 		$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
 		$(documentViewer + ' p').hide();
 		$(documentViewer + ' p').fadeIn('slow');
@@ -1406,9 +1435,9 @@ var VisController = function () {
 
 		console.log("TEST");
 		var IQMetrics = JSON.parse("[{\"stem\":\"woman\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"persist\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"advanc\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-																																														{\"stem\":\"ideal\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"worker\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-																																														{\"stem\":\"worker\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"advanc\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
+																																																														{\"stem\":\"ideal\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"worker\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
+																																																														{\"stem\":\"worker\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		keywords = IQMetrics; //dataset['keywords'];
 		console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();
@@ -1436,7 +1465,7 @@ var VisController = function () {
 		//  TAGCLOUD.buildTagCloud();
 		// VISPANEL.resetRanking();
 		showRanking = true;
-		
+
 		/*} else {
 		$('#eexcess_main_panel').css('justifyContent', 'center');
 		$('#eexcess_controls_left_panel').css('display', 'none');
