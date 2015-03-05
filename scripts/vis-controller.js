@@ -545,15 +545,12 @@ var VisController = function () {
 			console.log("WIDTH: " + $(this).width());
 		});
 
+		var height = $('#eexcess_vis_panel_controls').height();
 		if (sumWidth > ($(tagBox).width() * tagBoxHeight)) {
-			var height = $('#eexcess_vis_panel_controls').height();
-			console.log("HEIGHT: " + height);
 			tagBoxHeight += 1;
 			$('#eexcess_vis_panel_controls').css('height', height * tagBoxHeight);
 		}
 		if (sumWidth < ($(tagBox).width() * (tagBoxHeight - 1))) {
-			console.log("INTO THAT IF1!!!");
-			var height = $('#eexcess_vis_panel_controls').height();
 			var help = height / tagBoxHeight;
 			tagBoxHeight -= 1;
 			$('#eexcess_vis_panel_controls').css('height', height - help);
@@ -565,13 +562,12 @@ var VisController = function () {
 		// Append dragged tag onto tag box
 		$(tagBox).append(tag);
 
-
 		// Change tag's class
 		tag.removeClass("eexcess_keyword_tag").addClass("eexcess_keyword_tag_in_box")
 		.attr('is-selected', true);
-		
-		TAGCLOUD.checkHeight(); 
-		
+
+		TAGCLOUD.checkHeight();
+
 		// Append "delete" icon to tag and bind event handler
 		$("<img class=\"eexcess_tag_img\" src=\"" + DELETE_ICON_IMG + "\" />").appendTo(tag)
 		.click(function () {
@@ -645,8 +641,8 @@ var VisController = function () {
 		} else {
 			LIST.rankRecommendations();
 		}
-		
-		TAGCLOUD.checkHeight(); 
+
+		TAGCLOUD.checkHeight();
 	};
 
 	/**
@@ -1435,9 +1431,9 @@ var VisController = function () {
 
 		console.log("TEST");
 		var IQMetrics = JSON.parse("[{\"stem\":\"woman\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"persist\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"advanc\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-																																																														{\"stem\":\"ideal\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"worker\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-																																																														{\"stem\":\"worker\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																		{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"advanc\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
+																																																																		{\"stem\":\"ideal\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"worker\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
+																																																																		{\"stem\":\"worker\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		keywords = IQMetrics; //dataset['keywords'];
 		console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();
