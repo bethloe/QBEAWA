@@ -16,8 +16,7 @@ var RankingModel = (function () {
 	var computeScores = function (_data, query) {
 		var ranking = new RankingArray();
 		var norms = calculateEuclidenNormForEachQM(_data, query);
-		console.log("NORMS: " + JSON.stringify(norms));
-		console.log("NORMS: " + norms['Authority']);
+		//console.log("NORMS: " + JSON.stringify(norms));
 		_data.forEach(function (d, i) { //Iteration over all articles
 			ranking.addEmptyElement();
 			//var docNorm = getEuclidenNorm(d.keywords);
@@ -31,15 +30,9 @@ var RankingModel = (function () {
 				// if item doesn't contain query term => maxScore and overallScore are not changed
 				//ranking[i].overallScore += termScore;
 
-				//TODO NORMALIZE VALUES!!!!!
-				//console.log("d: " + JSON.stringify(d));
-				//	console.log("q.term: " + q.term);
-				//console.log("d[q.term]: " + d[q.term]);
-				//console.log("parseFloat(q.weight)) : " + parseFloat(q.weight));
 				var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
 				if (QMscore < 0)
 					QMscore = 0;
-				//console.log("QMscore: " + QMscore);
 				ranking[i].overallScore += QMscore;
 				ranking[i].maxScore = QMscore > ranking[i].maxScore ? QMscore : ranking[i].maxScore;
 				ranking[i].weightedKeywords.push({
@@ -66,7 +59,7 @@ var RankingModel = (function () {
 		query.forEach(function (q) {
 			acumSquares[q.term] = Math.sqrt(acumSquares[q.term]);
 		});
-		console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
+		//console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
 		return acumSquares;
 	};
 

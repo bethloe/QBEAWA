@@ -309,6 +309,7 @@ var DataRetriever = function (vals) {
 				}
 			} else {
 				console.log("WE ARE AT THE END2");
+				
 				$("#totalNumEdits").text(GLOBAL_cntEdits);
 
 				GLOBAL_JSON.numEdits = GLOBAL_cntEdits;
@@ -321,8 +322,7 @@ var DataRetriever = function (vals) {
 					} else if (GLOBAL_mapUsernames[key][0] == VAL_ADMIN) {
 						GLOBAL_adminEditCount += GLOBAL_mapUsernames[key][1];
 					} else {
-						//WTF :-0
-
+						//WTF :-0 TODO 
 						if (checkIsIPV4(key)) {
 							GLOBAL_anonymousEditCount += GLOBAL_mapUsernames[key][1];
 						} else {

@@ -27,6 +27,7 @@ and open the template in the editor.
         <script type="text/javascript" src="libs/pos/pos.js" charset="utf-8"></script>
 		<script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
         <link rel="stylesheet" type="text/css" href="libs/ui/jquery-ui-1.10.4.custom.min.css">
+		<script type="text/javascript" src="libs/CanvasInput.min.js"></script>
 
         <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingArray.js" charset="utf-8"></script>
@@ -37,8 +38,15 @@ and open the template in the editor.
         <script type="text/javascript" src="scripts/taskStorage.js" charset="utf-8"></script>
 		<script type="text/javascript" src="scripts/retrieve-data.js" charset="utf-8"> </script>
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
+		
+		<script type="text/javascript" src="scripts/popup.js"></script>
+		<script type="text/javascript" src="scripts/utility.js"></script>
+		<script type="text/javascript" src="scripts/QMformula-editor-brick.js"></script>
+		<script type="text/javascript" src="scripts/QMformula-editor-eventhandler-moveableBricks.js"></script>
+		<script type="text/javascript" src="scripts/QMformula-editor-eventhandler-menuBricks.js"></script>
 
         <link rel="stylesheet" type="text/css" href="css/general-style.css" />
+        <link rel="stylesheet" type="text/css" href="css/popup.css" />
         <link rel="stylesheet" type="text/css" href="css/vis-template-style-static.css" />
 <!--        <link rel="stylesheet" type="text/css" href="css/vis-template-style-alternative-3-test.css" /> -->
 
@@ -60,6 +68,7 @@ and open the template in the editor.
 				<div id="eexcess_header_task_section_div"> Keword: <input type="text" id="article-name" value="Visualization" /> 
 				 Max. number of results: <input type="number" id="max-num" value="5"/>
 				 <button onclick="searchArticle('visualization',50)"> retrieve data from specific article </button> 
+				 <button class="popup_oeffnen"> show quality metric editor </button> 
 				 <!--<button onclick="showAllDataTest()"> show data </button> </div>
                 <p id="p_task"></p>
                 <p id="p_question"></p> -->
@@ -76,6 +85,7 @@ and open the template in the editor.
             </section>
       	</header>
 
+	
 		<div id="eexcess_main_panel">
 
             <div id="eexcess_controls_left_panel">
@@ -141,10 +151,20 @@ and open the template in the editor.
             </div>
 
 		</div>
+ <div id="popup">
+ 
+        <div class="schliessen"></div>
+ 
+        <div id="popup_inhalt">
 
+			<canvas id="canvas" ></canvas>      
+		</div>
+ 
+    </div>
         <div id="task_question_message"></div>
         <script type="text/javascript" src="scripts/vis-controller.js" charset="utf-8"></script>
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/QMformula-editor.js"></script>
 
     </body>
 </html>

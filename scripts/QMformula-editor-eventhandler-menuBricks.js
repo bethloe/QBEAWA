@@ -14,6 +14,7 @@ var MenuBricksEventHandler = function (vals) {
 	var GLOBAL_spaceBetweenInitmenuBricks = 5;
 	var GLOBAL_dataBrickWidth = 150;
 
+
 	menuBricksEventHandler.handleMouseUp = function (e) {
 		// Put your mouseup stuff here
 		//selectedBrick = null;
@@ -50,6 +51,7 @@ var MenuBricksEventHandler = function (vals) {
 					x : i == 0 ? GLOBAL_spaceBetweenInitmenuBricks : (i * (GLOBAL_dataBrickWidth + GLOBAL_spaceBetweenInitmenuBricks) + GLOBAL_spaceBetweenInitmenuBricks),
 					y : 0,
 					type : 'menu',
+					value : i,
 					description : ('data' + i),
 					weight : (i / 10),
 					controller : controller
