@@ -5,6 +5,7 @@ var MoveableBricksEventHandler = function (vals) {
 	var offsetY = vals.offsetY;
 	var ctx = vals.ctx;
 	var controller = vals.controller;
+	var data = vals.data;
 	var moveableBricks = [];
 	var selectedBrick;
 	var isDown = false;
@@ -22,22 +23,113 @@ var MoveableBricksEventHandler = function (vals) {
 	var selectedConnectors = [];
 	var oldGlobalPosX = 0;
 	var oldGlobalPosY = 0;
+	var mathOperations = ["+", "-", "*", "/"];
 	//An example
 	/*connectors.push({
 	brick0 : b0, //an element of moveableBricks array
 	brick1 : b1,
-	operation: 'add'
+	operation: 0 //index of mathOperations array
 	});*/
-
+	
+	//TODO CHECK CALCULATION WITH * and /.  (multiplication and division first, then addition and subtraction)
 	var calculateQMScore = function (brick, sum) {
 		for (var i = 0; i < connectors.length; i++) {
 			if (connectors[i].brick1.compare(brick)) {
-				sum += connectors[i].brick0.getTotalScore();
+				if (mathOperations[connectors[i].operation] == '+')
+					sum += connectors[i].brick0.getTotalScore();
+				else if (mathOperations[connectors[i].operation] == '-')
+					sum -= connectors[i].brick0.getTotalScore();
+				else if (mathOperations[connectors[i].operation] == '*')
+					sum *= connectors[i].brick0.getTotalScore();
+				else if (mathOperations[connectors[i].operation] == '/')
+					sum /= connectors[i].brick0.getTotalScore();
 				//console.log("SUEM: " + sum + " BRICK0: " + connectors[i].brick0.getDescription());
 				sum = calculateQMScore(connectors[i].brick0, sum);
 			}
 		}
 		return sum;
+	}
+
+	var calculateColorForQMResult = function (brick, r, g, b, init) {
+		var color = "rgb(" + r + "," + g + "," + b + ")";
+		var currentColor;
+		for (var i = 0; i < connectors.length; i++) {
+			if (connectors[i].brick1.compare(brick)) {
+				currentColor = connectors[i].brick0.getColor();
+				var rgbArray = currentColor.split("rgb(")[1].split(")")[0].split(",");
+				if (init) {
+					init = false;
+					color = calculateColorForQMResult(connectors[i].brick0, parseInt((r + parseInt(rgbArray[0]))), parseInt((g + parseInt(rgbArray[1]))), parseInt((b + parseInt(rgbArray[2]))), false);
+				} else
+					color = calculateColorForQMResult(connectors[i].brick0, parseInt((r + parseInt(rgbArray[0])) / 2), parseInt((g + parseInt(rgbArray[1])) / 2), parseInt((b + parseInt(rgbArray[2])) / 2), false);
+				rgbArray = color.split("rgb(")[1].split(")")[0].split(",");
+				r = parseInt(rgbArray[0]);
+				g = parseInt(rgbArray[1]);
+				b = parseInt(rgbArray[2]);
+			}
+		}
+		return color;
+	}
+
+	var createFormulaForQM = function (brick, formula, first) {
+		for (var i = 0; i < connectors.length; i++) {
+			if (connectors[i].brick1.compare(brick)) {
+				if (first) {
+					first = false;
+					formula += connectors[i].brick1.getDescription() + "=" + mathOperations[connectors[i].operation] + connectors[i].brick0.getDescription()
+				} else
+					formula += mathOperations[connectors[i].operation] + connectors[i].brick0.getDescription()
+					formula = createFormulaForQM(connectors[i].brick0, formula, false);
+			}
+
+		}
+		return formula;
+
+	}
+
+	moveableBricksEventHandler.createFormulaForQM = function () {
+		console.log("createFormulaForQM");
+		var qmArray = [];
+		for (var i = 0; i < moveableBricks.length; i++) {
+			var brick = moveableBricks[i];
+			if (brick.getType() == 'resultMoveable') {
+				console.log("createFormulaForQM into if");
+				qmArray.push(createFormulaForQM(brick, "", true));
+			}
+		}
+		return qmArray;
+	}
+
+	moveableBricksEventHandler.getMoveableBricksInJsonFormat = function () {
+		var moveableBrickJsonStringArray = [];
+		for (var i = 0; i < moveableBricks.length; i++) {
+			moveableBrickJsonStringArray.push(moveableBricks[i].toJSONString());
+		}
+		return moveableBrickJsonStringArray;
+	}
+
+	moveableBricksEventHandler.getConnectorsInJsonFormat = function () {
+		console.log(JSON.stringify(connectors));
+		var connectorsJsonStringArray = [];
+
+		for (var i = 0; i < connectors.length; i++) {
+			connectorsJsonStringArray.push(JSON.stringify({
+					brick0 : connectors[i].brick0.toJSONString(),
+					brick1 : connectors[i].brick1.toJSONString(),
+					fromX : connectors[i].fromX,
+					fromY : connectors[i].fromY,
+					toX : connectors[i].toX,
+					toY : connectors[i].toY,
+					color : connectors[i].color,
+					lineWidth : connectors[i].lineWidth,
+					operation : connectors[i].operation
+				}));
+		}
+		return JSON.stringify(connectorsJsonStringArray);
+	}
+
+	moveableBricksEventHandler.calculateColorForQMResult = function (brick) {
+		return calculateColorForQMResult(brick, 0, 0, 0, true);
 	}
 
 	moveableBricksEventHandler.calculateQMScore = function (brick) {
@@ -51,32 +143,32 @@ var MoveableBricksEventHandler = function (vals) {
 			//console.log(brick0.getDescription() + " "+brick1.getDescription() + " " +brick1.getY() + " < " + (brick0.getY() + brick0.getHeight()));
 			if ((brick1.getY() > brick0.getY() + brick0.getHeight() && (brick1.getX() >= brick0.getX() && brick1.getX() <= brick0.getX() + brick0.getWidth())) ||
 				(brick1.getY() > brick0.getY() + brick0.getHeight() && (brick1.getX() + brick1.getWidth() <= brick0.getX() + brick0.getX() && brick1.getX() + brick1.getWidth() >= brick0.getX()))) {
-				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth() / 2, brick0.getY() + brick0.getHeight(), brick1.getX() + brick0.getWidth() / 2, brick1.getY(), connector.operation, connector.color, connector.lineWidth);
+				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth() / 2, brick0.getY() + brick0.getHeight(), brick1.getX() + brick0.getWidth() / 2, brick1.getY(), mathOperations[connector.operation], connector.color, connector.lineWidth);
 				connector.fromX = brick0.getX() + brick0.getWidth() / 2;
 				connector.fromY = brick0.getY() + brick0.getHeight();
 				connector.toX = brick1.getX() + brick0.getWidth() / 2;
 				connector.toY = brick1.getY();
 			} else if ((brick1.getY() + brick1.getHeight() < brick0.getY() && (brick1.getX() >= brick0.getX() && brick1.getX() <= brick0.getX() + brick0.getWidth())) ||
 				(brick1.getY() + brick1.getHeight() < brick0.getY() && (brick1.getX() + brick1.getWidth() <= brick0.getX() + brick0.getX() && brick1.getX() + brick1.getWidth() >= brick0.getX()))) {
-				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth() / 2, brick0.getY(), brick1.getX() + brick0.getWidth() / 2, brick1.getY() + brick0.getHeight(), connector.operation, connector.color, connector.lineWidth);
+				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth() / 2, brick0.getY(), brick1.getX() + brick0.getWidth() / 2, brick1.getY() + brick0.getHeight(), mathOperations[connector.operation], connector.color, connector.lineWidth);
 				connector.fromX = brick0.getX() + brick0.getWidth() / 2;
 				connector.fromY = brick0.getY();
 				connector.toX = brick1.getX() + brick0.getWidth() / 2;
 				connector.toY = brick1.getY() + brick0.getHeight();
 			} else if (brick0.getX() < brick1.getX()) {
-				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth(), brick0.getY() + brick0.getHeight() / 2, brick1.getX(), brick1.getY() + brick1.getHeight() / 2, connector.operation, connector.color, connector.lineWidth);
+				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth(), brick0.getY() + brick0.getHeight() / 2, brick1.getX(), brick1.getY() + brick1.getHeight() / 2, mathOperations[connector.operation], connector.color, connector.lineWidth);
 				connector.fromX = brick0.getX() + brick0.getWidth();
 				connector.fromY = brick0.getY() + brick0.getHeight() / 2;
 				connector.toX = brick1.getX();
 				connector.toY = brick1.getY() + brick1.getHeight() / 2;
 			} else if (brick1.getX() < brick0.getX()) {
-				utility_drawArrow(ctx, brick0.getX(), brick0.getY() + brick0.getHeight() / 2, brick1.getX() + brick0.getWidth(), brick1.getY() + brick1.getHeight() / 2, connector.operation, connector.color, connector.lineWidth);
+				utility_drawArrow(ctx, brick0.getX(), brick0.getY() + brick0.getHeight() / 2, brick1.getX() + brick0.getWidth(), brick1.getY() + brick1.getHeight() / 2, mathOperations[connector.operation], connector.color, connector.lineWidth);
 				connector.fromX = brick0.getX();
 				connector.fromY = brick0.getY() + brick0.getHeight() / 2;
 				connector.toX = brick1.getX() + brick0.getWidth();
 				connector.toY = brick1.getY() + brick1.getHeight() / 2;
 			} else {
-				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth() / 2, brick0.getY() + brick0.getHeight() / 2, brick1.getX() + brick1.getWidth() / 2, brick1.getY() + brick1.getHeight() / 2, connector.operation, connector.color, connector.lineWidth);
+				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth() / 2, brick0.getY() + brick0.getHeight() / 2, brick1.getX() + brick1.getWidth() / 2, brick1.getY() + brick1.getHeight() / 2, mathOperations[connector.operation], connector.color, connector.lineWidth);
 				connector.fromX = brick0.getX() + brick0.getWidth() / 2;
 				connector.fromY = brick0.getY() + brick0.getHeight() / 2;
 				connector.toX = brick1.getX() + brick1.getWidth() / 2;
@@ -192,7 +284,7 @@ var MoveableBricksEventHandler = function (vals) {
 						toY : 0,
 						color : 'white',
 						lineWidth : 1,
-						operation : '+'
+						operation : 0
 					});
 					isDrawConnection = false;
 					selectedBrickForConnection = null;
@@ -289,6 +381,7 @@ var MoveableBricksEventHandler = function (vals) {
 						description : selectedMenuBrick.getDescription(),
 						value : selectedMenuBrick.getValue(),
 						weight : selectedMenuBrick.getWeight(),
+						color : selectedMenuBrick.getColor(),
 						controller : controller,
 						input : input
 					});
@@ -301,12 +394,13 @@ var MoveableBricksEventHandler = function (vals) {
 						description : selectedMenuBrick.getDescription(),
 						value : selectedMenuBrick.getValue(),
 						weight : selectedMenuBrick.getWeight(),
+						color : selectedMenuBrick.getColor(),
 						controller : controller
 					});
 			}
 			moveableBricks.push(moveableBrick);
 			controller.setSelectedMenuBrick(null);
-			deleteMenuSelection();
+			controller.deleteMenuSelection();
 			controller.draw();
 			return;
 		}
@@ -314,10 +408,10 @@ var MoveableBricksEventHandler = function (vals) {
 		if (!moving) {
 			for (var i = 0; i < moveableBricks.length; i++) {
 				brick = moveableBricks[i];
-				if (brick.hitUpButton(x, y)) {
+				if (brick.hitUpButton(x, y) && brick.getType() != 'resultMoveable') {
 					if (parseFloat(brick.getWeight()) < 1)
 						brick.setWeight(parseFloat(parseFloat(brick.getWeight()) + parseFloat(0.1)).toFixed(1));
-				} else if (brick.hitDownButton(x, y)) {
+				} else if (brick.hitDownButton(x, y) && brick.getType() != 'resultMoveable') {
 					if (parseFloat(brick.getWeight()) > 0)
 						brick.setWeight(parseFloat(parseFloat(brick.getWeight()) - parseFloat(0.1)).toFixed(1));
 
@@ -371,10 +465,27 @@ var MoveableBricksEventHandler = function (vals) {
 						currentConnector.lineWidth = 3;
 					} else
 						selectedConnectors.splice(index, 1);
+				} else if (connectorUpButtonGotHit(currentConnector, x, y)) {
+					currentConnector.operation = getNextOperation(currentConnector.operation);
+				} else if (connectorDownButtonGotHit(currentConnector, x, y)) {
+					currentConnector.operation = getPrevOperation(currentConnector.operation);
 				}
 			}
 		}
 
+	}
+	var getNextOperation = function (operationIndex) {
+		if (mathOperations.length > operationIndex + 1)
+			return (operationIndex + 1);
+		else
+			return 0;
+	}
+
+	var getPrevOperation = function (operationIndex) {
+		if (0 <= operationIndex - 1)
+			return (operationIndex - 1);
+		else
+			return (mathOperations.length - 1);
 	}
 
 	var highlightConnectorsForQMResult = function (brick, highlighting) {
@@ -396,6 +507,17 @@ var MoveableBricksEventHandler = function (vals) {
 			return true;
 		}
 		return false;
+	}
+	var connectorUpButtonGotHit = function (connector, mouseX, mouseY) {
+		var lineRect = defineLineAsRect(connector.fromX, connector.fromY - 20, connector.toX, connector.toY - 20, 20);
+		drawLineAsRect(ctx, lineRect, "transparent");
+		return ctx.isPointInPath(mouseX, mouseY);
+	}
+
+	var connectorDownButtonGotHit = function (connector, mouseX, mouseY) {
+		var lineRect = defineLineAsRect(connector.fromX, connector.fromY + 20, connector.toX, connector.toY + 20, 20);
+		drawLineAsRect(ctx, lineRect, "transparent");
+		return ctx.isPointInPath(mouseX, mouseY);
 	}
 
 	var connectorGotHit = function (connector, mouseX, mouseY) {
@@ -445,7 +567,7 @@ var MoveableBricksEventHandler = function (vals) {
 				}
 			}
 		}
-		draw();
+		controller.draw();
 	}
 
 	moveableBricksEventHandler.zoomOut = function () {
@@ -466,7 +588,7 @@ var MoveableBricksEventHandler = function (vals) {
 				}
 			}
 		}
-		draw();
+		controller.draw();
 	}
 
 	moveableBricksEventHandler.transformation = function (fromX, fromY, toX, toY) {
@@ -477,7 +599,10 @@ var MoveableBricksEventHandler = function (vals) {
 			moveableBricks[i].setY(moveableBricks[i].getY() + dy);
 		}
 
-		draw();
+		controller.draw();
+	}
+	moveableBricksEventHandler.setData = function (d) {
+		data = d;
 	}
 
 	return moveableBricksEventHandler;

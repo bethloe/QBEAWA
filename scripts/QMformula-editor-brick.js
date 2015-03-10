@@ -5,6 +5,7 @@ var QMBrick = function (vals) {
 	var value = vals.value;
 	var type = vals.type; //Defines if it's a menu item or a moveable brick
 	var controller = vals.controller;
+	var color = vals.color;
 	var width = 150;
 	var height = 120;
 	var description = vals.description;
@@ -33,23 +34,37 @@ var QMBrick = function (vals) {
 	//Private:
 	var drawBrick = function () {
 
-		ctx.globalAlpha = 1;
+		/*ctx.globalAlpha = 1;
 		var val = parseFloat(weight) * 100;
 		if (weight > 0.5) {
-			start = white,
-			end = red;
-			val = val - 50;
+		start = white,
+		end = red;
+		val = val - 50;
 		}
 		var startColors = start.getColors(),
 		endColors = end.getColors();
 		var r = Interpolate(startColors.r, endColors.r, 50, val);
 		var g = Interpolate(startColors.g, endColors.g, 50, val);
-		var b = Interpolate(startColors.b, endColors.b, 50, val);
+		var b = Interpolate(startColors.b, endColors.b, 50, val);*/
 
-		colorBackground = "rgb(" + r + "," + g + "," + b + ")";
+		//WHITE BACKGROUND
 
-		colorBackground = colorBackground;
-		ctx.fillStyle = colorBackground;
+		ctx.globalAlpha = 1;
+		ctx.fillStyle = "white";
+		ctx.fillRect(xPos, yPos, width, height);
+
+		colorBackground = color; //"rgb(" + r + "," + g + "," + b + ")";
+		ctx.globalAlpha = weight;
+		if (type != 'resultMoveable')
+			ctx.fillStyle = colorBackground;
+		else {
+			var colorHelp = controller.calculateColorForQMResult(qmBrick);
+			if (colorHelp == 'rgb(0,0,0)')
+				ctx.fillStyle = 'white';
+			else
+				ctx.fillStyle = colorHelp;
+
+		}
 		ctx.fillRect(xPos, yPos, width, height);
 
 		//Create Buttons up down
@@ -63,7 +78,13 @@ var QMBrick = function (vals) {
 			ctx.fillRect(xPos, yPos, width, upDownButtonHeight);
 			//-------------------------------
 			ctx.globalAlpha = 0.5;
-			ctx.fillStyle = "blue";
+			// add linear gradient
+			/*var grd = ctx.createLinearGradient(0,0, 0, canvas.height);
+			// light blue
+			grd.addColorStop(0, 'black');
+			// dark blue
+			grd.addColorStop(1, 'white');*/
+			ctx.fillStyle = 'blue';
 
 			if (isOverUpButton) {
 				ctx.globalAlpha = 0.1;
@@ -78,6 +99,8 @@ var QMBrick = function (vals) {
 			//Create arrows for buttons
 
 			ctx.beginPath();
+
+			ctx.strokeStyle = 'black';
 			drawUpArrow(xPos + width / 2, yPos + 6);
 			drawDownArrow(xPos + width / 2, yPos +
 				height - 5);
@@ -90,20 +113,74 @@ var QMBrick = function (vals) {
 			ctx.strokeRect(xPos, yPos, width - 2, height - 2);
 		}
 
-		ctx.font = "24px Times New Roman";
 		ctx.fillStyle = colorFont;
 
-		ctx.textAlign = "left";
-		ctx.fillText(description, xPos, yPos + height - 30);
-		if (type != 'resultMoveable')
-			ctx.fillText(weight, xPos + 55, yPos + height - 60);
-		else { //calculate score
+		prepareTextSize(description, width, 24);
+		var textWidth = ctx.measureText(description).width;
+		ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + height - 30);
+		if (type != 'resultMoveable') {
+
+			prepareTextSize(weight, width, 24);
+			textWidth = ctx.measureText(weight).width;
+			ctx.fillText(weight, xPos + ((width - textWidth) / 2), yPos + height - 60);
+		} else { //calculate score
 			//controller.test();
-			ctx.fillText(controller.calculateQMScore(qmBrick), xPos + 55, yPos + height - 60);
+			prepareTextSize(controller.calculateQMScore(qmBrick), width, 24);
+			textWidth = ctx.measureText(controller.calculateQMScore(qmBrick)).width;
+			ctx.fillText(controller.calculateQMScore(qmBrick), xPos + ((width - textWidth) / 2), yPos + height - 60);
 		}
 		if (input != undefined) {
 			input.render();
 		}
+	}
+
+	var drawMenuBrick = function () {
+		height = 60;
+		ctx.globalAlpha = 1;
+		var val = parseFloat(weight) * 100;
+		if (weight > 0.5) {
+			start = white,
+			end = red;
+			val = val - 50;
+		}
+		var startColors = start.getColors(),
+		endColors = end.getColors();
+		var r = Interpolate(startColors.r, endColors.r, 50, val);
+		var g = Interpolate(startColors.g, endColors.g, 50, val);
+		var b = Interpolate(startColors.b, endColors.b, 50, val);
+
+		colorBackground = color; //"rgb(" + r + "," + g + "," + b + ")";
+
+
+		ctx.fillStyle = colorBackground;
+		ctx.fillRect(xPos, yPos, width, height);
+
+		//Create Buttons up down
+
+		ctx.strokeStyle = "white";
+
+		if (drawBoder) {
+			ctx.globalAlpha = 0.8;
+			ctx.strokeStyle = "white";
+			ctx.lineWidth = 2;
+			ctx.strokeRect(xPos, yPos, width - 2, height - 2);
+		}
+
+		ctx.font = "24px Times New Roman";
+		ctx.fillStyle = colorFont;
+		var sizeOfText = prepareTextSize(description, width, 24);
+		ctx.textAlign = "left";
+		var textWidth = ctx.measureText(description).width;
+		ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + ((height - sizeOfText))); //yPos + ((height -  sizeOfText)/2));
+
+	}
+
+	var prepareTextSize = function (text, widthOfShape, sizeOfText) {
+		ctx.font = sizeOfText + "px Times New Roman";
+		var textWidth = ctx.measureText(description).width;
+		if (textWidth > widthOfShape)
+			return prepareTextSize(text, widthOfShape, sizeOfText - 1);
+		return sizeOfText;
 	}
 
 	var drawDownArrow = function (fromx, fromy) {
@@ -253,6 +330,10 @@ var QMBrick = function (vals) {
 		drawBrick();
 	}
 
+	qmBrick.drawMenuBrick = function () {
+		drawMenuBrick();
+	}
+
 	qmBrick.compare = function (toCompare) {
 		//TODO ADD AN ID
 		//console.log("compare: " + xPos + " == " + toCompare.getX() + " && " + yPos + " == " + toCompare.getY() + " && " + type + " == " + toCompare.getType() + " && " + description + " == " + toCompare.getDescription());
@@ -272,6 +353,14 @@ var QMBrick = function (vals) {
 	qmBrick.getTotalScore = function () {
 		//console.log("DESCRIPSTION: " + description + " weight : "+weight + " value: " + value + " total socre: " + parseFloat(weight * value));
 		return parseFloat(weight * value);
+	}
+
+	qmBrick.getColor = function () {
+		return color;
+	}
+	
+	qmBrick.toJSONString = function () {
+		return JSON.stringify({x : xPos, y: xPos, type: type, description: description, weight: weight, color: color});	
 	}
 
 	return qmBrick;

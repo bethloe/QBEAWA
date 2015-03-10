@@ -152,7 +152,8 @@ and open the template in the editor.
 
 		</div>
  <div id="popup">
- 
+		
+		
         <div class="schliessen"></div>
  
         <div id="popup_inhalt">

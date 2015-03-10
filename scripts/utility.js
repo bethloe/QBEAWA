@@ -4,8 +4,8 @@ var utility_drawArrow = function (ctx, fromx, fromy, tox, toy, text, color, line
 	ctx.beginPath();
 	ctx.strokeStyle = color;
 	ctx.globalAlpha = 1;
-	
-	ctx.lineWidth=lineWidth;
+
+	ctx.lineWidth = lineWidth;
 	var headlen = 20; // length of head in pixels
 	var angle = Math.atan2(toy - fromy, tox - fromx);
 	ctx.moveTo(fromx, fromy);
@@ -27,7 +27,7 @@ var utility_drawArrow = function (ctx, fromx, fromy, tox, toy, text, color, line
 		ctx.rotate(Math.atan2(dy, dx));
 	}
 	ctx.fillStyle = color;
-	ctx.fillText(text, 0, 0);
+	ctx.fillText(text, 3, 0);
 	//DRAW ARROWS
 	if (text != '') {
 		ctx.beginPath();
@@ -86,6 +86,27 @@ function defineLineAsRect(x1, y1, x2, y2, lineWidth) {
 	});
 }
 
+function drawDownArrow(ctx, fromx, fromy, size) {
+
+	ctx.beginPath();
+	ctx.moveTo(fromx, fromy);
+	ctx.lineTo(fromx - size, fromy - size);
+
+	ctx.moveTo(fromx, fromy);
+	ctx.lineTo(fromx + size, fromy - size);
+	ctx.stroke();
+}
+
+function drawUpArrow(ctx, fromx, fromy, size) {
+	ctx.beginPath();
+	ctx.moveTo(fromx, fromy);
+	ctx.lineTo(fromx - size, fromy + size);
+
+	ctx.moveTo(fromx, fromy);
+	ctx.lineTo(fromx + size, fromy + size);
+	ctx.stroke();
+}
+
 //COLORS:
 function Interpolate(start, end, steps, count) {
 	var s = start,
@@ -113,6 +134,10 @@ function Color(_r, _g, _b) {
 		};
 		return colors;
 	};
+}
+
+function randomIntFromInterval(min, max) {
+	return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 //---------------------------------------------------------

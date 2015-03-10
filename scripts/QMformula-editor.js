@@ -1,54 +1,55 @@
-(function Controller() {
+var Controller = function (vals) {
 	$('body').on('contextmenu', '#canvas', function (e) {
 		return false;
 	});
+
+	var controller = {};
 	var canvas = document.getElementById("canvas");
-	canvas.width = screen.width -100;
-	canvas.height = screen.height -200;
+	canvas.width = screen.width - 100;
+	canvas.height = screen.height - 200;
 	var ctx = canvas.getContext("2d");
 
 	var canvasOffset = $("#canvas").offset();
 	var offsetX = canvasOffset.left;
 	var offsetY = canvasOffset.top;
 	var scale = 0;
+	var data = vals.data;
+	var visController = vals.visController;
 
-	var moveableBricksEventHandler = new MoveableBricksEventHandler({
-			offsetX : offsetX,
-			offsetY : offsetY,
-			controller : this,
-			ctx : ctx
-		});
-
-	var menuBricksEventHandler = new MenuBricksEventHandler({
-			offsetX : offsetX,
-			offsetY : offsetY,
-			controller : this,
-			ctx : ctx
-		});
-
-	menuBricksEventHandler.init();
-	draw();
-	function drawMenuBackground() {
-		//DRAW RECTANGLE
+	function drawMoveableBackground() {
+		//MAKE IT BLACK
 		ctx.fillStyle = 'black';
 		ctx.globalAlpha = 1;
-		ctx.fillRect(0, 0, canvas.width, 130);
-		//DRAW LINE
+		ctx.fillRect(0, 45, canvas.width, canvas.height);
+
 		ctx.beginPath();
 		ctx.strokeStyle = 'white';
-		ctx.lineWidth = 5;
-		ctx.globalAlpha = 1;
-		ctx.moveTo(0, 130);
-		ctx.lineTo(canvas.width, 130);
+		ctx.lineWidth = 1;
+		ctx.globalAlpha = 0.5;
+		var yCnt = 45;
+		while (menuBricksEventHandler.getBottomOfTheMenu() + yCnt < canvas.height) {
+			ctx.moveTo(0, yCnt);
+			ctx.lineTo(canvas.width, yCnt);
+			yCnt += 50;
+		}
+		var xCnt = 0;
+		while (xCnt < canvas.width) {
+			ctx.moveTo(xCnt, 45);
+			ctx.lineTo(xCnt, canvas.height);
+			xCnt += 50;
+		}
 		ctx.stroke();
 	}
 	function draw() {
 		// clear the canvas
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		drawMoveableBackground();
 		moveableBricksEventHandler.drawMoveableBricks();
 		moveableBricksEventHandler.drawConnections();
-		drawMenuBackground();
+		menuBricksEventHandler.drawMenuBackground();
 		menuBricksEventHandler.drawMenuBricks();
+		menuBricksEventHandler.drawHideMenuButton();
+		menuBricksEventHandler.drawSaveButton();
 	}
 
 	function handleMouseOut(e) {
@@ -110,24 +111,24 @@
 	canvas.addEventListener('mousewheel', onMouseWheel, true);
 
 	//Public:
-	this.deleteMenuSelection = function () {
+	controller.deleteMenuSelection = function () {
 		menuBricksEventHandler.deleteMenuSelection();
 	};
 
-	this.getSelectedMenuBrick = function () {
+	controller.getSelectedMenuBrick = function () {
 		return menuBricksEventHandler.getSelectedBrick();
 	}
 
-	this.setSelectedMenuBrick = function () {
+	controller.setSelectedMenuBrick = function () {
 		menuBricksEventHandler.setSelectedBrick(null);
 	}
 
 	//Check if a click is for selection of a menu item or not
-	this.getSelectionClick = function () {
+	controller.getSelectionClick = function () {
 		return menuBricksEventHandler.getSelectionClick();
 	}
 
-	this.drawForConnection = function (fromX, fromY, toX, toY) {
+	controller.drawForConnection = function (fromX, fromY, toX, toY) {
 		draw();
 
 		utility_drawArrow(ctx, fromX, fromY, toX, toY, '', 'white', 1);
@@ -135,16 +136,69 @@
 		//ctx.lineTo(toX, toY);
 		ctx.stroke();
 	}
-	this.draw = function () {
+	controller.draw = function () {
 		draw();
 	}
 
-	this.test = function () {
+	controller.test = function () {
 		console.log("TEST");
 	}
 
-	this.calculateQMScore = function (brick) {
+	controller.calculateQMScore = function (brick) {
 		return moveableBricksEventHandler.calculateQMScore(brick);
 	}
+	
+	controller.calculateColorForQMResult = function(brick) {
+		return moveableBricksEventHandler.calculateColorForQMResult(brick);	
+	}
 
-})();
+	controller.setData = function (d) {
+		console.log("SET DATA");
+		data = d;
+		menuBricksEventHandler.setData(data);
+		moveableBricksEventHandler.setData(data);
+	}
+
+	controller.transformMovable = function (fromX, fromY, toX, toY) {
+		moveableBricksEventHandler.transformation(fromX, fromY, toX, toY);
+	}
+	
+	controller.getMoveableBricksInJsonFormat = function(){
+		return moveableBricksEventHandler.getMoveableBricksInJsonFormat();
+	}
+	
+	controller.getConnectorsInJsonFormat = function() {
+		return moveableBricksEventHandler.getConnectorsInJsonFormat();
+	}
+	
+	controller.createFormulaForQM = function() {
+		return moveableBricksEventHandler.createFormulaForQM();
+	}
+	
+	controller.saveQMFormula = function(formulas, JSONFormatOfVis) {
+		visController.newQM(formulas, JSONFormatOfVis);
+	}
+	
+	var moveableBricksEventHandler = new MoveableBricksEventHandler({
+			offsetX : offsetX,
+			offsetY : offsetY,
+			controller : controller,
+			ctx : ctx,
+			data : data,
+			maxWidth : canvas.width
+		});
+
+	var menuBricksEventHandler = new MenuBricksEventHandler({
+			offsetX : offsetX,
+			offsetY : offsetY,
+			controller : controller,
+			ctx : ctx,
+			data : data,
+			maxWidth : canvas.width
+		});
+	console.log("CONTROLLER");
+	menuBricksEventHandler.init();
+	draw();
+
+	return controller;
+}
