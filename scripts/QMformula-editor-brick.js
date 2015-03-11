@@ -119,17 +119,17 @@ var QMBrick = function (vals) {
 		var sizeOfText = prepareTextSize(description, width, 24);
 		var textWidth = ctx.measureText(description).width;
 		if (type != 'resultMoveable') {
-
 			ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + height - 30);
 			prepareTextSize(weight, width, 24);
 			textWidth = ctx.measureText(weight).width;
 			ctx.fillText(weight, xPos + ((width - textWidth) / 2), yPos + height - 60);
 		} else { //calculate score
-		
-			ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos+sizeOfText + ((height - sizeOfText)/2));
-			//prepareTextSize(controller.calculateQMScore(qmBrick), width, 24);
-			//textWidth = ctx.measureText(controller.calculateQMScore(qmBrick)).width;
-			//ctx.fillText(controller.calculateQMScore(qmBrick), xPos + ((width - textWidth) / 2), yPos + height - 60);
+			ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + sizeOfText + ((height - sizeOfText) / 2));
+			if (controller.getShowValues()) {
+				prepareTextSize(controller.calculateQMScore(qmBrick), width, 24);
+				textWidth = ctx.measureText(controller.calculateQMScore(qmBrick)).width;
+				ctx.fillText(controller.calculateQMScore(qmBrick), xPos + ((width - textWidth) / 2),  yPos + sizeOfText + ((height - sizeOfText) / 2) - 30);
+			}
 		}
 		if (input != undefined) {
 			input.render();
@@ -173,7 +173,7 @@ var QMBrick = function (vals) {
 		var sizeOfText = prepareTextSize(description, width, 24);
 		ctx.textAlign = "left";
 		var textWidth = ctx.measureText(description).width;
-		ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos+sizeOfText + ((height - sizeOfText)/2)); //yPos + ((height -  sizeOfText)/2));
+		ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + sizeOfText + ((height - sizeOfText) / 2)); //yPos + ((height -  sizeOfText)/2));
 
 	}
 
@@ -359,13 +359,22 @@ var QMBrick = function (vals) {
 	qmBrick.getColor = function () {
 		return color;
 	}
-		
-	qmBrick.getRealName = function() {
+
+	qmBrick.getRealName = function () {
 		return realName;
 	}
-	
+
 	qmBrick.toJSONString = function () {
-		return JSON.stringify({x : xPos, y: yPos, type: type, value: value, description: description, realName : realName, weight: weight, color: color});	
+		return JSON.stringify({
+			x : xPos,
+			y : yPos,
+			type : type,
+			value : value,
+			description : description,
+			realName : realName,
+			weight : weight,
+			color : color
+		});
 	}
 
 	return qmBrick;

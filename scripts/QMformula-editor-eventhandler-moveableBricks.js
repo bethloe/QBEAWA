@@ -92,6 +92,18 @@ var MoveableBricksEventHandler = function (vals) {
 			}
 		}
 	}
+	
+	moveableBricksEventHandler.setValuesOfBricks = function(currentData){
+		for (var key in currentData) {
+			for (var i = 0; i < moveableBricks.length; i++) {
+				var brick = moveableBricks[i];
+				if (brick.getRealName() == key) {
+					brick.setValue(currentData[key]);
+				}
+			}
+		}
+	}
+
 	moveableBricksEventHandler.loadDataFromJsonFile = function (jsonData) {
 		moveableBricks.splice(0, moveableBricks.length);
 		jsonData = jsonData.replace(/\\"/g, '"');

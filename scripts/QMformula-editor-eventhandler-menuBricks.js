@@ -32,9 +32,9 @@ var MenuBricksEventHandler = function (vals) {
 	var menuEntries = ["article length", "currency", "external links", "num. edits", "num. anony. user edits", "num. reg. user edits", "num. admin user edits",
 		"admin edit share", "num. unique editors", "diversity", "links here", "internal links", "num. images", "article age", "flesch", "kincaid"];
 
-	var realName = ["articleLength", "currency", "externalLinks", "numEdits", "numAnonymousUserEdits", "numRegisteredUserEdits", "numAdminUserEdits", 
-	    "adminEditShare", "numUniqueEditors", "diversity", "linksHere", "internalLinks", "numImages", "articleAge", "flesch", "kincaid"];
-		
+	var realName = ["articleLength", "currency", "externalLinks", "numEdits", "numAnonymousUserEdits", "numRegisteredUserEdits", "numAdminUserEdits",
+		"adminEditShare", "numUniqueEditors", "diversity", "linksHere", "internalLinks", "numImages", "articleAge", "flesch", "kincaid"];
+
 	var selectedBrick;
 
 	var menuBricks = [];
@@ -42,14 +42,24 @@ var MenuBricksEventHandler = function (vals) {
 	var GLOBAL_spaceBetweenInitmenuBricks = 5;
 	var GLOBAL_dataBrickWidth = 150;
 
-	
-	menuBricksEventHandler.loadDataFromJsonFile = function (jsonData){
+	menuBricksEventHandler.setValuesOfBricks = function (currentData) {
+		for (var key in currentData) {
+			for (var i = 0; i < menuBricks.length; i++) {
+				var brick = menuBricks[i];
+				if (brick.getRealName() == key) {
+					brick.setValue(currentData[key]);
+				}
+			}
+		}
+	}
+
+	menuBricksEventHandler.loadDataFromJsonFile = function (jsonData) {
 		menuBricks.splice(0, menuBricks.length);
 		jsonData = jsonData.replace(/\\"/g, '"');
 		var dataToLoad = JSON.parse(jsonData);
 		var menuBricksToLoad = dataToLoad.menuBricks;
-		for(var i = 0; i< menuBricksToLoad.length; i++){
-		
+		for (var i = 0; i < menuBricksToLoad.length; i++) {
+
 			var qmBrick = new QMBrick({
 					ctx : ctx,
 					x : menuBricksToLoad[i].x,
@@ -65,7 +75,7 @@ var MenuBricksEventHandler = function (vals) {
 			menuBricks.push(qmBrick);
 		}
 	}
-	
+
 	menuBricksEventHandler.drawSaveButton = function () {
 		//img.onload = function () {
 		ctx.drawImage(img, maxWidth - 70, 40, 50, 50);

@@ -164,7 +164,19 @@ var VisController = function () {
 	EVTHANDLER.listItemClicked = function (d, i) {
 		LIST.selectListItem(i);
 	};
-
+	
+	////////	content list item dblclick	////////
+	EVTHANDLER.listItemDblclicked = function(d, i){
+		//TODO GO ON HERE
+		console.log("listItemDblclicked");
+		var actualIndex = rankingModel.getActualIndex(i);
+		var currentData = data[actualIndex];
+		qmEditorController.setValues(currentData);
+		qmEditorController.setShowValues(true);
+		
+		openQMEditor();
+		
+	};
 	////////	list item mouseover	////////
 	EVTHANDLER.listItemHovered = function (d, index) {
 		LIST.hoverListItem(index);
@@ -214,6 +226,7 @@ var VisController = function () {
 		var qmName = tag.text();
 		//databaseConnector.getAllQMVizs
 		qmEditorController.loadData(allVizs[qmName]);
+		qmEditorController.setShowValues(false);
 		openQMEditor();
 	};
 
@@ -584,7 +597,7 @@ var VisController = function () {
 		TAGCLOUD.checkHeight();
 
 		//ADD clickhandler to tag
-		tag.click(function () {
+		tag.dblclick(function () {
 			EVTHANDLER.clickOnTag(tag);
 		});
 
@@ -839,6 +852,8 @@ var VisController = function () {
 		d3.selectAll(allListItems)
 		.on("click", function (d, i) {
 			EVTHANDLER.listItemClicked(d, i);
+		}).on("dblclick", function (d, i) {
+			EVTHANDLER.listItemDblclicked(d, i);
 		})
 		.on("mouseover", EVTHANDLER.listItemHovered)
 		.on("mouseout", EVTHANDLER.listItemUnhovered)

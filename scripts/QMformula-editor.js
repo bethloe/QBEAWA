@@ -15,6 +15,7 @@ var Controller = function (vals) {
 	var scale = 0;
 	var data = vals.data;
 	var visController = vals.visController;
+	var showValues = false;
 
 	function drawMoveableBackground() {
 		//MAKE IT BLACK
@@ -61,6 +62,11 @@ var Controller = function (vals) {
 		menuBricksEventHandler.loadDataFromJsonFile(jsonData);
 		moveableBricksEventHandler.loadDataFromJsonFile(jsonData);
 		draw();	
+	}
+	
+	function setValuesOfBricks(currentData){
+		menuBricksEventHandler.setValuesOfBricks(currentData);
+		moveableBricksEventHandler.setValuesOfBricks(currentData);
 	}
 
 	//Event handling
@@ -191,6 +197,19 @@ var Controller = function (vals) {
 	
 	controller.loadData = function(vizDatainJsonFormat){
 		loadDataFromJsonFile(vizDatainJsonFormat);
+	}
+	
+	controller.setValues = function(currentData){
+		setValuesOfBricks(currentData);
+	}
+	
+	controller.setShowValues = function(sv) {
+		showValues = sv;
+		draw();
+	}
+	
+	controller.getShowValues = function(){
+		return showValues; 
 	}
 	
 	var moveableBricksEventHandler = new MoveableBricksEventHandler({
