@@ -30,7 +30,7 @@ var MoveableBricksEventHandler = function (vals) {
 	brick1 : b1,
 	operation: 0 //index of mathOperations array
 	});*/
-	
+
 	//TODO CHECK CALCULATION WITH * and /.  (multiplication and division first, then addition and subtraction)
 	var calculateQMScore = function (brick, sum) {
 		for (var i = 0; i < connectors.length; i++) {
@@ -76,15 +76,13 @@ var MoveableBricksEventHandler = function (vals) {
 			if (connectors[i].brick1.compare(brick)) {
 				if (first) {
 					first = false;
-					formula += connectors[i].brick1.getDescription() + "=" + mathOperations[connectors[i].operation] + connectors[i].brick0.getDescription()
+					formula += connectors[i].brick1.getRealName() + "=," + mathOperations[connectors[i].operation] + "|" + connectors[i].brick0.getWeight() + "|" + connectors[i].brick0.getRealName();
 				} else
-					formula += mathOperations[connectors[i].operation] + connectors[i].brick0.getDescription()
+					formula += "," + mathOperations[connectors[i].operation] + "|" + connectors[i].brick0.getWeight() + "|" + connectors[i].brick0.getRealName();
 					formula = createFormulaForQM(connectors[i].brick0, formula, false);
 			}
-
 		}
 		return formula;
-
 	}
 
 	moveableBricksEventHandler.createFormulaForQM = function () {
@@ -379,6 +377,7 @@ var MoveableBricksEventHandler = function (vals) {
 						y : (y - 60),
 						type : 'resultMoveable',
 						description : selectedMenuBrick.getDescription(),
+						realName : selectedMenuBrick.getRealName(),
 						value : selectedMenuBrick.getValue(),
 						weight : selectedMenuBrick.getWeight(),
 						color : selectedMenuBrick.getColor(),
@@ -392,6 +391,7 @@ var MoveableBricksEventHandler = function (vals) {
 						y : (y - 60),
 						type : 'moveable',
 						description : selectedMenuBrick.getDescription(),
+						realName : selectedMenuBrick.getRealName(),
 						value : selectedMenuBrick.getValue(),
 						weight : selectedMenuBrick.getWeight(),
 						color : selectedMenuBrick.getColor(),

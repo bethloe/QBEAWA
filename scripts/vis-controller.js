@@ -1431,7 +1431,15 @@ var VisController = function () {
 			//TODO GO ON HERE
 			var newTag = formulas[i].split("=")[0];
 			var test = '{"stem":"' + newTag + '","term":"' + newTag + '","repeated":2,"variations":{"worker":9}}';
-			keywords.push(JSON.parse(test));
+			var alreadyInKeywords = false;
+			keywords.forEach(function (k) {
+				if (k.term == newTag)
+					alreadyInKeywords = true;
+			});
+			if (!alreadyInKeywords)
+				keywords.push(JSON.parse(test));
+
+			rankingModel.newQM(formulas[i]);
 
 		}
 		EVTHANDLER.btnResetClicked();
@@ -1451,9 +1459,9 @@ var VisController = function () {
 
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-													{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-													{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-													{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																						{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
+																						{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
+																						{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		keywords = IQMetrics; //dataset['keywords'];
 		//console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();

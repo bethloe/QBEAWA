@@ -32,6 +32,9 @@ var MenuBricksEventHandler = function (vals) {
 	var menuEntries = ["article length", "currency", "external links", "num. edits", "num. anony. user edits", "num. reg. user edits", "num. admin user edits",
 		"admin edit share", "num. unique editors", "diversity", "links here", "internal links", "num. images", "article age", "flesch", "kincaid"];
 
+	var realName = ["articleLength", "currency", "externalLinks", "numEdits", "numAnonymousUserEdits", "numRegisteredUserEdits", "numAdminUserEdits", 
+	    "adminEditShare", "numUniqueEditors", "diversity", "linksHere", "internalLinks", "numImages", "articleAge", "flesch", "kincaid"];
+		
 	var selectedBrick;
 
 	var menuBricks = [];
@@ -129,6 +132,7 @@ var MenuBricksEventHandler = function (vals) {
 					type : 'menu',
 					value : cnt,
 					description : menuEntries[i],
+					realName : realName[i],
 					weight : 0.5,
 					color : "rgb(" + randomIntFromInterval(100, 255) + "," + randomIntFromInterval(100, 255) + "," + randomIntFromInterval(100, 255) + ")",
 					controller : controller
@@ -136,21 +140,6 @@ var MenuBricksEventHandler = function (vals) {
 			menuBricks.push(qmBrick);
 			cnt += 1;
 		}
-
-		/*
-		for (var i = 0; i < 8; i++) {
-		var qmBrick = new QMBrick({
-		ctx : ctx,
-		x : i == 0 ? GLOBAL_spaceBetweenInitmenuBricks : (i * (GLOBAL_dataBrickWidth + GLOBAL_spaceBetweenInitmenuBricks) + GLOBAL_spaceBetweenInitmenuBricks),
-		y : 0,
-		type : 'menu',
-		value : i,
-		description : ('data' + i),
-		weight : (i / 10),
-		controller : controller
-		});
-		menuBricks.push(qmBrick);
-		}*/
 		//RESULT Brick
 
 		var qmBrick = new QMBrick({
@@ -159,6 +148,7 @@ var MenuBricksEventHandler = function (vals) {
 				y : bottomOfMenu,
 				type : 'result',
 				description : 'new QM',
+				realName : 'new QM',
 				weight : 1,
 				color : "white", //"rgb(" + randomIntFromInterval(100, 255) + "," + randomIntFromInterval(100, 255) + "," + randomIntFromInterval(100, 255) + ")",
 				controller : controller

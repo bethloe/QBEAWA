@@ -4,6 +4,7 @@ var RankingModel = (function () {
 	function RankingModel(data) {
 		this.ranking = new RankingArray();
 		this.previousRanking = new RankingArray();
+		this.formulas = [];
 		this.data = data;
 		this.status = RANKING_STATUS.no_ranking;
 		this.mode = RANKING_MODE.overall_score;
@@ -94,6 +95,37 @@ var RankingModel = (function () {
 		return RANKING_STATUS.unchanged;
 	};
 
+	var calculateQMs = function (_data, _formulas) {
+		for (var j = 0; j < _formulas.length; j++) {
+			var wholeFormula = _formulas[j].split("=");
+			var QMName = wholeFormula[0];
+			var items = wholeFormula[1].split(",");
+			_data.forEach(function (d, i) {
+				//TODO CALCULATION IS WRONG IF MULT OR DIV GET USED!
+				var result = 0;
+				for (var i = 0; i < items.length; i++) {
+					var wholeItem = items[i].split("|");
+					var operation = wholeItem[0];
+					var weight = parseFloat(wholeItem[1]);
+					var parameterName = wholeItem[2];
+					if (parameterName != undefined) {
+						console.log("PARAMETERNAME: " + parameterName + " VALUE: " + d[parameterName]);
+						if (operation == '+')
+							result += (weight * d[parameterName]);
+						else if (operation == '-')
+							result -= (weight * d[parameterName]);
+						else if (operation == '*')
+							result *= (weight * d[parameterName]);
+						else if (operation == '/')
+							result /= (weight * d[parameterName]);
+					}
+				}
+				d[QMName] = result;
+				console.log("ONE SET: " + JSON.stringify(d));
+			});
+		}
+	};
+
 	/****************************************************************************************************
 	 *
 	 *   RankingModel Prototype
@@ -104,6 +136,7 @@ var RankingModel = (function () {
 		update : function (keywords, rankingMode) {
 			this.mode = rankingMode || RANKING_MODE.overall_score;
 			this.previousRanking = this.ranking.clone();
+			calculateQMs(this.data, this.formulas);
 			this.ranking = computeScores(this.data, keywords).sortBy(this.mode).addPositionsChanged(this.previousRanking);
 			this.status = updateStatus(this.ranking, this.previousRanking);
 			/*console.log('RANKING');
@@ -137,7 +170,16 @@ var RankingModel = (function () {
 			if (this.status == RANKING_STATUS.no_ranking)
 				return index;
 			return this.ranking[index].originalIndex;
+		},
+
+		newQM : function (formula) {
+			this.formulas.push(formula);
+		},
+
+		calculateQMs : function () {
+			calculateQMs(this.data, this.formulas);
 		}
+
 	};
 
 	return RankingModel;

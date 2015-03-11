@@ -9,6 +9,7 @@ var QMBrick = function (vals) {
 	var width = 150;
 	var height = 120;
 	var description = vals.description;
+	var realName = vals.realName;
 	var input;
 	if (vals.hasOwnProperty("input")) {
 		input = vals.input;
@@ -203,6 +204,7 @@ var QMBrick = function (vals) {
 	var newResultName = function () {
 		console.log("New result name " + input.value());
 		description = input.value();
+		realName = input.value();
 		//IT'S UGLY I KNOW
 		input.x(-1000);
 		input.y(-1000);
@@ -357,6 +359,10 @@ var QMBrick = function (vals) {
 
 	qmBrick.getColor = function () {
 		return color;
+	}
+		
+	qmBrick.getRealName = function() {
+		return realName;
 	}
 	
 	qmBrick.toJSONString = function () {
