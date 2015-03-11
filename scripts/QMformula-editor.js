@@ -56,6 +56,12 @@ var Controller = function (vals) {
 		menuBricksEventHandler.handleMouseUp(e);
 		moveableBricksEventHandler.handleMouseUp(e);
 	}
+	
+	function loadDataFromJsonFile(jsonData){
+		menuBricksEventHandler.loadDataFromJsonFile(jsonData);
+		moveableBricksEventHandler.loadDataFromJsonFile(jsonData);
+		draw();	
+	}
 
 	//Event handling
 	$("#canvas").mousedown(function (e) {
@@ -179,6 +185,14 @@ var Controller = function (vals) {
 		visController.newQM(formulas, JSONFormatOfVis);
 	}
 	
+	controller.setData = function(d){
+		data = d;
+	}
+	
+	controller.loadData = function(vizDatainJsonFormat){
+		loadDataFromJsonFile(vizDatainJsonFormat);
+	}
+	
 	var moveableBricksEventHandler = new MoveableBricksEventHandler({
 			offsetX : offsetX,
 			offsetY : offsetY,
@@ -196,7 +210,6 @@ var Controller = function (vals) {
 			data : data,
 			maxWidth : canvas.width
 		});
-	console.log("CONTROLLER");
 	menuBricksEventHandler.init();
 	draw();
 

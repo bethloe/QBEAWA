@@ -79,10 +79,80 @@ var MoveableBricksEventHandler = function (vals) {
 					formula += connectors[i].brick1.getRealName() + "=," + mathOperations[connectors[i].operation] + "|" + connectors[i].brick0.getWeight() + "|" + connectors[i].brick0.getRealName();
 				} else
 					formula += "," + mathOperations[connectors[i].operation] + "|" + connectors[i].brick0.getWeight() + "|" + connectors[i].brick0.getRealName();
-					formula = createFormulaForQM(connectors[i].brick0, formula, false);
+				formula = createFormulaForQM(connectors[i].brick0, formula, false);
 			}
 		}
 		return formula;
+	}
+
+	var findMoveableBrickForConnectionsToLoad = function (brickToCompare) {
+		for (var i = 0; i < moveableBricks.length; i++) {
+			if(moveableBricks[i].compare(brickToCompare)){
+				return moveableBricks[i];
+			}
+		}
+	}
+	moveableBricksEventHandler.loadDataFromJsonFile = function (jsonData) {
+		moveableBricks.splice(0, moveableBricks.length);
+		jsonData = jsonData.replace(/\\"/g, '"');
+		var dataToLoad = JSON.parse(jsonData);
+		var moveableBricksToLoad = dataToLoad.moveableBricks;
+		var connectorsToLoad = dataToLoad.connectors;
+		for (var i = 0; i < moveableBricksToLoad.length; i++) {
+			console.log("x : " + moveableBricksToLoad[i].x + " y: " + moveableBricksToLoad[i].y);
+			var qmBrick = new QMBrick({
+					ctx : ctx,
+					x : moveableBricksToLoad[i].x,
+					y : moveableBricksToLoad[i].y,
+					type : moveableBricksToLoad[i].type,
+					value : moveableBricksToLoad[i].value,
+					description : moveableBricksToLoad[i].description,
+					realName : moveableBricksToLoad[i].realName,
+					weight : moveableBricksToLoad[i].weight,
+					color : moveableBricksToLoad[i].color,
+					controller : controller
+				});
+			moveableBricks.push(qmBrick);
+		}
+
+		//TODO LOAD CONNECTIONS
+		connectors.splice(0, connectors.length);
+		for (var i = 0; i < connectorsToLoad.length; i++) {
+
+			var qmBrick0 = new QMBrick({
+					x : connectorsToLoad[i].brick0.x,
+					y : connectorsToLoad[i].brick0.y,
+					type : connectorsToLoad[i].brick0.type,
+					value : connectorsToLoad[i].brick0.value,
+					description : connectorsToLoad[i].brick0.description,
+					realName : connectorsToLoad[i].brick0.realName,
+					weight : connectorsToLoad[i].brick0.weight,
+					color : connectorsToLoad[i].brick0.color
+				});
+
+			var qmBrick1 = new QMBrick({
+					x : connectorsToLoad[i].brick1.x,
+					y : connectorsToLoad[i].brick1.y,
+					type : connectorsToLoad[i].brick1.type,
+					value : connectorsToLoad[i].brick1.value,
+					description : connectorsToLoad[i].brick1.description,
+					realName : connectorsToLoad[i].brick1.realName,
+					weight : connectorsToLoad[i].brick1.weight,
+					color : connectorsToLoad[i].brick1.color
+				});
+				
+			connectors.push({
+				brick0 : findMoveableBrickForConnectionsToLoad(qmBrick0),
+				brick1 : findMoveableBrickForConnectionsToLoad(qmBrick1),
+				fromX : connectorsToLoad[i].fromX,
+				fromY : connectorsToLoad[i].fromY,
+				toX : connectorsToLoad[i].toX,
+				toY : connectorsToLoad[i].toY,
+				color : connectorsToLoad[i].color,
+				lineWidth : connectorsToLoad[i].lineWidth,
+				operation : connectorsToLoad[i].operation
+			});
+		}
 	}
 
 	moveableBricksEventHandler.createFormulaForQM = function () {
@@ -101,7 +171,7 @@ var MoveableBricksEventHandler = function (vals) {
 	moveableBricksEventHandler.getMoveableBricksInJsonFormat = function () {
 		var moveableBrickJsonStringArray = [];
 		for (var i = 0; i < moveableBricks.length; i++) {
-			moveableBrickJsonStringArray.push(moveableBricks[i].toJSONString());
+			moveableBrickJsonStringArray.push(JSON.parse(moveableBricks[i].toJSONString()));
 		}
 		return moveableBrickJsonStringArray;
 	}
@@ -111,19 +181,19 @@ var MoveableBricksEventHandler = function (vals) {
 		var connectorsJsonStringArray = [];
 
 		for (var i = 0; i < connectors.length; i++) {
-			connectorsJsonStringArray.push(JSON.stringify({
-					brick0 : connectors[i].brick0.toJSONString(),
-					brick1 : connectors[i].brick1.toJSONString(),
-					fromX : connectors[i].fromX,
-					fromY : connectors[i].fromY,
-					toX : connectors[i].toX,
-					toY : connectors[i].toY,
-					color : connectors[i].color,
-					lineWidth : connectors[i].lineWidth,
-					operation : connectors[i].operation
-				}));
+			connectorsJsonStringArray.push({
+				brick0 : JSON.parse(connectors[i].brick0.toJSONString()),
+				brick1 : JSON.parse(connectors[i].brick1.toJSONString()),
+				fromX : connectors[i].fromX,
+				fromY : connectors[i].fromY,
+				toX : connectors[i].toX,
+				toY : connectors[i].toY,
+				color : connectors[i].color,
+				lineWidth : connectors[i].lineWidth,
+				operation : connectors[i].operation
+			});
 		}
-		return JSON.stringify(connectorsJsonStringArray);
+		return connectorsJsonStringArray;
 	}
 
 	moveableBricksEventHandler.calculateColorForQMResult = function (brick) {
@@ -416,6 +486,7 @@ var MoveableBricksEventHandler = function (vals) {
 						brick.setWeight(parseFloat(parseFloat(brick.getWeight()) - parseFloat(0.1)).toFixed(1));
 
 				} else if (brick.hit(x, y)) {
+
 					brick.setBorder(!brick.getBorder());
 					//If the user selected a new element push the index into the selectedBricks array
 					if (brick.getBorder()) {

@@ -1,0 +1,51 @@
+IN HERE : {
+	"menuBricks" : "[" {
+		 \ "x\":5,\"y\":5,\"type\":\"menu\",\"description\":\"article length\",\"weight\":0.5,\"color\":\"rgb(128,115,219)\"}",
+		"{\"x\":160,\"y\":160,\"type\":\"menu\",\"description\":\"currency\",\"weight\":0.5,\"color\":\"rgb(148,217,102)\"}",
+		"{\"x\":315,\"y\":315,\"type\":\"menu\",\"description\":\"external links\",\"weight\":0.5,\"color\":\"rgb(174,176,134)\"}",
+		"{\"x\":470,\"y\":470,\"type\":\"menu\",\"description\":\"num. edits\",\"weight\":0.5,\"color\":\"rgb(127,147,177)\"}",
+		"{\"x\":625,\"y\":625,\"type\":\"menu\",\"description\":\"num. anony. user edits\",\"weight\":0.5,\"color\":\"rgb(112,149,128)\"}",
+		"{\"x\":780,\"y\":780,\"type\":\"menu\",\"description\":\"num. reg. user edits\",\"weight\":0.5,\"color\":\"rgb(210,207,127)\"}",
+		"{\"x\":935,\"y\":935,\"type\":\"menu\",\"description\":\"num. admin user edits\",\"weight\":0.5,\"color\":\"rgb(138,244,177)\"}",
+		"{\"x\":1090,\"y\":1090,\"type\":\"menu\",\"description\":\"admin edit share\",\"weight\":0.5,\"color\":\"rgb(172,123,246)\"}",
+		"{\"x\":1245,\"y\":1245,\"type\":\"menu\",\"description\":\"num. unique editors\",\"weight\":0.5,\"color\":\"rgb(231,106,175)\"}",
+		"{\"x\":1400,\"y\":1400,\"type\":\"menu\",\"description\":\"diversity\",\"weight\":0.5,\"color\":\"rgb(206,115,178)\"}",
+		"{\"x\":1555,\"y\":1555,\"type\":\"menu\",\"description\":\"links here\",\"weight\":0.5,\"color\":\"rgb(235,153,132)\"}",
+		"{\"x\":5,\"y\":5,\"type\":\"menu\",\"description\":\"internal links\",\"weight\":0.5,\"color\":\"rgb(198,245,171)\"}",
+		"{\"x\":160,\"y\":160,\"type\":\"menu\",\"description\":\"num. images\",\"weight\":0.5,\"color\":\"rgb(180,145,124)\"}",
+		"{\"x\":315,\"y\":315,\"type\":\"menu\",\"description\":\"article age\",\"weight\":0.5,\"color\":\"rgb(223,191,120)\"}",
+		"{\"x\":470,\"y\":470,\"type\":\"menu\",\"description\":\"flesch\",\"weight\":0.5,\"color\":\"rgb(130,248,190)\"}",
+		"{\"x\":625,\"y\":625,\"type\":\"menu\",\"description\":\"kincaid\",\"weight\":0.5,\"color\":\"rgb(159,124,128)\"}",
+		"{\"x\":780,\"y\":780,\"type\":\"result\",\"description\":\"new QM\",\"weight\":1,\"color\":\"white\"}"]"," moveableBricks ":[" {
+			"x" : 507,
+			"y" : 507,
+			"type" : "moveable",
+			"description" : "kincaid",
+			"weight" : 0.5,
+			"color" : "rgb(159,124,128)"
+		}
+		"," {
+			"x" : 242,
+			"y" : 242,
+			"type" : "moveable",
+			"description" : "num. images",
+			"weight" : 0.5,
+			"color" : "rgb(180,145,124)"
+		}
+		"," {
+			"x" : 19,
+			"y" : 19,
+			"type" : "moveable",
+			"description" : "internal links",
+			"weight" : 0.5,
+			"color" : "rgb(198,245,171)"
+		}
+		"," {
+			"x" : 916,
+			"y" : 916,
+			"type" : "resultMoveable",
+			"description" : "qm1",
+			"weight" : 1,
+			"color" : "white"
+		}
+		"]," connectors ":"["{\"brick0\":\"{\\\"x\\\":19,\\\"y\\\":19,\\\"type\\\":\\\"moveable\\\",\\\"description\\\":\\\"internal links\\\",\\\"weight\\\":0.5,\\\"color\\\":\\\"rgb(198,245,171)\\\"}\",\"brick1\":\"{\\\"x\\\":242,\\\"y\\\":242,\\\"type\\\":\\\"moveable\\\",\\\"description\\\":\\\"num. images\\\",\\\"weight\\\":0.5,\\\"color\\\":\\\"rgb(180,145,124)\\\"}\",\"fromX\":169,\"fromY\":265,\"toX\":242,\"toY\":264,\"color\":\"white\",\"lineWidth\":1,\"operation\":0}", "{\"brick0\":\"{\\\"x\\\":242,\\\"y\\\":242,\\\"type\\\":\\\"moveable\\\",\\\"description\\\":\\\"num. images\\\",\\\"weight\\\":0.5,\\\"color\\\":\\\"rgb(180,145,124)\\\"}\",\"brick1\":\"{\\\"x\\\":507,\\\"y\\\":507,\\\"type\\\":\\\"moveable\\\",\\\"description\\\":\\\"kincaid\\\",\\\"weight\\\":0.5,\\\"color\\\":\\\"rgb(159,124,128)\\\"}\",\"fromX\":392,\"fromY\":264,\"toX\":507,\"toY\":262,\"color\":\"white\",\"lineWidth\":1,\"operation\":0}", "{\"brick0\":\"{\\\"x\\\":507,\\\"y\\\":507,\\\"type\\\":\\\"moveable\\\",\\\"description\\\":\\\"kincaid\\\",\\\"weight\\\":0.5,\\\"color\\\":\\\"rgb(159,124,128)\\\"}\",\"brick1\":\"{\\\"x\\\":916,\\\"y\\\":916,\\\"type\\\":\\\"resultMoveable\\\",\\\"description\\\":\\\"qm1\\\",\\\"weight\\\":1,\\\"color\\\":\\\"white\\\"}\",\"fromX\":657,\"fromY\":262,\"toX\":916,\"toY\":326,\"color\":\"white\",\"lineWidth\":1,\"operation\":0}"]"}

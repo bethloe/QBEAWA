@@ -116,19 +116,20 @@ var QMBrick = function (vals) {
 
 		ctx.fillStyle = colorFont;
 
-		prepareTextSize(description, width, 24);
+		var sizeOfText = prepareTextSize(description, width, 24);
 		var textWidth = ctx.measureText(description).width;
-		ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + height - 30);
 		if (type != 'resultMoveable') {
 
+			ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + height - 30);
 			prepareTextSize(weight, width, 24);
 			textWidth = ctx.measureText(weight).width;
 			ctx.fillText(weight, xPos + ((width - textWidth) / 2), yPos + height - 60);
 		} else { //calculate score
-			//controller.test();
-			prepareTextSize(controller.calculateQMScore(qmBrick), width, 24);
-			textWidth = ctx.measureText(controller.calculateQMScore(qmBrick)).width;
-			ctx.fillText(controller.calculateQMScore(qmBrick), xPos + ((width - textWidth) / 2), yPos + height - 60);
+		
+			ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos+sizeOfText + ((height - sizeOfText)/2));
+			//prepareTextSize(controller.calculateQMScore(qmBrick), width, 24);
+			//textWidth = ctx.measureText(controller.calculateQMScore(qmBrick)).width;
+			//ctx.fillText(controller.calculateQMScore(qmBrick), xPos + ((width - textWidth) / 2), yPos + height - 60);
 		}
 		if (input != undefined) {
 			input.render();
@@ -172,7 +173,7 @@ var QMBrick = function (vals) {
 		var sizeOfText = prepareTextSize(description, width, 24);
 		ctx.textAlign = "left";
 		var textWidth = ctx.measureText(description).width;
-		ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + ((height - sizeOfText))); //yPos + ((height -  sizeOfText)/2));
+		ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos+sizeOfText + ((height - sizeOfText)/2)); //yPos + ((height -  sizeOfText)/2));
 
 	}
 
@@ -202,14 +203,12 @@ var QMBrick = function (vals) {
 	}
 
 	var newResultName = function () {
-		console.log("New result name " + input.value());
 		description = input.value();
 		realName = input.value();
 		//IT'S UGLY I KNOW
 		input.x(-1000);
 		input.y(-1000);
 		input = null;
-		console.log("here: " + controller);
 		controller.draw();
 	}
 
@@ -366,7 +365,7 @@ var QMBrick = function (vals) {
 	}
 	
 	qmBrick.toJSONString = function () {
-		return JSON.stringify({x : xPos, y: xPos, type: type, description: description, weight: weight, color: color});	
+		return JSON.stringify({x : xPos, y: yPos, type: type, value: value, description: description, realName : realName, weight: weight, color: color});	
 	}
 
 	return qmBrick;

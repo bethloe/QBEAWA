@@ -44,6 +44,7 @@ and open the template in the editor.
 		<script type="text/javascript" src="scripts/QMformula-editor-brick.js"></script>
 		<script type="text/javascript" src="scripts/QMformula-editor-eventhandler-moveableBricks.js"></script>
 		<script type="text/javascript" src="scripts/QMformula-editor-eventhandler-menuBricks.js"></script>
+		<script type="text/javascript" src="scripts/databaseConnector.js" charset="utf-8"> </script>
 
         <link rel="stylesheet" type="text/css" href="css/general-style.css" />
         <link rel="stylesheet" type="text/css" href="css/popup.css" />
@@ -153,11 +154,9 @@ and open the template in the editor.
 		</div>
  <div id="popup">
 		
-		
-        <div class="schliessen"></div>
+        <div class="schliessen"><img src="media/close.png" width="20"></div>
  
         <div id="popup_inhalt">
-
 			<canvas id="canvas" ></canvas>      
 		</div>
  

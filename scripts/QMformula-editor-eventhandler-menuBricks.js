@@ -42,6 +42,30 @@ var MenuBricksEventHandler = function (vals) {
 	var GLOBAL_spaceBetweenInitmenuBricks = 5;
 	var GLOBAL_dataBrickWidth = 150;
 
+	
+	menuBricksEventHandler.loadDataFromJsonFile = function (jsonData){
+		menuBricks.splice(0, menuBricks.length);
+		jsonData = jsonData.replace(/\\"/g, '"');
+		var dataToLoad = JSON.parse(jsonData);
+		var menuBricksToLoad = dataToLoad.menuBricks;
+		for(var i = 0; i< menuBricksToLoad.length; i++){
+		
+			var qmBrick = new QMBrick({
+					ctx : ctx,
+					x : menuBricksToLoad[i].x,
+					y : menuBricksToLoad[i].y,
+					type : menuBricksToLoad[i].type,
+					value : menuBricksToLoad[i].value,
+					description : menuBricksToLoad[i].description,
+					realName : menuBricksToLoad[i].realName,
+					weight : menuBricksToLoad[i].weight,
+					color : menuBricksToLoad[i].color,
+					controller : controller
+				});
+			menuBricks.push(qmBrick);
+		}
+	}
+	
 	menuBricksEventHandler.drawSaveButton = function () {
 		//img.onload = function () {
 		ctx.drawImage(img, maxWidth - 70, 40, 50, 50);
@@ -117,7 +141,6 @@ var MenuBricksEventHandler = function (vals) {
 	}
 
 	menuBricksEventHandler.init = function () {
-		console.log("DATA LENGTH: " + data.length);
 		var cnt = 0;
 		bottomOfMenu = 0;
 		for (var i = 0; i < menuEntries.length; i++) {
@@ -196,10 +219,10 @@ var MenuBricksEventHandler = function (vals) {
 			var jsonObject = {};
 			var menuBrickJsonStringArray = [];
 			for (var i = 0; i < menuBricks.length; i++) {
-				menuBrickJsonStringArray.push(menuBricks[i].toJSONString());
+				menuBrickJsonStringArray.push(JSON.parse(menuBricks[i].toJSONString()));
 			}
 			//console.log(JSON.stringify(menuBrickJsonStringArray));
-			jsonObject.menuBricks = JSON.stringify(menuBrickJsonStringArray);
+			jsonObject.menuBricks = menuBrickJsonStringArray;
 			jsonObject.moveableBricks = controller.getMoveableBricksInJsonFormat();
 			jsonObject.connectors = controller.getConnectorsInJsonFormat();
 			//console.log(JSON.stringify(jsonObject));

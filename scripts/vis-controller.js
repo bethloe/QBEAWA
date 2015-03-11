@@ -88,6 +88,9 @@ var VisController = function () {
 	task,
 	questions;
 
+	//Connection to DB for QM Visualization
+	var databaseConnector;
+	var allVizs = [];
 	// Ancillary variables
 	var dataRanking, // array that represents the current ranking. Each item is an object specifying "originalIndex, "overallScore", "rankingPos" and "positionsChanged"
 	selectedTags = [], // array of DOM elements contained in the tag box
@@ -128,7 +131,7 @@ var VisController = function () {
 	};
 
 	/////////////////////
-	var qmEditorController;
+	var qmEditorController = null;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -199,7 +202,19 @@ var VisController = function () {
 	////////	Delete tag click	////////
 
 	EVTHANDLER.deleteTagClicked = function (tag) {
+
+		console.log("DELETE TAG IN BOX");
 		TAGCLOUD.deleteTagInBox(tag);
+	};
+
+	////////	Click on tag	////////
+
+	EVTHANDLER.clickOnTag = function (tag) {
+		console.log("clickOnTag " + tag.text());
+		var qmName = tag.text();
+		//databaseConnector.getAllQMVizs
+		qmEditorController.loadData(allVizs[qmName]);
+		openQMEditor();
 	};
 
 	////////	Draggable	////////
@@ -568,6 +583,11 @@ var VisController = function () {
 
 		TAGCLOUD.checkHeight();
 
+		//ADD clickhandler to tag
+		tag.click(function () {
+			EVTHANDLER.clickOnTag(tag);
+		});
+
 		// Append "delete" icon to tag and bind event handler
 		$("<img class=\"eexcess_tag_img\" src=\"" + DELETE_ICON_IMG + "\" />").appendTo(tag)
 		.click(function () {
@@ -623,7 +643,6 @@ var VisController = function () {
 	 *
 	 * */
 	TAGCLOUD.deleteTagInBox = function (tag) {
-		console.log("DELETE TAG IN BOX");
 		TAGCLOUD.restoreTagFromBoxToCloud(tag[0]);
 
 		var index = 0;
@@ -1439,29 +1458,79 @@ var VisController = function () {
 			if (!alreadyInKeywords)
 				keywords.push(JSON.parse(test));
 
+			//ADD TO DB
+			databaseConnector.storeFormula(newTag, formulas[i]);
+			databaseConnector.storeVizToQM(newTag, JSONFormatOfVis);
+
+			allVizs[newTag] = JSONFormatOfVis;
 			rankingModel.newQM(formulas[i]);
 
 		}
 		EVTHANDLER.btnResetClicked();
 	}
 
+	function loadQMformulas(formulas) {
+		for (var i = 0; i < formulas.length; i++) {
+			//CREATE NEW QM
+			var newTag = formulas[i].split("=")[0];
+			var test = '{"stem":"' + newTag + '","term":"' + newTag + '","repeated":2,"variations":{"worker":9}}';
+			var alreadyInKeywords = false;
+			keywords.forEach(function (k) {
+				if (k.term == newTag)
+					alreadyInKeywords = true;
+			});
+			if (!alreadyInKeywords)
+				keywords.push(JSON.parse(test));
+
+			rankingModel.newQM(formulas[i]);
+
+		}
+		EVTHANDLER.btnResetClicked();
+	}
+	function retrieveAllFormulas(formulas) {
+		if (formulas != "no results") {
+			var hformulas = JSON.parse(formulas);
+			var test = hformulas.formulas;
+
+			if (test.length > 0)
+				loadQMformulas(test);
+		}
+	}
+
+	function retrieveAllQMVizs(JSONvisualizationsString) {
+		if (JSONvisualizationsString != "no results") {
+			var visualizations = JSON.parse(JSONvisualizationsString);
+			var allQMVizs = visualizations.qmvizs;
+
+			for (var key in allQMVizs) {
+				allVizs[key] = allQMVizs[key];
+			}
+		}
+	}
+
 	visController.init = function (articles) {
 		//dataset = JSON.parse($("#dataset").text());
 		//console.log(JSON.stringify(dataset));
 
+		databaseConnector = new DatabaseConnector();
+		databaseConnector.getAllFormulas(retrieveAllFormulas);
+		databaseConnector.getAllQMVizs(retrieveAllQMVizs);
+
 		data = articles['data']; // contains the data to be visualized
 		// query = dataset['query'];				// string representing the query that triggered the current recommendations
-
-		qmEditorController = new Controller({
-				data : data,
-				visController : visController
-			});
-
+		if (qmEditorController == null) {
+			qmEditorController = new Controller({
+					data : data,
+					visController : visController
+				});
+		} else {
+			qmEditorController.setData(data);
+		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																						{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-																						{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-																						{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
+																																														{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
+																																														{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		keywords = IQMetrics; //dataset['keywords'];
 		//console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();
