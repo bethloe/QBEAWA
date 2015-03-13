@@ -87,13 +87,13 @@ var MoveableBricksEventHandler = function (vals) {
 
 	var findMoveableBrickForConnectionsToLoad = function (brickToCompare) {
 		for (var i = 0; i < moveableBricks.length; i++) {
-			if(moveableBricks[i].compare(brickToCompare)){
+			if (moveableBricks[i].compare(brickToCompare)) {
 				return moveableBricks[i];
 			}
 		}
 	}
-	
-	moveableBricksEventHandler.setValuesOfBricks = function(currentData){
+
+	moveableBricksEventHandler.setValuesOfBricks = function (currentData) {
 		for (var key in currentData) {
 			for (var i = 0; i < moveableBricks.length; i++) {
 				var brick = moveableBricks[i];
@@ -152,7 +152,7 @@ var MoveableBricksEventHandler = function (vals) {
 					weight : connectorsToLoad[i].brick1.weight,
 					color : connectorsToLoad[i].brick1.color
 				});
-				
+
 			connectors.push({
 				brick0 : findMoveableBrickForConnectionsToLoad(qmBrick0),
 				brick1 : findMoveableBrickForConnectionsToLoad(qmBrick1),
@@ -633,20 +633,87 @@ var MoveableBricksEventHandler = function (vals) {
 	}
 
 	moveableBricksEventHandler.zoomIn = function () {
-		for (var i = 0; i < moveableBricks.length; i++) {
-			moveableBricks[i].setWidth(moveableBricks[i].getWidth() * 2);
-			moveableBricks[i].setHeight(moveableBricks[i].getHeight() * 2);
+		/*for (var i = 0; i < moveableBricks.length; i++) {
+		moveableBricks[i].setWidth(moveableBricks[i].getWidth() * 2);
+		moveableBricks[i].setHeight(moveableBricks[i].getHeight() * 2);
+		}*/
+
+		/*var bricksAlreadyZoomed = [];
+		for (var i = 0; i < connectors.length; i++) {
+		var currentConnector = connectors[i];
+		for (var j = 0; j < moveableBricks.length; j++) {
+		var currentMovableBrick = moveableBricks[j];
+		if (currentConnector.brick1.compare(currentMovableBrick)) {
+		var alreadyZoomed = false;
+		for (var k = 0; k < bricksAlreadyZoomed.length; k++) {
+		if (currentMovableBrick.compare(bricksAlreadyZoomed[k])) {
+		alreadyZoomed = true;
 		}
+		}
+		if (!alreadyZoomed) {
+		var moveableBrickHelp;
+		for (var k = 0; k < moveableBricks.length; k++) {
+		if (currentConnector.brick0.compare(moveableBricks[k])) {
+		moveableBrickHelp = moveableBricks[k];
+		}
+		}
+		var fromX = moveableBrickHelp.getX();
+		var fromY = moveableBrickHelp.getY();
+		var toX = currentMovableBrick.getX();
+		var toY = currentMovableBrick.getY();
+		var dx = 0;
+		var dy = 0;
+		console.log(currentMovableBrick.getDescription() + ": " + fromX + " " + fromY + " " + toX + " " + toY);
+		if (toX >= fromX) {
+		dx = (toX - fromX);
+		console.log(currentMovableBrick.getDescription() + ": " + currentMovableBrick.getX() + " " + dx);
+		currentMovableBrick.setX(currentMovableBrick.getX() + dx);
+		} else {
+		dx = (fromX - toX) ;
+		currentMovableBrick.setX(currentMovableBrick.getX() - dx);
+		}
+		if (toY >= fromY) {
+		dy = (toY - fromY);
+		currentMovableBrick.setY(currentMovableBrick.getY() + dy);
+		} else {
+		dy = (fromY - toY);
+		currentMovableBrick.setY(currentMovableBrick.getY() - +dy);
+		}
+		bricksAlreadyZoomed.push(currentMovableBrick);
+		}
+		}
+		}
+		}*/
+
 		for (var i = 0; i < connectors.length; i++) {
 			var currentConnector = connectors[i];
 			for (var j = 0; j < moveableBricks.length; j++) {
 				var currentMovableBrick = moveableBricks[j];
 				if (currentConnector.brick1.compare(moveableBricks[j])) {
-					var dx = currentConnector.toX - currentConnector.fromX;
-					var dy = currentConnector.toY - currentConnector.fromY;
-					console.log(currentMovableBrick.getDescription());
-					currentMovableBrick.setX(currentMovableBrick.getX() + (dx));
-					currentMovableBrick.setY(currentMovableBrick.getY() + (dy));
+
+					var fromX = currentConnector.fromX;
+					var fromY = currentConnector.fromY;
+					var toX = currentConnector.toX;
+					var toY = currentConnector.toY;
+					var dx = toX - fromX;
+					var dy = toY - fromY;
+
+					if (toX >= fromX) {
+						dx = (toX - fromX);
+						console.log("ZOOM IN : " + currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
+						currentMovableBrick.setX(currentMovableBrick.getX() + dx);
+					} else {
+						dx = (fromX - toX);
+						currentMovableBrick.setX(currentMovableBrick.getX() - dx);
+					}
+					if (toY >= fromY) {
+						dy = (toY - fromY);
+						currentMovableBrick.setY(currentMovableBrick.getY() + dy);
+					} else {
+						dy = (fromY - toY);
+						currentMovableBrick.setY(currentMovableBrick.getY() - dy);
+					}
+					//controller.draw();
 				}
 			}
 		}
@@ -654,20 +721,91 @@ var MoveableBricksEventHandler = function (vals) {
 	}
 
 	moveableBricksEventHandler.zoomOut = function () {
-		for (var i = 0; i < moveableBricks.length; i++) {
-			moveableBricks[i].setWidth(moveableBricks[i].getWidth() / 2);
-			moveableBricks[i].setHeight(moveableBricks[i].getHeight() / 2);
+		/*for (var i = 0; i < moveableBricks.length; i++) {
+		moveableBricks[i].setWidth(moveableBricks[i].getWidth() / 2);
+		moveableBricks[i].setHeight(moveableBricks[i].getHeight() / 2);
+		}*/
+
+		/*	var bricksAlreadyZoomed = [];
+		for (var i = 0; i < connectors.length; i++) {
+		var currentConnector = connectors[i];
+		for (var j = 0; j < moveableBricks.length; j++) {
+		var currentMovableBrick = moveableBricks[j];
+		if (currentConnector.brick1.compare(currentMovableBrick)) {
+		var alreadyZoomed = false;
+		for (var k = 0; k < bricksAlreadyZoomed.length; k++) {
+		if (currentMovableBrick.compare(bricksAlreadyZoomed[k])) {
+		alreadyZoomed = true;
 		}
+		}
+		if (!alreadyZoomed) {
+		var moveableBrickHelp;
+		for (var k = 0; k < moveableBricks.length; k++) {
+		if (currentConnector.brick0.compare(moveableBricks[k])) {
+		moveableBrickHelp = moveableBricks[k];
+		}
+		}
+		var fromX = moveableBrickHelp.getX();
+		var fromY = moveableBrickHelp.getY();
+		var toX = currentMovableBrick.getX();
+		var toY = currentMovableBrick.getY();
+		var dx = 0;
+		var dy = 0;
+		console.log(currentMovableBrick.getDescription() + ": " + fromX + " " + fromY + " " + toX + " " + toY);
+		if (toX >= fromX) {
+		dx = (toX - fromX) / 2;
+		console.log(currentMovableBrick.getDescription() + ": " + currentMovableBrick.getX() + " " + dx);
+		currentMovableBrick.setX(currentMovableBrick.getX() - dx);
+		} else {
+		dx = (fromX - toX) / 2;
+		currentMovableBrick.setX(currentMovableBrick.getX() + dx);
+		}
+		if (toY >= fromY) {
+		dy = (toY - fromY) / 2;
+		currentMovableBrick.setY(currentMovableBrick.getY() - dy);
+		} else {
+		dy = (fromY - toY) / 2;
+		currentMovableBrick.setY(currentMovableBrick.getY() + dy);
+		}
+		bricksAlreadyZoomed.push(currentMovableBrick);
+		}
+		}
+		}
+		}*/
+
 		for (var i = 0; i < connectors.length; i++) {
 			var currentConnector = connectors[i];
 			for (var j = 0; j < moveableBricks.length; j++) {
 				var currentMovableBrick = moveableBricks[j];
 				if (currentConnector.brick1.compare(moveableBricks[j])) {
-					var dx = currentConnector.toX - currentConnector.fromX;
-					var dy = currentConnector.toY - currentConnector.fromY;
-					console.log(currentMovableBrick.getDescription());
-					currentMovableBrick.setX(currentMovableBrick.getX() - (dx));
-					currentMovableBrick.setY(currentMovableBrick.getY() - (dy));
+
+					var fromX = currentConnector.fromX;
+					var fromY = currentConnector.fromY;
+					var toX = currentConnector.toX;
+					var toY = currentConnector.toY;
+					var dx = toX - fromX;
+					var dy = toY - fromY;
+
+					if (toX >= fromX) {
+						dx = (toX - fromX) / 2;
+						console.log(currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
+						if(dx > 100)
+						currentMovableBrick.setX(currentMovableBrick.getX() - dx);
+					} else {
+						dx = (fromX - toX) / 2;
+						if(dx > 100)
+						currentMovableBrick.setX(currentMovableBrick.getX() + dx);
+					}
+					if (toY >= fromY) {
+						dy = (toY - fromY) / 2;
+						if(dx > 100)
+						currentMovableBrick.setY(currentMovableBrick.getY() - dy);
+					} else {
+						dy = (fromY - toY) / 2;
+						if(dx > 100)
+						currentMovableBrick.setY(currentMovableBrick.getY() + dy);
+					}
+					//controller.draw();
 				}
 			}
 		}

@@ -106,13 +106,10 @@ var Controller = function (vals) {
 	var doKeyDown = function (e) {
 		if (e.keyCode == 107 || e.keyCode == 187) { //+
 			//zoom in
-			//ctx.scale(2, 2);
-			//draw();
 			moveableBricksEventHandler.zoomIn();
 		}
 		if (e.keyCode == 109 || e.keyCode == 189) { //-
 			//zoom out
-
 			moveableBricksEventHandler.zoomOut();
 		}
 		if (e.keyCode == 46) { //del
