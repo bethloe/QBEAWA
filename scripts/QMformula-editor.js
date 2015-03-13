@@ -157,6 +157,10 @@ var Controller = function (vals) {
 		return moveableBricksEventHandler.calculateQMScore(brick);
 	}
 	
+	controller.calculateQMAverageWeight = function(brick){
+		return moveableBricksEventHandler.calculateQMAverageWeight(brick);
+	}
+	
 	controller.calculateColorForQMResult = function(brick) {
 		return moveableBricksEventHandler.calculateColorForQMResult(brick);	
 	}

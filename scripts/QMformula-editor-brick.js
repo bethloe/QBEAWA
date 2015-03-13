@@ -124,6 +124,7 @@ var QMBrick = function (vals) {
 			textWidth = ctx.measureText(weight).width;
 			ctx.fillText(weight, xPos + ((width - textWidth) / 2), yPos + height - 60);
 		} else { //calculate score
+			ctx.globalAlpha = controller.calculateQMAverageWeight(qmBrick);
 			ctx.fillText(description, xPos + ((width - textWidth) / 2), yPos + sizeOfText + ((height - sizeOfText) / 2));
 			if (controller.getShowValues()) {
 				prepareTextSize(controller.calculateQMScore(qmBrick), width, 24);

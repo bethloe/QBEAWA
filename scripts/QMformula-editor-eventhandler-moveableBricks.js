@@ -71,6 +71,23 @@ var MoveableBricksEventHandler = function (vals) {
 		return color;
 	}
 
+	var calculateQMAverageWeight = function (brick, weightAndCnt) {
+		var brickFound = false;
+		for (var i = 0; i < connectors.length; i++) {
+			if (connectors[i].brick1.compare(brick)) {
+				weightAndCnt.weight += parseFloat(connectors[i].brick0.getWeight());
+				weightAndCnt.cnt += 1;
+				weightAndCnt = calculateQMAverageWeight(connectors[i].brick0,weightAndCnt);
+				brickFound = true;
+			}
+		}
+		if (!brickFound) {
+			weightAndCnt.weight = weightAndCnt.weight / parseFloat(weightAndCnt.cnt);
+		}
+		return weightAndCnt;
+
+	}
+
 	var createFormulaForQM = function (brick, formula, first) {
 		for (var i = 0; i < connectors.length; i++) {
 			if (connectors[i].brick1.compare(brick)) {
@@ -210,6 +227,12 @@ var MoveableBricksEventHandler = function (vals) {
 
 	moveableBricksEventHandler.calculateColorForQMResult = function (brick) {
 		return calculateColorForQMResult(brick, 0, 0, 0, true);
+	}
+
+	moveableBricksEventHandler.calculateQMAverageWeight = function (brick) {
+		var weightAndCnt = { weight : 0, cnt : 0};
+		weightAndCnt =  calculateQMAverageWeight(brick, weightAndCnt);
+		return weightAndCnt.weight;
 	}
 
 	moveableBricksEventHandler.calculateQMScore = function (brick) {
@@ -789,21 +812,21 @@ var MoveableBricksEventHandler = function (vals) {
 					if (toX >= fromX) {
 						dx = (toX - fromX) / 2;
 						console.log(currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
-						if(dx > 100)
-						currentMovableBrick.setX(currentMovableBrick.getX() - dx);
+						if (dx > 100)
+							currentMovableBrick.setX(currentMovableBrick.getX() - dx);
 					} else {
 						dx = (fromX - toX) / 2;
-						if(dx > 100)
-						currentMovableBrick.setX(currentMovableBrick.getX() + dx);
+						if (dx > 100)
+							currentMovableBrick.setX(currentMovableBrick.getX() + dx);
 					}
 					if (toY >= fromY) {
 						dy = (toY - fromY) / 2;
-						if(dx > 100)
-						currentMovableBrick.setY(currentMovableBrick.getY() - dy);
+						if (dx > 100)
+							currentMovableBrick.setY(currentMovableBrick.getY() - dy);
 					} else {
 						dy = (fromY - toY) / 2;
-						if(dx > 100)
-						currentMovableBrick.setY(currentMovableBrick.getY() + dy);
+						if (dx > 100)
+							currentMovableBrick.setY(currentMovableBrick.getY() + dy);
 					}
 					//controller.draw();
 				}
