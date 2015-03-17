@@ -1,0 +1,33 @@
+#hintergrund {
+    display:none;
+    z-index:1;
+    position: fixed;
+    height:100%;
+    width:100%;
+    top:0px;
+    left:0px;
+    background:#000000;
+}
+ 
+#popup {
+    display: none;
+    z-index: 2;
+    position: fixed;
+    width:1800px;
+    top: 0%;
+    left: 0%;
+    color: #000;
+}
+ 
+div.schliessen {
+    position: relative;
+    height: 30px;
+    width: 30px;
+    background: url("close.png") no-repeat scroll 0 0 transparent;
+    float: right;
+    cursor: pointer;
+}
+ 
+#popup_inhalt {
+    margin: 8px 14px;
+}
