@@ -17,7 +17,9 @@ var DataRetriever = function (vals) {
 	var GLOBAL_imageCount = 0;
 	var GLOBAL_JSON = new Object();
 	var GLOBAL_imageArray = [];
+	var GLOBAL_referencesArray = [];
 	var GLOBAL_rawText = "";
+	var GLOBAL_rawTextWithData = "";
 	var GLOBAL_sectionInfos;
 	var dataRetriver = {};
 
@@ -60,10 +62,18 @@ var DataRetriever = function (vals) {
 
 		//GET RAW TEXT:
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=&titles=" + GLOBAL_title + "&continue", handleRawText);
-
+		
+		//retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&rvprop=content&rvlimit=1&titles=" + GLOBAL_title + "&continue", handleRawText);
+		//http://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&prop=revisions&rvprop=content&rvlimit=1&continue
+		
 		//GET ALL SECTIONS TITLES:
 		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&prop=sections&page=" + GLOBAL_title, handleSectionTitles);
 
+		//GET ALL REFERENCES (EXTERNAL LINKS right now that's the only way I know :-( ):
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_title + "&continue", handleExternalLinks);
+		
+		//GET RAW TEXT WITH ALL DATA: 
+		//retrieveDataText("http://en.wikipedia.org/w/index.php?" + "action=raw&format=json&title=" + GLOBAL_title , handleRawTextWithData);
 	}
 
 	dataRetriver.getImageArray = function () {
@@ -73,9 +83,17 @@ var DataRetriever = function (vals) {
 	dataRetriver.getRawText = function () {
 		return GLOBAL_rawText;
 	}
+
+	dataRetriver.getRawTextWithData = function () {
+		return albertEinsteinRawData();
+	}
 	
-	dataRetriver.getSectionInfos = function(){
+	dataRetriver.getSectionInfos = function () {
 		return GLOBAL_sectionInfos;
+	}
+
+	dataRetriver.getAllReferences = function () {
+		return GLOBAL_referencesArray;
 	}
 
 	var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
@@ -87,12 +105,35 @@ var DataRetriever = function (vals) {
 			success : functionOnSuccess,
 		});
 	}
+	
+	
+	var retrieveDataText = function (urlInclAllOptions, functionOnSuccess) {
+		$.ajax({
+			url : urlInclAllOptions,
+			dataType : "jsonp",
+			cache : false,
+			success : functionOnSuccess,
+		});
+	}
 
 	var handleSectionTitles = function (JSONResponse) {
 		var sectionTitles = JSON.parse(JSON.stringify(JSONResponse));
 		GLOBAL_sectionInfos = sectionTitles.parse.sections;
 	}
 
+	var handleRawTextWithData = function (JSONResponse) {
+		var extractPlainText = JSON.parse(JSON.stringify(JSONResponse));
+		//var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
+		console.log("HERE " + JSON.stringify(JSONResponse));
+		if (extractPlainText != undefined) {
+			
+			GLOBAL_rawTextWithData = extractPlainText;
+		} else {
+			GLOBAL_rawTextWithData = "";
+		}
+	}
+	
+		
 	var handleRawText = function (JSONResponse) {
 		var text = JSON.parse(JSON.stringify(JSONResponse));
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
@@ -103,6 +144,18 @@ var DataRetriever = function (vals) {
 			GLOBAL_rawText = "";
 		}
 	}
+	
+	/*var handleRawText = function (JSONResponse) {
+		console.log("HANDLE RAW TEXT");
+		var text = JSON.parse(JSON.stringify(JSONResponse));
+		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].revisions[0]['*'];
+		//console.log("PLAIN TEXT: " + extractPlainText);
+		if (extractPlainText != undefined) {
+			GLOBAL_rawText = extractPlainText;
+		} else {
+			GLOBAL_rawText = "";
+		}
+	}*/
 
 	var handleFlesch = function (JSONResponse) {
 		var text = JSON.parse(JSON.stringify(JSONResponse));
@@ -176,6 +229,35 @@ var DataRetriever = function (vals) {
 		}
 	}
 
+	var handleExternalLinks = function (JSONResponse) {
+		var externalLinks = JSON.parse(JSON.stringify(JSONResponse));
+		var JSONexternalLinks = externalLinks.query.pages[Object.keys(externalLinks.query.pages)[0]].extlinks;
+		if (JSONexternalLinks != undefined) {
+			GLOBAL_externalLinksCount += JSONexternalLinks.length;
+			$("#ExternalLinks").text(GLOBAL_externalLinksCount);
+			GLOBAL_JSON.externalLinks = GLOBAL_externalLinksCount;
+			//STROE REFS INTO REFARRAY
+			for (var i = 0; i < JSONexternalLinks.length; i++) {
+				console.log("----------------------> " + JSONexternalLinks[i]['*']);
+				GLOBAL_referencesArray.push(JSONexternalLinks[i]['*'] );
+			}
+
+			if (externalLinks.hasOwnProperty("continue")) {
+				if (externalLinks.continue.hasOwnProperty("eloffset")) {
+					//GET REST OF THE DATA:
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_title + "&eloffset=" + externalLinks.continue.eloffset + "&continue", handleExternalLinks);
+				} else {}
+			} else {
+				//DONE
+				$("#ExternalLinks").text(GLOBAL_externalLinksCount);
+				GLOBAL_JSON.externalLinks = GLOBAL_externalLinksCount;
+			}
+		} else {
+			$("#ExternalLinks").text("0");
+			GLOBAL_JSON.externalLinks = 0;
+		}
+	}
+
 	var handleIncomingLinks = function (JSONResponse) {
 		var incomingLinks = JSON.parse(JSON.stringify(JSONResponse));
 		var JSONincomingLinks = incomingLinks.query.pages[Object.keys(incomingLinks.query.pages)[0]].linkshere;
@@ -197,29 +279,6 @@ var DataRetriever = function (vals) {
 		} else {
 			$("#NumOfPagesWhichLinksToThisPage").text("0");
 			GLOBAL_JSON.linksHere = 0;
-		}
-	}
-
-	var handleExternalLinks = function (JSONResponse) {
-		var externalLinks = JSON.parse(JSON.stringify(JSONResponse));
-		var JSONexternalLinks = externalLinks.query.pages[Object.keys(externalLinks.query.pages)[0]].extlinks;
-		if (JSONexternalLinks != undefined) {
-			GLOBAL_externalLinksCount += JSONexternalLinks.length;
-			$("#ExternalLinks").text(GLOBAL_externalLinksCount);
-			GLOBAL_JSON.externalLinks = GLOBAL_externalLinksCount;
-			if (externalLinks.hasOwnProperty("continue")) {
-				if (externalLinks.continue.hasOwnProperty("eloffset")) {
-					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_title + "&eloffset=" + externalLinks.continue.eloffset + "&continue", handleExternalLinks);
-				} else {}
-			} else {
-				//DONE
-				$("#ExternalLinks").text(GLOBAL_externalLinksCount);
-				GLOBAL_JSON.externalLinks = GLOBAL_externalLinksCount;
-			}
-		} else {
-			$("#ExternalLinks").text("0");
-			GLOBAL_JSON.externalLinks = 0;
 		}
 	}
 

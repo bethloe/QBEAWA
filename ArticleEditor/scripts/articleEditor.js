@@ -3,7 +3,6 @@ var dr = new DataRetriever({
 		title : 'Albert Einstein'
 	});
 dr.getAllMeasures();
-
 var dropdown = document.getElementById("dropdownID");
 dropdown.onchange = update;
 var roundnessSlider = document.getElementById("roundnessSlider");
@@ -48,82 +47,280 @@ var nodesHideAndSeek = new vis.DataSet();
 var textNodes = new vis.DataSet();
 var allNodesBackup = new vis.DataSet();
 
-/*nodes.add([{
-id : 1,
-title : 'tooltip1',
-label : 'Node 1',
-image : "http://upload.wikimedia.org/wikipedia/commons/6/6f/Einstein-formal_portrait-35.jpg",
-shape : "image",
-value : 30,
-group : 1,
-allowedToMoveX : true,
-allowedToMoveY : true
-}, {
-id : 2,
-title : 'tooltip2',
-label : 'Node 2',
-image : url,
-dataToChange : urlTest,
-shape : 'image',
-group : 1,
-allowedToMoveX : true,
-allowedToMoveY : true
-}, {
-id : 3,
-title : 'tooltip3',
-label : 'Node 3',
-group : 2,
-allowedToMoveX : true,
-allowedToMoveY : true
-}, {
-id : 4,
-title : 'tooltip4',
-label : 'Node 4',
-group : 2,
-allowedToMoveX : true,
-allowedToMoveY : true
-}, {
-id : 5,
-title : 'tooltip5',
-label : 'Node 5',
-group : 2,
-allowedToMoveX : true,
-allowedToMoveY : true
-}
-]);*/
 
 // create an array with edges
 
 var edges = new vis.DataSet();
-/*edges.add([{
-from : 1,
-to : 2,
-style : "arrow"
-}, {
-from : 1,
-to : 3,
-style : "arrow"
-}, {
-from : 2,
-to : 4,
-style : "arrow"
-}, {
-from : 2,
-to : 5,
-style : "arrow"
-}
-]);*/
 
-// create a network
+
 var container = document.getElementById('mynetwork');
 var data = {
 	nodes : nodes,
 	edges : edges
 };
+var rawEinsteinDataStr = "";
+function rawEinsteinData(data) {
+	console.log("DATA: " + data);
+	rawEinsteinDataStr = data;
+}
+
+albertEinsteinRawData(rawEinsteinData);
+
+var reverseString = function (s) {
+	return s.split("").reverse().join("");
+}
+
+var getSectionToRef = function (rawText, ref) {
+	var str = rawText.substring(0, rawText.search(ref));
+	var equalsFound = false;
+	var sectionName = "";
+	for (var i = str.length - 1; i > 0; i--) {
+		if (!equalsFound) {
+			if (str[i] == "=" && str[i - 1] == "=") {
+				while (str[i - 1] == "=")
+					i--;
+				equalsFound = true;
+			}
+		} else {
+			if (str[i] != "=") {
+				sectionName += str[i];
+				cutSectionName = true;
+			} else {
+				sectionName = reverseString(sectionName);
+				return sectionName;
+			}
+		}
+
+	}
+}
+
+	var copyID = 100000;
+var copy = function(){
+	
+	var items = nodes.get();
+	
+	for (var i = 0; i < items.length; i++) {
+	var item = items[i];
+	nodes.add({
+			id : copyID,
+			x : item.x+30000,
+			y : item.y,
+			title : item.title,
+			label : item.label,
+			image : item.image,
+			shape : item.shape,
+			//value : 30,
+			allowedToMoveX : item.allowedToMoveX,
+			allowedToMoveY : item.allowedToMoveY,
+			type : item.type,
+			wikiLevel : item.wikiLevel,
+			masterId : item.masterId
+
+		});
+		copyID ++;
+	}
+
+}
+
+var getNodeToSectionName = function (sectionName) {
+	var items = nodes.get();
+
+	for (var i = 0; i < items.length; i++) {
+		var item = items[i];
+		if (item.label == sectionName) {
+			//console.log("sectionName: " + sectionName + " == " + item.label);
+			return item;
+		}
+	}
+	return null;
+}
+
+var showReferencesFlag = false;
+
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+var showImages = function () {
+	var imageIdCnt = 80000;
+	var images = dr.getImageArray();
+	var maxX = getBiggestXValue();
+	var minX = getSmallestXValue();
+	var maxY = getBiggestYValue();
+	var minY = getSmallestYValue();
+	var offsetY = 1000;
+	var offsetX = 2000;
+	for (var i = 0; i < images.length; i++) {
+		var image = images[i];
+		var x = getRandomInt(minX, maxX);
+		var y = getRandomInt(minY, maxY);
+
+		if (i % 2 == 0) {
+			if (getRandomInt(1, 2) == 1)
+				y = minY - offsetY;
+			else
+				y = maxY + offsetY;
+		} else {
+			if (getRandomInt(1, 2) == 1)
+				x = minX - offsetX;
+			else
+				x = maxX + offsetX;
+		}
+		nodes.add({
+			id : imageIdCnt,
+			x : x,
+			y : y,
+			title : image,
+			label : image,
+			image : image,
+			shape : "image",
+			//value : 30,
+			allowedToMoveX : true,
+			allowedToMoveY : true,
+			type : "img",
+			wikiLevel : -1,
+			masterId : -1
+
+		});
+		imageIdCnt++;
+	}
+	console.log("END");
+
+	network.redraw();
+	//Now that we have the height and the width of the images we can put them into a non overlapping position
+	var items = nodes.get();
+	for (var i = 0; i < items.length; i++) {
+		var item = items[i];
+		if (item.type == 'img') {
+			for (var j = 0; j < items.length; j++) {
+				var innerItem = items[j];
+				if (innerItem.type == 'img' && innerItem.id != item.id) {
+					if (item.x >= innerItem.x && item.x <= innerItem.x + innerItem.width && item.y >= innerItem.y && item.y <= innerItem.y + innerItem.height) {
+						if (item.x <= minX || item.y <= minY)
+							nodes.update({
+								id : item.id,
+								x : item.x + innerItem.width,
+								y : item.y + innerItem.height
+							});
+						else
+							nodes.update({
+								id : item.id,
+								x : item.x - innerItem.width,
+								y : item.y - innerItem.height
+							});
+					}
+				}
+			}
+
+		}
+
+	}
+}
+
+var hideImages = function () {
+	var items = nodes.get();
+	for (var i = 0; i < items.length; i++) {
+		if (items[i].type == 'img')
+			nodes.remove(items[i].id);
+
+	}
+}
+
+var showReferences = function () {
+	showReferencesFlag = true;
+	var refs = dr.getAllReferences();
+	var rawTextWithData = rawEinsteinDataStr;
+	var refIdCnt = 70000;
+	var sectionNameToRefCnt = {};
+	for (var i = 0; i < refs.length; i++) {
+		if (rawTextWithData.search(refs[i]) > -1) {
+			var sectionName = getSectionToRef(rawTextWithData, refs[i]);
+			//console.log("SECTIONNAME: " + sectionName);
+			if (sectionName != undefined) { //WE HAVE SOME UNDEFINED SECTION NAMES BECAUSE OF THE INTRO!!
+				//console.log("REF: " + refs[i]);
+				var item = getNodeToSectionName(sectionName);
+				var idHelp = item.id;
+				if (item != null) {
+					//NOW WE HAVE THE SECTION HEADLINE NODE BUT WE WANT THE TEXT NODES SO LET'S GO ON
+					var children = getAllChildrenOfANode(item.id);
+					var childrenItem = children.get();
+					var xPos = item.x;
+					var yPos = item.y;
+					var height = item.height;
+					var wikiLevel = item.wikiLevel;
+					var masterId = item.masterId;
+					var idHelp = item.id;
+					var xyOffset = 0;
+
+					if (childrenItem.length > 0) {
+						xPos = childrenItem[0].x;
+						yPos = childrenItem[0].y;
+						height = childrenItem[0].height;
+						wikiLevel = childrenItem[0].wikiLevel;
+						masterId = childrenItem[0].masterId;
+						idHelp = childrenItem[0].id;
+					}
+					if (!sectionNameToRefCnt.hasOwnProperty(sectionName)) {
+						sectionNameToRefCnt[sectionName] = 1;
+					} else {
+						sectionNameToRefCnt[sectionName] += 1;
+					}
+					xyOffset = sectionNameToRefCnt[sectionName];
+
+					//console.log("sectionName: " + sectionName + " x: " + item.x + " ref: " + refs[i] + " id : " + idHelp);
+					nodes.add({
+						id : refIdCnt,
+						x : i % 2 == 0 ? xPos + xyOffset * 30 : xPos - xyOffset * 30,
+						y : yPos + height + xyOffset * 60, //i%2==0?500:-7000,
+						title : refs[i],
+						label : refs[i],
+						value : 1,
+						shape : 'box',
+						type : 'ref',
+						allowedToMoveX : true,
+						allowedToMoveY : true,
+						wikiLevel : wikiLevel,
+						masterId : masterId //if from == -1 the no master
+					});
+
+					edges.add({
+						from : refIdCnt,
+						to : idHelp,
+						style : "arrow"
+					});
+
+					refIdCnt++;
+				}
+			}
+		}
+	}
+}
+
+var hideReferences = function () {
+	showReferencesFlag = false;
+	var items = nodes.get();
+	for (var i = 0; i < items.length; i++) {
+		if (items[i].type == "ref") {
+			nodes.remove(items[i].id);
+		}
+	}
+}
 
 var levelOfSemanticZooming = 0;
 
+var center = function () {
+	console.log(getBiggestXValue() + " " + getBiggestYValue() + " " + getSmallestXValue() + " " + getSmallestYValue());
+	var object = {};
+	object.position = {
+		x : (getBiggestXValue() + getSmallestXValue()) / 2,
+		y : (getSmallestYValue() + getBiggestYValue()) / 2
+	};
+	object.scale = 0.07;
+	network.moveTo(object);
+
+}
 var fillDataNew = function () {
+
 	var sectionInfos = dr.getSectionInfos();
 	var articleText = dr.getRawText();
 	var xOffset = 1500;
@@ -158,28 +355,29 @@ var fillDataNew = function () {
 				id : idCnt,
 				x : sectionsInSameLevel * xOffset,
 				y : currentLevel * yOffset,
-				title : 'tooltip' + idCnt,
-				label : sectionInfos[i].line + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+				title : sectionInfos[i].line,
+				label : sectionInfos[i].line, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
 				value : 1,
 				allowedToMoveX : true,
 				allowedToMoveY : true,
 				wikiLevel : currentLevel,
 				masterId : from, //if from == -1 the no master
-				imtext : false
+				type : 'section'
 			});
 			var textOfSection = getTextOfSection(sectionInfos[i].line);
 
 			//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
 			//console.log("LENGTH: " + textOfSection.length);
-			if (textOfSection != "" && textOfSection.length > 5) {
+			if (textOfSection != "" && textOfSection.length > 10) {
 
 				var value = textOfSection.split(' ').length;
+				textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
 				textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
 				nodes.add({
 					id : sectionId,
 					x : sectionsInSameLevel * xOffset,
 					y : currentLevel * yOffset + 800,
-					title : 'tooltip' + idCnt,
+					title : textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
 					label : textOfSection,
 					value : value,
 					shape : 'box',
@@ -187,7 +385,7 @@ var fillDataNew = function () {
 					allowedToMoveY : true,
 					wikiLevel : currentLevel,
 					masterId : idCnt, //if from == -1 the no master
-					imtext : true
+					type : 'text'
 				});
 				edges.add({
 					from : idCnt,
@@ -220,27 +418,28 @@ var fillDataNew = function () {
 				id : idCnt,
 				x : sectionsInSameLevel * xOffset,
 				y : currentLevel * yOffset,
-				title : 'tooltip' + idCnt,
-				label : sectionInfos[i].line + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+				title : sectionInfos[i].line,
+				label : sectionInfos[i].line, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
 				value : 1,
 				allowedToMoveX : true,
 				allowedToMoveY : true,
 				wikiLevel : currentLevel,
 				masterId : from, //if from == -1 the no master
-				imtext : false
+				type : 'section'
 			});
 
 			var textOfSection = getTextOfSection(sectionInfos[i].line);
 			//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
-			if (textOfSection != "" && textOfSection.length > 5) {
+			if (textOfSection != "" && textOfSection.length > 10) {
 
 				var value = textOfSection.split(' ').length;
+				textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
 				textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
 				nodes.add({
 					id : sectionId,
 					x : sectionsInSameLevel * xOffset + 800,
 					y : currentLevel * yOffset,
-					title : 'tooltip' + idCnt,
+					title : textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
 					label : textOfSection,
 					shape : 'box',
 					value : value,
@@ -248,7 +447,7 @@ var fillDataNew = function () {
 					allowedToMoveY : true,
 					wikiLevel : currentLevel,
 					masterId : idCnt, //if from == -1 the no master
-					imtext : true
+					type : 'text'
 				});
 				edges.add({
 					from : idCnt,
@@ -284,39 +483,16 @@ var fillDataNew = function () {
 	}
 
 	network.redraw();
-	/*
-	var items = nodes.get();
+	redraw();
+	center();
+}
 
-	var arrayHeightHelper = [];
-	for (var i = 0; i < items.length; i++) {
-	var sum = 0;
-	var mainItem = items[i];
-	if (mainItem.imtext) {
-	for (var j = 0; j < items.length; j++) {
-	var item = items[j];
-	//console.log("HERE : " +mainItem.id + " " + mainItem.y+" < "+item.y+" && "+mainItem.wikiLevel+" == "+item.wikiLevel+" && "+item.imtext);
-	if (mainItem.y > item.y && mainItem.wikiLevel == item.wikiLevel && item.imtext) {
-	sum += item.height;
-	}
-	}
-	}
-	console.log("ID: " + mainItem.id + " sum : " + sum + " TEXT " + mainItem.label);
-	arrayHeightHelper.push({
-	id : mainItem.id,
-	y : (mainItem.y + sum)
-	});
-	}
-
-	for (var i = 0; i < arrayHeightHelper.length; i++) {
-	nodes.update({
-	id : arrayHeightHelper[i].id,
-	y : arrayHeightHelper[i].y
-	});
-	}*/
-
+function redraw() {
+	network.redraw();
 	var currentlevelCnt = getMaxLevel();
 	var sumMaxHeightOfLevel = 0; //BUG IN Y DIRECTION
 	console.log("currentlevelCnt : " + currentlevelCnt);
+	var nodesWithoutTextAsChildren = [];
 	for (var clc = currentlevelCnt; clc >= 0; clc--) {
 		sumMaxHeightOfLevel += getMaxHeightOfLevel(clc) + 500;
 		var allMasterOfALevel = getAllTextNodeMastersOfALevel(clc);
@@ -327,29 +503,155 @@ var fillDataNew = function () {
 			var xCntStart = 0;
 			var xCntEnd = 0;
 			var items = nodesHelp.get();
+			console.log("UPDATE NODE MASTER: " + allMasterOfALevel[i] + " LEVEL: " + clc);
 			for (var j = 0; j < items.length; j++) {
 				if (j == 0)
 					xCntStart = xCnt;
 				if (j + 1 == items.length)
 					xCntEnd = xCnt;
-				console.log("ID: " + items[j].id + " " + xCnt + " " + (-sumMaxHeightOfLevel));
+				console.log("ID: " + items[j].id + " " + xCnt + " " + items[j].width + " " + (-sumMaxHeightOfLevel) + " " + allMasterOfALevel[i] + " " + items[j].wikiLevel);
 				nodes.update({
 					id : items[j].id,
 					x : xCnt,
-					y : (-sumMaxHeightOfLevel)
+					y : (-sumMaxHeightOfLevel + 300)
 				});
-				xCnt += items[j].width + 300;
+				xCnt += items[j].width + 50;
 			}
-			console.log("UPDATE NODE");
-			nodes.update({
-				id : allMasterOfALevel[i],
-				x : ((xCntStart + xCntEnd) / 2),//getXValueOfMasterNode(allMasterOfALevel[i]),//((xCntStart + xCntEnd) / 2),//
-				y : -sumMaxHeightOfLevel - 500//getYValueOfMasterNode(allMasterOfALevel[i])//
-			});
+			if (xCntStart == 0 && xCntEnd == 0) //No text node as child
+				nodesWithoutTextAsChildren.push(nodes.get(allMasterOfALevel[i]));
+			else
+				nodes.update({
+					id : allMasterOfALevel[i],
+					x : ((xCntStart + xCntEnd) / 2), //getXValueOfMasterNode(allMasterOfALevel[i]),//((xCntStart + xCntEnd) / 2),//
+					y : -sumMaxHeightOfLevel - 300 //getYValueOfMasterNode(allMasterOfALevel[i])//
+				});
 
 		}
 	}
+
+	for (var i = 0; i < nodesWithoutTextAsChildren.length; i++) {
+		var node = nodesWithoutTextAsChildren[i];
+		if (node != null) {
+			console.log("HERE: " + JSON.stringify(node));
+			var x = getXValueOfMasterNode(node.id);
+			var y = getYValueOfMasterNode(node.id);
+			nodes.update({
+				id : node.id,
+				x : x,
+				y : y
+			});
+		}
+	}
 	network.redraw();
+}
+
+function getRandomColor() {
+	var letters = '0123456789ABCDEF'.split('');
+	var color = '#';
+	for (var i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
+
+function colorLevels(isColor) {
+	var currentlevelCnt = getMaxLevel();
+	for (var clc = currentlevelCnt; clc >= 0; clc--) {
+		colorAllNodesOfLevel(clc, isColor ? getRandomColor() : "#97C2FC");
+	}
+
+}
+
+function colorAllNodesOfLevel(level, color) {
+
+	var items = nodes.get();
+	for (var i = 0; i < items.length; i++) {
+		var item = items[i];
+		if (item.wikiLevel == level) {
+			nodes.update({
+				id : item.id,
+				color : {
+					background : color,
+					border : '#2B7CE9',
+					highlight : {
+						background : '#D2E5FF',
+						border : '#2B7CE9'
+					}
+				}
+			});
+		}
+
+	}
+}
+
+function getBiggestXValue() {
+	var items = nodes.get();
+	var maxX = 0;
+	var start = true;
+	for (var i = 0; i < items.length; i++) {
+		if (start) {
+			start = false;
+			maxX = items[i].x;
+		}
+		if (items[i].x > maxX) {
+			maxX = items[i].x;
+		}
+	}
+
+	return maxX;
+}
+
+function getBiggestYValue() {
+	var items = nodes.get();
+	var maxY = 0;
+	var start = true;
+	for (var i = 0; i < items.length; i++) {
+		if (start) {
+			start = false;
+			maxY = items[i].y;
+		}
+		if (items[i].y > maxY) {
+			maxY = items[i].y;
+		}
+	}
+
+	return maxY;
+
+}
+
+function getSmallestXValue() {
+	var items = nodes.get();
+	var minX = 0;
+	var start = true;
+	for (var i = 0; i < items.length; i++) {
+		if (start) {
+			start = false;
+			minX = items[i].x;
+		}
+		if (items[i].x < minX) {
+			minX = items[i].x;
+		}
+	}
+
+	return minX;
+}
+
+function getSmallestYValue() {
+	var items = nodes.get();
+	var minY = 0;
+	var start = true;
+	for (var i = 0; i < items.length; i++) {
+		if (start) {
+			start = false;
+			minY = items[i].y;
+		}
+		if (items[i].y < minY) {
+			minY = items[i].y;
+		}
+	}
+
+	return minY;
+
 }
 
 function getXValueOfMasterNode(master) {
@@ -398,7 +700,7 @@ function getYValueOfMasterNode(master) {
 		}
 	}
 
-	return (maxY + minY) / 2;
+	return minY - 300;
 
 }
 
@@ -409,12 +711,29 @@ function getAllTextNodeMastersOfALevel(level) {
 		var masterInhelp = false;
 		if (items[i].wikiLevel == level) {
 			for (var j = 0; j < help.length; j++) {
-				if (help[i] == items[i].masterId) {
+				if (help[j] == items[i].masterId) {
 					masterInhelp = true;
 				}
 			}
 			if (!masterInhelp)
 				help.push(items[i].masterId);
+		}
+	}
+	/*console.log("getAllTextNodeMastersOfALevel " + level);
+
+	for (var j = 0; j < help.length; j++) {
+	console.log(j + ". Master: " + help[j]);
+
+	}*/
+	return help;
+}
+
+function getAllChildrenOfANode(master) {
+	var items = nodes.get();
+	var help = new vis.DataSet();
+	for (var i = 0; i < items.length; i++) {
+		if (items[i].masterId == master) {
+			help.add(items[i]);
 		}
 	}
 	return help;
@@ -424,7 +743,7 @@ function getAllTextNodesSameLevelSameMaster(level, master) {
 	var items = nodes.get();
 	var help = new vis.DataSet();
 	for (var i = 0; i < items.length; i++) {
-		if (items[i].masterId == master && items[i].wikiLevel == level && items[i].imtext) {
+		if (items[i].masterId == master && items[i].wikiLevel == level && items[i].type == 'text') {
 			help.add(items[i]);
 		}
 	}
@@ -436,7 +755,7 @@ function getMaxHeightOfLevel(level) {
 	var maxHeight = -1;
 	for (var i = 0; i < items.length; i++) {
 		if (items[i].wikiLevel == level && items[i].height > maxHeight)
-			maxHeight = items[i].height;
+			maxHeight = items[i].height + 300;
 	}
 	return maxHeight;
 }
@@ -484,6 +803,25 @@ String.prototype.replaceAt = function (index, character) {
 	return this.substr(0, index) + character + this.substr(index + character.length);
 }
 
+String.prototype.replaceAtHelp = function (index, character) {
+	return this.substr(0, index) + character + this.substr(index - 1 + character.length);
+}
+
+function repalceNewLineWithTwoNewLines(str, find, replace, n) {
+	var cnt = 0;
+	for (var i = 0; i < str.length; i++) {
+		if (str[i] == find) {
+			cnt += 1;
+		}
+		if (cnt == n) {
+			str = str.replaceAtHelp(i, replace);
+			cnt = 0;
+			i++;
+		}
+	}
+	return str;
+}
+
 function replaceCharacterWithAnother(str, find, replace, n) {
 	var cnt = 0;
 	for (var i = 0; i < str.length; i++) {
@@ -491,8 +829,7 @@ function replaceCharacterWithAnother(str, find, replace, n) {
 			cnt += 1;
 		}
 		if (cnt == n) {
-			str = str.replaceAt(i, "\n");
-
+			str = str.replaceAt(i, replace);
 			cnt = 0;
 		}
 	}
@@ -500,10 +837,11 @@ function replaceCharacterWithAnother(str, find, replace, n) {
 }
 var intoOverviewMode = false;
 var hideSectionText = false;
-var hideTextAt = 0.3;
+var hideTextAt = 0.1;
 var switchToOverviewModeAt = 0.05;
 var hideParagraphMode = false;
 var overviewMode = false;
+var imageSwitcher = false;
 function onZoom(properties) {
 	//console.log("ON ZOOM " + properties.direction + " SCALE: " + network.getScale());
 	//IMPLEMENT SEMANTIC ZOOMING HERE
@@ -518,7 +856,7 @@ function onZoom(properties) {
 
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
-				if (item.imtext) {
+				if (item.type == 'text') {
 					textNodes.add(item);
 				}
 			}
@@ -580,76 +918,156 @@ function onZoom(properties) {
 		}
 	}
 	//----------------------------------------------------------------
-	if (network.getScale() < 1 && levelOfSemanticZooming < 1) {
-		//console.log("network.getSCALE < 1!!!");
-		levelOfSemanticZooming = 1;
-		/*nodes.add({
-		id : 6,
-		title : 'tooltip6',
-		label : 'Node 6',
-		group : 2,
-		allowedToMoveX : true,
-		allowedToMoveY : true
-		});
-		edges.add({
-		from : 2,
-		to : 6,
-		style : "arrow"
-		});*/
-		var items = nodes.get();
+	if (imageSwitcher) {
+		if (network.getScale() < 1 && levelOfSemanticZooming < 1) {
+			//console.log("network.getSCALE < 1!!!");
+			levelOfSemanticZooming = 1;
+			/*nodes.add({
+			id : 6,
+			title : 'tooltip6',
+			label : 'Node 6',
+			group : 2,
+			allowedToMoveX : true,
+			allowedToMoveY : true
+			});
+			edges.add({
+			from : 2,
+			to : 6,
+			style : "arrow"
+			});*/
+			var items = nodes.get();
 
-		for (var i = 0; i < items.length; i++) {
-			if (items[i].hasOwnProperty('image')) {
-				//	console.log("images: " + items[i].id);
-				//data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
-				var help = items[i].image;
+			for (var i = 0; i < items.length; i++) {
+				if (items[i].hasOwnProperty('image')) {
+					//	console.log("images: " + items[i].id);
+					//data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
+					var help = items[i].image;
 
-				nodes.update({
-					id : items[i].id,
-					label : 'test' + i,
-					image : items[i].dataToChange,
-					dataToChange : help
-				});
+					nodes.update({
+						id : items[i].id,
+						label : 'test' + i,
+						image : items[i].dataToChange,
+						dataToChange : help
+					});
+				}
+
 			}
+		}
 
+		if (network.getScale() >= 1 && levelOfSemanticZooming >= 1) {
+			//console.log("network.getSCALE >= 1!!!");
+			levelOfSemanticZooming = 0;
+			/*nodes.add({
+			id : 6,
+			title : 'tooltip6',
+			label : 'Node 6',
+			group : 2,
+			allowedToMoveX : true,
+			allowedToMoveY : true
+			});
+			edges.add({
+			from : 2,
+			to : 6,
+			style : "arrow"
+			});*/
+			var items = nodes.get();
+
+			for (var i = 0; i < items.length; i++) {
+				if (items[i].hasOwnProperty('image')) {
+					console.log("images: " + items[i].id);
+					//data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
+					var help = items[i].image;
+
+					nodes.update({
+						id : items[i].id,
+						label : 'test' + i,
+						image : items[i].dataToChange,
+						dataToChange : help
+					});
+				}
+
+			}
 		}
 	}
 
-	if (network.getScale() >= 1 && levelOfSemanticZooming >= 1) {
-		//console.log("network.getSCALE >= 1!!!");
-		levelOfSemanticZooming = 0;
-		/*nodes.add({
-		id : 6,
-		title : 'tooltip6',
-		label : 'Node 6',
-		group : 2,
-		allowedToMoveX : true,
-		allowedToMoveY : true
-		});
-		edges.add({
-		from : 2,
-		to : 6,
-		style : "arrow"
-		});*/
+}
+
+var sectionNodes = [];
+var sectionEdges = [];
+var sectionsSplitted = false;
+function splitSectionsIntoParagraphs() {
+	if (!sectionsSplitted) {
+		sectionsSplitted = true;
 		var items = nodes.get();
-
+		var paragraphIdCnt = 60000;
 		for (var i = 0; i < items.length; i++) {
-			if (items[i].hasOwnProperty('image')) {
-				console.log("images: " + items[i].id);
-				//data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
-				var help = items[i].image;
+			var item = items[i];
+			if (item.type == 'text') {
+				var text = item.label;
+				var paragraphArray = text.split("\n\n");
+				for (var j = 0; j < paragraphArray.length; j++) {
+					if (paragraphArray[j].length > 10) {
+						nodes.add({
+							id : paragraphIdCnt,
+							x : item.x,
+							y : item.y,
+							shape : item.shape,
+							title : paragraphArray[j].length > 50 ? paragraphArray[j].substring(0, 50) + "..." : paragraphArray[j].substring(0, 10) + "...",
+							label : paragraphArray[j],
+							value : paragraphArray[j].length,
+							allowedToMoveX : item.allowedToMoveX,
+							allowedToMoveY : item.allowedToMoveY,
+							wikiLevel : item.wikiLevel,
+							masterId : item.masterId,
+							type : item.type
+						});
 
-				nodes.update({
-					id : items[i].id,
-					label : 'test' + i,
-					image : items[i].dataToChange,
-					dataToChange : help
-				});
+						edges.add({
+							from : item.masterId,
+							to : paragraphIdCnt,
+							style : "arrow"
+						});
+
+						paragraphIdCnt++;
+					}
+				}
+				sectionNodes.push(item);
+				nodes.remove(item.id);
 			}
-
+		}
+		redraw();
+		if (showReferencesFlag) {
+			hideReferences();
+			showReferences();
 		}
 	}
+}
 
+function combineParagaphsToSections() {
+	if (sectionsSplitted) {
+		sectionsSplitted = false;
+		removeAllTextNodes();
+		for (var i = 0; i < sectionNodes.length; i++) {
+			nodes.add(sectionNodes[i]);
+		}
+
+		redraw();
+
+		if (showReferencesFlag) {
+			hideReferences();
+			showReferences();
+		}
+	}
+}
+
+function removeAllTextNodes() {
+	var items = nodes.get();
+	for (var i = 0; i < items.length; i++) {
+		var item = items[i];
+		if (item.type == 'text') {
+			nodes.remove(item.id);
+		}
+	}
 }
 
 function onSelect(properties) {
@@ -708,10 +1126,12 @@ function onDoubleClick(properties) {
 }
 
 function showAllItems() {
-	viewJustSpecificSection = false;
-	nodes.clear();
-	copyAllNodes(allNodesBackup, nodes);
-	allNodesBackup.clear();
+	if (viewJustSpecificSection) {
+		viewJustSpecificSection = false;
+		nodes.clear();
+		copyAllNodes(allNodesBackup, nodes);
+		allNodesBackup.clear();
+	}
 }
 
 function onDragEnd(properties) {

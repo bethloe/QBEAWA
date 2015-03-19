@@ -3,6 +3,7 @@
 <head>
   <title>Network | Static smooth curves</title>
 
+  <script type="text/javascript" src="scripts/rawData.js"></script>
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
   <script type="text/javascript" src="libs/vis/dist/vis.js"></script>
   <link href="libs/vis/dist/vis.css" rel="stylesheet" type="text/css" />
@@ -49,6 +50,16 @@ Smooth curve type:
 
 				 <button onclick="fillDataNew()"> retrieve data from specific article </button> 
 				 <button onclick="showAllItems()"> show all items </button> 
+				 <button onclick="colorLevels(true)"> color levels </button>
+				 <button onclick="colorLevels(false)"> no color </button>
+				 <button onclick="splitSectionsIntoParagraphs()"> split sections into paragraphs </button>
+				 <button onclick="combineParagaphsToSections()"> combine paragraphs to sections </button>
+				 <button onclick="showReferences()"> show external references</button>
+				 <button onclick="hideReferences()"> hide external references</button>
+				 <button onclick="showImages()"> show images</button>
+				 <button onclick="hideImages()"> hide images</button>
+				 <button onclick="copy()"> copy (just for performance testing)</button>
+				 
 				 <br/>
 Roundness (0..1): <input type="range" min="0" max="1" value="0.5" step="0.05" style="width:200px" id="roundnessSlider"> <input id="roundnessScreen" value="0.5"> (0.5 is max roundness for continuous, 1.0 for the others)
 

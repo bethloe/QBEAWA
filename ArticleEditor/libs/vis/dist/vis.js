@@ -20420,9 +20420,9 @@ return /******/ (function(modules) { // webpackBootstrap
         // IE11 fix -- thanks dponch!
 		// D ST ADDING SOME CODE HERE
 		var wHelp = this.width; 
-		this.width = 200;
-		this.height = (this.width * this.height) / wHelp;
-		console.log(this.height);
+		//this.width = 2000;
+		//this.height = (this.width * this.height) / wHelp;
+		//console.log(this.height);
 		   // ------------------------
         if (this.width == 0) {
           document.body.appendChild(this);
