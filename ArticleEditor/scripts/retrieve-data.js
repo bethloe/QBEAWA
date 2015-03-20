@@ -1,5 +1,8 @@
 var DataRetriever = function (vals) {
-	var GLOBAL_title = vals.title;
+	var GLOBAL_title = "";
+	/*if (vals.hasOwnProperty('title')) {
+		GLOBAL_title = vals.title;
+	}*/
 	var GLOBAL_linkToAPI = "http://en.wikipedia.org/w/api.php?";
 	var GLOBAL_cntEdits = 0;
 	var GLOBAL_cntEditsHELP = 0;
@@ -38,6 +41,10 @@ var DataRetriever = function (vals) {
 		GLOBAL_imageCount = 0;
 	}
 
+	dataRetriver.setTitle = function (title) {
+		GLOBAL_title = title;
+	}
+
 	dataRetriver.getJSONString = function () {
 		return JSON.stringify(GLOBAL_JSON);
 	}
@@ -62,18 +69,19 @@ var DataRetriever = function (vals) {
 
 		//GET RAW TEXT:
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=&titles=" + GLOBAL_title + "&continue", handleRawText);
-		
+
 		//retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&rvprop=content&rvlimit=1&titles=" + GLOBAL_title + "&continue", handleRawText);
 		//http://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&prop=revisions&rvprop=content&rvlimit=1&continue
-		
+
 		//GET ALL SECTIONS TITLES:
 		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&prop=sections&page=" + GLOBAL_title, handleSectionTitles);
 
 		//GET ALL REFERENCES (EXTERNAL LINKS right now that's the only way I know :-( ):
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_title + "&continue", handleExternalLinks);
-		
-		//GET RAW TEXT WITH ALL DATA: 
+
+		//GET RAW TEXT WITH ALL DATA:
 		//retrieveDataText("http://en.wikipedia.org/w/index.php?" + "action=raw&format=json&title=" + GLOBAL_title , handleRawTextWithData);
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&rvprop=content&rvlimit=1&titles=" + GLOBAL_title + "&continue", handleRawTextWithData);
 	}
 
 	dataRetriver.getImageArray = function () {
@@ -85,9 +93,11 @@ var DataRetriever = function (vals) {
 	}
 
 	dataRetriver.getRawTextWithData = function () {
-		return albertEinsteinRawData();
+		//return albertEinsteinRawData();
+
+		return GLOBAL_rawTextWithData;
 	}
-	
+
 	dataRetriver.getSectionInfos = function () {
 		return GLOBAL_sectionInfos;
 	}
@@ -105,8 +115,7 @@ var DataRetriever = function (vals) {
 			success : functionOnSuccess,
 		});
 	}
-	
-	
+
 	var retrieveDataText = function (urlInclAllOptions, functionOnSuccess) {
 		$.ajax({
 			url : urlInclAllOptions,
@@ -122,18 +131,17 @@ var DataRetriever = function (vals) {
 	}
 
 	var handleRawTextWithData = function (JSONResponse) {
-		var extractPlainText = JSON.parse(JSON.stringify(JSONResponse));
-		//var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
-		console.log("HERE " + JSON.stringify(JSONResponse));
+		console.log("HANDLE RAW TEXT WITH DATA");
+		var text = JSON.parse(JSON.stringify(JSONResponse));
+		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].revisions[0]['*'];
+		//console.log("PLAIN TEXT: " + extractPlainText);
 		if (extractPlainText != undefined) {
-			
 			GLOBAL_rawTextWithData = extractPlainText;
 		} else {
 			GLOBAL_rawTextWithData = "";
 		}
 	}
-	
-		
+
 	var handleRawText = function (JSONResponse) {
 		var text = JSON.parse(JSON.stringify(JSONResponse));
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
@@ -144,18 +152,6 @@ var DataRetriever = function (vals) {
 			GLOBAL_rawText = "";
 		}
 	}
-	
-	/*var handleRawText = function (JSONResponse) {
-		console.log("HANDLE RAW TEXT");
-		var text = JSON.parse(JSON.stringify(JSONResponse));
-		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].revisions[0]['*'];
-		//console.log("PLAIN TEXT: " + extractPlainText);
-		if (extractPlainText != undefined) {
-			GLOBAL_rawText = extractPlainText;
-		} else {
-			GLOBAL_rawText = "";
-		}
-	}*/
 
 	var handleFlesch = function (JSONResponse) {
 		var text = JSON.parse(JSON.stringify(JSONResponse));
@@ -239,7 +235,7 @@ var DataRetriever = function (vals) {
 			//STROE REFS INTO REFARRAY
 			for (var i = 0; i < JSONexternalLinks.length; i++) {
 				console.log("----------------------> " + JSONexternalLinks[i]['*']);
-				GLOBAL_referencesArray.push(JSONexternalLinks[i]['*'] );
+				GLOBAL_referencesArray.push(JSONexternalLinks[i]['*']);
 			}
 
 			if (externalLinks.hasOwnProperty("continue")) {
@@ -506,6 +502,7 @@ var DataRetriever = function (vals) {
 
 	return dataRetriver;
 };
+
 //test:
 /*console.log("STARTING FIRST");
 var dr = new DataRetriever({

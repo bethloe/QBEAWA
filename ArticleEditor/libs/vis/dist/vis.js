@@ -18096,6 +18096,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	//console.log("_drawNodes");
 	for (var id in nodes) {	
       if (nodes.hasOwnProperty(id)) {
+		  /*if(nodes[id].id > 80000){
+			console.log("width : " +  nodes[id].width + " height: " + nodes[id].height);
+		  }*/
 		  //console.log("UPDATEING NODES: " + id +" " + nodes[id].width + " " + nodes[id].height);
 		  this.nodesData.DSTupdate({id: id, width: nodes[id].width, height: nodes[id].height});
 	  }

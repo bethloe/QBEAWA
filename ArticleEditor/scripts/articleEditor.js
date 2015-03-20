@@ -1,8 +1,5 @@
 //----------- retrieve necessary data -----------------
-var dr = new DataRetriever({
-		title : 'Albert Einstein'
-	});
-dr.getAllMeasures();
+var dr = new DataRetriever();
 var dropdown = document.getElementById("dropdownID");
 dropdown.onchange = update;
 var roundnessSlider = document.getElementById("roundnessSlider");
@@ -47,11 +44,9 @@ var nodesHideAndSeek = new vis.DataSet();
 var textNodes = new vis.DataSet();
 var allNodesBackup = new vis.DataSet();
 
-
 // create an array with edges
 
 var edges = new vis.DataSet();
-
 
 var container = document.getElementById('mynetwork');
 var data = {
@@ -60,11 +55,23 @@ var data = {
 };
 var rawEinsteinDataStr = "";
 function rawEinsteinData(data) {
-	console.log("DATA: " + data);
+	//console.log("DATA: " + data);
 	rawEinsteinDataStr = data;
 }
 
 albertEinsteinRawData(rawEinsteinData);
+
+var retrieveData = function () {
+	var articleName = $("#articleName").val();
+	console.log("articleName: " + articleName);
+	dr.setTitle(articleName);
+	dr.getAllMeasures();
+}
+
+var cleanUp = function () {
+	nodes.clear();
+	edges.clear();
+}
 
 var reverseString = function (s) {
 	return s.split("").reverse().join("");
@@ -87,23 +94,26 @@ var getSectionToRef = function (rawText, ref) {
 				cutSectionName = true;
 			} else {
 				sectionName = reverseString(sectionName);
+				if (sectionName[sectionName.length - 1] == " ")
+					sectionName = sectionName.substring(0, sectionName.length - 1);
+				if (sectionName[0] == " ")
+					sectionName = sectionName.substring(1, sectionName.length);
 				return sectionName;
 			}
 		}
-
 	}
 }
 
-	var copyID = 100000;
-var copy = function(){
-	
+var copyID = 100000;
+var copy = function () {
+
 	var items = nodes.get();
-	
+
 	for (var i = 0; i < items.length; i++) {
-	var item = items[i];
-	nodes.add({
+		var item = items[i];
+		nodes.add({
 			id : copyID,
-			x : item.x+30000,
+			x : item.x + 30000,
 			y : item.y,
 			title : item.title,
 			label : item.label,
@@ -117,7 +127,7 @@ var copy = function(){
 			masterId : item.masterId
 
 		});
-		copyID ++;
+		copyID++;
 	}
 
 }
@@ -127,9 +137,12 @@ var getNodeToSectionName = function (sectionName) {
 
 	for (var i = 0; i < items.length; i++) {
 		var item = items[i];
-		if (item.label == sectionName) {
-			//console.log("sectionName: " + sectionName + " == " + item.label);
-			return item;
+		if (item.type == "section") {
+			console.log("|" + item.label + "| |" + sectionName + "|");
+			if (item.label == sectionName) {
+				console.log("sectionName: " + sectionName + " == " + item.label);
+				return item;
+			}
 		}
 	}
 	return null;
@@ -141,8 +154,54 @@ function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+var posImages = function () {
+	var somethingIsChanging = 0;
+
+	var maxX = getBiggestXValue();
+	var minX = getSmallestXValue();
+	var maxY = getBiggestYValue();
+	var minY = getSmallestYValue();
+	do {
+		somethingIsChanging = 0;
+
+		var items = nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.type == 'img') {
+				for (var j = 0; j < items.length; j++) {
+					var innerItem = items[j];
+					if (innerItem.type == 'img' && innerItem.id != item.id) {
+						//console.log("width: " + innerItem.width + " height: " + innerItem.height);
+						//console.log(item.x + " >= " + innerItem.x + " && " + item.x + " <= " + (innerItem.x + innerItem.width) + " && " + item.y + " >= " + innerItem.y + " && " + item.y + " <= " + (innerItem.y + innerItem.height));
+						if (item.x >= innerItem.x && item.x <= (innerItem.x + innerItem.width) && item.y >= innerItem.y && item.y <= (innerItem.y + innerItem.height)) {
+							//console.log("IN HERE");
+
+							somethingIsChanging++;
+							if (item.x <= minX || item.y <= minY)
+								nodes.update({
+									id : item.id,
+									x : item.x - innerItem.width,
+									y : item.y - innerItem.height
+								});
+							else
+								nodes.update({
+									id : item.id,
+									x : item.x + innerItem.width,
+									y : item.y + innerItem.height
+								});
+						}
+					}
+				}
+
+			}
+
+		}
+		console.log("------------------------------------------> " + somethingIsChanging);
+	} while (somethingIsChanging > 0);
+}
+
+var imageIdCnt = 80000;
 var showImages = function () {
-	var imageIdCnt = 80000;
 	var images = dr.getImageArray();
 	var maxX = getBiggestXValue();
 	var minX = getSmallestXValue();
@@ -188,33 +247,7 @@ var showImages = function () {
 
 	network.redraw();
 	//Now that we have the height and the width of the images we can put them into a non overlapping position
-	var items = nodes.get();
-	for (var i = 0; i < items.length; i++) {
-		var item = items[i];
-		if (item.type == 'img') {
-			for (var j = 0; j < items.length; j++) {
-				var innerItem = items[j];
-				if (innerItem.type == 'img' && innerItem.id != item.id) {
-					if (item.x >= innerItem.x && item.x <= innerItem.x + innerItem.width && item.y >= innerItem.y && item.y <= innerItem.y + innerItem.height) {
-						if (item.x <= minX || item.y <= minY)
-							nodes.update({
-								id : item.id,
-								x : item.x + innerItem.width,
-								y : item.y + innerItem.height
-							});
-						else
-							nodes.update({
-								id : item.id,
-								x : item.x - innerItem.width,
-								y : item.y - innerItem.height
-							});
-					}
-				}
-			}
 
-		}
-
-	}
 }
 
 var hideImages = function () {
@@ -226,72 +259,77 @@ var hideImages = function () {
 	}
 }
 
+var refIdCnt = 70000;
 var showReferences = function () {
 	showReferencesFlag = true;
 	var refs = dr.getAllReferences();
-	var rawTextWithData = rawEinsteinDataStr;
-	var refIdCnt = 70000;
+	var rawTextWithData = dr.getRawTextWithData();
 	var sectionNameToRefCnt = {};
 	for (var i = 0; i < refs.length; i++) {
-		if (rawTextWithData.search(refs[i]) > -1) {
-			var sectionName = getSectionToRef(rawTextWithData, refs[i]);
-			//console.log("SECTIONNAME: " + sectionName);
-			if (sectionName != undefined) { //WE HAVE SOME UNDEFINED SECTION NAMES BECAUSE OF THE INTRO!!
-				//console.log("REF: " + refs[i]);
-				var item = getNodeToSectionName(sectionName);
-				var idHelp = item.id;
-				if (item != null) {
-					//NOW WE HAVE THE SECTION HEADLINE NODE BUT WE WANT THE TEXT NODES SO LET'S GO ON
-					var children = getAllChildrenOfANode(item.id);
-					var childrenItem = children.get();
-					var xPos = item.x;
-					var yPos = item.y;
-					var height = item.height;
-					var wikiLevel = item.wikiLevel;
-					var masterId = item.masterId;
-					var idHelp = item.id;
-					var xyOffset = 0;
+		console.log(refs[i]);
+		try {
+			if (rawTextWithData.search(refs[i]) > -1) {
+				var sectionName = getSectionToRef(rawTextWithData, refs[i]);
+				console.log("SECTIONNAME: " + sectionName);
+				if (sectionName != undefined) { //WE HAVE SOME UNDEFINED SECTION NAMES BECAUSE OF THE INTRO!!
+					//console.log("REF: " + refs[i]);
+					var item = getNodeToSectionName(sectionName);
+					if (item != null) {
+						var idHelp = item.id;
+						//NOW WE HAVE THE SECTION HEADLINE NODE BUT WE WANT THE TEXT NODES SO LET'S GO ON
+						var children = getAllChildrenOfANode(item.id);
+						var childrenItem = children.get();
+						var xPos = item.x;
+						var yPos = item.y;
+						var height = item.height;
+						var wikiLevel = item.wikiLevel;
+						var masterId = item.masterId;
+						var idHelp = item.id;
+						var xyOffset = 0;
 
-					if (childrenItem.length > 0) {
-						xPos = childrenItem[0].x;
-						yPos = childrenItem[0].y;
-						height = childrenItem[0].height;
-						wikiLevel = childrenItem[0].wikiLevel;
-						masterId = childrenItem[0].masterId;
-						idHelp = childrenItem[0].id;
+						if (childrenItem.length > 0) {
+							xPos = childrenItem[0].x;
+							yPos = childrenItem[0].y;
+							height = childrenItem[0].height;
+							wikiLevel = childrenItem[0].wikiLevel;
+							masterId = childrenItem[0].masterId;
+							idHelp = childrenItem[0].id;
+						}
+						if (!sectionNameToRefCnt.hasOwnProperty(sectionName)) {
+							sectionNameToRefCnt[sectionName] = 1;
+						} else {
+							sectionNameToRefCnt[sectionName] += 1;
+						}
+						xyOffset = sectionNameToRefCnt[sectionName];
+
+						//console.log("sectionName: " + sectionName + " x: " + item.x + " ref: " + refs[i] + " id : " + idHelp);
+						nodes.add({
+							id : refIdCnt,
+							x : i % 2 == 0 ? xPos + xyOffset * 30 : xPos - xyOffset * 30,
+							y : yPos + height + xyOffset * 60, //i%2==0?500:-7000,
+							title : refs[i],
+							label : refs[i],
+							value : 1,
+							shape : 'box',
+							type : 'ref',
+							allowedToMoveX : true,
+							allowedToMoveY : true,
+							wikiLevel : wikiLevel,
+							masterId : masterId //if from == -1 the no master
+						});
+
+						edges.add({
+							from : refIdCnt,
+							to : idHelp,
+							style : "arrow"
+						});
+
+						refIdCnt++;
 					}
-					if (!sectionNameToRefCnt.hasOwnProperty(sectionName)) {
-						sectionNameToRefCnt[sectionName] = 1;
-					} else {
-						sectionNameToRefCnt[sectionName] += 1;
-					}
-					xyOffset = sectionNameToRefCnt[sectionName];
-
-					//console.log("sectionName: " + sectionName + " x: " + item.x + " ref: " + refs[i] + " id : " + idHelp);
-					nodes.add({
-						id : refIdCnt,
-						x : i % 2 == 0 ? xPos + xyOffset * 30 : xPos - xyOffset * 30,
-						y : yPos + height + xyOffset * 60, //i%2==0?500:-7000,
-						title : refs[i],
-						label : refs[i],
-						value : 1,
-						shape : 'box',
-						type : 'ref',
-						allowedToMoveX : true,
-						allowedToMoveY : true,
-						wikiLevel : wikiLevel,
-						masterId : masterId //if from == -1 the no master
-					});
-
-					edges.add({
-						from : refIdCnt,
-						to : idHelp,
-						style : "arrow"
-					});
-
-					refIdCnt++;
 				}
 			}
+		} catch (err) {
+			console.log(err);
 		}
 	}
 }
@@ -319,18 +357,19 @@ var center = function () {
 	network.moveTo(object);
 
 }
-var fillDataNew = function () {
 
+var sectionId = 50000;
+var idCnt = 0;
+var fillDataNew = function () {
+	cleanUp();
 	var sectionInfos = dr.getSectionInfos();
 	var articleText = dr.getRawText();
 	var xOffset = 1500;
 	var yOffset = 600;
-	var idCnt = 0;
 	var levelOld = 0;
 	var currentLevel = 0;
 	var topIds = [];
 	var sameSectionPosition = [];
-	var sectionId = 50000;
 	for (var i = 0; i < sectionInfos.length; i++) {
 
 		currentLevel = parseInt(sectionInfos[i].level);
@@ -559,7 +598,6 @@ function colorLevels(isColor) {
 	for (var clc = currentlevelCnt; clc >= 0; clc--) {
 		colorAllNodesOfLevel(clc, isColor ? getRandomColor() : "#97C2FC");
 	}
-
 }
 
 function colorAllNodesOfLevel(level, color) {
@@ -993,13 +1031,12 @@ function onZoom(properties) {
 }
 
 var sectionNodes = [];
-var sectionEdges = [];
 var sectionsSplitted = false;
+var paragraphIdCnt = 60000;
 function splitSectionsIntoParagraphs() {
 	if (!sectionsSplitted) {
 		sectionsSplitted = true;
 		var items = nodes.get();
-		var paragraphIdCnt = 60000;
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			if (item.type == 'text') {
