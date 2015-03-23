@@ -1,7 +1,7 @@
 var DataRetriever = function (vals) {
 	var GLOBAL_title = "";
 	/*if (vals.hasOwnProperty('title')) {
-		GLOBAL_title = vals.title;
+	GLOBAL_title = vals.title;
 	}*/
 	var GLOBAL_linkToAPI = "http://en.wikipedia.org/w/api.php?";
 	var GLOBAL_cntEdits = 0;
@@ -24,6 +24,8 @@ var DataRetriever = function (vals) {
 	var GLOBAL_rawText = "";
 	var GLOBAL_rawTextWithData = "";
 	var GLOBAL_sectionInfos;
+	var GLOBAL_sectionContentData = [];
+	var GLOBAL_intro = "";
 	var dataRetriver = {};
 
 	var resetData = function () {
@@ -39,6 +41,10 @@ var DataRetriever = function (vals) {
 		GLOBAL_externalLinksCount = 0;
 		GLOBAL_incomingLinksCount = 0;
 		GLOBAL_imageCount = 0;
+	}
+
+	dataRetriver.getTitle = function () {
+		return GLOBAL_title;
 	}
 
 	dataRetriver.setTitle = function (title) {
@@ -63,7 +69,10 @@ var DataRetriever = function (vals) {
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_title + "&continue", handleImages);
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&rvlimit=1&titles=" + GLOBAL_title + "&rvprop=user|timestamp&rvdir=newer&continue", handleArticleAge);
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=true&titles=" + GLOBAL_title + "&continue", handleFlesch);*/
-
+		
+		//GET ALL SECTIONS TITLES:
+		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&prop=sections&page=" + GLOBAL_title, handleSectionTitles);
+		
 		//GET ALL IMAGES:
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_title + "&continue", handleImages);
 
@@ -73,8 +82,6 @@ var DataRetriever = function (vals) {
 		//retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&rvprop=content&rvlimit=1&titles=" + GLOBAL_title + "&continue", handleRawText);
 		//http://en.wikipedia.org/w/api.php?action=query&titles=Albert%20Einstein&prop=revisions&rvprop=content&rvlimit=1&continue
 
-		//GET ALL SECTIONS TITLES:
-		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&prop=sections&page=" + GLOBAL_title, handleSectionTitles);
 
 		//GET ALL REFERENCES (EXTERNAL LINKS right now that's the only way I know :-( ):
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&titles=" + GLOBAL_title + "&continue", handleExternalLinks);
@@ -82,6 +89,27 @@ var DataRetriever = function (vals) {
 		//GET RAW TEXT WITH ALL DATA:
 		//retrieveDataText("http://en.wikipedia.org/w/index.php?" + "action=raw&format=json&title=" + GLOBAL_title , handleRawTextWithData);
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&rvprop=content&rvlimit=1&titles=" + GLOBAL_title + "&continue", handleRawTextWithData);
+
+		//GET INTRO
+		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&section=0&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", handleIntro);
+
+	}
+
+	dataRetriver.getIntro = function () {
+		return GLOBAL_intro;
+	}
+
+	dataRetriver.getSectionContentData = function (sectionName) {
+		for (var i = 0; i < GLOBAL_sectionContentData.length; i++) {
+			//console.log("GLOBAL_sectionContentData[i].sections[0].index : " + GLOBAL_sectionContentData[i].sections[0].index);
+			if (GLOBAL_sectionContentData[i].sections[0].line == sectionName) {
+				//console.log("SECTIONINDEX: " + sectionIndex + " DATA : " + JSON.stringify(GLOBAL_sectionContentData[i]));
+				return GLOBAL_sectionContentData[i];
+			}
+		}
+		
+		console.log("NOT FOUND SECTION INDEX: " + sectionName);
+		return null;
 	}
 
 	dataRetriver.getImageArray = function () {
@@ -125,9 +153,26 @@ var DataRetriever = function (vals) {
 		});
 	}
 
+	var handleIntro = function (JSONResponse) {
+		GLOBAL_intro = JSON.parse(JSON.stringify(JSONResponse)).parse;
+	}
+
+	var handleSectionContentData = function (JSONResponse) {
+		var object = JSON.parse(JSON.stringify(JSONResponse));
+		console.log("object : " + JSON.stringify(object.parse.sections[0]));
+		GLOBAL_sectionContentData.push(object.parse);
+
+	}
+
 	var handleSectionTitles = function (JSONResponse) {
 		var sectionTitles = JSON.parse(JSON.stringify(JSONResponse));
 		GLOBAL_sectionInfos = sectionTitles.parse.sections;
+		if (GLOBAL_sectionInfos.length > 0) {
+			for (var i = 0; i < GLOBAL_sectionInfos.length; i++) {
+				console.log("INDEX: " +  GLOBAL_sectionInfos[i].index );
+				retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&generatexml&section=" + GLOBAL_sectionInfos[i].index + "&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", handleSectionContentData);
+			}
+		}
 	}
 
 	var handleRawTextWithData = function (JSONResponse) {
@@ -191,9 +236,15 @@ var DataRetriever = function (vals) {
 
 	var handleImageInfos = function (JSONResponse) {
 		var imageInfo = JSON.parse(JSON.stringify(JSONResponse));
-		var url = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].url;
-		GLOBAL_imageArray.push(url);
-		console.log("IMAGE URL: " + url);
+		//console.log("HANDLIMAGEINFO : " + JSON.stringify(JSONResponse));
+		var url = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].thumburl;
+		var imageTitle = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].title;
+		var object = {
+			url : url,
+			imageTitle : imageTitle
+		};
+		GLOBAL_imageArray.push(object);
+		//console.log("TITLE: " + imageTitle + " to IMAGE URL: " + url);
 	}
 
 	var handleImages = function (JSONResponse) {
@@ -205,8 +256,8 @@ var DataRetriever = function (vals) {
 			GLOBAL_JSON.numImages = GLOBAL_imageCount;
 			//GET IMAGE INFOS:
 			for (var i = 0; i < JSONimages.length; i++) {
-				console.log("IMAGE TITLE: " + GLOBAL_linkToAPI + "action=query&prop=imageinfo&format=json&iilimit=1&titles=" + JSONimages[i].title + "&iiprop=url&continue");
-				retrieveData(GLOBAL_linkToAPI + "action=query&prop=imageinfo&format=json&iilimit=1&titles=" + JSONimages[i].title + "&iiprop=url&continue", handleImageInfos);
+				//console.log("IMAGE TITLE: " + GLOBAL_linkToAPI + "action=query&prop=imageinfo&format=json&iilimit=1&titles=" + JSONimages[i].title + "&iiprop=url&iiurlwidth=50&continue");
+				retrieveData(GLOBAL_linkToAPI + "action=query&prop=imageinfo&format=json&iilimit=1&titles=" + JSONimages[i].title + "&iiprop=url&iiurlwidth=500&continue", handleImageInfos);
 			}
 
 			if (imageCount.hasOwnProperty("continue")) {

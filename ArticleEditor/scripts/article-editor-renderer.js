@@ -1,6 +1,5 @@
 var ArticleRenderer = function (vals) {
 	var GLOBAL_network = vals.network;
-	console.log("GLOBAL_network: " + GLOBAL_network);
 	var GLOBAL_minID = vals.minID;
 	var GLOBAL_maxID = vals.maxID;
 	var GLOBAL_minX = vals.minX;
@@ -10,6 +9,8 @@ var ArticleRenderer = function (vals) {
 	var GLOBAL_data = vals.data; //data.nodes, data.edges
 	var GLOBAL_articleName = vals.articleName;
 	var GLOBAL_controller = vals.controller;
+	var GLOBAL_introID = 0;
+	var GLOBAL_introTextID = 0;
 
 	//create new DataRetriever
 	var dataRetriever = new DataRetriever();
@@ -23,15 +24,16 @@ var ArticleRenderer = function (vals) {
 	var showReferencesFlag = false;
 	var levelOfSemanticZooming = 0;
 	var intoOverviewMode = false;
-	var hideSectionText = false;
+	var hideSectionText = true;
 	var hideTextAt = 0.1;
 	var switchToOverviewModeAt = 0.05;
-	var hideParagraphMode = false;
+	var hideParagraphMode = true;
 	var overviewMode = false;
 	var imageSwitcher = false;
 	var sectionNodes = [];
 	var sectionsSplitted = false;
 	var viewJustSpecificSection = false;
+	var semanticZooming = false;
 
 	//GLOBAL ID COUNTER
 	var GLOBAL_idCounter = GLOBAL_minID;
@@ -83,9 +85,9 @@ var ArticleRenderer = function (vals) {
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			if (item.type == "section" && idInRange(item.id)) {
-				console.log("|" + item.label + "| |" + sectionName + "|");
+				//console.log("|" + item.label + "| |" + sectionName + "|");
 				if (item.label == sectionName) {
-					console.log("sectionName: " + sectionName + " == " + item.label);
+					//console.log("sectionName: " + sectionName + " == " + item.label);
 					return item;
 				}
 			}
@@ -112,8 +114,6 @@ var ArticleRenderer = function (vals) {
 							//console.log("width: " + innerItem.width + " height: " + innerItem.height);
 							//console.log(item.x + " >= " + innerItem.x + " && " + item.x + " <= " + (innerItem.x + innerItem.width) + " && " + item.y + " >= " + innerItem.y + " && " + item.y + " <= " + (innerItem.y + innerItem.height));
 							if (item.x >= innerItem.x && item.x <= (innerItem.x + innerItem.width) && item.y >= innerItem.y && item.y <= (innerItem.y + innerItem.height)) {
-								//console.log("IN HERE");
-
 								somethingIsChanging++;
 								if (item.x <= minX || item.y <= minY)
 									GLOBAL_data.nodes.update({
@@ -134,7 +134,7 @@ var ArticleRenderer = function (vals) {
 				}
 
 			}
-			console.log("------------------------------------------> " + somethingIsChanging);
+			//console.log("------------------------------------------> " + somethingIsChanging);
 		} while (somethingIsChanging > 0);
 	}
 
@@ -147,7 +147,7 @@ var ArticleRenderer = function (vals) {
 		var offsetY = 1000;
 		var offsetX = 2000;
 		for (var i = 0; i < images.length; i++) {
-			var image = images[i];
+			var image = images[i].url;
 			var x = getRandomInt(minX, maxX);
 			var y = getRandomInt(minY, maxY);
 
@@ -169,6 +169,7 @@ var ArticleRenderer = function (vals) {
 				title : image,
 				label : image,
 				image : image,
+				imageInfos : images[i],
 				shape : "image",
 				//value : 30,
 				allowedToMoveX : true,
@@ -179,6 +180,29 @@ var ArticleRenderer = function (vals) {
 
 			});
 			GLOBAL_idCounter++;
+			var items = GLOBAL_data.nodes.get();
+			for (var k = 0; k < items.length; k++) {
+				var item = items[k];
+				if (idInRange(item.id)) {
+					if (item.hasOwnProperty("imagesToThisNode")) {
+						for (var j = 0; j < item.imagesToThisNode.length; j++) {
+							if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j])) {
+								GLOBAL_data.nodes.update({
+									id : GLOBAL_idCounter - 1,
+									wikiLevel : item.wikiLevel + 1,
+									masterId : item.id
+								});
+								GLOBAL_data.edges.add({
+									from : GLOBAL_idCounter - 1,
+									to : item.id,
+									style : "arrow"
+								});
+
+							}
+						}
+					}
+				}
+			}
 		}
 		console.log("END");
 
@@ -200,11 +224,10 @@ var ArticleRenderer = function (vals) {
 		var rawTextWithData = dataRetriever.getRawTextWithData();
 		var sectionNameToRefCnt = {};
 		for (var i = 0; i < refs.length; i++) {
-			console.log(refs[i]);
 			try {
 				if (rawTextWithData.search(refs[i]) > -1) {
 					var sectionName = getSectionToRef(rawTextWithData, refs[i]);
-					console.log("SECTIONNAME: " + sectionName);
+					//	console.log("SECTIONNAME: " + sectionName);
 					if (sectionName != undefined) { //WE HAVE SOME UNDEFINED SECTION NAMES BECAUSE OF THE INTRO!!
 						//console.log("REF: " + refs[i]);
 						var item = getNodeToSectionName(sectionName);
@@ -279,19 +302,23 @@ var ArticleRenderer = function (vals) {
 	}
 
 	var center = function () {
-		console.log(articleRenderer.getBiggestXValue() + " " + articleRenderer.getBiggestYValue() + " " + articleRenderer.getSmallestXValue() + " " + articleRenderer.getSmallestYValue());
+		//console.log(articleRenderer.getBiggestXValue() + " " + articleRenderer.getBiggestYValue() + " " + articleRenderer.getSmallestXValue() + " " + articleRenderer.getSmallestYValue());
 		var object = {};
 		object.position = {
 			x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2,
 			y : (articleRenderer.getSmallestYValue() + articleRenderer.getBiggestYValue()) / 2
 		};
-		object.scale = 0.07;
+		object.scale = 0.02;
 		GLOBAL_network.moveTo(object);
 
 	}
-
+	articleRenderer.doRedraw = function () {
+		redraw();
+	}
 	articleRenderer.fillDataNew = function () {
 		cleanUp();
+		var intro = dataRetriever.getIntro();
+		var title = dataRetriever.getTitle();
 		var sectionInfos = dataRetriever.getSectionInfos();
 		var articleText = dataRetriever.getRawText();
 		var xOffset = 1500;
@@ -301,6 +328,7 @@ var ArticleRenderer = function (vals) {
 		var currentLevel = 0;
 		var topIds = [];
 		var sameSectionPosition = [];
+
 		for (var i = 0; i < sectionInfos.length; i++) {
 
 			currentLevel = parseInt(sectionInfos[i].level);
@@ -324,7 +352,7 @@ var ArticleRenderer = function (vals) {
 				GLOBAL_data.nodes.add({
 					id : GLOBAL_idCounter,
 					x : sectionsInSameLevel * xOffset + GLOBAL_minX,
-					y : currentLevel * yOffset +  + GLOBAL_minY,
+					y : currentLevel * yOffset + GLOBAL_minY,
 					title : sectionInfos[i].line,
 					label : sectionInfos[i].line, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
 					value : 1,
@@ -332,19 +360,32 @@ var ArticleRenderer = function (vals) {
 					allowedToMoveY : true,
 					wikiLevel : currentLevel,
 					masterId : from, //if from == -1 the no master
+					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
+					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
 				GLOBAL_idCounter++;
-				var textOfSection = getTextOfSection(sectionInfos[i].line);
+				var sectionData = dataRetriever.getSectionContentData(sectionInfos[i].line);
+				var textOfSection = "";
+
+				if (sectionData.sections.length > 1) {
+					textOfSection = sectionData.wikitext['*'];
+					textOfSection = trimToOneParagraph(textOfSection, sectionInfos[i].line);
+				} else {
+					textOfSection = sectionData.wikitext['*'];
+				}
+
+				//var textOfSection = getTextOfSection(sectionInfos[i].line);
 
 				//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
 				//console.log("LENGTH: " + textOfSection.length);
 				if (textOfSection != "" && textOfSection.length > 10) {
 
 					var value = textOfSection.split(' ').length;
-					textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
+					//	textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
 					textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
+					//console.log("images : " + JSON.stringify(sectionData.images));
 					GLOBAL_data.nodes.add({
 						id : GLOBAL_idCounter,
 						x : sectionsInSameLevel * xOffset + GLOBAL_minX,
@@ -357,7 +398,8 @@ var ArticleRenderer = function (vals) {
 						allowedToMoveY : true,
 						wikiLevel : currentLevel,
 						masterId : idCnt, //if from == -1 the no master
-						type : 'text'
+						type : 'text',
+						imagesToThisNode : sectionData.images
 					});
 					GLOBAL_data.edges.add({
 						from : idCnt,
@@ -397,16 +439,29 @@ var ArticleRenderer = function (vals) {
 					allowedToMoveY : true,
 					wikiLevel : currentLevel,
 					masterId : from, //if from == -1 the no master
+					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
+					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
 				GLOBAL_idCounter++;
-				var textOfSection = getTextOfSection(sectionInfos[i].line);
+				var sectionData = dataRetriever.getSectionContentData(sectionInfos[i].line);
+				var textOfSection = "";
+				if (sectionData.sections.length > 1) {
+					textOfSection = sectionData.wikitext['*'];
+					textOfSection = trimToOneParagraph(textOfSection, sectionInfos[i].line);
+
+					//console.log("TEXTOFSECTION: " + textOfSection);
+				} else {
+					textOfSection = sectionData.wikitext['*'];
+				}
+				//var textOfSection = getTextOfSection(sectionInfos[i].line);
 				//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
 				if (textOfSection != "" && textOfSection.length > 10) {
 
+					//console.log("images : " + JSON.stringify(sectionData.images));
 					var value = textOfSection.split(' ').length;
-					textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
+					//		textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
 					textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
 					GLOBAL_data.nodes.add({
 						id : GLOBAL_idCounter,
@@ -420,7 +475,8 @@ var ArticleRenderer = function (vals) {
 						allowedToMoveY : true,
 						wikiLevel : currentLevel,
 						masterId : idCnt, //if from == -1 the no master
-						type : 'text'
+						type : 'text',
+						imagesToThisNode : sectionData.images
 					});
 					GLOBAL_data.edges.add({
 						from : idCnt,
@@ -454,52 +510,143 @@ var ArticleRenderer = function (vals) {
 			//idCnt++;
 
 		}
+		//CREATE INTRO
+		GLOBAL_data.nodes.add({
+			id : GLOBAL_idCounter,
+			x : 0,
+			y : 0,
+			title : title,
+			label : title, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+			value : 1,
+			allowedToMoveX : true,
+			allowedToMoveY : true,
+			wikiLevel : 0,
+			masterId : -1, //if from == -1 the no master
+			type : 'section'
+		});
+		GLOBAL_introID = GLOBAL_idCounter;
+		GLOBAL_idCounter++;
+		var wikitext = intro.wikitext['*'];
+		wikitext = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
+		wikitext = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
+
+		GLOBAL_data.nodes.add({
+			id : GLOBAL_idCounter,
+			x : 0,
+			y : 0,
+			title : "Introduction",
+			shape : "box",
+			label : wikitext, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+			value : 1,
+			allowedToMoveX : true,
+			allowedToMoveY : true,
+			wikiLevel : 1,
+			masterId : GLOBAL_idCounter - 1, //if from == -1 the no master
+			type : 'text'
+		});
+		GLOBAL_introTextID = GLOBAL_idCounter;
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.wikiLevel == 2 && idInRange(item.id) && item.type == "section") {
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					masterId : GLOBAL_idCounter - 1
+				});
+				GLOBAL_data.edges.add({
+					from : GLOBAL_idCounter - 1,
+					to : item.id,
+					style : "arrow"
+				});
+			}
+		}
+		GLOBAL_idCounter++;
+		GLOBAL_data.edges.add({
+			from : GLOBAL_idCounter - 2,
+			to : GLOBAL_idCounter - 1,
+			style : "arrow"
+		});
 
 		GLOBAL_network.redraw();
 		redraw();
 		center();
 	}
 
+	function trimToOneParagraph(textOfSection, sectionName) {
+		var hIndex = textOfSection.indexOf(sectionName);
+		var hi = 0;
+
+		if (hIndex > -1) {
+			while (textOfSection[hIndex + hi] != "=") {
+				hi++;
+			}
+			while (textOfSection[hIndex + hi] == "=") {
+				hi++;
+			}
+			var help = textOfSection.substr(hIndex + hi).indexOf("==");
+			/*while (textOfSection[hIndex + hi] != "=") {
+			hi++;
+			}*/
+			return textOfSection.substr(0, hIndex + hi + help);
+		} else {
+			/*console.log("-----------------------------------------------------");
+			console.log("SECTIONNAME: " + sectionName);
+			console.log("TEXTOFSECTION: " + textOfSection);
+			console.log("-----------------------------------------------------");*/
+		}
+		return textOfSection;
+	}
+
 	function redraw() {
 		GLOBAL_network.redraw();
 		var currentlevelCnt = getMaxLevel();
 		var sumMaxHeightOfLevel = 0; //BUG IN Y DIRECTION
-		console.log("currentlevelCnt : " + currentlevelCnt);
+		//console.log("currentlevelCnt : " + currentlevelCnt);
 		var nodesWithoutTextAsChildren = [];
 		for (var clc = currentlevelCnt; clc >= 0; clc--) {
-			sumMaxHeightOfLevel += getMaxHeightOfLevel(clc) + 500;
+			sumMaxHeightOfLevel += getMaxHeightOfLevel(clc);
 			var allMasterOfALevel = getAllTextNodeMastersOfALevel(clc);
 			var xCnt = 0;
-			console.log(allMasterOfALevel.length);
+			//console.log(allMasterOfALevel.length);
+			//console.log(">-------------------------------------------<");
 			for (var i = 0; i < allMasterOfALevel.length; i++) {
-				var nodesHelp = getAllTextNodesSameLevelSameMaster(clc, allMasterOfALevel[i]);
+				var nodesHelp = getAllTextAndNoParanetsNodesSameLevelSameMaster(clc, allMasterOfALevel[i]);
 				var xCntStart = 0;
 				var xCntEnd = 0;
 				var items = nodesHelp.get();
 				//console.log("UPDATE NODE MASTER: " + allMasterOfALevel[i] + " LEVEL: " + clc);
 				for (var j = 0; j < items.length; j++) {
+
+					//console.log("ID: " + items[j].id + " " + xCnt + " " + items[j].width + " " + (-sumMaxHeightOfLevel) + " " + allMasterOfALevel[i] + " " + items[j].wikiLevel);
+					xCnt += (items[j].width / 2);
+					GLOBAL_data.nodes.update({
+						id : items[j].id,
+						x : xCnt + GLOBAL_minX,
+						y : (-sumMaxHeightOfLevel) +
+						(items[j].height / 2) + GLOBAL_minY,
+						title : (xCnt + GLOBAL_minX) + " " + ((-sumMaxHeightOfLevel) + GLOBAL_minY)
+					});
 					if (j == 0)
 						xCntStart = xCnt;
 					if (j + 1 == items.length)
 						xCntEnd = xCnt;
-					//console.log("ID: " + items[j].id + " " + xCnt + " " + items[j].width + " " + (-sumMaxHeightOfLevel) + " " + allMasterOfALevel[i] + " " + items[j].wikiLevel);
-					GLOBAL_data.nodes.update({
-						id : items[j].id,
-						x : xCnt + GLOBAL_minX,
-						y : (-sumMaxHeightOfLevel + 300) +  + GLOBAL_minY
-					});
-					xCnt += items[j].width + 50;
+					xCnt += items[j].width;
+					//console.log("xCNT: " + xCnt);
+
 				}
 				if (xCntStart == 0 && xCntEnd == 0) //No text node as child
 					nodesWithoutTextAsChildren.push(GLOBAL_data.nodes.get(allMasterOfALevel[i]));
-				else
+				else {
+					var item = GLOBAL_data.nodes.get(allMasterOfALevel[i]);
 					GLOBAL_data.nodes.update({
 						id : allMasterOfALevel[i],
 						x : ((xCntStart + xCntEnd) / 2) + GLOBAL_minX, //getXValueOfMasterNode(allMasterOfALevel[i]),//((xCntStart + xCntEnd) / 2),//
-						y : -sumMaxHeightOfLevel - 300 + GLOBAL_minY //getYValueOfMasterNode(allMasterOfALevel[i])//
+						y : -sumMaxHeightOfLevel - (item.height * 3) + GLOBAL_minY //getYValueOfMasterNode(allMasterOfALevel[i])//
 					});
+				}
 
 			}
+			//console.log(">-------------------------------------------<");
 		}
 
 		for (var i = 0; i < nodesWithoutTextAsChildren.length; i++) {
@@ -514,6 +661,32 @@ var ArticleRenderer = function (vals) {
 				});
 			}
 		}
+
+		currentlevelCnt = getMaxLevel();
+		var items = GLOBAL_data.nodes.get();
+		for (var clc = currentlevelCnt; clc >= 0; clc--) {
+			var y = articleRenderer.getSmallestYValueOfLevel(clc);
+			for (var i = 0; i < items.length; i++) {
+				if (items[i].wikiLevel == clc && idInRange(items[i].id) && items[i].type == "section") {
+					GLOBAL_data.nodes.update({
+						id : items[i].id,
+						y : y
+					});
+				}
+			}
+		}
+
+		//SET INTRO TO MIDDLE
+		GLOBAL_data.nodes.update({
+			id : GLOBAL_introID,
+			x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2
+		});
+		var item = GLOBAL_data.nodes.get(GLOBAL_introTextID);
+		GLOBAL_data.nodes.update({
+			id : GLOBAL_introTextID,
+			x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2 + 600,
+			y : item.y + 300
+		});
 		GLOBAL_network.redraw();
 	}
 
@@ -561,11 +734,20 @@ var ArticleRenderer = function (vals) {
 
 	articleRenderer.selectAllNodes = function () {
 		var arrayToSelect = [];
+
+		var allIDs = GLOBAL_data.nodes.getIds();
+		var inAllIDs = false;
 		for (var i = GLOBAL_startID; i < GLOBAL_idCounter; i++) {
-			arrayToSelect.push(i);
-			console.log(i);
+			inAllIDs = false;
+			for (var j = 0; j < allIDs.length; j++) {
+				if (allIDs[j] == i) {
+					inAllIDs = true;
+				}
+			}
+			if (inAllIDs) {
+				arrayToSelect.push(i);
+			}
 		}
-		console.log("SELECT ALL NODES " + arrayToSelect.length);
 		GLOBAL_network.selectNodes(arrayToSelect, true);
 	}
 
@@ -604,6 +786,24 @@ var ArticleRenderer = function (vals) {
 
 	}
 
+	articleRenderer.getBiggestYValueOfLevel = function (level) {
+		var items = GLOBAL_data.nodes.get();
+		var maxY = 0;
+		var start = true;
+		for (var i = 0; i < items.length; i++) {
+			if (start && idInRange(items[i].id) && items[i].type == "section" && items[i].wikiLevel == level) {
+				start = false;
+				maxY = items[i].y;
+			}
+			if (items[i].y > maxY && idInRange(items[i].id) && items[i].type == "section" && items[i].wikiLevel == level) {
+				maxY = items[i].y;
+			}
+		}
+
+		return maxY;
+
+	}
+
 	articleRenderer.getSmallestXValue = function () {
 		var items = GLOBAL_data.nodes.get();
 		var minX = 0;
@@ -619,6 +819,23 @@ var ArticleRenderer = function (vals) {
 		}
 
 		return minX;
+	}
+	articleRenderer.getSmallestYValueOfLevel = function (level) {
+		var items = GLOBAL_data.nodes.get();
+		var minY = 0;
+		var start = true;
+		for (var i = 0; i < items.length; i++) {
+			if (start && idInRange(items[i].id) && items[i].type == "section" && items[i].wikiLevel == level) {
+				start = false;
+				minY = items[i].y;
+			}
+			if (items[i].y < minY && idInRange(items[i].id) && items[i].type == "section" && items[i].wikiLevel == level) {
+				minY = items[i].y;
+			}
+		}
+
+		return minY;
+
 	}
 
 	articleRenderer.getSmallestYValue = function () {
@@ -682,7 +899,7 @@ var ArticleRenderer = function (vals) {
 				}
 			}
 		}
-		return minY - 300;
+		return minY - 400;
 	}
 
 	function getAllTextNodeMastersOfALevel(level) {
@@ -724,6 +941,28 @@ var ArticleRenderer = function (vals) {
 		}
 		return help;
 	}
+
+	function isNodeAParentNode(id) {
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.masterId == id)
+				return true;
+		}
+		return false;
+	}
+
+	function getAllTextAndNoParanetsNodesSameLevelSameMaster(level, master) {
+		var items = GLOBAL_data.nodes.get();
+		var help = new vis.DataSet();
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].masterId == master && items[i].wikiLevel == level && (items[i].type == 'text' || !isNodeAParentNode(items[i].id)) && idInRange(items[i].id)) {
+				help.add(items[i]);
+			}
+		}
+		return help;
+	}
+
 	function getMaxHeightOfLevel(level) {
 		var items = GLOBAL_data.nodes.get();
 		var maxHeight = -1;
@@ -744,7 +983,7 @@ var ArticleRenderer = function (vals) {
 	}
 
 	function getTextOfSection(sectionTitle) {
-		console.log("sectionTITLE: " + sectionTitle);
+		//TODO: REWRITE TO PARSE AND SECTION
 		var stringToSearch = "== \xA7" + sectionTitle + " ==";
 		var articleText = dataRetriever.getRawText();
 		var index = articleText.search(stringToSearch);
@@ -752,7 +991,7 @@ var ArticleRenderer = function (vals) {
 			stringToSearch = sectionTitle;
 			index = articleText.search(stringToSearch);
 		}
-		console.log("index: " + index);
+		//console.log("index: " + index);
 		var str = articleText.substring((index + stringToSearch.length), articleText.length);
 
 		str = deleteEqualsSigns(str, 0);
@@ -783,6 +1022,11 @@ var ArticleRenderer = function (vals) {
 					if (item.type == 'text' && idInRange(item.id)) {
 						textNodes.add(item);
 					}
+					if (item.type == 'section' && idInRange(item.id)) {
+						console.log("IN HERE " + id); 
+						GLOBAL_data.nodes.update({id: item.id, value: 50});
+					}
+					
 				}
 
 				items = textNodes.get();
@@ -870,7 +1114,7 @@ var ArticleRenderer = function (vals) {
 
 				for (var i = 0; i < items.length; i++) {
 					if (items[i].hasOwnProperty('image') && idInRange(items[i].id)) {
-						console.log("images: " + items[i].id);
+						//console.log("images: " + items[i].id);
 						//GLOBAL_data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
 						var help = items[i].image;
 
@@ -962,7 +1206,7 @@ var ArticleRenderer = function (vals) {
 	}
 
 	articleRenderer.onSelect = function (properties) {
-		console.log("ON SELECT " + properties.nodes);
+		//console.log("ON SELECT " + properties.nodes);
 		//GLOBAL_network.focusOnNode(properties.nodes);
 	}
 
@@ -1021,17 +1265,23 @@ var ArticleRenderer = function (vals) {
 
 	articleRenderer.onDragEnd = function (properties) {
 		if (properties.nodeIds.length > 0) {
-			var id = parseInt(properties.nodeIds[0]);
-			var help = GLOBAL_network.getPositions(id);
-			GLOBAL_data.nodes.update({
-				id : id,
-				x : help[properties.nodeIds[0]].x
-			});
-			GLOBAL_data.nodes.update({
-				id : id,
-				y : help[properties.nodeIds[0]].y
-			});
+			for (var i = 0; i < properties.nodeIds.length; i++) {
+				var id = parseInt(properties.nodeIds[i]);
+				var help = GLOBAL_network.getPositions(id);
+				GLOBAL_data.nodes.update({
+					id : id,
+					x : help[properties.nodeIds[i]].x
+				});
+				GLOBAL_data.nodes.update({
+					id : id,
+					y : help[properties.nodeIds[i]].y
+				});
+			}
 		}
+	}
+
+	articleRenderer.semanticZooming = function (onOrOff) {
+		semanticZooming = onOrOff;
 	}
 	//---------------------------------- Helpers -------------------------------
 	var idInRange = function (id) {

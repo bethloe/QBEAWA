@@ -16,15 +16,15 @@
   <style type="text/css">
     #mynetwork {
 	  top: 0px;
-      width: 1450px;
-      height: 800px;
+      width: 1250px;
+      height: 700px;
       border: 1px solid lightgray;
 	  float: left;
     }
 	    #mynetworkDetailView {
 	  top: 0px;
       width: 400px;
-      height: 800px;
+      height: 700px;
       border: 1px solid lightgray;
 	  float: left;
     }
@@ -71,11 +71,14 @@ Smooth curve type:
 				 <button onclick="articleController.hideImages()"> hide images</button>
 				 <button onclick="articleController.posImages()"> reposition images</button>
 				 <button onclick="articleController.copy()"> copy (just for performance testing)</button>
+				 <button onclick="articleController.doRedraw()">redraw</button> <br />
+				 <button onclick="articleController.semanticZooming(true)"> semantic zooming on </button> 
+				 <button onclick="articleController.semanticZooming(false)"> semantic zooming off </button> 
 				 
 				 <br/>
 Roundness (0..1): <input type="range" min="0" max="1" value="0.5" step="0.05" style="width:200px" id="roundnessSlider"> <input id="roundnessScreen" value="0.5"> (0.5 is max roundness for continuous, 1.0 for the others)
 				 <br/>
-Article name: <input id="articleName" type="text" value="Physics"> <button onclick="articleController.retrieveData()"> retrieve data </button> <button onclick="articleController.fillDataNew()"> show the article </button>
+Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button onclick="articleController.retrieveData()"> retrieve data </button> <button onclick="articleController.fillDataNew()"> show the article </button>
 <div>
 <div id="mynetwork"></div>
 <div id="mynetworkDetailView"></div>

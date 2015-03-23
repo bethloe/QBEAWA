@@ -145,12 +145,22 @@ var ArticleController = function (vals) {
 			articleRenderers[i].copy();
 		}
 	}
+	articleController.doRedraw = function(){
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].doRedraw();
+		}
+	}
+	articleController.semanticZooming = function(onOrOff){
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].semanticZooming(onOrOff);
+		}
+	}
 
 	//-------------------- EVENTS ----------------------
 
 
 	articleController.onhoverNode = function (properties) {
-		console.log("ONHOVERNODE " + JSON.stringify(properties));
+		//console.log("ONHOVERNODE " + JSON.stringify(properties));
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showNode(networkDetailView, properties.node);
 		}
