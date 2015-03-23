@@ -1022,12 +1022,21 @@ var ArticleRenderer = function (vals) {
 					if (item.type == 'text' && idInRange(item.id)) {
 						textNodes.add(item);
 					}
+					var xCnt = 0;
 					if (item.type == 'section' && idInRange(item.id)) {
-						console.log("IN HERE " + id); 
-						GLOBAL_data.nodes.update({id: item.id, value: 50});
+						console.log("IN HERE " + item.id);
+						GLOBAL_data.nodes.update({
+							id : item.id,
+							x : item.x + xCnt,
+							fontSize : 1000 / GLOBAL_network.getScale(),
+							fontSizeMin : 1000 / GLOBAL_network.getScale(),
+							fontSizeMax : 1000 / GLOBAL_network.getScale()
+						});
+						xCnt += 1000;
 					}
-					
+
 				}
+				GLOBAL_network.redraw();
 
 				items = textNodes.get();
 				for (var i = 0; i < items.length; i++) {
