@@ -1,5 +1,6 @@
 var DataRetriever = function (vals) {
 	var GLOBAL_title = "";
+	var GLOBAL_articleRenderer = vals.articleRenderer;
 	/*if (vals.hasOwnProperty('title')) {
 	GLOBAL_title = vals.title;
 	}*/
@@ -26,7 +27,11 @@ var DataRetriever = function (vals) {
 	var GLOBAL_sectionInfos;
 	var GLOBAL_sectionContentData = [];
 	var GLOBAL_intro = "";
-	var dataRetriver = {};
+	var GLOBAL_interval;
+	var dataRetriever = {};
+	var allDataRetrieved = 0;
+	var allDataRetrievedCheck = 0;
+	var allDataRetrievedFlag = false;
 
 	var resetData = function () {
 		GLOBAL_title = "";
@@ -43,19 +48,19 @@ var DataRetriever = function (vals) {
 		GLOBAL_imageCount = 0;
 	}
 
-	dataRetriver.getTitle = function () {
+	dataRetriever.getTitle = function () {
 		return GLOBAL_title;
 	}
 
-	dataRetriver.setTitle = function (title) {
+	dataRetriever.setTitle = function (title) {
 		GLOBAL_title = title;
 	}
 
-	dataRetriver.getJSONString = function () {
+	dataRetriever.getJSONString = function () {
 		return JSON.stringify(GLOBAL_JSON);
 	}
 
-	dataRetriver.getAllMeasures = function () {
+	dataRetriever.getAllMeasures = function () {
 		//GLOBAL_title = "Albert Einstein"; //$("#article-name").val();
 		//Calculate Edits:
 		//handleEditDataSync(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue");
@@ -69,10 +74,10 @@ var DataRetriever = function (vals) {
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_title + "&continue", handleImages);
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&rvlimit=1&titles=" + GLOBAL_title + "&rvprop=user|timestamp&rvdir=newer&continue", handleArticleAge);
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=true&titles=" + GLOBAL_title + "&continue", handleFlesch);*/
-		
+
 		//GET ALL SECTIONS TITLES:
 		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&prop=sections&page=" + GLOBAL_title, handleSectionTitles);
-		
+
 		//GET ALL IMAGES:
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&titles=" + GLOBAL_title + "&continue", handleImages);
 
@@ -93,13 +98,23 @@ var DataRetriever = function (vals) {
 		//GET INTRO
 		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&section=0&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", handleIntro);
 
+		GLOBAL_interval = setInterval(checkIfAllDataRetrieved, 1000);
 	}
 
-	dataRetriver.getIntro = function () {
+	function checkIfAllDataRetrieved() {
+		console.log(allDataRetrieved + " == " + allDataRetrievedCheck);
+		if (allDataRetrieved == allDataRetrievedCheck) {
+			clearInterval(GLOBAL_interval);
+			allDataRetrievedFlag = true;
+			GLOBAL_articleRenderer.fillDataNew();
+		}
+	}
+
+	dataRetriever.getIntro = function () {
 		return GLOBAL_intro;
 	}
 
-	dataRetriver.getSectionContentData = function (sectionName) {
+	dataRetriever.getSectionContentData = function (sectionName) {
 		for (var i = 0; i < GLOBAL_sectionContentData.length; i++) {
 			//console.log("GLOBAL_sectionContentData[i].sections[0].index : " + GLOBAL_sectionContentData[i].sections[0].index);
 			if (GLOBAL_sectionContentData[i].sections[0].line == sectionName) {
@@ -107,30 +122,30 @@ var DataRetriever = function (vals) {
 				return GLOBAL_sectionContentData[i];
 			}
 		}
-		
+
 		console.log("NOT FOUND SECTION INDEX: " + sectionName);
 		return null;
 	}
 
-	dataRetriver.getImageArray = function () {
+	dataRetriever.getImageArray = function () {
 		return GLOBAL_imageArray;
 	}
 
-	dataRetriver.getRawText = function () {
+	dataRetriever.getRawText = function () {
 		return GLOBAL_rawText;
 	}
 
-	dataRetriver.getRawTextWithData = function () {
+	dataRetriever.getRawTextWithData = function () {
 		//return albertEinsteinRawData();
 
 		return GLOBAL_rawTextWithData;
 	}
 
-	dataRetriver.getSectionInfos = function () {
+	dataRetriever.getSectionInfos = function () {
 		return GLOBAL_sectionInfos;
 	}
 
-	dataRetriver.getAllReferences = function () {
+	dataRetriever.getAllReferences = function () {
 		return GLOBAL_referencesArray;
 	}
 
@@ -161,16 +176,18 @@ var DataRetriever = function (vals) {
 		var object = JSON.parse(JSON.stringify(JSONResponse));
 		console.log("object : " + JSON.stringify(object.parse.sections[0]));
 		GLOBAL_sectionContentData.push(object.parse);
-
+		allDataRetrieved++;
 	}
 
 	var handleSectionTitles = function (JSONResponse) {
 		var sectionTitles = JSON.parse(JSON.stringify(JSONResponse));
 		GLOBAL_sectionInfos = sectionTitles.parse.sections;
 		if (GLOBAL_sectionInfos.length > 0) {
+			allDataRetrievedCheck = GLOBAL_sectionInfos.length;
 			for (var i = 0; i < GLOBAL_sectionInfos.length; i++) {
-				console.log("INDEX: " +  GLOBAL_sectionInfos[i].index );
+				console.log("INDEX: " + GLOBAL_sectionInfos[i].index);
 				retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&generatexml&section=" + GLOBAL_sectionInfos[i].index + "&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", handleSectionContentData);
+
 			}
 		}
 	}
@@ -551,7 +568,7 @@ var DataRetriever = function (vals) {
 
 	}
 
-	return dataRetriver;
+	return dataRetriever;
 };
 
 //test:

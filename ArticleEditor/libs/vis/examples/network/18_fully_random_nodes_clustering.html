@@ -40,7 +40,8 @@
       for (var i = 0; i < nodeCount; i++) {
         nodes.push({
           id: i,
-          label: String(i)
+          label: "test",
+		  shape : "box"
         });
       }
       for (var i = 0; i < nodeCount; i++) {
@@ -63,7 +64,13 @@
         edges: edges
       };
       var options = {
-        physics: {barnesHut:{springLength:120}}, // this is the correct way to set the length of the springs
+      	physics : {
+			barnesHut : {
+				gravitationalConstant : 0,
+				springConstant : 0,
+				centralGravity : 0
+			}
+		},
         clustering: {
           enabled: clusteringOn
         },

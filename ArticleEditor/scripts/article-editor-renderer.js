@@ -12,24 +12,12 @@ var ArticleRenderer = function (vals) {
 	var GLOBAL_introID = 0;
 	var GLOBAL_introTextID = 0;
 
-	//create new DataRetriever
-	var dataRetriever = new DataRetriever();
-
 	//DataSets for operations
-	var nodesHideAndSeek = new vis.DataSet();
-	var textNodes = new vis.DataSet();
 	var allNodesBackup = new vis.DataSet();
 
 	//Flags and variables for operations
+
 	var showReferencesFlag = false;
-	var levelOfSemanticZooming = 0;
-	var intoOverviewMode = false;
-	var hideSectionText = true;
-	var hideTextAt = 0.1;
-	var switchToOverviewModeAt = 0.05;
-	var hideParagraphMode = true;
-	var overviewMode = false;
-	var imageSwitcher = false;
 	var sectionNodes = [];
 	var sectionsSplitted = false;
 	var viewJustSpecificSection = false;
@@ -41,7 +29,26 @@ var ArticleRenderer = function (vals) {
 
 	var articleRenderer = {};
 
-	var cleanUp = function () {
+	var articleRendererSemanticZooming = new ArticleRendererSemanticZooming({
+			network : GLOBAL_network,
+			minID : GLOBAL_minID,
+			maxID : GLOBAL_maxID,
+			minX : GLOBAL_minX,
+			maxX : GLOBAL_maxX,
+			minY : GLOBAL_minY,
+			maxY : GLOBAL_maxY,
+			data : GLOBAL_data,
+			articleName : GLOBAL_articleName,
+			renderer : articleRenderer,
+			controller : articleController
+		});
+
+	//create new DataRetriever
+	var dataRetriever = new DataRetriever({
+			articleRenderer : articleRenderer
+		});
+
+	articleRenderer.cleanUp = function () {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
@@ -50,6 +57,13 @@ var ArticleRenderer = function (vals) {
 		}
 	}
 
+	articleRenderer.getIdCounter = function () {
+		return GLOBAL_idCounter;
+	}
+
+	articleRenderer.setIdCounter = function (idCounter) {
+		GLOBAL_idCounter = idCounter;
+	}
 	articleRenderer.retrieveData = function () {
 		dataRetriever.setTitle(GLOBAL_articleName);
 		dataRetriever.getAllMeasures();
@@ -171,6 +185,7 @@ var ArticleRenderer = function (vals) {
 				image : image,
 				imageInfos : images[i],
 				shape : "image",
+				//width : 500,
 				//value : 30,
 				allowedToMoveX : true,
 				allowedToMoveY : true,
@@ -189,7 +204,7 @@ var ArticleRenderer = function (vals) {
 							if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j])) {
 								GLOBAL_data.nodes.update({
 									id : GLOBAL_idCounter - 1,
-									wikiLevel : item.wikiLevel + 1,
+									wikiLevel : item.wikiLevel,
 									masterId : item.id
 								});
 								GLOBAL_data.edges.add({
@@ -207,6 +222,7 @@ var ArticleRenderer = function (vals) {
 		console.log("END");
 
 		GLOBAL_network.redraw();
+		articleRenderer.redraw();
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
 
@@ -301,7 +317,7 @@ var ArticleRenderer = function (vals) {
 		}
 	}
 
-	var center = function () {
+	articleRenderer.center = function () {
 		//console.log(articleRenderer.getBiggestXValue() + " " + articleRenderer.getBiggestYValue() + " " + articleRenderer.getSmallestXValue() + " " + articleRenderer.getSmallestYValue());
 		var object = {};
 		object.position = {
@@ -310,13 +326,31 @@ var ArticleRenderer = function (vals) {
 		};
 		object.scale = 0.02;
 		GLOBAL_network.moveTo(object);
+		//articleRendererSemanticZooming.func_overviewMode();
 
 	}
+	articleRenderer.centerWithoutScaling = function () {
+		var object = {};
+		object.position = {
+			x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2,
+			y : (articleRenderer.getSmallestYValue() + articleRenderer.getBiggestYValue()) / 2
+		};
+		GLOBAL_network.moveTo(object);
+	}
+	articleRenderer.centerWithScaleFactor = function (scale) {
+		var object = {};
+		object.position = {
+			x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2,
+			y : (articleRenderer.getSmallestYValue() + articleRenderer.getBiggestYValue()) / 2
+		};
+		object.scale = scale;
+		GLOBAL_network.moveTo(object);
+	}
 	articleRenderer.doRedraw = function () {
-		redraw();
+		articleRenderer.redraw();
 	}
 	articleRenderer.fillDataNew = function () {
-		cleanUp();
+		articleRenderer.cleanUp();
 		var intro = dataRetriever.getIntro();
 		var title = dataRetriever.getTitle();
 		var sectionInfos = dataRetriever.getSectionInfos();
@@ -568,8 +602,8 @@ var ArticleRenderer = function (vals) {
 		});
 
 		GLOBAL_network.redraw();
-		redraw();
-		center();
+		articleRenderer.redraw();
+		articleRenderer.center();
 	}
 
 	function trimToOneParagraph(textOfSection, sectionName) {
@@ -597,98 +631,305 @@ var ArticleRenderer = function (vals) {
 		return textOfSection;
 	}
 
-	function redraw() {
-		GLOBAL_network.redraw();
-		var currentlevelCnt = getMaxLevel();
-		var sumMaxHeightOfLevel = 0; //BUG IN Y DIRECTION
-		//console.log("currentlevelCnt : " + currentlevelCnt);
-		var nodesWithoutTextAsChildren = [];
-		for (var clc = currentlevelCnt; clc >= 0; clc--) {
-			sumMaxHeightOfLevel += getMaxHeightOfLevel(clc);
-			var allMasterOfALevel = getAllTextNodeMastersOfALevel(clc);
-			var xCnt = 0;
-			//console.log(allMasterOfALevel.length);
-			//console.log(">-------------------------------------------<");
-			for (var i = 0; i < allMasterOfALevel.length; i++) {
-				var nodesHelp = getAllTextAndNoParanetsNodesSameLevelSameMaster(clc, allMasterOfALevel[i]);
-				var xCntStart = 0;
-				var xCntEnd = 0;
-				var items = nodesHelp.get();
-				//console.log("UPDATE NODE MASTER: " + allMasterOfALevel[i] + " LEVEL: " + clc);
-				for (var j = 0; j < items.length; j++) {
-
-					//console.log("ID: " + items[j].id + " " + xCnt + " " + items[j].width + " " + (-sumMaxHeightOfLevel) + " " + allMasterOfALevel[i] + " " + items[j].wikiLevel);
-					xCnt += (items[j].width / 2);
-					GLOBAL_data.nodes.update({
-						id : items[j].id,
-						x : xCnt + GLOBAL_minX,
-						y : (-sumMaxHeightOfLevel) +
-						(items[j].height / 2) + GLOBAL_minY,
-						title : (xCnt + GLOBAL_minX) + " " + ((-sumMaxHeightOfLevel) + GLOBAL_minY)
-					});
-					if (j == 0)
-						xCntStart = xCnt;
-					if (j + 1 == items.length)
-						xCntEnd = xCnt;
-					xCnt += items[j].width;
-					//console.log("xCNT: " + xCnt);
-
-				}
-				if (xCntStart == 0 && xCntEnd == 0) //No text node as child
-					nodesWithoutTextAsChildren.push(GLOBAL_data.nodes.get(allMasterOfALevel[i]));
-				else {
-					var item = GLOBAL_data.nodes.get(allMasterOfALevel[i]);
-					GLOBAL_data.nodes.update({
-						id : allMasterOfALevel[i],
-						x : ((xCntStart + xCntEnd) / 2) + GLOBAL_minX, //getXValueOfMasterNode(allMasterOfALevel[i]),//((xCntStart + xCntEnd) / 2),//
-						y : -sumMaxHeightOfLevel - (item.height * 3) + GLOBAL_minY //getYValueOfMasterNode(allMasterOfALevel[i])//
-					});
-				}
-
-			}
-			//console.log(">-------------------------------------------<");
+	function getMaxHeightOfLevelTextNodes(level) {
+		var items = GLOBAL_data.nodes.get();
+		var maxHeight = -1;
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].wikiLevel == level && items[i].height > maxHeight && idInRange(items[i].id) && items[i].type == "text")
+				maxHeight = items[i].height;
 		}
+		return maxHeight;
+	}
 
-		for (var i = 0; i < nodesWithoutTextAsChildren.length; i++) {
-			var node = nodesWithoutTextAsChildren[i];
-			if (node != null) {
-				var x = getXValueOfMasterNode(node.id);
-				var y = getYValueOfMasterNode(node.id);
+	function getMaxHeightOfLevelSectionNodes(level) {
+		var items = GLOBAL_data.nodes.get();
+		var maxHeight = -1;
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].wikiLevel == level && items[i].height > maxHeight && idInRange(items[i].id) && items[i].type == "section")
+				maxHeight = items[i].height;
+		}
+		return maxHeight;
+	}
+	articleRenderer.showOverview = function () {
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if ((item.type == 'text' || item.type == 'section') && idInRange(item.id)) {
 				GLOBAL_data.nodes.update({
-					id : node.id,
-					x : x,
-					y : y
+					id : item.id,
+					fontSize : 14,
+					fontSizeMin : 14,
+					fontSizeMax : 30
 				});
 			}
 		}
+		GLOBAL_network.redraw();
+		articleRenderer.redraw();
+		articleRenderer.center();
+	}
 
-		currentlevelCnt = getMaxLevel();
+	articleRenderer.redraw = function () {
+		console.log("INTO REDRAW");
 		var items = GLOBAL_data.nodes.get();
-		for (var clc = currentlevelCnt; clc >= 0; clc--) {
-			var y = articleRenderer.getSmallestYValueOfLevel(clc);
+		var currentlevelCnt = getMaxLevel();
+		var sumHeight = 0;
+		var heightCnt = 0;
+		var currentLevelMaxXImg = 0;
+		var currentLevelMaxXText = 0;
+		var currentLevelMaxXSection = 0;
+		var oldLevelMaxX = 0;
+		var addXSections = 200;
+		var addXText = 50;
+		var addY = 500;
+		var bottomLevel = true;
+
+		var xMult = 0;
+		for (var clc = currentlevelCnt; clc >= -1; clc--) {
+			items = GLOBAL_data.nodes.get();
+
+			var maxHeightTextNodes = getMaxHeightOfLevelTextNodes(clc);
+			var maxHeightSectionNodes = getMaxHeightOfLevelSectionNodes(clc);
+			var sumWidth = 0;
+			//var heightAddFlag = true;
+			//	console.log("-------------------------LEVEL: " + clc);
+			var itemFoundInLevel = false;
+			xMult = 0;
 			for (var i = 0; i < items.length; i++) {
-				if (items[i].wikiLevel == clc && idInRange(items[i].id) && items[i].type == "section") {
+
+				var item = items[i];
+				if (item.type == 'img' && idInRange(item.id) && item.wikiLevel == clc) {
+
 					GLOBAL_data.nodes.update({
-						id : items[i].id,
-						y : y
+						id : item.id,
+						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
+						title : sumWidth + (item.width / 2) + 2000,
+						/*space between*/
+						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
 					});
+					xMult++;
+					sumWidth += (item.width);
+					console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
+					currentLevelMaxXImg = sumWidth + (item.width / 2) + addXText * xMult;
+
+					if (bottomLevel || (sumWidth + (item.width / 2) + addXText * xMult) > oldLevelMaxX)
+						oldLevelMaxX = sumWidth + (item.width / 2) + addXText * xMult;
+					itemFoundInLevel = true;
 				}
 			}
+
+			sumWidth = 0;
+			sumHeight += maxHeightTextNodes;
+			xMult = 0;
+			if (bottomLevel && itemFoundInLevel) {
+				bottomLevel = false;
+			}
+
+			items = GLOBAL_data.nodes.get();
+			for (var i = 0; i < items.length; i++) {
+
+				var item = items[i];
+				if (item.type == 'text' && idInRange(item.id) && item.wikiLevel == clc) {
+
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
+						title : sumWidth + (item.width / 2) + 2000,
+						/*space between*/
+						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
+					});
+					xMult++;
+					sumWidth += (item.width);
+					//console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
+					currentLevelMaxXText = sumWidth + (item.width / 2) + addXText * xMult;
+
+					if (bottomLevel || (sumWidth + (item.width / 2) + addXText * xMult) > oldLevelMaxX)
+						oldLevelMaxX = sumWidth + (item.width / 2) + addXText * xMult;
+					itemFoundInLevel = true;
+				}
+			}
+			sumHeight += maxHeightTextNodes;
+
+			if (bottomLevel && itemFoundInLevel) {
+				bottomLevel = false;
+			}
+
+			sumWidth = 0;
+
+			items = GLOBAL_data.nodes.get();
+			xMult = 0;
+			for (var i = 0; i < items.length; i++) {
+				var item = items[i];
+				if (item.type == 'section' && idInRange(item.id) && item.wikiLevel == clc) {
+
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXSections * xMult,
+						title : sumWidth + (item.width / 2) + 2000,
+						/*space between*/
+						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
+					});
+					xMult++;
+					sumWidth += (item.width);
+					//	console.log("Type : " + item.id + " " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
+					currentLevelMaxXSection = sumWidth + (item.width / 2) + addXSections * xMult;
+
+					if (bottomLevel || (sumWidth + (item.width / 2) + addXSections * xMult) > oldLevelMaxX)
+						oldLevelMaxX = sumWidth + (item.width / 2) + addXSections * xMult;
+
+				}
+			}
+			sumHeight += maxHeightSectionNodes;
+			heightCnt++;
+			bottomLevel = false;
+
+			items = GLOBAL_data.nodes.get();
+			if (currentLevelMaxXImg < oldLevelMaxX) {
+				// console.log("OFFSET: " + offset);
+				var offset = (oldLevelMaxX - currentLevelMaxXImg) / 2;
+				for (var i = 0; i < items.length; i++) {
+					var item = items[i];
+					if ((item.type == 'img') && (idInRange(item.id) && item.wikiLevel == clc)) {
+						GLOBAL_data.nodes.update({
+							id : item.id,
+							x : item.x + offset,
+							title : item.x + offset
+						});
+						currentLevelMaxXImg = item.x + offset;
+					}
+				}
+			}
+			items = GLOBAL_data.nodes.get();
+			if (currentLevelMaxXText < oldLevelMaxX) {
+				// console.log("OFFSET: " + offset);
+				var offset = (oldLevelMaxX - currentLevelMaxXText) / 2;
+				for (var i = 0; i < items.length; i++) {
+					var item = items[i];
+					if ((item.type == 'text') && (idInRange(item.id) && item.wikiLevel == clc)) {
+						GLOBAL_data.nodes.update({
+							id : item.id,
+							x : item.x + offset,
+							title : item.x + offset
+						});
+						currentLevelMaxXText = item.x + offset;
+					}
+				}
+			}
+			items = GLOBAL_data.nodes.get();
+			if (currentLevelMaxXSection < oldLevelMaxX) {
+				var offset = (oldLevelMaxX - currentLevelMaxXSection) / 2;
+				//	console.log("currentLevelMaxX : " + currentLevelMaxX + " oldLEVELMAXX : " + oldLevelMaxX + " OFFSET: " + offset);
+				for (var i = 0; i < items.length; i++) {
+					var item = items[i];
+					if (item.type == 'section' && idInRange(item.id) && item.wikiLevel == clc) {
+
+						//	console.log("UPDATING ID: " + item.id + " before " + item.x + " after " + parseFloat(item.x + offset));
+						GLOBAL_data.nodes.update({
+							id : item.id,
+							x : parseFloat(item.x + offset),
+							title : "ID: " + item.id + (item.x + offset)
+						});
+						currentLevelMaxXSection = item.x + offset;
+					}
+				}
+			}
+			//console.log("-------------------------LEVEL ENDS ---------------- " + sumHeight);
+
 		}
 
-		//SET INTRO TO MIDDLE
-		GLOBAL_data.nodes.update({
-			id : GLOBAL_introID,
-			x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2
-		});
-		var item = GLOBAL_data.nodes.get(GLOBAL_introTextID);
-		GLOBAL_data.nodes.update({
-			id : GLOBAL_introTextID,
-			x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2 + 600,
-			y : item.y + 300
-		});
-		GLOBAL_network.redraw();
 	}
+
+	/*articleRenderer.redraw = function () {
+	GLOBAL_network.redraw();
+	var currentlevelCnt = getMaxLevel();
+	var sumMaxHeightOfLevel = 0; //BUG IN Y DIRECTION
+	//console.log("currentlevelCnt : " + currentlevelCnt);
+	var nodesWithoutTextAsChildren = [];
+	for (var clc = currentlevelCnt; clc >= 0; clc--) {
+	sumMaxHeightOfLevel += getMaxHeightOfLevel(clc);
+	var allMasterOfALevel = getAllTextNodeMastersOfALevel(clc);
+	var xCnt = 0;
+	//console.log(allMasterOfALevel.length);
+	//console.log(">-------------------------------------------<");
+	for (var i = 0; i < allMasterOfALevel.length; i++) {
+	var nodesHelp = getAllTextAndNoParanetsNodesSameLevelSameMaster(clc, allMasterOfALevel[i]);
+	var xCntStart = 0;
+	var xCntEnd = 0;
+	var items = nodesHelp.get();
+	//console.log("UPDATE NODE MASTER: " + allMasterOfALevel[i] + " LEVEL: " + clc);
+	for (var j = 0; j < items.length; j++) {
+
+	//console.log("ID: " + items[j].id + " " + xCnt + " " + items[j].width + " " + (-sumMaxHeightOfLevel) + " " + allMasterOfALevel[i] + " " + items[j].wikiLevel);
+	xCnt += (items[j].width / 2);
+	GLOBAL_data.nodes.update({
+	id : items[j].id,
+	x : xCnt + GLOBAL_minX,
+	y : (-sumMaxHeightOfLevel) +
+	(items[j].height / 2) + GLOBAL_minY,
+	//title : (xCnt + GLOBAL_minX) + " " + ((-sumMaxHeightOfLevel) + GLOBAL_minY)
+	});
+	if (j == 0)
+	xCntStart = xCnt;
+	if (j + 1 == items.length)
+	xCntEnd = xCnt;
+	xCnt += items[j].width;
+	//console.log("xCNT: " + xCnt);
+
+	}
+	if (xCntStart == 0 && xCntEnd == 0) //No text node as child
+	nodesWithoutTextAsChildren.push(GLOBAL_data.nodes.get(allMasterOfALevel[i]));
+	else {
+	var item = GLOBAL_data.nodes.get(allMasterOfALevel[i]);
+	GLOBAL_data.nodes.update({
+	id : allMasterOfALevel[i],
+	x : ((xCntStart + xCntEnd) / 2) + GLOBAL_minX, //getXValueOfMasterNode(allMasterOfALevel[i]),//((xCntStart + xCntEnd) / 2),//
+	y : -sumMaxHeightOfLevel - (item.height * 3) + GLOBAL_minY //getYValueOfMasterNode(allMasterOfALevel[i])//
+	});
+	}
+
+	}
+	//console.log(">-------------------------------------------<");
+	}
+
+	for (var i = 0; i < nodesWithoutTextAsChildren.length; i++) {
+	var node = nodesWithoutTextAsChildren[i];
+	if (node != null) {
+	var x = getXValueOfMasterNode(node.id);
+	var y = getYValueOfMasterNode(node.id);
+	GLOBAL_data.nodes.update({
+	id : node.id,
+	x : x,
+	y : y
+	});
+	}
+	}
+
+	currentlevelCnt = getMaxLevel();
+	var items = GLOBAL_data.nodes.get();
+	for (var clc = currentlevelCnt; clc >= 0; clc--) {
+	var y = articleRenderer.getSmallestYValueOfLevel(clc);
+	for (var i = 0; i < items.length; i++) {
+	if (items[i].wikiLevel == clc && idInRange(items[i].id) && items[i].type == "section") {
+	GLOBAL_data.nodes.update({
+	id : items[i].id,
+	y : y
+	});
+	}
+	}
+	}
+
+	//SET INTRO TO MIDDLE
+	GLOBAL_data.nodes.update({
+	id : GLOBAL_introID,
+	x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2
+	});
+	var item = GLOBAL_data.nodes.get(GLOBAL_introTextID);
+	GLOBAL_data.nodes.update({
+	id : GLOBAL_introTextID,
+	x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2 + 600,
+	y : item.y + 300
+	});
+	GLOBAL_network.redraw();
+	}*/
 
 	articleRenderer.colorLevels = function (isColor) {
 		var currentlevelCnt = getMaxLevel();
@@ -972,6 +1213,7 @@ var ArticleRenderer = function (vals) {
 		}
 		return maxHeight;
 	}
+
 	function getMaxLevel() {
 		var items = GLOBAL_data.nodes.get();
 		var maxLevel = -1;
@@ -1007,137 +1249,8 @@ var ArticleRenderer = function (vals) {
 	}
 
 	articleRenderer.onZoom = function (properties) {
-		//IMPLEMENT SEMANTIC ZOOMING HERE
-		//LET'S A PLAY HIDE AND A SEEK AH (Pls read with an italian accent ;-)
-
-		//---------------------------------------------------------
-		// HIDE PARAGRAPHS MODE
-		if (hideParagraphMode) {
-			if (GLOBAL_network.getScale() < hideTextAt && !hideSectionText) {
-				hideSectionText = true;
-				var items = GLOBAL_data.nodes.get();
-
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					if (item.type == 'text' && idInRange(item.id)) {
-						textNodes.add(item);
-					}
-					var xCnt = 0;
-					if (item.type == 'section' && idInRange(item.id)) {
-						console.log("IN HERE " + item.id);
-						GLOBAL_data.nodes.update({
-							id : item.id,
-							x : item.x + xCnt,
-							fontSize : 1000 / GLOBAL_network.getScale(),
-							fontSizeMin : 1000 / GLOBAL_network.getScale(),
-							fontSizeMax : 1000 / GLOBAL_network.getScale()
-						});
-						xCnt += 1000;
-					}
-
-				}
-				GLOBAL_network.redraw();
-
-				items = textNodes.get();
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					GLOBAL_data.nodes.remove(item.id);
-				}
-			}
-
-			if (GLOBAL_network.getScale() >= hideTextAt && hideSectionText) {
-				hideSectionText = false;
-				var items = textNodes.get();
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					GLOBAL_data.nodes.add(item);
-				}
-				textNodes.clear();
-			}
-		}
-
-		//---------------------------------------------------------
-		// OVERVIEW MODE
-		if (overviewMode) {
-			if (GLOBAL_network.getScale() < switchToOverviewModeAt && !intoOverviewMode) {
-				var items = GLOBAL_data.nodes.get();
-
-				for (var i = 0; i < items.length; i++) {
-					if (idInRange(itmes[i].id))
-						nodesHideAndSeek.add(items[i]);
-				}
-				cleanUp()
-				GLOBAL_data.nodes.add({
-					id : 0,
-					x : 0,
-					y : 0,
-					title : 'Albert Einstein',
-					label : "Albert Einstein",
-					fontSize : 200,
-					fontSizeMin : 200,
-					fontSizeMax : 210,
-					allowedToMoveX : true,
-					allowedToMoveY : true
-				});
-				intoOverviewMode = true;
-			}
-
-			if (GLOBAL_network.getScale() >= switchToOverviewModeAt && intoOverviewMode) {
-				intoOverviewMode = false;
-				cleanUp();
-				var items = nodesHideAndSeek.get();
-
-				for (var i = 0; i < items.length; i++) {
-					GLOBAL_data.nodes.add(items[i]);
-				}
-				nodesHideAndSeek.clear();
-
-			}
-		}
-		//----------------------------------------------------------------
-		if (imageSwitcher) {
-			if (GLOBAL_network.getScale() < 1 && levelOfSemanticZooming < 1) {
-				//console.log("GLOBAL_network.getSCALE < 1!!!");
-				levelOfSemanticZooming = 1;
-				var items = GLOBAL_data.nodes.get();
-
-				for (var i = 0; i < items.length; i++) {
-					if (items[i].hasOwnProperty('image') && idInRange(items[i].id)) {
-						var help = items[i].image;
-
-						GLOBAL_data.nodes.update({
-							id : items[i].id,
-							label : 'test' + i,
-							image : items[i].dataToChange,
-							dataToChange : help
-						});
-					}
-
-				}
-			}
-
-			if (GLOBAL_network.getScale() >= 1 && levelOfSemanticZooming >= 1) {
-				levelOfSemanticZooming = 0;
-
-				var items = GLOBAL_data.nodes.get();
-
-				for (var i = 0; i < items.length; i++) {
-					if (items[i].hasOwnProperty('image') && idInRange(items[i].id)) {
-						//console.log("images: " + items[i].id);
-						//GLOBAL_data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
-						var help = items[i].image;
-
-						GLOBAL_data.nodes.update({
-							id : items[i].id,
-							label : 'test' + i,
-							image : items[i].dataToChange,
-							dataToChange : help
-						});
-					}
-
-				}
-			}
-		}
+		if (semanticZooming)
+			articleRendererSemanticZooming.doZooming(properties);
 	}
 
 	articleRenderer.splitSectionsIntoParagraphs = function () {
@@ -1179,7 +1292,7 @@ var ArticleRenderer = function (vals) {
 					GLOBAL_data.nodes.remove(item.id);
 				}
 			}
-			redraw();
+			articleRenderer.redraw();
 			if (showReferencesFlag) {
 				hideReferences();
 				showReferences();
@@ -1195,7 +1308,7 @@ var ArticleRenderer = function (vals) {
 				GLOBAL_data.nodes.add(sectionNodes[i]);
 			}
 
-			redraw();
+			articleRenderer.redraw();
 
 			if (showReferencesFlag) {
 				hideReferences();
@@ -1256,7 +1369,7 @@ var ArticleRenderer = function (vals) {
 			if (!viewJustSpecificSection)
 				copyAllNodesInRange(GLOBAL_data.nodes, allNodesBackup, GLOBAL_minID, GLOBAL_maxID);
 
-			cleanUp();
+			articleRenderer.cleanUp();
 			copyAllNodes(newNodeContainer, GLOBAL_data.nodes);
 
 			viewJustSpecificSection = true;
@@ -1266,7 +1379,7 @@ var ArticleRenderer = function (vals) {
 	articleRenderer.showAllItems = function () {
 		if (viewJustSpecificSection) {
 			viewJustSpecificSection = false;
-			cleanUp();
+			articleRenderer.cleanUp();
 			copyAllNodes(allNodesBackup, GLOBAL_data.nodes);
 			allNodesBackup.clear();
 		}

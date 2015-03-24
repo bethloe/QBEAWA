@@ -34,6 +34,9 @@ var ArticleController = function (vals) {
 				dynamic : false,
 				type : '1'
 			},
+			/*clustering : {
+			enabled : true
+			},*/
 			hover : true
 		}
 
@@ -51,12 +54,19 @@ var ArticleController = function (vals) {
 				centralGravity : 0
 			}
 		},
+		nodes : {
+			widthMin : 1000,
+			widthMax : 50000,
+		},
 		smoothCurves : {
 			type : 'continuous',
 			roundness : 1,
 			dynamic : false,
 			type : '1'
 		},
+		/*clustering : {
+		enabled : true
+		},*/
 		hover : true
 	};
 
@@ -145,14 +155,19 @@ var ArticleController = function (vals) {
 			articleRenderers[i].copy();
 		}
 	}
-	articleController.doRedraw = function(){
+	articleController.doRedraw = function () {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].doRedraw();
 		}
 	}
-	articleController.semanticZooming = function(onOrOff){
+	articleController.semanticZooming = function (onOrOff) {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].semanticZooming(onOrOff);
+		}
+	}
+	articleController.showOverview = function (){
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].showOverview();
 		}
 	}
 
@@ -167,7 +182,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.onblurNode = function (properties) {
-	/*	console.log("onblurNode " + JSON.stringify(properties));
+		/*	console.log("onblurNode " + JSON.stringify(properties));
 		var object = {scale : 0.05};
 		networkDetailView.moveTo(object);*/
 
