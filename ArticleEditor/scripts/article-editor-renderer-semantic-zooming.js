@@ -28,7 +28,7 @@ var ArticleRendererSemanticZooming = function (vals) {
 	var switchToOverviewModeAt = 0.007;
 
 	function scaleWikiImage(min, max, total, value) {
-		console.log("IN HERE");
+		//console.log("IN HERE");
 		if (max == min) {
 			return 0.5;
 		} else {
@@ -109,7 +109,7 @@ var ArticleRendererSemanticZooming = function (vals) {
 			items = GLOBAL_data.nodes.get();
 			if (currentLevelMaxX < oldLevelMaxX) {
 				var offset = (oldLevelMaxX - currentLevelMaxX) / 2;
-				console.log("OFFSET: " + offset);
+				//console.log("OFFSET: " + offset);
 				for (var i = 0; i < items.length; i++) {
 					var item = items[i];
 					if (item.type == 'section' && idInRange(item.id) && item.wikiLevel == clc + 1) {
@@ -126,12 +126,12 @@ var ArticleRendererSemanticZooming = function (vals) {
 				//oldLevelMaxX = currentLevelMaxX;
 				var sumWidth = 0;
 				var heightAddFlag = true;
-				console.log("-------------------------LEVEL: " + clc);
+				//console.log("-------------------------LEVEL: " + clc);
 				for (var i = 0; i < items.length; i++) {
 					var item = items[i];
 					if (item.type == 'section' && idInRange(item.id) && item.wikiLevel == clc) {
 						if (heightAddFlag) {
-							console.log("HEIGHT: " + item.height);
+							//console.log("HEIGHT: " + item.height);
 							sumHeight += (item.height + (item.height / 2));
 							heightAddFlag = false;
 							heightCnt++;
@@ -145,7 +145,7 @@ var ArticleRendererSemanticZooming = function (vals) {
 						});
 
 						sumWidth += (item.width);
-						console.log("LABEL : " + item.label + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
+						//console.log("LABEL : " + item.label + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
 						currentLevelMaxX = sumWidth + (item.width / 2) + addX;
 
 						if (clc == currentlevelCnt)
@@ -393,7 +393,7 @@ var ArticleRendererSemanticZooming = function (vals) {
 		}
 		if (GLOBAL_network.getScale() >= hideTextAt) {
 			items = GLOBAL_data.nodes.get();
-			console.log("TEXT SIZE: " + parseFloat(10.4 / GLOBAL_network.getScale()));
+			//console.log("TEXT SIZE: " + parseFloat(10.4 / GLOBAL_network.getScale()));
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
 				/*if (item.type == 'text' && idInRange(item.id)) {
@@ -405,7 +405,7 @@ var ArticleRendererSemanticZooming = function (vals) {
 					});
 				}*/
 				if (item.type == 'section' && idInRange(item.id)) {
-					console.log("SECTION!!!!!!!!!!!!!!!!!");
+					//console.log("SECTION!!!!!!!!!!!!!!!!!");
 					GLOBAL_data.nodes.update({
 						id : item.id,
 						fontSize : parseFloat(10.4 / GLOBAL_network.getScale()),
@@ -430,7 +430,7 @@ var ArticleRendererSemanticZooming = function (vals) {
 
 		//---------------------------------------------------------
 		// HIDE PARAGRAPHS MODE
-		console.log("SCALE: " + GLOBAL_network.getScale());
+		//console.log("SCALE: " + GLOBAL_network.getScale());
 		if (hideParagraphMode) {
 			func_hideParagraphMode();
 		}

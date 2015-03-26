@@ -22,7 +22,7 @@ var ArticleController = function (vals) {
 	function update() {
 		var type = "continuous";
 		var roundness = 0.5;
-		roundnessScreen.value = roundness;
+		//roundnessScreen.value = roundness;
 		var options = {
 			dataManipulation : {
 				enabled : true,
@@ -165,9 +165,15 @@ var ArticleController = function (vals) {
 			articleRenderers[i].semanticZooming(onOrOff);
 		}
 	}
-	articleController.showOverview = function (){
+	articleController.showOverview = function () {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showOverview();
+		}
+	}
+	articleController.showQuality = function () {
+		console.log("CONTROller showquality");
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].showQuality();
 		}
 	}
 
@@ -196,13 +202,13 @@ var ArticleController = function (vals) {
 
 	articleController.onSelect = function (properties) {
 
-		/*for (var i = 0; i < articleRenderers.length; i++) {
-		articleRenderers[i].onSelect(properties);
-		}*/
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].onSelect(properties);
+		}
 	}
 
 	articleController.onDoubleClick = function (properties) {
-		console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
+		//console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
 		if (properties.nodes.length == 0 && properties.edges.length == 0) {
 
 			var x = properties.pointer.canvas.x;
@@ -226,7 +232,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.onClick = function (properties) {
-		console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
+		//console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
 		var x = properties.pointer.canvas.x;
 		var y = properties.pointer.canvas.y;
 		if (properties.nodes.length == 0 && properties.edges.length == 0) {

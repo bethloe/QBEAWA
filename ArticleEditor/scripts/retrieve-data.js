@@ -98,15 +98,33 @@ var DataRetriever = function (vals) {
 		//GET INTRO
 		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&section=0&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", handleIntro);
 
-		GLOBAL_interval = setInterval(checkIfAllDataRetrieved, 1000);
+		GLOBAL_interval = setInterval(checkIfAllDataRetrieved, 500);
 	}
-
+	var GLOBAL_retrieveCnt = 0;
 	function checkIfAllDataRetrieved() {
 		console.log(allDataRetrieved + " == " + allDataRetrievedCheck);
-		if (allDataRetrieved == allDataRetrievedCheck) {
+		
+		if (allDataRetrieved == allDataRetrievedCheck && allDataRetrieved != 0 && allDataRetrievedCheck != 0) {
 			clearInterval(GLOBAL_interval);
 			allDataRetrievedFlag = true;
 			GLOBAL_articleRenderer.fillDataNew();
+			GLOBAL_articleRenderer.retrievingDataDone("data retrieved");
+			return;
+		}
+		if (GLOBAL_retrieveCnt == 0) {
+			GLOBAL_articleRenderer.retrievingDataAnimation("working.");
+			GLOBAL_retrieveCnt++;
+			return;
+		}
+		if (GLOBAL_retrieveCnt == 1) {
+			GLOBAL_articleRenderer.retrievingDataAnimation("working..");
+			GLOBAL_retrieveCnt++;
+			return;
+		}
+		if (GLOBAL_retrieveCnt == 2) {
+			GLOBAL_articleRenderer.retrievingDataAnimation("working...");
+			GLOBAL_retrieveCnt = 0;
+			return;
 		}
 	}
 
@@ -185,7 +203,6 @@ var DataRetriever = function (vals) {
 		if (GLOBAL_sectionInfos.length > 0) {
 			allDataRetrievedCheck = GLOBAL_sectionInfos.length;
 			for (var i = 0; i < GLOBAL_sectionInfos.length; i++) {
-				console.log("INDEX: " + GLOBAL_sectionInfos[i].index);
 				retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&generatexml&section=" + GLOBAL_sectionInfos[i].index + "&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", handleSectionContentData);
 
 			}
@@ -302,7 +319,6 @@ var DataRetriever = function (vals) {
 			GLOBAL_JSON.externalLinks = GLOBAL_externalLinksCount;
 			//STROE REFS INTO REFARRAY
 			for (var i = 0; i < JSONexternalLinks.length; i++) {
-				console.log("----------------------> " + JSONexternalLinks[i]['*']);
 				GLOBAL_referencesArray.push(JSONexternalLinks[i]['*']);
 			}
 

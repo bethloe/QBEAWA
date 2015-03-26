@@ -22,6 +22,7 @@ var ArticleRenderer = function (vals) {
 	var sectionsSplitted = false;
 	var viewJustSpecificSection = false;
 	var semanticZooming = false;
+	var showQualityFlag = false;
 
 	//GLOBAL ID COUNTER
 	var GLOBAL_idCounter = GLOBAL_minID;
@@ -43,6 +44,10 @@ var ArticleRenderer = function (vals) {
 			controller : articleController
 		});
 
+	var qualityManager = new QualityManager({
+			renderer : articleRenderer,
+			controller : articleController
+		});
 	//create new DataRetriever
 	var dataRetriever = new DataRetriever({
 			articleRenderer : articleRenderer
@@ -201,7 +206,9 @@ var ArticleRenderer = function (vals) {
 				if (idInRange(item.id)) {
 					if (item.hasOwnProperty("imagesToThisNode")) {
 						for (var j = 0; j < item.imagesToThisNode.length; j++) {
-							if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j])) {
+							//if (item.title == "Introduction")
+							//	console.log(images[i].imageTitle + " ==" + ("File:" + item.imagesToThisNode[j]).replace(/_/g, " "));
+							if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j]).replace(/_/g, " ")) {
 								GLOBAL_data.nodes.update({
 									id : GLOBAL_idCounter - 1,
 									wikiLevel : item.wikiLevel,
@@ -235,77 +242,80 @@ var ArticleRenderer = function (vals) {
 	}
 
 	articleRenderer.showReferences = function () {
-		showReferencesFlag = true;
 		var refs = dataRetriever.getAllReferences();
-		var rawTextWithData = dataRetriever.getRawTextWithData();
-		var sectionNameToRefCnt = {};
+		var maxX = this.getBiggestXValue();
+		var minX = this.getSmallestXValue();
+		var maxY = this.getBiggestYValue();
+		var minY = this.getSmallestYValue();
+		var offsetY = 1000;
+		var offsetX = 2000;
 		for (var i = 0; i < refs.length; i++) {
-			try {
-				if (rawTextWithData.search(refs[i]) > -1) {
-					var sectionName = getSectionToRef(rawTextWithData, refs[i]);
-					//	console.log("SECTIONNAME: " + sectionName);
-					if (sectionName != undefined) { //WE HAVE SOME UNDEFINED SECTION NAMES BECAUSE OF THE INTRO!!
-						//console.log("REF: " + refs[i]);
-						var item = getNodeToSectionName(sectionName);
-						if (item != null) {
-							var idHelp = item.id;
-							//NOW WE HAVE THE SECTION HEADLINE NODE BUT WE WANT THE TEXT NODES SO LET'S GO ON
-							var children = getAllChildrenOfANode(item.id);
-							var childrenItem = children.get();
-							var xPos = item.x;
-							var yPos = item.y;
-							var height = item.height;
-							var wikiLevel = item.wikiLevel;
-							var masterId = item.masterId;
-							var idHelp = item.id;
-							var xyOffset = 0;
+			var ref = refs[i];
+			var x = getRandomInt(minX, maxX);
+			var y = getRandomInt(minY, maxY);
 
-							if (childrenItem.length > 0) {
-								xPos = childrenItem[0].x;
-								yPos = childrenItem[0].y;
-								height = childrenItem[0].height;
-								wikiLevel = childrenItem[0].wikiLevel;
-								masterId = childrenItem[0].masterId;
-								idHelp = childrenItem[0].id;
+			if (i % 2 == 0) {
+				if (getRandomInt(1, 2) == 1)
+					y = minY - offsetY;
+				else
+					y = maxY + offsetY;
+			} else {
+				if (getRandomInt(1, 2) == 1)
+					x = minX - offsetX;
+				else
+					x = maxX + offsetX;
+			}
+			GLOBAL_data.nodes.add({
+				id : GLOBAL_idCounter,
+				x : x,
+				y : y,
+				title : ref,
+				label : ref,
+				box : "image",
+				//width : 500,
+				//value : 30,
+				allowedToMoveX : true,
+				allowedToMoveY : true,
+				type : 'ref',
+				wikiLevel : -1,
+				masterId : -1
+
+			});
+			GLOBAL_idCounter++;
+			var items = GLOBAL_data.nodes.get();
+			for (var k = 0; k < items.length; k++) {
+				var item = items[k];
+				if (idInRange(item.id)) {
+					if (item.hasOwnProperty("refsToThisNode")) {
+						for (var j = 0; j < item.refsToThisNode.length; j++) {
+							if (ref == (item.refsToThisNode[j])) {
+								//if (item.title == "Introduction")
+								//	console.log(ref + " ==" + (item.refsToThisNode[j]));
+								GLOBAL_data.nodes.update({
+									id : GLOBAL_idCounter - 1,
+									wikiLevel : item.wikiLevel,
+									masterId : item.id
+								});
+								GLOBAL_data.edges.add({
+									from : GLOBAL_idCounter - 1,
+									to : item.id,
+									style : "arrow"
+								});
+
 							}
-							if (!sectionNameToRefCnt.hasOwnProperty(sectionName)) {
-								sectionNameToRefCnt[sectionName] = 1;
-							} else {
-								sectionNameToRefCnt[sectionName] += 1;
-							}
-							xyOffset = sectionNameToRefCnt[sectionName];
-
-							//console.log("sectionName: " + sectionName + " x: " + item.x + " ref: " + refs[i] + " id : " + idHelp);
-							GLOBAL_data.nodes.add({
-								id : GLOBAL_idCounter,
-								x : i % 2 == 0 ? xPos + xyOffset * 30 : xPos - xyOffset * 30,
-								y : yPos + height + xyOffset * 60, //i%2==0?500:-7000,
-								title : refs[i],
-								label : refs[i],
-								value : 1,
-								shape : 'box',
-								type : 'ref',
-								allowedToMoveX : true,
-								allowedToMoveY : true,
-								wikiLevel : wikiLevel,
-								masterId : masterId //if from == -1 the no master
-							});
-
-							GLOBAL_data.edges.add({
-								from : GLOBAL_idCounter,
-								to : idHelp,
-								style : "arrow"
-							});
-
-							GLOBAL_idCounter++;
 						}
 					}
 				}
-			} catch (err) {
-				console.log(err);
 			}
 		}
+		console.log("END");
+
+		GLOBAL_network.redraw();
+		articleRenderer.redraw();
+		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
+
+	
 
 	articleRenderer.hideReferences = function () {
 		showReferencesFlag = false;
@@ -409,8 +419,8 @@ var ArticleRenderer = function (vals) {
 				} else {
 					textOfSection = sectionData.wikitext['*'];
 				}
-
-				//var textOfSection = getTextOfSection(sectionInfos[i].line);
+				//console.log("LINE: " + sectionInfos[i].line);
+				var rawText = getTextOfSection(sectionInfos[i].line);
 
 				//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
 				//console.log("LENGTH: " + textOfSection.length);
@@ -433,7 +443,11 @@ var ArticleRenderer = function (vals) {
 						wikiLevel : currentLevel,
 						masterId : idCnt, //if from == -1 the no master
 						type : 'text',
-						imagesToThisNode : sectionData.images
+						quality : 0,
+						rawText : rawText,
+						sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
+						imagesToThisNode : sectionData.images,
+						refsToThisNode : sectionData.externallinks
 					});
 					GLOBAL_data.edges.add({
 						from : idCnt,
@@ -484,16 +498,12 @@ var ArticleRenderer = function (vals) {
 				if (sectionData.sections.length > 1) {
 					textOfSection = sectionData.wikitext['*'];
 					textOfSection = trimToOneParagraph(textOfSection, sectionInfos[i].line);
-
-					//console.log("TEXTOFSECTION: " + textOfSection);
 				} else {
 					textOfSection = sectionData.wikitext['*'];
 				}
-				//var textOfSection = getTextOfSection(sectionInfos[i].line);
-				//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
+				var rawText = getTextOfSection(sectionInfos[i].line);
 				if (textOfSection != "" && textOfSection.length > 10) {
 
-					//console.log("images : " + JSON.stringify(sectionData.images));
 					var value = textOfSection.split(' ').length;
 					//		textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
 					textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
@@ -510,7 +520,11 @@ var ArticleRenderer = function (vals) {
 						wikiLevel : currentLevel,
 						masterId : idCnt, //if from == -1 the no master
 						type : 'text',
-						imagesToThisNode : sectionData.images
+						quality : 0,
+						rawText : rawText,
+						sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
+						imagesToThisNode : sectionData.images,
+						refsToThisNode : sectionData.externallinks
 					});
 					GLOBAL_data.edges.add({
 						from : idCnt,
@@ -561,8 +575,9 @@ var ArticleRenderer = function (vals) {
 		GLOBAL_introID = GLOBAL_idCounter;
 		GLOBAL_idCounter++;
 		var wikitext = intro.wikitext['*'];
-		wikitext = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
-		wikitext = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
+		wikitext = repalceNewLineWithTwoNewLines(wikitext, "\n", "\n\n", 1);
+		wikitext = replaceCharacterWithAnother(wikitext, " ", '\n', 10);
+		var rawText = getIntroOfArticle();
 
 		GLOBAL_data.nodes.add({
 			id : GLOBAL_idCounter,
@@ -576,7 +591,12 @@ var ArticleRenderer = function (vals) {
 			allowedToMoveY : true,
 			wikiLevel : 1,
 			masterId : GLOBAL_idCounter - 1, //if from == -1 the no master
-			type : 'text'
+			type : 'text',
+			quality : 0,
+			sectionInfos : dataRetriever.getIntro(),
+			imagesToThisNode : dataRetriever.getIntro().images,
+			refsToThisNode : dataRetriever.getIntro().externallinks,
+			rawText : rawText
 		});
 		GLOBAL_introTextID = GLOBAL_idCounter;
 		var items = GLOBAL_data.nodes.get();
@@ -630,26 +650,16 @@ var ArticleRenderer = function (vals) {
 		}
 		return textOfSection;
 	}
-
-	function getMaxHeightOfLevelTextNodes(level) {
+	function getMaxHeightOfLevelType(level, type) {
 		var items = GLOBAL_data.nodes.get();
 		var maxHeight = -1;
 		for (var i = 0; i < items.length; i++) {
-			if (items[i].wikiLevel == level && items[i].height > maxHeight && idInRange(items[i].id) && items[i].type == "text")
+			if (items[i].wikiLevel == level && items[i].height > maxHeight && idInRange(items[i].id) && items[i].type == type)
 				maxHeight = items[i].height;
 		}
 		return maxHeight;
 	}
 
-	function getMaxHeightOfLevelSectionNodes(level) {
-		var items = GLOBAL_data.nodes.get();
-		var maxHeight = -1;
-		for (var i = 0; i < items.length; i++) {
-			if (items[i].wikiLevel == level && items[i].height > maxHeight && idInRange(items[i].id) && items[i].type == "section")
-				maxHeight = items[i].height;
-		}
-		return maxHeight;
-	}
 	articleRenderer.showOverview = function () {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
@@ -669,11 +679,11 @@ var ArticleRenderer = function (vals) {
 	}
 
 	articleRenderer.redraw = function () {
-		console.log("INTO REDRAW");
 		var items = GLOBAL_data.nodes.get();
 		var currentlevelCnt = getMaxLevel();
 		var sumHeight = 0;
 		var heightCnt = 0;
+		var currentLevelMaxXRef = 0;
 		var currentLevelMaxXImg = 0;
 		var currentLevelMaxXText = 0;
 		var currentLevelMaxXSection = 0;
@@ -681,19 +691,25 @@ var ArticleRenderer = function (vals) {
 		var addXSections = 200;
 		var addXText = 50;
 		var addY = 500;
+		var refOffset = 3000;
+		var sectionOffset = 100;
 		var bottomLevel = true;
 
 		var xMult = 0;
 		for (var clc = currentlevelCnt; clc >= -1; clc--) {
 			items = GLOBAL_data.nodes.get();
 
-			var maxHeightTextNodes = getMaxHeightOfLevelTextNodes(clc);
-			var maxHeightSectionNodes = getMaxHeightOfLevelSectionNodes(clc);
+			var maxHeightTextNodes = getMaxHeightOfLevelType(clc, "text");
+			var maxHeightSectionNodes = getMaxHeightOfLevelType(clc, "section");
+			var maxHeightImageNodes = getMaxHeightOfLevelType(clc, "img");
+			var maxHeightRefNodes = getMaxHeightOfLevelType(clc, "ref") + refOffset;
+			/*TO BE SURE THAT WE HAVE ENOUGH SPACE*/
+
 			var sumWidth = 0;
 			//var heightAddFlag = true;
-			//	console.log("-------------------------LEVEL: " + clc);
 			var itemFoundInLevel = false;
 			xMult = 0;
+
 			for (var i = 0; i < items.length; i++) {
 
 				var item = items[i];
@@ -702,13 +718,13 @@ var ArticleRenderer = function (vals) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
 						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
-						title : sumWidth + (item.width / 2) + 2000,
+						//title : sumWidth + (item.width / 2) + 2000,
 						/*space between*/
 						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
 					});
 					xMult++;
 					sumWidth += (item.width);
-					console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
+					//console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
 					currentLevelMaxXImg = sumWidth + (item.width / 2) + addXText * xMult;
 
 					if (bottomLevel || (sumWidth + (item.width / 2) + addXText * xMult) > oldLevelMaxX)
@@ -718,12 +734,47 @@ var ArticleRenderer = function (vals) {
 			}
 
 			sumWidth = 0;
-			sumHeight += maxHeightTextNodes;
+			if (itemFoundInLevel)
+				sumHeight += maxHeightImageNodes;
 			xMult = 0;
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
 			}
+			//console.log("SUM HEIGHT: " + sumHeight + " " + bottomLevel);
+			xMult = 0;
+			itemFoundInLevel = false;
+			items = GLOBAL_data.nodes.get();
+			for (var i = 0; i < items.length; i++) {
 
+				var item = items[i];
+				if (item.type == 'ref' && idInRange(item.id) && item.wikiLevel == clc) {
+
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
+						//title : sumWidth + (item.width / 2) + 2000,
+						/*space between*/
+						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
+					});
+					xMult++;
+					sumWidth += (item.width);
+					//console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
+					currentLevelMaxXRef = sumWidth + (item.width / 2) + addXText * xMult;
+
+					//if (bottomLevel || (sumWidth + (item.width / 2) + addXText * xMult) > oldLevelMaxX)
+					//	oldLevelMaxX = sumWidth + (item.width / 2) + addXText * xMult;
+					itemFoundInLevel = true;
+				}
+			}
+
+			sumWidth = 0;
+			if (itemFoundInLevel)
+				sumHeight += maxHeightRefNodes;
+			xMult = 0;
+			if (bottomLevel && itemFoundInLevel) {
+				bottomLevel = false;
+			}
+			itemFoundInLevel = false;
 			items = GLOBAL_data.nodes.get();
 			for (var i = 0; i < items.length; i++) {
 
@@ -733,7 +784,7 @@ var ArticleRenderer = function (vals) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
 						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
-						title : sumWidth + (item.width / 2) + 2000,
+						//title : sumWidth + (item.width / 2) + 2000,
 						/*space between*/
 						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
 					});
@@ -747,14 +798,16 @@ var ArticleRenderer = function (vals) {
 					itemFoundInLevel = true;
 				}
 			}
-			sumHeight += maxHeightTextNodes;
+
+			if (itemFoundInLevel)
+				sumHeight += maxHeightTextNodes;
 
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
 			}
 
 			sumWidth = 0;
-
+			itemFoundInLevel = false;
 			items = GLOBAL_data.nodes.get();
 			xMult = 0;
 			for (var i = 0; i < items.length; i++) {
@@ -764,9 +817,9 @@ var ArticleRenderer = function (vals) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
 						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXSections * xMult,
-						title : sumWidth + (item.width / 2) + 2000,
+						//title : sumWidth + (item.width / 2) + 2000,
 						/*space between*/
-						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
+						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + sectionOffset + addY * heightCnt))
 					});
 					xMult++;
 					sumWidth += (item.width);
@@ -778,10 +831,28 @@ var ArticleRenderer = function (vals) {
 
 				}
 			}
-			sumHeight += maxHeightSectionNodes;
+
+			if (itemFoundInLevel)
+				sumHeight += maxHeightSectionNodes;
 			heightCnt++;
 			bottomLevel = false;
-
+			itemFoundInLevel = false;
+			items = GLOBAL_data.nodes.get();
+			if (currentLevelMaxXRef < oldLevelMaxX) {
+				// console.log("OFFSET: " + offset);
+				var offset = (oldLevelMaxX - currentLevelMaxXRef) / 2;
+				for (var i = 0; i < items.length; i++) {
+					var item = items[i];
+					if ((item.type == 'ref') && (idInRange(item.id) && item.wikiLevel == clc)) {
+						GLOBAL_data.nodes.update({
+							id : item.id,
+							x : item.x + offset,
+							//title : item.x + offset
+						});
+						currentLevelMaxXRef = item.x + offset;
+					}
+				}
+			}
 			items = GLOBAL_data.nodes.get();
 			if (currentLevelMaxXImg < oldLevelMaxX) {
 				// console.log("OFFSET: " + offset);
@@ -792,7 +863,7 @@ var ArticleRenderer = function (vals) {
 						GLOBAL_data.nodes.update({
 							id : item.id,
 							x : item.x + offset,
-							title : item.x + offset
+							//title : item.x + offset
 						});
 						currentLevelMaxXImg = item.x + offset;
 					}
@@ -808,7 +879,7 @@ var ArticleRenderer = function (vals) {
 						GLOBAL_data.nodes.update({
 							id : item.id,
 							x : item.x + offset,
-							title : item.x + offset
+							//title : item.x + offset
 						});
 						currentLevelMaxXText = item.x + offset;
 					}
@@ -826,7 +897,7 @@ var ArticleRenderer = function (vals) {
 						GLOBAL_data.nodes.update({
 							id : item.id,
 							x : parseFloat(item.x + offset),
-							title : "ID: " + item.id + (item.x + offset)
+							//title : "ID: " + item.id + (item.x + offset)
 						});
 						currentLevelMaxXSection = item.x + offset;
 					}
@@ -836,100 +907,46 @@ var ArticleRenderer = function (vals) {
 
 		}
 
-	}
-
-	/*articleRenderer.redraw = function () {
-	GLOBAL_network.redraw();
-	var currentlevelCnt = getMaxLevel();
-	var sumMaxHeightOfLevel = 0; //BUG IN Y DIRECTION
-	//console.log("currentlevelCnt : " + currentlevelCnt);
-	var nodesWithoutTextAsChildren = [];
-	for (var clc = currentlevelCnt; clc >= 0; clc--) {
-	sumMaxHeightOfLevel += getMaxHeightOfLevel(clc);
-	var allMasterOfALevel = getAllTextNodeMastersOfALevel(clc);
-	var xCnt = 0;
-	//console.log(allMasterOfALevel.length);
-	//console.log(">-------------------------------------------<");
-	for (var i = 0; i < allMasterOfALevel.length; i++) {
-	var nodesHelp = getAllTextAndNoParanetsNodesSameLevelSameMaster(clc, allMasterOfALevel[i]);
-	var xCntStart = 0;
-	var xCntEnd = 0;
-	var items = nodesHelp.get();
-	//console.log("UPDATE NODE MASTER: " + allMasterOfALevel[i] + " LEVEL: " + clc);
-	for (var j = 0; j < items.length; j++) {
-
-	//console.log("ID: " + items[j].id + " " + xCnt + " " + items[j].width + " " + (-sumMaxHeightOfLevel) + " " + allMasterOfALevel[i] + " " + items[j].wikiLevel);
-	xCnt += (items[j].width / 2);
-	GLOBAL_data.nodes.update({
-	id : items[j].id,
-	x : xCnt + GLOBAL_minX,
-	y : (-sumMaxHeightOfLevel) +
-	(items[j].height / 2) + GLOBAL_minY,
-	//title : (xCnt + GLOBAL_minX) + " " + ((-sumMaxHeightOfLevel) + GLOBAL_minY)
-	});
-	if (j == 0)
-	xCntStart = xCnt;
-	if (j + 1 == items.length)
-	xCntEnd = xCnt;
-	xCnt += items[j].width;
-	//console.log("xCNT: " + xCnt);
+		repositionRefs();
 
 	}
-	if (xCntStart == 0 && xCntEnd == 0) //No text node as child
-	nodesWithoutTextAsChildren.push(GLOBAL_data.nodes.get(allMasterOfALevel[i]));
-	else {
-	var item = GLOBAL_data.nodes.get(allMasterOfALevel[i]);
-	GLOBAL_data.nodes.update({
-	id : allMasterOfALevel[i],
-	x : ((xCntStart + xCntEnd) / 2) + GLOBAL_minX, //getXValueOfMasterNode(allMasterOfALevel[i]),//((xCntStart + xCntEnd) / 2),//
-	y : -sumMaxHeightOfLevel - (item.height * 3) + GLOBAL_minY //getYValueOfMasterNode(allMasterOfALevel[i])//
-	});
+
+	function getAllReferencesToSectionText(id) {
+		var arrayRefs = [];
+		var items = GLOBAL_data.nodes.get();
+
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (idInRange(item.id) && item.type == "ref" && item.masterId == id) {
+				arrayRefs.push(item.id);
+			}
+		}
+		return arrayRefs;
 	}
 
-	}
-	//console.log(">-------------------------------------------<");
-	}
+	function repositionRefs() {
+		var items = GLOBAL_data.nodes.get();
 
-	for (var i = 0; i < nodesWithoutTextAsChildren.length; i++) {
-	var node = nodesWithoutTextAsChildren[i];
-	if (node != null) {
-	var x = getXValueOfMasterNode(node.id);
-	var y = getYValueOfMasterNode(node.id);
-	GLOBAL_data.nodes.update({
-	id : node.id,
-	x : x,
-	y : y
-	});
-	}
-	}
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (idInRange(item.id) && item.type == "text") {
+				var arrayRefIds = getAllReferencesToSectionText(item.id);
+				var xOffset = 0;
+				var yOffset = 0;
+				for (var j = 0; j < arrayRefIds.length; j++) {
+					var itemRef = GLOBAL_data.nodes.get(arrayRefIds[j]);
+					GLOBAL_data.nodes.update({
+						id : arrayRefIds[j],
+						x : j % 2 == 0 ? item.x + xOffset : item.x - xOffset,
+						y : item.y + item.height / 2 + 500 + yOffset
+					});
+					//xOffset += itemRef.width;
+					yOffset += itemRef.height;
+				}
+			}
+		}
 
-	currentlevelCnt = getMaxLevel();
-	var items = GLOBAL_data.nodes.get();
-	for (var clc = currentlevelCnt; clc >= 0; clc--) {
-	var y = articleRenderer.getSmallestYValueOfLevel(clc);
-	for (var i = 0; i < items.length; i++) {
-	if (items[i].wikiLevel == clc && idInRange(items[i].id) && items[i].type == "section") {
-	GLOBAL_data.nodes.update({
-	id : items[i].id,
-	y : y
-	});
 	}
-	}
-	}
-
-	//SET INTRO TO MIDDLE
-	GLOBAL_data.nodes.update({
-	id : GLOBAL_introID,
-	x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2
-	});
-	var item = GLOBAL_data.nodes.get(GLOBAL_introTextID);
-	GLOBAL_data.nodes.update({
-	id : GLOBAL_introTextID,
-	x : (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue()) / 2 + 600,
-	y : item.y + 300
-	});
-	GLOBAL_network.redraw();
-	}*/
 
 	articleRenderer.colorLevels = function (isColor) {
 		var currentlevelCnt = getMaxLevel();
@@ -1005,7 +1022,6 @@ var ArticleRenderer = function (vals) {
 				maxX = items[i].x;
 			}
 		}
-
 		return maxX;
 	}
 
@@ -1022,9 +1038,7 @@ var ArticleRenderer = function (vals) {
 				maxY = items[i].y;
 			}
 		}
-
 		return maxY;
-
 	}
 
 	articleRenderer.getBiggestYValueOfLevel = function (level) {
@@ -1224,27 +1238,55 @@ var ArticleRenderer = function (vals) {
 		return maxLevel;
 	}
 
+	function getIntroOfArticle() {
+		var articleText = dataRetriever.getRawText();
+		index = articleText.indexOf("==");
+		var ret = "";
+		if (index > -1)
+			ret = articleText.substr(0, index);
+		else
+			ret = "";
+		return ret;
+	}
+
 	function getTextOfSection(sectionTitle) {
-		//TODO: REWRITE TO PARSE AND SECTION
+		//console.log("GETTEXTOFSECTION");
 		var stringToSearch = "== \xA7" + sectionTitle + " ==";
 		var articleText = dataRetriever.getRawText();
-		var index = articleText.search(stringToSearch);
+		var index = articleText.indexOf(stringToSearch);
+		if (sectionTitle.split("Early years").length > 1) {
+			//console.log("INDEX1 : " + index);
+			//console.log("STRING TO SEARCH: " + stringToSearch);
+			//console.log("ARTICLETEXT:  " + articleText);
+		}
 		if (index == -1) {
-			stringToSearch = sectionTitle;
-			index = articleText.search(stringToSearch);
+			stringToSearch = "== " + sectionTitle + " ==";
+			index = articleText.indexOf(stringToSearch);
+		/*	if (sectionTitle.split("Early years").length > 1) {
+				console.log("INDEX2 : " + index);
+				console.log("STRING TO SEARCH: " + stringToSearch);
+				console.log("ARTICLETEXT:  " + articleText);
+			}*/
+			if (index == -1) {
+				stringToSearch = sectionTitle;
+				index = articleText.indexOf(stringToSearch);
+			}
 		}
 		//console.log("index: " + index);
 		var str = articleText.substring((index + stringToSearch.length), articleText.length);
 
 		str = deleteEqualsSigns(str, 0);
 
-		index = str.search("==");
+		index = str.indexOf("==");
 		var ret = "";
 		if (index > -1)
 			ret = str.substr(0, index);
 		else
 			ret = str;
 		ret.replace("=", " ");
+		//console.log("----------------------------> |" + sectionTitle + "|" + sectionTitle.split("Early years").length );
+	//	if (sectionTitle.split("Early years").length > 1)
+		//	console.log("RETURN : " + ret);
 		return ret;
 	}
 
@@ -1326,10 +1368,36 @@ var ArticleRenderer = function (vals) {
 			}
 		}
 	}
+	articleRenderer.retrievingDataAnimation = function (text) {
+		$("#overallScore").html("<b>" + text + "</b>");
+	}
+
+	articleRenderer.retrievingDataDone = function (text) {
+		$("#overallScore").html("<b>" + text + "</b>");
+	}
 
 	articleRenderer.onSelect = function (properties) {
 		//console.log("ON SELECT " + properties.nodes);
 		//GLOBAL_network.focusOnNode(properties.nodes);
+		if (properties.nodes.length == 1) {
+			var item = GLOBAL_data.nodes.get(properties.nodes[0]);
+			if (item.type == "text") {
+				var text = item.label;
+				$("#editor").html(text);
+
+				if (showQualityFlag) {
+					var allKeys = Object.keys(item.allQulityParameters);
+					var qmStr = "<table border='1'>";
+					for (var i = 0; i < allKeys.length; i++) {
+						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
+						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
+						qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td>" + item.allQulityParameters[allKeys[i]] + "</td><td>" + status + "</td></tr>");
+					}
+					qmStr += "</table>";
+					$("#qualityParameters").html(qmStr);
+				}
+			}
+		}
 	}
 
 	function getAllConnectedNodes(id, newNodeContainer) {
@@ -1404,6 +1472,106 @@ var ArticleRenderer = function (vals) {
 
 	articleRenderer.semanticZooming = function (onOrOff) {
 		semanticZooming = onOrOff;
+	}
+
+	articleRenderer.showQuality = function () {
+		showQualityFlag = true;
+		var items = GLOBAL_data.nodes.get();
+		var cnt = 0;
+		var sum = 0;
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (idInRange(item.id) && item.type == "text") {
+				cnt++;
+				var quality = qualityManager.calculateQuality(item.rawText, item.sectionInfos, item.title);
+
+				sum += quality.score;
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					quality : quality.score,
+					allQulityParameters : quality
+				});
+			}
+		}
+		sum = parseFloat(sum / cnt);
+		$('#overallScore').html("Quality score of this article: " + sum);
+		//alert("THE OVERALL QUALITY: " + sum);
+		colorTextBasedOnTheQulityValue();
+	}
+
+	var colorTextBasedOnTheQulityValue = function () {
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (idInRange(item.id)) {
+				if (item.quality == 0) {
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						//title : item.quality,
+						color : {
+							background : "#FF0000",
+							border : '#2B7CE9',
+							highlight : {
+								background : '#D2E5FF',
+								border : '#2B7CE9'
+							}
+						}
+					});
+				} else if (item.quality > 0 && item.quality <= 0.4) {
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						//title : item.quality,
+						color : {
+							background : "#FF4500",
+							border : '#2B7CE9',
+							highlight : {
+								background : '#D2E5FF',
+								border : '#2B7CE9'
+							}
+						}
+					});
+				} else if (item.quality > 0.4 && item.quality <= 0.6) {
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						//title : item.quality,
+						color : {
+							background : "#FFA500",
+							border : '#2B7CE9',
+							highlight : {
+								background : '#D2E5FF',
+								border : '#2B7CE9'
+							}
+						}
+					});
+				} else if (item.quality > 0.6 && item.quality <= 0.9) {
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						//title : item.quality,
+						color : {
+							background : "#00FF00",
+							border : '#2B7CE9',
+							highlight : {
+								background : '#D2E5FF',
+								border : '#2B7CE9'
+							}
+						}
+					});
+				} else if (item.quality > 0.9) {
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						//title : item.quality,
+						color : {
+							background : "#00EE00",
+							border : '#2B7CE9',
+							highlight : {
+								background : '#D2E5FF',
+								border : '#2B7CE9'
+							}
+						}
+					});
+				}
+			}
+		}
 	}
 	//---------------------------------- Helpers -------------------------------
 	var idInRange = function (id) {

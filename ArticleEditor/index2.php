@@ -15,7 +15,9 @@
   
   <script type="text/javascript" src="libs/vis/dist/vis.js"></script>
   <link href="libs/vis/dist/vis.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
   <script type="text/javascript" src="scripts/retrieve-data.js"></script>
+  <script type="text/javascript" src="scripts/article-editor-renderer-quality-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer-semantic-zooming.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer.js"></script>
   <script type="text/javascript" src="scripts/article-editor-controller.js"></script>
@@ -73,8 +75,8 @@ Smooth curve type:
 				 <button onclick="articleController.showAllItems()"> show all items </button> 
 				 <button onclick="articleController.colorLevels(true)"> color levels </button>
 				 <button onclick="articleController.colorLevels(false)"> no color </button>
-				 <button onclick="articleController.splitSectionsIntoParagraphs()"> split sections into paragraphs </button>
-				 <button onclick="articleController.combineParagaphsToSections()"> combine paragraphs to sections </button>
+				<!-- <button onclick="articleController.splitSectionsIntoParagraphs()"> split sections into paragraphs </button>
+				 <button onclick="articleController.combineParagaphsToSections()"> combine paragraphs to sections </button> -->
 				 <button onclick="articleController.showReferences()"> show external references</button>
 				 <button onclick="articleController.hideReferences()"> hide external references</button>
 				 <button onclick="articleController.showImages()"> show images</button>
@@ -84,25 +86,24 @@ Smooth curve type:
 				 <button onclick="articleController.doRedraw()">redraw</button> <br />
 				 <button onclick="articleController.semanticZooming(true)"> semantic zooming on </button> 
 				 <button onclick="articleController.semanticZooming(false)"> semantic zooming off </button> 
-				 <button onclick="articleController.showOverview()"> showOverview </button> 
+				 <button onclick="articleController.showOverview()"> show Overview </button> 
+				 <button onclick="articleController.showQuality()"> show the quality of the article </button> 
+				 
 				 
 				 <br/>
-Roundness (0..1): <input type="range" min="0" max="1" value="0.5" step="0.05" style="width:200px" id="roundnessSlider"> <input id="roundnessScreen" value="0.5"> (0.5 is max roundness for continuous, 1.0 for the others)
-				 <br/>
-Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button onclick="articleController.retrieveData()"> retrieve data </button> 
+<!--Roundness (0..1): <input type="range" min="0" max="1" value="0.5" step="0.05" style="width:200px" id="roundnessSlider"> <input id="roundnessScreen" value="0.5"> (0.5 is max roundness for continuous, 1.0 for the others)-->
+				
+Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button onclick="articleController.retrieveData()"> retrieve data </button><div id="overallScore"> </div> <div id="qualityParameters"> </div>
 <!--<button onclick="articleController.fillDataNew()"> show the article </button>-->
 <div>
 <div id="mynetwork"></div>
 <div id="mynetworkDetailView"></div>
 <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
-<a data-edit="bold">TEST</a>
-<a data-edit="fontName Arial">TEST2</a>
 
-<input type="text" data-edit="createLink"/>
 
-<input type="file" data-edit="insertImage" />
 </div> 
   <div id="editor">
+	select a section to display the text here
     </div>
 </div>
 <script>
