@@ -37,8 +37,8 @@ var ArticleRendererSemanticZooming = function (vals) {
 		}
 
 	}
-
-	articleRendererSemanticZooming.func_overviewMode = function() {
+	articleRendererSemanticZooming.reset = function () {}
+	articleRendererSemanticZooming.func_overviewMode = function () {
 		if (GLOBAL_network.getScale() < switchToOverviewModeAt && !intoOverviewMode) {
 			var items = GLOBAL_data.nodes.get();
 			for (var i = 0; i < items.length; i++) {
@@ -397,12 +397,12 @@ var ArticleRendererSemanticZooming = function (vals) {
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
 				/*if (item.type == 'text' && idInRange(item.id)) {
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						fontSize : parseFloat(1.4 / GLOBAL_network.getScale()),
-						fontSizeMin : parseFloat(1.4 / GLOBAL_network.getScale()),
-						fontSizeMax : parseFloat(1.4 / GLOBAL_network.getScale()) + 10
-					});
+				GLOBAL_data.nodes.update({
+				id : item.id,
+				fontSize : parseFloat(1.4 / GLOBAL_network.getScale()),
+				fontSizeMin : parseFloat(1.4 / GLOBAL_network.getScale()),
+				fontSizeMax : parseFloat(1.4 / GLOBAL_network.getScale()) + 10
+				});
 				}*/
 				if (item.type == 'section' && idInRange(item.id)) {
 					//console.log("SECTION!!!!!!!!!!!!!!!!!");

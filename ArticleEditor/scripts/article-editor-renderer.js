@@ -208,7 +208,7 @@ var ArticleRenderer = function (vals) {
 						for (var j = 0; j < item.imagesToThisNode.length; j++) {
 							//if (item.title == "Introduction")
 							//	console.log(images[i].imageTitle + " ==" + ("File:" + item.imagesToThisNode[j]).replace(/_/g, " "));
-							if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j]).replace(/_/g, " ")) {
+							if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j]).replace(/_/g, " ") || images[i].imageTitle == item.imagesToThisNode[j]) {
 								GLOBAL_data.nodes.update({
 									id : GLOBAL_idCounter - 1,
 									wikiLevel : item.wikiLevel,
@@ -239,6 +239,7 @@ var ArticleRenderer = function (vals) {
 			if (items[i].type == 'img' && idInRange(items[i].id))
 				GLOBAL_data.nodes.remove(items[i].id);
 		}
+		articleRenderer.redraw();
 	}
 
 	articleRenderer.showReferences = function () {
@@ -315,8 +316,6 @@ var ArticleRenderer = function (vals) {
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
 
-	
-
 	articleRenderer.hideReferences = function () {
 		showReferencesFlag = false;
 		var items = GLOBAL_data.nodes.get();
@@ -325,6 +324,8 @@ var ArticleRenderer = function (vals) {
 				GLOBAL_data.nodes.remove(items[i].id);
 			}
 		}
+
+		articleRenderer.redraw();
 	}
 
 	articleRenderer.center = function () {
@@ -578,7 +579,7 @@ var ArticleRenderer = function (vals) {
 		wikitext = repalceNewLineWithTwoNewLines(wikitext, "\n", "\n\n", 1);
 		wikitext = replaceCharacterWithAnother(wikitext, " ", '\n', 10);
 		var rawText = getIntroOfArticle();
-
+		console.log("INTRO RAW TEXT: " + rawText);
 		GLOBAL_data.nodes.add({
 			id : GLOBAL_idCounter,
 			x : 0,
@@ -1262,10 +1263,10 @@ var ArticleRenderer = function (vals) {
 		if (index == -1) {
 			stringToSearch = "== " + sectionTitle + " ==";
 			index = articleText.indexOf(stringToSearch);
-		/*	if (sectionTitle.split("Early years").length > 1) {
-				console.log("INDEX2 : " + index);
-				console.log("STRING TO SEARCH: " + stringToSearch);
-				console.log("ARTICLETEXT:  " + articleText);
+			/*	if (sectionTitle.split("Early years").length > 1) {
+			console.log("INDEX2 : " + index);
+			console.log("STRING TO SEARCH: " + stringToSearch);
+			console.log("ARTICLETEXT:  " + articleText);
 			}*/
 			if (index == -1) {
 				stringToSearch = sectionTitle;
@@ -1285,7 +1286,7 @@ var ArticleRenderer = function (vals) {
 			ret = str;
 		ret.replace("=", " ");
 		//console.log("----------------------------> |" + sectionTitle + "|" + sectionTitle.split("Early years").length );
-	//	if (sectionTitle.split("Early years").length > 1)
+		//	if (sectionTitle.split("Early years").length > 1)
 		//	console.log("RETURN : " + ret);
 		return ret;
 	}
@@ -1473,6 +1474,23 @@ var ArticleRenderer = function (vals) {
 	articleRenderer.semanticZooming = function (onOrOff) {
 		semanticZooming = onOrOff;
 	}
+	function generateRawText(text, title) {
+		var rawText = "";
+		var rawTextCnt = 0;
+		var bracketCnt = 0;
+		for (var i = 0; i < text.length; i++) {
+			if (text[i] == "{") {
+				bracketCnt++;
+			} else if (bracketCnt == 0) {
+				rawText += text[i];
+			} else if (text[i] == "}") {
+				bracketCnt--;
+			}
+		}
+		rawText = rawText.replace(/[\n\[&\/\\#,+()$~%.'":*?<>{}\]]/g, '');
+		console.log("TITLE: " + title +  " rawTEXTLENGT: " + rawText.length);
+		return rawText;
+	}
 
 	articleRenderer.showQuality = function () {
 		showQualityFlag = true;
@@ -1572,6 +1590,12 @@ var ArticleRenderer = function (vals) {
 				}
 			}
 		}
+	}
+
+	articleRenderer.reset = function () {
+		qualityManager.reset();
+		articleRendererSemanticZooming.reset();
+		cleanUp();
 	}
 	//---------------------------------- Helpers -------------------------------
 	var idInRange = function (id) {

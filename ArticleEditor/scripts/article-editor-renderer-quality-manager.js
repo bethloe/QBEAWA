@@ -21,6 +21,8 @@ var QualityManager = function (vals) {
 			return 0;
 		return value.toFixed(1);
 	}
+	qualityManager.reset = function () {}
+
 	qualityManager.calculateQuality = function (text, properties, tooltip) {
 		//console.log("calculateQuality: " + JSON.stringify(properties));
 		var parameters = {};
@@ -49,7 +51,7 @@ var QualityManager = function (vals) {
 			help = help / 5;
 
 			var score = help;
-			console.log("SCORE: " + score);
+			console.log(tooltip + "SCORE: " + score + " " + numImages + " / " + good_numPics + " = " + qualityImages);
 			parameters.qualityFleschWordCount = parseFloat(qualityFleschWordCount);
 			parameters.qualityKincaid = parseFloat(qualityKincaid);
 			parameters.qualityImages = parseFloat(qualityImages);

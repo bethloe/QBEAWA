@@ -18,11 +18,11 @@ var ArticleController = function (vals) {
 	var maxY = 4999;
 
 	var articleController = {};
+	var dataManipulator;
 
 	function update() {
 		var type = "continuous";
 		var roundness = 0.5;
-		//roundnessScreen.value = roundness;
 		var options = {
 			dataManipulation : {
 				enabled : true,
@@ -34,9 +34,6 @@ var ArticleController = function (vals) {
 				dynamic : false,
 				type : '1'
 			},
-			/*clustering : {
-			enabled : true
-			},*/
 			hover : true
 		}
 
@@ -46,6 +43,12 @@ var ArticleController = function (vals) {
 		dataManipulation : {
 			enabled : true,
 			initiallyVisible : true
+		},
+		onConnect : function (data, callback) {
+			dataManipulator.connectNodes(data, callback);
+		},
+		onEdit : function (data, callback) {
+			dataManipulator.editNodes(data, callback);
 		},
 		physics : {
 			barnesHut : {
@@ -82,6 +85,12 @@ var ArticleController = function (vals) {
 				maxX : maxX,
 				minY : minY,
 				maxY : maxY,
+				data : data,
+				articleName : articleName,
+				controller : articleController
+			});
+		dataManipulator = new DataManipulator({
+				network : network,
 				data : data,
 				articleName : articleName,
 				controller : articleController
@@ -171,10 +180,20 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.showQuality = function () {
-		console.log("CONTROller showquality");
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showQuality();
 		}
+	}
+	articleController.reset = function () {
+		//console.log("RESET");
+		/*for (var i = 0; i < articleRenderers.length; i++) {
+		articleRenderers[i].reset();
+		}*/
+		//Actually we just have to remove the articleRenderers
+		articleRenderers.splice(0, articleRenderers.length);
+		//We destroy the network
+		network.destroy();
+		articleController.init();
 	}
 
 	//-------------------- EVENTS ----------------------
@@ -258,6 +277,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.init = function () {
+
 		container = document.getElementById('mynetwork');
 		containerDetailView = document.getElementById('mynetworkDetailView');
 		nodes = new vis.DataSet();

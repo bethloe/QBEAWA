@@ -7,6 +7,9 @@
   <script type="text/javascript" src="scripts/rawData.js"></script>
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
 
+  
+ <script src="libs/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+ <link href="libs/jquery-ui-1.11.4.custom/jquery-ui.css" rel="stylesheet">
   <!-- HTML5 rich editor -->
   <script src="libs/external/jquery.hotkeys.js"></script>
   <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
@@ -17,6 +20,7 @@
   <link href="libs/vis/dist/vis.css" rel="stylesheet" type="text/css" />
   <script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
   <script type="text/javascript" src="scripts/retrieve-data.js"></script>
+  <script type="text/javascript" src="scripts/article-editor-controller-data-manipulation.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer-quality-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer-semantic-zooming.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer.js"></script>
@@ -31,7 +35,7 @@
       border: 1px solid lightgray;
 	  float: left;
     }
-	    #mynetworkDetailView {
+   #mynetworkDetailView {
 	  top: 0px;
       width: 400px;
       height: 350px;
@@ -40,24 +44,49 @@
     }
 	
 	 #editor {overflow:scroll; height:350px; width: 400px;}
+	 
+    table.legend_table {
+      font-size: 11px;
+      border-width:1px;
+      border-color:#d3d3d3;
+      border-style:solid;
+    }
+    table.legend_table,td {
+      border-width:1px;
+      border-color:#d3d3d3;
+      border-style:solid;
+      padding: 2px;
+    }
+    div.table_content {
+      width:80px;
+      text-align:center;
+    }
+    div.table_description {
+      width:100px;
+    }
+
+    #operation {
+      font-size:28px;
+    }
+    #network-popUp {
+      display:none;
+      position:absolute;
+      top:350px;
+      left:170px;
+      z-index:299;
+      width:250px;
+      height:120px;
+      background-color: #f9f9f9;
+      border-style:solid;
+      border-width:3px;
+      border-color: #5394ed;
+      padding:10px;
+      text-align: center;
+    }
   </style>
 </head>
 
 <body>
-
-<!--
-<h2>Static smooth curves</h2>
-<div style="width:700px; font-size:14px; text-align: justify;">
-    All the smooth curves in the examples so far have been using dynamic smooth curves. This means that each curve has a
-    support node which takes part in the physics simulation. For large networks or dense clusters, this may not be the ideal
-    solution. To solve this, static smooth curves have been added. The static smooth curves are based only on the positions of the connected
-    nodes. There are multiple ways to determine the way this curve is drawn. This example shows the effect of the different
-    types. <br /> <br />
-    Drag the nodes around each other to see how the smooth curves are drawn for each setting. For animated system, we
-    recommend only the continuous mode. In the next example you can see the effect of these methods on a large network. Keep in mind
-    that the direction (the from and to) of the curve matters.
-    <br /> <br />
-</div> -->
 
 <script>  var articleController = new ArticleController(); </script>
 Smooth curve type:
@@ -88,13 +117,17 @@ Smooth curve type:
 				 <button onclick="articleController.semanticZooming(false)"> semantic zooming off </button> 
 				 <button onclick="articleController.showOverview()"> show Overview </button> 
 				 <button onclick="articleController.showQuality()"> show the quality of the article </button> 
-				 
+				 <button onclick="articleController.reset()"> reset </button> 
 				 
 				 <br/>
 <!--Roundness (0..1): <input type="range" min="0" max="1" value="0.5" step="0.05" style="width:200px" id="roundnessSlider"> <input id="roundnessScreen" value="0.5"> (0.5 is max roundness for continuous, 1.0 for the others)-->
 				
 Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button onclick="articleController.retrieveData()"> retrieve data </button><div id="overallScore"> </div> <div id="qualityParameters"> </div>
 <!--<button onclick="articleController.fillDataNew()"> show the article </button>-->
+<div id="dialog" title="Dialog Title">
+	<textarea id="node-label" rows="30" cols="100" ></textarea>
+</div>
+
 <div>
 <div id="mynetwork"></div>
 <div id="mynetworkDetailView"></div>
@@ -110,9 +143,17 @@ Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button 
 			articleController.init();
 </script>
 <script>
+
   $(function(){
 $('#editor').wysiwyg();
   });
+  
+	$("#dialog").dialog({
+		autoOpen : false,
+		width : 1000,
+		modal : true
+	});
+
 </script>
 </body>
 </html>
