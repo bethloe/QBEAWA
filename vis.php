@@ -70,6 +70,7 @@ and open the template in the editor.
 				 Max. number of results: <input type="number" id="max-num" value="5"/>
 				 <button onclick="searchArticle('visualization',50)"> retrieve data from specific article </button> 
 				 <button class="popup_oeffnen"> show quality metric editor </button> 
+				 <button class="open_popup_article_editor"> show article editor </button> 
 				 <!--<button onclick="showAllDataTest()"> show data </button> </div>
                 <p id="p_task"></p>
                 <p id="p_question"></p> -->
@@ -161,6 +162,16 @@ and open the template in the editor.
 		</div>
  
     </div>
+	 <div id="popup_article_editor">
+		
+        <div class="close_article_editor"><img src="media/close.png" width="20"></div>
+ 
+        <div id="popup_article_editor_content">
+			<canvas id="canvas_article_editor" ></canvas>      
+		</div>
+ 
+    </div>
+	
         <div id="task_question_message"></div>
         <script type="text/javascript" src="scripts/vis-controller.js" charset="utf-8"></script>
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>

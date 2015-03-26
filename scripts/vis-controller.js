@@ -195,7 +195,7 @@ var VisController = function () {
 			return getGradientString("#0066ff", [1, 0.8, 1]);
 		})
 		.style('border', '1px solid #0066ff')
-		.style("color", "#eee");
+		.style("color", "white");
 	};
 
 	////////	Tag in box mouseouted	////////
@@ -208,7 +208,7 @@ var VisController = function () {
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
-		.style("color", "#111");
+		.style("color", "#white");
 	};
 
 	////////	Delete tag click	////////
@@ -698,7 +698,7 @@ var VisController = function () {
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
-		.style("color", "#111")
+		.style("color", "white")
 		.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
 

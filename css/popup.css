@@ -31,3 +31,28 @@ div.schliessen {
 #popup_inhalt {
     margin: 8px 14px;
 }
+
+ 
+#popup_article_editor {
+    display: none;
+    z-index: 2;
+    position: fixed;
+    width:1900px;
+    top: 0%;
+    left: 0%;
+    color: black;
+	background-color: black;
+}
+ 
+div.close_article_editor {
+    position: relative;
+    height: 30px;
+    width: 30px;
+    background: url("../media/close.png") no-repeat scroll 0 0 transparent;
+    float: right;
+    cursor: pointer;
+}
+ 
+#popup_article_editor_content {
+    margin: 8px 14px;
+}

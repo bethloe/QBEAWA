@@ -423,14 +423,14 @@ p#p_question {
 	-webkit-box-shadow: 0em 0.1em 0.3em #222;
     /*box-shadow: 0em 0.1em 0.3em -0.1em #888;*/
     box-shadow: 0em 0.1em 0.3em #222;
-    color: #111;
+    color: white;
     text-shadow: -0.1em 0.1em 0.5em #eee;
 	opacity: 1.0;
 	cursor: move;
 }
 
 .eexcess_keyword_tag:hover {
-	color: #eee;
+	color: white;
     text-shadow: none;
 }
 

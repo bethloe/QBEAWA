@@ -128,7 +128,6 @@ var MoveableBricksEventHandler = function (vals) {
 		var moveableBricksToLoad = dataToLoad.moveableBricks;
 		var connectorsToLoad = dataToLoad.connectors;
 		for (var i = 0; i < moveableBricksToLoad.length; i++) {
-			console.log("x : " + moveableBricksToLoad[i].x + " y: " + moveableBricksToLoad[i].y);
 			var qmBrick = new QMBrick({
 					ctx : ctx,
 					x : moveableBricksToLoad[i].x,
@@ -185,12 +184,10 @@ var MoveableBricksEventHandler = function (vals) {
 	}
 
 	moveableBricksEventHandler.createFormulaForQM = function () {
-		console.log("createFormulaForQM");
 		var qmArray = [];
 		for (var i = 0; i < moveableBricks.length; i++) {
 			var brick = moveableBricks[i];
 			if (brick.getType() == 'resultMoveable') {
-				console.log("createFormulaForQM into if");
 				qmArray.push(createFormulaForQM(brick, "", true));
 			}
 		}
@@ -206,7 +203,6 @@ var MoveableBricksEventHandler = function (vals) {
 	}
 
 	moveableBricksEventHandler.getConnectorsInJsonFormat = function () {
-		console.log(JSON.stringify(connectors));
 		var connectorsJsonStringArray = [];
 
 		for (var i = 0; i < connectors.length; i++) {
@@ -723,7 +719,7 @@ var MoveableBricksEventHandler = function (vals) {
 
 					if (toX >= fromX) {
 						dx = (toX - fromX);
-						console.log("ZOOM IN : " + currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
+						//console.log("ZOOM IN : " + currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
 						currentMovableBrick.setX(currentMovableBrick.getX() + dx);
 					} else {
 						dx = (fromX - toX);
@@ -811,7 +807,7 @@ var MoveableBricksEventHandler = function (vals) {
 
 					if (toX >= fromX) {
 						dx = (toX - fromX) / 2;
-						console.log(currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
+						//console.log(currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
 						if (dx > 100)
 							currentMovableBrick.setX(currentMovableBrick.getX() - dx);
 					} else {
