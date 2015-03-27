@@ -30,7 +30,7 @@ var DataManipulator = function (vals) {
 		}
 		return textOfSection;
 	}
-	dataManipulator.showQualityTableOfSection = function (sectionName,dataRetriever, qualityManager) {
+	dataManipulator.showQualityTableOfSection = function (sectionName, dataRetriever, qualityManager) {
 		console.log("SHOWQUALITYTABLEOFSECTION: " + sectionName);
 		var htmlForTable = "";
 
@@ -53,7 +53,7 @@ var DataManipulator = function (vals) {
 		for (var i = 0; i < allKeys.length; i++) {
 			var bgColor = quality[allKeys[i]] < 0.5 ? "red" : "white";
 			var status = quality[allKeys[i]] < 0.5 ? "improve" : "OK";
-			htmlForTable += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td>" +quality[allKeys[i]] + "</td><td>" + status + "</td></tr>");
+			htmlForTable += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td>" + quality[allKeys[i]] + "</td><td>" + status + "</td></tr>");
 		}
 		htmlForTable += "</table>";
 		$("#articleViewerQualityTableDiv").html(htmlForTable);
@@ -141,12 +141,17 @@ var DataManipulator = function (vals) {
 		} else {
 			var itemFrom = GLOBAL_data.nodes.get(data.from);
 			var itemTo = GLOBAL_data.nodes.get(data.to);
-			if (itemFrom.type == "text" && itemTo.type == "img") {
-				itemFrom.imagesToThisNode.push(itemTo.imageInfos.imageTitle); //ALSO A reference to itemFrom.sectionInfo.images
-				callback(data);
+			if (itemFrom.type == "img" && itemTo.type == "text") {
+				itemTo.imagesToThisNode.push(itemFrom.imageInfos.imageTitle); //ALSO A reference to itemFrom.sectionInfo.images
+				//callback(data);
+				GLOBAL_data.edges.add({
+					from : itemFrom.id,
+					to : itemTo.id,
+					style : "arrow"
+				});
 				GLOBAL_controller.showQuality();
-			} else if (itemFrom.type == "text" && itemTo.type == "ref") {
-				itemFrom.refsToThisNode.push(itemTo.title); //ALSO A reference to itemFrom.sectionInfo.images
+			} else if (itemFrom.type == "ref" && itemTo.type == "text") {
+				itemTo.refsToThisNode.push(itemFrom.title); //ALSO A reference to itemFrom.sectionInfo.images
 				callback(data);
 				GLOBAL_controller.showQuality();
 			} else

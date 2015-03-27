@@ -238,6 +238,8 @@ var ArticleController = function (vals) {
 
 	articleController.onDoubleClick = function (properties) {
 		//console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
+		//Select everything (does not work with doubleclick if someone can fix it 
+		//I'd be really happy!!!)
 		if (properties.nodes.length == 0 && properties.edges.length == 0) {
 
 			var x = properties.pointer.canvas.x;

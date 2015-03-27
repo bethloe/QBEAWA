@@ -48,7 +48,7 @@ var ArticleRenderer = function (vals) {
 			renderer : articleRenderer,
 			controller : articleController
 		});
-	
+
 	//create new DataRetriever
 	var dataRetriever = new DataRetriever({
 			articleRenderer : articleRenderer
@@ -1420,6 +1420,85 @@ var ArticleRenderer = function (vals) {
 		return newNodeContainer;
 	}
 
+	function distanceBetweenTwoPoints(p1X, p1Y, p2X, p2Y) {
+		return Math.sqrt(Math.pow((p1X - p2X), 2) + Math.pow((p1Y - p2Y), 2));
+	}
+
+	function getMaxHeightOfNodes(id) {
+		var items = GLOBAL_data.nodes.get();
+		var maxHeight = -1;
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].id != id && idInRange(items[i].id) && items[i].height > maxHeight )
+				maxHeight = items[i].height;
+		}
+		return maxHeight;
+	}
+	function getMaxWidthOfNodes(id) {
+		var items = GLOBAL_data.nodes.get();
+		var maxWidth = -1;
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].id != id && idInRange(items[i].id) && items[i].width > maxWidth )
+				maxWidth = items[i].width;
+		}
+		return maxWidth;
+	}
+
+	function drawAllNodesAroundThatID(id) {
+		var mainItem = GLOBAL_data.nodes.get(id);
+		var topLeftX = mainItem.x - (mainItem.width / 2);
+		var topLeftY = mainItem.y - (mainItem.height / 2);
+		var bottomLeftX = mainItem.x - (mainItem.width / 2);
+		var bottomLeftY = mainItem.y + (mainItem.height / 2);
+		var topRightX = mainItem.x + (mainItem.width / 2);
+		var topRightY = mainItem.y - (mainItem.height / 2);
+		var bottomRightX = mainItem.x + (mainItem.width / 2);
+		var bottomRightY = mainItem.y + (mainItem.height / 2);
+		var centerX = mainItem.x;
+		var centerY = mainItem.y;
+		var items = GLOBAL_data.nodes.get();
+		var arrayNewPoints = [];
+		var maxHeight = getMaxHeightOfNodes(id);
+		var maxWidth = getMaxWidthOfNodes(id);
+		var radius = distanceBetweenTwoPoints(topLeftX-maxWidth, topLeftY-maxHeight, bottomRightX+maxWidth, bottomRightY+maxHeight) / 2;
+		var numPoints = items.length - 1;
+		var slice = 2 * Math.PI / numPoints;
+		for (var j = 0; j < numPoints; j++) {
+			var angle = slice * j;
+			var newX = (centerX + radius * Math.cos(angle));
+			var newY = (centerY + radius * Math.sin(angle));
+			console.log("newX : " + newX + " newY: " + newY);
+			arrayNewPoints.push({
+				x : newX,
+				y : newY
+			});
+		}
+		/*
+		void DrawCirclePoints(int points, double radius, Point center){
+		double slice = 2 * Math.PI / points;
+		for (int i = 0; i < points; i++){
+		double angle = slice * i;
+		int newX = (int)(center.X + radius * Math.Cos(angle));
+		int newY = (int)(center.Y + radius * Math.Sin(angle));
+		Point p = new Point(newX, newY);
+		Console.WriteLine(p);
+		}
+		}*/
+		var pointCnt = 0;
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.id != mainItem.id && idInRange(item.id)) {
+				console.log(item.id + " OLD COR: " + item.x + " " + item.y + " NEW COR: " + arrayNewPoints[pointCnt].x + " " + arrayNewPoints[pointCnt].y);
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					x : arrayNewPoints[pointCnt].x,
+					y : arrayNewPoints[pointCnt].y
+				});
+				pointCnt++;
+			}
+		}
+		GLOBAL_network.redraw();
+	}
+
 	articleRenderer.onDoubleClick = function (properties) {
 		var options = {
 			scale : 8
@@ -1428,18 +1507,29 @@ var ArticleRenderer = function (vals) {
 		//SHOW JUST THE SELECTED ELEMENT AND ALL ELEMENTES WHICH ARE CONNECTED TO THIS ELEMENT
 		//TODO WILL BECOME A PROBLEM WHEN ADDING ELEMENTS IS POSSIBLE
 
-
+		console.log("ON DOUBLE CLICK");
 		var id = properties.nodes;
 
 		if (idInRange(id)) {
-			//console.log("WHOLE: " + JSON.stringify(nodes.get(id)));
-			//console.log("WIDTH: " + nodes.get(id)[0].width);
+			//What we are going to do, depends on the node
+			var item = GLOBAL_data.nodes.get(id)[0];
 			var newNodeContainer = new vis.DataSet();
-			//go recursively through all nodes
-			//console.log("THE ID: " + id);
-
+			console.log(JSON.stringify(item));
 			newNodeContainer.add(GLOBAL_data.nodes.get(id));
-			newNodeContainer = getAllConnectedNodes(id, newNodeContainer);
+			var drawAroundNode = false;
+			if (item.type == "img") {
+				var edgesItems = GLOBAL_data.edges.get();
+				console.log("LENGTH: " + edgesItems.length);
+				for (var i = 0; i < edgesItems.length; i++) {
+					var edge = edgesItems[i];
+					if (edge.from == item.id) {
+						newNodeContainer.add(GLOBAL_data.nodes.get(edge.to));
+					}
+				}
+				drawAroundNode = true;
+			} else {
+				newNodeContainer = getAllConnectedNodes(id, newNodeContainer);
+			}
 
 			if (!viewJustSpecificSection)
 				copyAllNodesInRange(GLOBAL_data.nodes, allNodesBackup, GLOBAL_minID, GLOBAL_maxID);
@@ -1448,6 +1538,8 @@ var ArticleRenderer = function (vals) {
 			copyAllNodes(newNodeContainer, GLOBAL_data.nodes);
 
 			viewJustSpecificSection = true;
+			if (drawAroundNode)
+				drawAllNodesAroundThatID(item.id);
 		}
 	}
 
