@@ -194,6 +194,16 @@ var ArticleController = function (vals) {
 		//We destroy the network
 		network.destroy();
 		articleController.init();
+		$('#qualityParameters').html("");
+		$('#overallScore').html("");
+	}
+	articleController.showTheWholeArticle = function () {
+		//TODO: Do a refactoring so that it work for more than one article at the end
+		dataManipulator.showTheWholeArticle(articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
+	}
+	articleController.showQualityTable = function (sectionName) {
+		//TODO: Do a refactoring so that it work for more than one article at the end
+		dataManipulator.showQualityTableOfSection(sectionName, articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
 
 	//-------------------- EVENTS ----------------------

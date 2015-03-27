@@ -118,8 +118,9 @@ Smooth curve type:
 				 <button onclick="articleController.showOverview()"> show Overview </button> 
 				 <button onclick="articleController.showQuality()"> show the quality of the article </button> 
 				 <button onclick="articleController.reset()"> reset </button> 
-				 
-				 <br/>
+				 <br />
+				 <button onclick="articleController.showTheWholeArticle()"> show the whole article </button> 
+				 <br />
 <!--Roundness (0..1): <input type="range" min="0" max="1" value="0.5" step="0.05" style="width:200px" id="roundnessSlider"> <input id="roundnessScreen" value="0.5"> (0.5 is max roundness for continuous, 1.0 for the others)-->
 				
 Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button onclick="articleController.retrieveData()"> retrieve data </button><div id="overallScore"> </div> <div id="qualityParameters"> </div>
@@ -127,6 +128,14 @@ Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button 
 <div id="dialog" title="Dialog Title">
 	<textarea id="node-label" rows="30" cols="100" ></textarea>
 </div>
+<div id="articleViewer" title="Dialog Title">
+	<div id="articleViewerQualityTableDiv" align="center"> </div> 
+	<div id="articleViewerDiv" style="height:100%; width:100%; overflow-y: scroll;">
+	</div>
+	<!-- <table id="articleViewerQualityTable"> </table>
+	<textarea id="articleViewerTextarea" rows="30" cols="100" ></textarea> -->
+</div>
+
 
 <div>
 <div id="mynetwork"></div>
@@ -153,7 +162,13 @@ $('#editor').wysiwyg();
 		width : 1000,
 		modal : true
 	});
-
+  
+	$("#articleViewer").dialog({
+		autoOpen : false,
+		width : 1000,
+		height: 800,
+		modal : true
+	});
 </script>
 </body>
 </html>

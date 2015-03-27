@@ -48,11 +48,17 @@ var ArticleRenderer = function (vals) {
 			renderer : articleRenderer,
 			controller : articleController
 		});
+	
 	//create new DataRetriever
 	var dataRetriever = new DataRetriever({
 			articleRenderer : articleRenderer
 		});
-
+	articleRenderer.getDataRetriever = function () {
+		return dataRetriever;
+	}
+	articleRenderer.getQualityManager = function () {
+		return qualityManager;
+	}
 	articleRenderer.cleanUp = function () {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
@@ -579,7 +585,7 @@ var ArticleRenderer = function (vals) {
 		wikitext = repalceNewLineWithTwoNewLines(wikitext, "\n", "\n\n", 1);
 		wikitext = replaceCharacterWithAnother(wikitext, " ", '\n', 10);
 		var rawText = getIntroOfArticle();
-		console.log("INTRO RAW TEXT: " + rawText);
+		//console.log("INTRO RAW TEXT: " + rawText);
 		GLOBAL_data.nodes.add({
 			id : GLOBAL_idCounter,
 			x : 0,
@@ -1488,7 +1494,7 @@ var ArticleRenderer = function (vals) {
 			}
 		}
 		rawText = rawText.replace(/[\n\[&\/\\#,+()$~%.'":*?<>{}\]]/g, '');
-		console.log("TITLE: " + title +  " rawTEXTLENGT: " + rawText.length);
+		console.log("TITLE: " + title + " rawTEXTLENGT: " + rawText.length);
 		return rawText;
 	}
 
@@ -1591,6 +1597,10 @@ var ArticleRenderer = function (vals) {
 			}
 		}
 	}
+
+	/*articleRenderer.showTheWholeArticle = function(){
+
+	}*/
 
 	articleRenderer.reset = function () {
 		qualityManager.reset();

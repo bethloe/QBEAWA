@@ -5,6 +5,134 @@ var DataManipulator = function (vals) {
 	var GLOBAL_controller = vals.controller;
 
 	var dataManipulator = {};
+	//TODO PUT IT INTO UTILITY
+	function trimToOneParagraph(textOfSection, sectionName) {
+		var hIndex = textOfSection.indexOf(sectionName);
+		var hi = 0;
+
+		if (hIndex > -1) {
+			while (textOfSection[hIndex + hi] != "=") {
+				hi++;
+			}
+			while (textOfSection[hIndex + hi] == "=") {
+				hi++;
+			}
+			var help = textOfSection.substr(hIndex + hi).indexOf("==");
+			/*while (textOfSection[hIndex + hi] != "=") {
+			hi++;
+			}*/
+			return textOfSection.substr(0, hIndex + hi + help);
+		} else {
+			/*console.log("-----------------------------------------------------");
+			console.log("SECTIONNAME: " + sectionName);
+			console.log("TEXTOFSECTION: " + textOfSection);
+			console.log("-----------------------------------------------------");*/
+		}
+		return textOfSection;
+	}
+	dataManipulator.showQualityTableOfSection = function (sectionName,dataRetriever, qualityManager) {
+		console.log("SHOWQUALITYTABLEOFSECTION: " + sectionName);
+		var htmlForTable = "";
+
+		var textOfSection = "";
+		var sectionData = null;
+		if (sectionName == "Introduction") {
+			sectionData = dataRetriever.getIntro();
+		} else {
+			sectionData = dataRetriever.getSectionContentData(sectionName);
+		}
+		if (sectionData.sections.length > 1) {
+			textOfSection = sectionData.wikitext['*'];
+			textOfSection = trimToOneParagraph(textOfSection, sectionData.sections[0].line);
+		} else {
+			textOfSection = sectionData.wikitext['*'];
+		}
+		var quality = qualityManager.calculateQuality(textOfSection, sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+		var allKeys = Object.keys(quality);
+		var htmlForTable = "<table border='1'>";
+		for (var i = 0; i < allKeys.length; i++) {
+			var bgColor = quality[allKeys[i]] < 0.5 ? "red" : "white";
+			var status = quality[allKeys[i]] < 0.5 ? "improve" : "OK";
+			htmlForTable += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td>" +quality[allKeys[i]] + "</td><td>" + status + "</td></tr>");
+		}
+		htmlForTable += "</table>";
+		$("#articleViewerQualityTableDiv").html(htmlForTable);
+	}
+	dataManipulator.showTheWholeArticle = function (dataRetriever, qualityManager) {
+		//I NEED THE DATA RETRIEVER
+
+		var sectionContentDataArray = dataRetriever.getAllSectionContentData();
+		var intro = dataRetriever.getIntro();
+		var textOfSection = "";
+
+		if (intro.sections.length > 1) {
+			textOfSection = intro.wikitext['*'];
+			textOfSection = trimToOneParagraph(textOfSection, intro.sections[0].line);
+		} else {
+			textOfSection = intro.wikitext['*'];
+		}
+		var quality = qualityManager.calculateQuality(textOfSection, intro, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+		var backgroundColor = "";
+		if (quality.score == 0) {
+			backgroundColor = "#FF0000";
+		} else if (quality.score > 0 && quality.score <= 0.4) {
+			backgroundColor = "#FF4500";
+		} else if (quality.score > 0.4 && quality.score <= 0.6) {
+			backgroundColor = "#FFA500";
+		} else if (quality.score > 0.6 && quality.score <= 0.9) {
+			backgroundColor = "#00FF00";
+		} else if (quality.score > 0.9) {
+			backgroundColor = "#00EE00";
+		}
+		var htmlForDialog = ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + "Introduction" + "')\">" + textOfSection + "</div>");
+
+		for (var i = 0; i < sectionContentDataArray.length; i++) {
+			var sectionData = sectionContentDataArray[i];
+			var textOfSection = "";
+
+			if (sectionData.sections.length > 1) {
+				textOfSection = sectionData.wikitext['*'];
+				textOfSection = trimToOneParagraph(textOfSection, sectionData.sections[0].line);
+			} else {
+				textOfSection = sectionData.wikitext['*'];
+			}
+			var quality = qualityManager.calculateQuality(textOfSection, sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+			var backgroundColor = "";
+			if (quality.score == 0) {
+				backgroundColor = "#FF0000";
+			} else if (quality.score > 0 && quality.score <= 0.4) {
+				backgroundColor = "#FF4500";
+			} else if (quality.score > 0.4 && quality.score <= 0.6) {
+				backgroundColor = "#FFA500";
+			} else if (quality.score > 0.6 && quality.score <= 0.9) {
+				backgroundColor = "#00FF00";
+			} else if (quality.score > 0.9) {
+				backgroundColor = "#00EE00";
+			}
+			htmlForDialog += ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
+		}
+		//console.log("HTML : " + htmlForDialog);
+		$("#articleViewerDiv").html(htmlForDialog);
+		$("#articleViewer").dialog({
+			buttons : [{
+					text : "Save",
+					click : function () {
+
+						$(this).dialog("close");
+					}
+				}, {
+					text : "Cancel",
+					click : function () {
+						$(this).dialog("close");
+					}
+				}
+			]
+		});
+
+		$("#articleViewer").dialog('option', 'title', GLOBAL_articleName);
+		$("#articleViewer").dialog("open");
+		event.preventDefault();
+	}
 
 	dataManipulator.connectNodes = function (data, callback) {
 		console.log(JSON.stringify(data));
@@ -47,17 +175,26 @@ var DataManipulator = function (vals) {
 		var item = GLOBAL_data.nodes.get(data.id);
 		if (item.type == "text") {
 			var textarea = $("#node-label");
-			textarea.html(data.label);
+			//textarea.html(data.label);
+			textarea.html(item.rawText);
 			var sectionItem = GLOBAL_data.nodes.get(item.masterId);
 			$("#dialog").dialog({
 				buttons : [{
 						text : "Save",
 						click : function () {
+							console.log("click: " + item.id);
 							//TODO UPDATE TEXT TO WIKIPEDIA!
 							//GENERATE RAW TEXT FOR FLESCH AND KINCAID
-							var textarea = $("#node-label");
-							var rawText = generateRawText(textarea.html());
-							console.log("RAW TEXT: " + rawText);
+							//var textarea = $("#node-label");
+							//var rawText = generateRawText(textarea.html());
+							var rawText = textarea.val();
+							console.log("rawText: " + rawText);
+							GLOBAL_data.nodes.update({
+								id : item.id,
+								rawText : rawText
+							});
+							//console.log("RAW TEXT: " + rawText);
+							GLOBAL_controller.showQuality();
 							$(this).dialog("close");
 						}
 					}, {
@@ -72,18 +209,6 @@ var DataManipulator = function (vals) {
 			$("#dialog").dialog("open");
 			event.preventDefault();
 		}
-		/*var span = document.getElementById('operation');
-		var idInput = document.getElementById('node-id');
-		var labelInput = document.getElementById('node-label');
-		var saveButton = document.getElementById('saveButton');
-		var cancelButton = document.getElementById('cancelButton');
-		var div = document.getElementById('network-popUp');
-		span.innerHTML = "Edit Node";
-		idInput.value = data.id;
-		labelInput.value = data.label;
-		saveButton.onclick = saveData.bind(this, data, callback);
-		cancelButton.onclick = clearPopUp.bind();
-		div.style.display = 'block';*/
 	}
 
 	function clearPopUp() {

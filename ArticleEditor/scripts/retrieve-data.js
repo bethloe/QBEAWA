@@ -131,7 +131,9 @@ var DataRetriever = function (vals) {
 	dataRetriever.getIntro = function () {
 		return GLOBAL_intro;
 	}
-
+	dataRetriever.getAllSectionContentData = function(){
+	return GLOBAL_sectionContentData;
+	}
 	dataRetriever.getSectionContentData = function (sectionName) {
 		for (var i = 0; i < GLOBAL_sectionContentData.length; i++) {
 			//console.log("GLOBAL_sectionContentData[i].sections[0].index : " + GLOBAL_sectionContentData[i].sections[0].index);
