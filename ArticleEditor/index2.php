@@ -110,7 +110,7 @@
 </select><br/>-->
 <div > 
 <table style="border: 0px"> <tr> <td>
-Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button onclick="articleController.retrieveData()"> retrieve data </button>
+Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> <button onclick="articleController.retrieveData()"> retrieve data </button>
 </td><td>
 <p id="workingAnimation"></p>
 </td>
@@ -200,11 +200,12 @@ Article name: <input id="articleName" type="text" value="Nikola Tesla"> <button 
                             </div>
                         </a>
                     </li>
-                    <li>
+                    <li id="liLogin">
                         <a onclick="articleController.login()">
                             <span class="ca-icon">U</span>
                             <div class="ca-content">
                                 <h2 class="ca-main">login</h2>
+                                <h3 class="ca-sub" id="loginSUB">not logged in</h3>
                             </div>
                         </a>
                     </li>

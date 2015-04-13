@@ -1,12 +1,12 @@
 * Hostname was found in DNS cache
 *   Trying 91.198.174.192...
-* Connected to en.wikipedia.org (91.198.174.192) port 80 (#37)
+* Connected to en.wikipedia.org (91.198.174.192) port 80 (#61)
 > POST /w/api.php?action=login&format=xml HTTP/1.1
 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/2.0.0.9
 Host: en.wikipedia.org
 Accept: */*
 Accept-Encoding: UTF-8
-Cookie: enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=c83ea96f7fa8e78c0c2b09100031ef1f; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
+Cookie: enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=c3b18e94e7e6327f4fa413ebda2055de; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
 Content-Length: 86
 Content-Type: application/x-www-form-urlencoded
 
@@ -18,15 +18,30 @@ Content-Type: application/x-www-form-urlencoded
 < Cache-control: private, must-revalidate, max-age=0
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
+< P3P: CP="This is not a P3P policy! See http://en.wikipedia.org/wiki/Special:CentralAutoLogin/P3P for more info."
 < Vary: Accept-Encoding
+* Replaced cookie centralauth_User="Dst2015" for domain wikipedia.org, path /, expire 1431527976
+< Set-Cookie: centralauth_User=Dst2015; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; domain=.wikipedia.org; httponly
+* Replaced cookie centralauth_Token="a318f7eb27cfaf4f2b40188ec34a8af6" for domain wikipedia.org, path /, expire 1431527976
+< Set-Cookie: centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; domain=.wikipedia.org; httponly
+* Replaced cookie centralauth_Session="75e12fd941e2cf011a5ac160a7eafccf" for domain wikipedia.org, path /, expire 0
+< Set-Cookie: centralauth_Session=75e12fd941e2cf011a5ac160a7eafccf; path=/; domain=.wikipedia.org; httponly
+* Replaced cookie forceHTTPS="deleted" for domain wikipedia.org, path /, expire 1428935976
+< Set-Cookie: forceHTTPS=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0; path=/; domain=.wikipedia.org; httponly
+* Replaced cookie enwikiUserID="24559429" for domain en.wikipedia.org, path /, expire 1431527976
+< Set-Cookie: enwikiUserID=24559429; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; httponly
+* Replaced cookie enwikiUserName="Dst2015" for domain en.wikipedia.org, path /, expire 1431527976
+< Set-Cookie: enwikiUserName=Dst2015; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; httponly
+* Replaced cookie forceHTTPS="true" for domain en.wikipedia.org, path /, expire 1431527976
+< Set-Cookie: forceHTTPS=true; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; httponly
 < Content-Type: text/xml; charset=utf-8
-< X-Varnish: 636614577, 317664435, 327959202
+< X-Varnish: 639914598, 319779362, 1776006176
 < Via: 1.1 varnish, 1.1 varnish, 1.1 varnish
-< Content-Length: 71
+< Content-Length: 209
 < Accept-Ranges: bytes
-< Date: Mon, 13 Apr 2015 15:00:58 GMT
+< Date: Mon, 13 Apr 2015 15:39:32 GMT
 < Age: 0
 < Connection: keep-alive
-< X-Cache: cp1055 miss (0), cp3005 miss (0), cp3003 frontend miss (0)
+< X-Cache: cp1055 miss (0), cp3005 miss (0), cp3014 frontend miss (0)
 < 
-* Connection #37 to host en.wikipedia.org left intact
+* Connection #61 to host en.wikipedia.org left intact

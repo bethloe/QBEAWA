@@ -97,6 +97,7 @@
     width: 100%;
     left: 0px;
     opacity: 0.8;
+	color: white;
     -webkit-transition: all 200ms linear;
     -moz-transition: all 200ms linear;
     -o-transition: all 200ms linear;

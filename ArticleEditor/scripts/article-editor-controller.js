@@ -16,6 +16,8 @@ var ArticleController = function (vals) {
 	var maxX = 4999;
 	var minY = 0;
 	var maxY = 4999;
+	var editToken = "";
+	var GLOBAL_loginName = "";
 
 	var articleController = {};
 	var dataManipulator;
@@ -212,15 +214,16 @@ var ArticleController = function (vals) {
 		}
 	}
 
-	
 	articleController.login = function () {
-		var phpConnector = new PhpConnector();
+		var phpConnector = new PhpConnector({
+				controller : articleController
+			});
 		$("#dialogLogin").dialog({
 			buttons : [{
 					text : "Login",
 					click : function () {
+						GLOBAL_loginName = $("#loginUsername").val();
 						phpConnector.login($("#loginUsername").val(), $("#loginPassword").val());
-						//$(this).dialog("close");
 					}
 				}, {
 					text : "Cancel",
@@ -230,7 +233,19 @@ var ArticleController = function (vals) {
 				}
 			]
 		});
-	$("#dialogLogin").dialog("open");
+		$("#dialogLogin").dialog("open");
+	}
+
+	articleController.setEditToken = function (token) {
+		editToken = token;
+		console.log("EDIT TOKEN: " + editToken);
+		$("#dialogLogin").dialog("close");
+		console.log("LOGIN NAME2: " + GLOBAL_loginName);
+		$("#loginSUB").html(GLOBAL_loginName);
+		$("#liLogin .ca-icon").css("color", "#ccff00");
+		$("#liLogin .ca-content").css("color", "#ccff00");
+		$("#liLogin .ca-content .ca-main").css("color", "#ccff00");
+		$("#liLogin .ca-content .ca-sub").css("color", "#ccff00");
 	}
 
 	//-------------------- EVENTS ----------------------

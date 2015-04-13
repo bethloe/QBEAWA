@@ -1,5 +1,7 @@
 var PhpConnector = function (vals) {
 
+	var GLOBAL_controller = vals.controller;
+	
 	var phpConnector = {};
 
 	phpConnector.login = function (username, password) {
@@ -9,8 +11,9 @@ var PhpConnector = function (vals) {
 			password : password
 		})
 		.done(function (data) {
-			console.log(data);
-			alert("LOGIN: " + data);
+			//console.log(data);
+			alert("LOGIN SUCCESSFUL");
+			GLOBAL_controller.setEditToken(data);
 		});
 	}
 
