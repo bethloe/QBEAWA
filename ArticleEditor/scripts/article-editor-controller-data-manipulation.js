@@ -181,7 +181,9 @@ var DataManipulator = function (vals) {
 		if (item.type == "text") {
 			var textarea = $("#node-label");
 			//textarea.html(data.label);
-			textarea.html(item.rawText);
+			textarea.val(item.rawText);
+			//TODO: Create a second collection which always contains, the whole in order to be able to always get the item with the given masterId
+			//E.g. When we just show some items (double click on an images then the GLOBAL_data.nodes container does not include the item with the given masterId)
 			var sectionItem = GLOBAL_data.nodes.get(item.masterId);
 			$("#dialog").dialog({
 				buttons : [{
@@ -210,6 +212,7 @@ var DataManipulator = function (vals) {
 					}
 				]
 			});
+			console.log("SECTIONITEM: " + JSON.stringify(sectionItem));
 			$("#dialog").dialog('option', 'title', sectionItem.label);
 			$("#dialog").dialog("open");
 			event.preventDefault();

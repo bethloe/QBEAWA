@@ -163,80 +163,99 @@ var ArticleRenderer = function (vals) {
 		} while (somethingIsChanging > 0);
 	}
 
+	var GLOBAL_showOrHideImages = false;
 	articleRenderer.showImages = function () {
-		var images = dataRetriever.getImageArray();
-		var maxX = this.getBiggestXValue();
-		var minX = this.getSmallestXValue();
-		var maxY = this.getBiggestYValue();
-		var minY = this.getSmallestYValue();
-		var offsetY = 1000;
-		var offsetX = 2000;
-		for (var i = 0; i < images.length; i++) {
-			var image = images[i].url;
-			var x = getRandomInt(minX, maxX);
-			var y = getRandomInt(minY, maxY);
+		GLOBAL_showOrHideImages = !GLOBAL_showOrHideImages;
+		if (!GLOBAL_showOrHideImages)
+			articleRenderer.hideImages();
+		else {
+			var images = dataRetriever.getImageArray();
+			var maxX = this.getBiggestXValue();
+			var minX = this.getSmallestXValue();
+			var maxY = this.getBiggestYValue();
+			var minY = this.getSmallestYValue();
+			var offsetY = 1000;
+			var offsetX = 2000;
+			for (var i = 0; i < images.length; i++) {
+				var image = images[i].url;
+				var x = getRandomInt(minX, maxX);
+				var y = getRandomInt(minY, maxY);
 
-			if (i % 2 == 0) {
-				if (getRandomInt(1, 2) == 1)
-					y = minY - offsetY;
-				else
-					y = maxY + offsetY;
-			} else {
-				if (getRandomInt(1, 2) == 1)
-					x = minX - offsetX;
-				else
-					x = maxX + offsetX;
-			}
-			GLOBAL_data.nodes.add({
-				id : GLOBAL_idCounter,
-				x : x,
-				y : y,
-				title : image,
-				label : image,
-				image : image,
-				imageInfos : images[i],
-				shape : "image",
-				//width : 500,
-				//value : 30,
-				allowedToMoveX : true,
-				allowedToMoveY : true,
-				type : "img",
-				wikiLevel : -1,
-				masterId : -1
+				if (i % 2 == 0) {
+					if (getRandomInt(1, 2) == 1)
+						y = minY - offsetY;
+					else
+						y = maxY + offsetY;
+				} else {
+					if (getRandomInt(1, 2) == 1)
+						x = minX - offsetX;
+					else
+						x = maxX + offsetX;
+				}
+				GLOBAL_data.nodes.add({
+					id : GLOBAL_idCounter,
+					x : x,
+					y : y,
+					title : image,
+					label : image,
+					image : image,
+					imageInfos : images[i],
+					shape : "image",
+					//width : 500,
+					//value : 30,
+					allowedToMoveX : true,
+					allowedToMoveY : true,
+					type : "img",
+					wikiLevel : -1,
+					masterId : -1
 
-			});
-			GLOBAL_idCounter++;
-			var items = GLOBAL_data.nodes.get();
-			for (var k = 0; k < items.length; k++) {
-				var item = items[k];
-				if (idInRange(item.id)) {
-					if (item.hasOwnProperty("imagesToThisNode")) {
-						for (var j = 0; j < item.imagesToThisNode.length; j++) {
-							//if (item.title == "Introduction")
-							//	console.log(images[i].imageTitle + " ==" + ("File:" + item.imagesToThisNode[j]).replace(/_/g, " "));
-							if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j]).replace(/_/g, " ") || images[i].imageTitle == item.imagesToThisNode[j]) {
-								GLOBAL_data.nodes.update({
-									id : GLOBAL_idCounter - 1,
-									wikiLevel : item.wikiLevel,
-									masterId : item.id
-								});
-								GLOBAL_data.edges.add({
-									from : GLOBAL_idCounter - 1,
-									to : item.id,
-									style : "arrow"
-								});
+				});
+				GLOBAL_idCounter++;
+				var items = GLOBAL_data.nodes.get();
+				for (var k = 0; k < items.length; k++) {
+					var item = items[k];
+					if (idInRange(item.id)) {
+						if (item.hasOwnProperty("imagesToThisNode")) {
+							for (var j = 0; j < item.imagesToThisNode.length; j++) {
+								//if (item.title == "Introduction")
+								//	console.log(images[i].imageTitle + " ==" + ("File:" + item.imagesToThisNode[j]).replace(/_/g, " "));
+								if (images[i].imageTitle == ("File:" + item.imagesToThisNode[j]).replace(/_/g, " ") || images[i].imageTitle == item.imagesToThisNode[j]) {
+									GLOBAL_data.nodes.update({
+										id : GLOBAL_idCounter - 1,
+										wikiLevel : item.wikiLevel,
+										masterId : item.id
+									});
+									GLOBAL_data.edges.add({
+										from : GLOBAL_idCounter - 1,
+										to : item.id,
+										style : "arrow"
+									});
 
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-		console.log("END");
+			console.log("END");
 
-		GLOBAL_network.redraw();
-		articleRenderer.redraw();
+			GLOBAL_network.redraw();
+			articleRenderer.redraw();
+		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
+	}
+	articleRenderer.resizeSections = function () {
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].type == 'section' && idInRange(items[i].id))
+				GLOBAL_data.nodes.update({
+					id : items[i].id,
+					fontSize : 3000,
+					fontSizeMin : 3000,
+					fontSizeMax : 3010
+				});
+		}
+		articleRenderer.redraw();
 	}
 
 	articleRenderer.hideImages = function () {
@@ -247,78 +266,83 @@ var ArticleRenderer = function (vals) {
 		}
 		articleRenderer.redraw();
 	}
-
+	var GLOBAL_showOrHideReferences = false;
 	articleRenderer.showReferences = function () {
-		var refs = dataRetriever.getAllReferences();
-		var maxX = this.getBiggestXValue();
-		var minX = this.getSmallestXValue();
-		var maxY = this.getBiggestYValue();
-		var minY = this.getSmallestYValue();
-		var offsetY = 1000;
-		var offsetX = 2000;
-		for (var i = 0; i < refs.length; i++) {
-			var ref = refs[i];
-			var x = getRandomInt(minX, maxX);
-			var y = getRandomInt(minY, maxY);
+		GLOBAL_showOrHideReferences = !GLOBAL_showOrHideReferences;
+		if (!GLOBAL_showOrHideReferences)
+			articleRenderer.hideReferences();
+		else {
+			var refs = dataRetriever.getAllReferences();
+			var maxX = this.getBiggestXValue();
+			var minX = this.getSmallestXValue();
+			var maxY = this.getBiggestYValue();
+			var minY = this.getSmallestYValue();
+			var offsetY = 1000;
+			var offsetX = 2000;
+			for (var i = 0; i < refs.length; i++) {
+				var ref = refs[i];
+				var x = getRandomInt(minX, maxX);
+				var y = getRandomInt(minY, maxY);
 
-			if (i % 2 == 0) {
-				if (getRandomInt(1, 2) == 1)
-					y = minY - offsetY;
-				else
-					y = maxY + offsetY;
-			} else {
-				if (getRandomInt(1, 2) == 1)
-					x = minX - offsetX;
-				else
-					x = maxX + offsetX;
-			}
-			GLOBAL_data.nodes.add({
-				id : GLOBAL_idCounter,
-				x : x,
-				y : y,
-				title : ref,
-				label : ref,
-				box : "image",
-				//width : 500,
-				//value : 30,
-				allowedToMoveX : true,
-				allowedToMoveY : true,
-				type : 'ref',
-				wikiLevel : -1,
-				masterId : -1
+				if (i % 2 == 0) {
+					if (getRandomInt(1, 2) == 1)
+						y = minY - offsetY;
+					else
+						y = maxY + offsetY;
+				} else {
+					if (getRandomInt(1, 2) == 1)
+						x = minX - offsetX;
+					else
+						x = maxX + offsetX;
+				}
+				GLOBAL_data.nodes.add({
+					id : GLOBAL_idCounter,
+					x : x,
+					y : y,
+					title : ref,
+					label : ref,
+					box : "image",
+					//width : 500,
+					//value : 30,
+					allowedToMoveX : true,
+					allowedToMoveY : true,
+					type : 'ref',
+					wikiLevel : -1,
+					masterId : -1
 
-			});
-			GLOBAL_idCounter++;
-			var items = GLOBAL_data.nodes.get();
-			for (var k = 0; k < items.length; k++) {
-				var item = items[k];
-				if (idInRange(item.id)) {
-					if (item.hasOwnProperty("refsToThisNode")) {
-						for (var j = 0; j < item.refsToThisNode.length; j++) {
-							if (ref == (item.refsToThisNode[j])) {
-								//if (item.title == "Introduction")
-								//	console.log(ref + " ==" + (item.refsToThisNode[j]));
-								GLOBAL_data.nodes.update({
-									id : GLOBAL_idCounter - 1,
-									wikiLevel : item.wikiLevel,
-									masterId : item.id
-								});
-								GLOBAL_data.edges.add({
-									from : GLOBAL_idCounter - 1,
-									to : item.id,
-									style : "arrow"
-								});
+				});
+				GLOBAL_idCounter++;
+				var items = GLOBAL_data.nodes.get();
+				for (var k = 0; k < items.length; k++) {
+					var item = items[k];
+					if (idInRange(item.id)) {
+						if (item.hasOwnProperty("refsToThisNode")) {
+							for (var j = 0; j < item.refsToThisNode.length; j++) {
+								if (ref == (item.refsToThisNode[j])) {
+									//if (item.title == "Introduction")
+									//	console.log(ref + " ==" + (item.refsToThisNode[j]));
+									GLOBAL_data.nodes.update({
+										id : GLOBAL_idCounter - 1,
+										wikiLevel : item.wikiLevel,
+										masterId : item.id
+									});
+									GLOBAL_data.edges.add({
+										from : GLOBAL_idCounter - 1,
+										to : item.id,
+										style : "arrow"
+									});
 
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-		console.log("END");
+			console.log("END");
 
-		GLOBAL_network.redraw();
-		articleRenderer.redraw();
+			GLOBAL_network.redraw();
+			articleRenderer.redraw();
+		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
 
@@ -955,7 +979,11 @@ var ArticleRenderer = function (vals) {
 
 	}
 
-	articleRenderer.colorLevels = function (isColor) {
+	var isColor = false;
+	articleRenderer.colorLevels = function () {
+		console.log("ISCOLOR: " + isColor);
+		isColor = !isColor;
+		console.log("ISCOLOR2: " + isColor);
 		var currentlevelCnt = getMaxLevel();
 		for (var clc = currentlevelCnt; clc >= 0; clc--) {
 			colorAllNodesOfLevel(clc, isColor ? getRandomColor() : "#97C2FC");
@@ -986,14 +1014,15 @@ var ArticleRenderer = function (vals) {
 	articleRenderer.showNode = function (network, id) {
 		if (idInRange(id)) {
 			var item = GLOBAL_data.nodes.get(id);
-
-			var object = {};
-			object.position = {
-				x : item.x,
-				y : item.y
-			};
-			object.scale = 0.5;
-			network.moveTo(object);
+			if (item.type == "img") {
+				var object = {};
+				object.position = {
+					x : item.x,
+					y : item.y
+				};
+				object.scale = 0.5;
+				network.moveTo(object);
+			}
 		}
 	}
 
@@ -1376,11 +1405,12 @@ var ArticleRenderer = function (vals) {
 		}
 	}
 	articleRenderer.retrievingDataAnimation = function (text) {
-		$("#overallScore").html("<b>" + text + "</b>");
+		//$("#overallScore").html("<b>" + text + "</b>");
+		$("#workingAnimation").html(text);
 	}
 
 	articleRenderer.retrievingDataDone = function (text) {
-		$("#overallScore").html("<b>" + text + "</b>");
+		$("#workingAnimation").html("<b>" + text + "</b>");
 	}
 
 	articleRenderer.onSelect = function (properties) {
@@ -1394,7 +1424,7 @@ var ArticleRenderer = function (vals) {
 
 				if (showQualityFlag) {
 					var allKeys = Object.keys(item.allQulityParameters);
-					var qmStr = "<table border='1'>";
+					var qmStr = "<table border='1' width='400' style=' max-width: 400px' >";
 					for (var i = 0; i < allKeys.length; i++) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
@@ -1403,6 +1433,22 @@ var ArticleRenderer = function (vals) {
 					qmStr += "</table>";
 					$("#qualityParameters").html(qmStr);
 				}
+			} else if (item.type == "img") {
+				var allKeys = Object.keys(item.imageInfos);
+				var qmStr = "<table border='1' width='400' style=' width:400px; max-width: 400px' >";
+				for (var i = 0; i < allKeys.length; i++) {
+					qmStr += ("<tr bgcolor=\"" + "white" + "\"><td>" + allKeys[i] + "</td><td>" + item.imageInfos[allKeys[i]] + "</td><td>" + "OK" + "</td></tr>");
+				}
+				qmStr += "</table>";
+				$("#qualityParameters").html(qmStr);
+			} else if (item.type == "section") {
+				var qmStr = "<table border='1' width='400' style=' width:400px; max-width: 400px' >";
+				var bgColor = item.quality < 0.5 ? "red" : "white";
+				var status = item.quality < 0.5 ? "improve" : "OK";
+
+				qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + "Section score: " + "</td><td>" + item.quality + "</td><td>" + status + "</td></tr>");
+				qmStr += "</table>";
+				$("#qualityParameters").html(qmStr);
 			}
 		}
 	}
@@ -1428,7 +1474,7 @@ var ArticleRenderer = function (vals) {
 		var items = GLOBAL_data.nodes.get();
 		var maxHeight = -1;
 		for (var i = 0; i < items.length; i++) {
-			if (items[i].id != id && idInRange(items[i].id) && items[i].height > maxHeight )
+			if (items[i].id != id && idInRange(items[i].id) && items[i].height > maxHeight)
 				maxHeight = items[i].height;
 		}
 		return maxHeight;
@@ -1437,7 +1483,7 @@ var ArticleRenderer = function (vals) {
 		var items = GLOBAL_data.nodes.get();
 		var maxWidth = -1;
 		for (var i = 0; i < items.length; i++) {
-			if (items[i].id != id && idInRange(items[i].id) && items[i].width > maxWidth )
+			if (items[i].id != id && idInRange(items[i].id) && items[i].width > maxWidth)
 				maxWidth = items[i].width;
 		}
 		return maxWidth;
@@ -1459,7 +1505,7 @@ var ArticleRenderer = function (vals) {
 		var arrayNewPoints = [];
 		var maxHeight = getMaxHeightOfNodes(id);
 		var maxWidth = getMaxWidthOfNodes(id);
-		var radius = distanceBetweenTwoPoints(topLeftX-maxWidth, topLeftY-maxHeight, bottomRightX+maxWidth, bottomRightY+maxHeight) / 2;
+		var radius = distanceBetweenTwoPoints(topLeftX - maxWidth, topLeftY - maxHeight, bottomRightX + maxWidth, bottomRightY + maxHeight) / 2;
 		var numPoints = items.length - 1;
 		var slice = 2 * Math.PI / numPoints;
 		for (var j = 0; j < numPoints; j++) {
@@ -1568,9 +1614,8 @@ var ArticleRenderer = function (vals) {
 			}
 		}
 	}
-
-	articleRenderer.semanticZooming = function (onOrOff) {
-		semanticZooming = onOrOff;
+	articleRenderer.semanticZooming = function () {
+		semanticZooming = !semanticZooming;
 	}
 	function generateRawText(text, title) {
 		var rawText = "";
@@ -1610,9 +1655,36 @@ var ArticleRenderer = function (vals) {
 			}
 		}
 		sum = parseFloat(sum / cnt);
-		$('#overallScore').html("Quality score of this article: " + sum);
+		$('#overallScore').html("<b>Quality score of this article:</b> " + sum);
 		//alert("THE OVERALL QUALITY: " + sum);
+		//AND NOW THE SCORE FOR THE SECTIONS
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (idInRange(item.id) && item.type == "section") {
+				var object = {score: 0, numTextElements: 0};
+				var sectionData = calculateScoreForSection(item.id, object);
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					quality : (sectionData.score/sectionData.numTextElements)
+				});
+			}
+		}
 		colorTextBasedOnTheQulityValue();
+	}
+	var calculateScoreForSection = function (id, object) {
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+
+			if (item.masterId == id && idInRange(item.id)) {
+				if (item.type == "text"){
+					object.score += item.quality;
+					object.numTextElements++;
+				}
+				object = calculateScoreForSection(item.id, object);
+			}
+		}
+		return object;
 	}
 
 	var colorTextBasedOnTheQulityValue = function () {

@@ -103,36 +103,47 @@ var DataRetriever = function (vals) {
 	var GLOBAL_retrieveCnt = 0;
 	function checkIfAllDataRetrieved() {
 		console.log(allDataRetrieved + " == " + allDataRetrievedCheck);
-		
+
 		if (allDataRetrieved == allDataRetrievedCheck && allDataRetrieved != 0 && allDataRetrievedCheck != 0) {
 			clearInterval(GLOBAL_interval);
 			allDataRetrievedFlag = true;
 			GLOBAL_articleRenderer.fillDataNew();
-			GLOBAL_articleRenderer.retrievingDataDone("data retrieved");
+			GLOBAL_articleRenderer.retrievingDataDone(".");
 			return;
 		}
-		if (GLOBAL_retrieveCnt == 0) {
-			GLOBAL_articleRenderer.retrievingDataAnimation("working.");
+
+		if (GLOBAL_retrieveCnt == 6) {
+			GLOBAL_articleRenderer.retrievingDataAnimation(GLOBAL_retrieveCnt + 1);
 			GLOBAL_retrieveCnt++;
-			return;
-		}
-		if (GLOBAL_retrieveCnt == 1) {
-			GLOBAL_articleRenderer.retrievingDataAnimation("working..");
-			GLOBAL_retrieveCnt++;
-			return;
-		}
-		if (GLOBAL_retrieveCnt == 2) {
-			GLOBAL_articleRenderer.retrievingDataAnimation("working...");
 			GLOBAL_retrieveCnt = 0;
 			return;
+		} else {
+			GLOBAL_articleRenderer.retrievingDataAnimation(GLOBAL_retrieveCnt + 1);
+			GLOBAL_retrieveCnt++;
+			return;
 		}
+		/*if (GLOBAL_retrieveCnt == 0) {
+		GLOBAL_articleRenderer.retrievingDataAnimation("1");
+		GLOBAL_retrieveCnt++;
+		return;
+		}
+		if (GLOBAL_retrieveCnt == 1) {
+		GLOBAL_articleRenderer.retrievingDataAnimation("2");
+		GLOBAL_retrieveCnt++;
+		return;
+		}
+		if (GLOBAL_retrieveCnt == 2) {
+		GLOBAL_articleRenderer.retrievingDataAnimation("3");
+		GLOBAL_retrieveCnt = 0;
+		return;
+		}*/
 	}
 
 	dataRetriever.getIntro = function () {
 		return GLOBAL_intro;
 	}
-	dataRetriever.getAllSectionContentData = function(){
-	return GLOBAL_sectionContentData;
+	dataRetriever.getAllSectionContentData = function () {
+		return GLOBAL_sectionContentData;
 	}
 	dataRetriever.getSectionContentData = function (sectionName) {
 		for (var i = 0; i < GLOBAL_sectionContentData.length; i++) {
@@ -275,9 +286,19 @@ var DataRetriever = function (vals) {
 		//console.log("HANDLIMAGEINFO : " + JSON.stringify(JSONResponse));
 		var url = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].thumburl;
 		var imageTitle = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].title;
+		var size = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].size;
+		var user = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].user;
+		var timestamp = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].timestamp;
+		var comment = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].comment;
+		var mediatype = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].mediatype;
 		var object = {
 			url : url,
-			imageTitle : imageTitle
+			imageTitle : imageTitle, 
+			size: size,
+			user: user,
+			timestamp: timestamp,
+			comment: comment, 
+			mediatype: mediatype
 		};
 		GLOBAL_imageArray.push(object);
 		//console.log("TITLE: " + imageTitle + " to IMAGE URL: " + url);
@@ -293,7 +314,7 @@ var DataRetriever = function (vals) {
 			//GET IMAGE INFOS:
 			for (var i = 0; i < JSONimages.length; i++) {
 				//console.log("IMAGE TITLE: " + GLOBAL_linkToAPI + "action=query&prop=imageinfo&format=json&iilimit=1&titles=" + JSONimages[i].title + "&iiprop=url&iiurlwidth=50&continue");
-				retrieveData(GLOBAL_linkToAPI + "action=query&prop=imageinfo&format=json&iilimit=1&titles=" + JSONimages[i].title + "&iiprop=url&iiurlwidth=500&continue", handleImageInfos);
+				retrieveData(GLOBAL_linkToAPI + "action=query&prop=imageinfo&format=json&iilimit=1&titles=" + JSONimages[i].title + "&iiprop=url|size|user|timestamp|comment|mediatype&iiurlwidth=500&continue", handleImageInfos);
 			}
 
 			if (imageCount.hasOwnProperty("continue")) {

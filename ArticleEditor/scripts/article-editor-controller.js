@@ -119,9 +119,9 @@ var ArticleController = function (vals) {
 			articleRenderers[i].showAllItems();
 		}
 	}
-	articleController.colorLevels = function (isColor) {
+	articleController.colorLevels = function () {
 		for (var i = 0; i < articleRenderers.length; i++) {
-			articleRenderers[i].colorLevels(isColor);
+			articleRenderers[i].colorLevels();
 		}
 	}
 	articleController.splitSectionsIntoParagraphs = function () {
@@ -169,9 +169,9 @@ var ArticleController = function (vals) {
 			articleRenderers[i].doRedraw();
 		}
 	}
-	articleController.semanticZooming = function (onOrOff) {
+	articleController.semanticZooming = function () {
 		for (var i = 0; i < articleRenderers.length; i++) {
-			articleRenderers[i].semanticZooming(onOrOff);
+			articleRenderers[i].semanticZooming();
 		}
 	}
 	articleController.showOverview = function () {
@@ -206,6 +206,33 @@ var ArticleController = function (vals) {
 		dataManipulator.showQualityTableOfSection(sectionName, articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
 
+	articleController.resizeSections = function () {
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].resizeSections();
+		}
+	}
+
+	
+	articleController.login = function () {
+		var phpConnector = new PhpConnector();
+		$("#dialogLogin").dialog({
+			buttons : [{
+					text : "Login",
+					click : function () {
+						phpConnector.login($("#loginUsername").val(), $("#loginPassword").val());
+						//$(this).dialog("close");
+					}
+				}, {
+					text : "Cancel",
+					click : function () {
+						$(this).dialog("close");
+					}
+				}
+			]
+		});
+	$("#dialogLogin").dialog("open");
+	}
+
 	//-------------------- EVENTS ----------------------
 
 
@@ -238,48 +265,48 @@ var ArticleController = function (vals) {
 
 	articleController.onDoubleClick = function (properties) {
 		//console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
-		//Select everything (does not work with doubleclick if someone can fix it 
+		//Select everything (does not work with doubleclick if someone can fix it
 		//I'd be really happy!!!)
-		if (properties.nodes.length == 0 && properties.edges.length == 0) {
+		/*	if (properties.nodes.length == 0 && properties.edges.length == 0) {
 
-			var x = properties.pointer.canvas.x;
-			var y = properties.pointer.canvas.y;
-			for (var i = 0; i < articleRenderers.length; i++) {
-				var maxX = articleRenderers[i].getBiggestXValue();
-				var maxY = articleRenderers[i].getBiggestYValue();
-				var minX = articleRenderers[i].getSmallestXValue();
-				var minY = articleRenderers[i].getSmallestYValue();
-				console.log(x + " >= " + minX + " && " + x + " <= " + maxX + " && " + y + " >=  " + minY + " && " + y + " <= " + maxY);
-				if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
-					articleRenderers[i].selectAllNodes();
-				}
-			}
-
-		} else {
-			for (var i = 0; i < articleRenderers.length; i++) {
-				articleRenderers[i].onDoubleClick(properties);
-			}
+		var x = properties.pointer.canvas.x;
+		var y = properties.pointer.canvas.y;
+		for (var i = 0; i < articleRenderers.length; i++) {
+		var maxX = articleRenderers[i].getBiggestXValue();
+		var maxY = articleRenderers[i].getBiggestYValue();
+		var minX = articleRenderers[i].getSmallestXValue();
+		var minY = articleRenderers[i].getSmallestYValue();
+		console.log(x + " >= " + minX + " && " + x + " <= " + maxX + " && " + y + " >=  " + minY + " && " + y + " <= " + maxY);
+		if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+		articleRenderers[i].selectAllNodes();
 		}
+		}
+
+		} else {*/
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].onDoubleClick(properties);
+		}
+		//}
 	}
 
 	articleController.onClick = function (properties) {
 		//console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
-		var x = properties.pointer.canvas.x;
+		/*var x = properties.pointer.canvas.x;
 		var y = properties.pointer.canvas.y;
 		if (properties.nodes.length == 0 && properties.edges.length == 0) {
 
-			for (var i = 0; i < articleRenderers.length; i++) {
-				var maxX = articleRenderers[i].getBiggestXValue();
-				var maxY = articleRenderers[i].getBiggestYValue();
-				var minX = articleRenderers[i].getSmallestXValue();
-				var minY = articleRenderers[i].getSmallestYValue();
-				console.log(x + " >= " + minX + " && " + x + " <= " + maxX + " && " + y + " >=  " + minY + " && " + y + " <= " + maxY);
-				if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
-					articleRenderers[i].selectAllNodes();
-				}
-			}
-
+		for (var i = 0; i < articleRenderers.length; i++) {
+		var maxX = articleRenderers[i].getBiggestXValue();
+		var maxY = articleRenderers[i].getBiggestYValue();
+		var minX = articleRenderers[i].getSmallestXValue();
+		var minY = articleRenderers[i].getSmallestYValue();
+		console.log(x + " >= " + minX + " && " + x + " <= " + maxX + " && " + y + " >=  " + minY + " && " + y + " <= " + maxY);
+		if (x >= minX && x <= maxX && y >= minY && y <= maxY) {
+		articleRenderers[i].selectAllNodes();
 		}
+		}
+
+		}*/
 	}
 
 	articleController.onDragEnd = function (properties) {
