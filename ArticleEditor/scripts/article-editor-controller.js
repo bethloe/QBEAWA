@@ -7,6 +7,8 @@ var ArticleController = function (vals) {
 	var nodes = null;
 	var edges = null;
 	var data = null;
+	var phpConnector = null;
+	var isLoggedIn = false;
 
 	//ArticleRenderers
 	var articleRenderers = [];
@@ -17,6 +19,7 @@ var ArticleController = function (vals) {
 	var minY = 0;
 	var maxY = 4999;
 	var editToken = "";
+	var userToken = "";
 	var GLOBAL_loginName = "";
 
 	var articleController = {};
@@ -215,7 +218,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.login = function () {
-		var phpConnector = new PhpConnector({
+		phpConnector = new PhpConnector({
 				controller : articleController
 			});
 		$("#dialogLogin").dialog({
@@ -236,9 +239,10 @@ var ArticleController = function (vals) {
 		$("#dialogLogin").dialog("open");
 	}
 
-	articleController.setEditToken = function (token) {
-		editToken = token;
-		console.log("EDIT TOKEN: " + editToken);
+	articleController.setUserToken = function (token) {
+		isLoggedIn = true;
+		userToken = token;
+		console.log("USER TOKEN: " + userToken);
 		$("#dialogLogin").dialog("close");
 		console.log("LOGIN NAME2: " + GLOBAL_loginName);
 		$("#loginSUB").html(GLOBAL_loginName);
@@ -246,8 +250,40 @@ var ArticleController = function (vals) {
 		$("#liLogin .ca-content").css("color", "#ccff00");
 		$("#liLogin .ca-content .ca-main").css("color", "#ccff00");
 		$("#liLogin .ca-content .ca-sub").css("color", "#ccff00");
+		phpConnector.getEditToken();
 	}
 
+	articleController.setEditToken = function (token) {
+		editToken = token;
+		editToken = editToken.replace("+\\", "%2B%5C");
+		console.log("EDIT TOKEN: " + editToken);
+
+		//JUST FOR TESTS
+		//var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
+		//var params = "action=edit&title=User:Dst2015/sandbox&section=2&token=" + editToken + "&text=THIS IS A TEST2!!!";
+		//articleController.editRequest(url, params);
+	}
+
+	articleController.getUserToken = function () {
+		return userToken;
+	}
+
+	articleController.getEditToken = function () {
+		return editToken;
+	}
+
+	articleController.editRequest = function (url, params, id) {
+		if (isLoggedIn) {
+			phpConnector.editRequest(url, params, id, articleController.updateSection);
+		} else
+			alert("U r not logged in!!!");
+	}
+	
+	articleController.updateSection = function (id){
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].updateSection(id);
+		}
+	}
 	//-------------------- EVENTS ----------------------
 
 

@@ -176,12 +176,27 @@ var DataManipulator = function (vals) {
 		return rawText;
 	}
 
+	String.prototype.replaceHtmlEntites = function () {
+		var s = this;
+		var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+		var translate = {
+			"nbsp" : " ",
+			"amp" : "&",
+			"quot" : "\"",
+			"lt" : "<",
+			"gt" : ">"
+		};
+		return (s.replace(translate_re, function (match, entity) {
+				return translate[entity];
+			}));
+	};
+
 	dataManipulator.editNodes = function (data, callback) {
 		var item = GLOBAL_data.nodes.get(data.id);
 		if (item.type == "text") {
 			var textarea = $("#node-label");
 			//textarea.html(data.label);
-			textarea.val(item.rawText);
+			textarea.val(item.originalText);
 			//TODO: Create a second collection which always contains, the whole in order to be able to always get the item with the given masterId
 			//E.g. When we just show some items (double click on an images then the GLOBAL_data.nodes container does not include the item with the given masterId)
 			var sectionItem = GLOBAL_data.nodes.get(item.masterId);
@@ -190,18 +205,37 @@ var DataManipulator = function (vals) {
 						text : "Save",
 						click : function () {
 							console.log("click: " + item.id);
-							//TODO UPDATE TEXT TO WIKIPEDIA!
-							//GENERATE RAW TEXT FOR FLESCH AND KINCAID
-							//var textarea = $("#node-label");
-							//var rawText = generateRawText(textarea.html());
-							var rawText = textarea.val();
+							var editToken = GLOBAL_controller.getEditToken();
+							console.log("EDITTOKEN: " + editToken);
+							var textarea = $("#node-label");
+							var text = textarea.val();
+							var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
+							//text = _.unescape(text); // DOES IT WORK?????
+							text = text.replaceHtmlEntites();
+							console.log("TEXT: " + text);
+							text = text.replace(/&/g, "and");
+							alert("INDEX: " + sectionItem.index);
+							var params = "action=edit&title=" + GLOBAL_articleName + "&section=" + sectionItem.index + "&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+							//UPDATING TEXT TO WIKIPEDIA!
+							articleController.editRequest(url, params, item.id);
+							// GET THE NEW VERSION FROM WIKIPEDIA (rawtext, images which are maybe added to this section, etc)
+						
+							//TODO MAKE A REQUEST TO THE WIKIPAGE!!! (WITH THE SANDBOX WE CAN DO THIS :-) )
+
+
+							/*var rawText = textarea.val();
+
+
+
+
+
 							console.log("rawText: " + rawText);
 							GLOBAL_data.nodes.update({
-								id : item.id,
-								rawText : rawText
-							});
+							id : item.id,
+							rawText : rawText
+							});*/
 							//console.log("RAW TEXT: " + rawText);
-							GLOBAL_controller.showQuality();
+							//GLOBAL_controller.showQuality();
 							$(this).dialog("close");
 						}
 					}, {
@@ -212,8 +246,13 @@ var DataManipulator = function (vals) {
 					}
 				]
 			});
-			console.log("SECTIONITEM: " + JSON.stringify(sectionItem));
-			$("#dialog").dialog('option', 'title', sectionItem.label);
+			//console.log("SECTIONITEM: " + JSON.stringify(sectionItem));
+			if(sectionItem != null){
+				$("#dialog").dialog('option', 'title', sectionItem.label);
+			}else{
+					$("#dialog").dialog('option', 'title', "NOT EDITABLE RIGHT NOW"); //TODO!!!! GLOBAL_data 
+		
+			}
 			$("#dialog").dialog("open");
 			event.preventDefault();
 		}

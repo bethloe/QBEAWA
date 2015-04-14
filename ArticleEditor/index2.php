@@ -7,6 +7,7 @@
   <script type="text/javascript" src="scripts/utility.js"></script>
   <script type="text/javascript" src="scripts/rawData.js"></script>
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
+  <script type="text/javascript" src="libs/underscore-min.js" ></script>
 
   <script type="text/javascript" src="scripts/article-editor-php-requests.js"></script>
   
@@ -257,8 +258,8 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 	<table align="center">
 	<tr>
 	<td>
-	Username: </td><td><input id="loginUsername" type="text" /></td></tr>
-	<tr><td>Password: </td><td><input id="loginPassword" type="password" /></td></tr>
+	Username: </td><td><input id="loginUsername" type="text" value="Dst2015"/></td></tr>
+	<tr><td>Password: </td><td><input id="loginPassword" type="password"  value="kc2015"/></td></tr>
 </table>
 </div>
 

@@ -139,6 +139,9 @@ var DataRetriever = function (vals) {
 		}*/
 	}
 
+
+
+	
 	dataRetriever.getIntro = function () {
 		return GLOBAL_intro;
 	}
@@ -174,6 +177,11 @@ var DataRetriever = function (vals) {
 
 	dataRetriever.getSectionInfos = function () {
 		return GLOBAL_sectionInfos;
+	}
+	
+	dataRetriever.reloadSection = function(sectionId, callbackFunction){
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=&titles=" + GLOBAL_title + "&continue", handleRawText);
+		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&generatexml&section=" + sectionId + "&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", callbackFunction);
 	}
 
 	dataRetriever.getAllReferences = function () {

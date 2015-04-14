@@ -20421,7 +20421,7 @@ return /******/ (function(modules) { // webpackBootstrap
       img = new Image();
       img.onload = function () {
         // IE11 fix -- thanks dponch!
-		// D ST ADDING SOME CODE HERE
+		// D ST. ADDING SOME CODE HERE
 		var wHelp = this.width; 
 		//this.width = 2000;
 		//this.height = (this.width * this.height) / wHelp;

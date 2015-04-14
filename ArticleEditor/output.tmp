@@ -1,47 +1,38 @@
-* Hostname was found in DNS cache
+* Hostname was NOT found in DNS cache
 *   Trying 91.198.174.192...
-* Connected to en.wikipedia.org (91.198.174.192) port 80 (#61)
-> POST /w/api.php?action=login&format=xml HTTP/1.1
+* Connected to en.wikipedia.org (91.198.174.192) port 443 (#247)
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* Server certificate:
+* 	 subject: C=US; ST=California; L=San Francisco; O=Wikimedia Foundation, Inc.; CN=*.wikipedia.org
+* 	 start date: 2014-11-21 18:06:02 GMT
+* 	 expire date: 2015-11-22 18:06:02 GMT
+* 	 subjectAltName: en.wikipedia.org matched
+* 	 issuer: C=BE; O=GlobalSign nv-sa; CN=GlobalSign Organization Validation CA - SHA256 - G2
+* 	 SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.
+> GET /w/api.php?action=query&meta=tokens&format=xml HTTP/1.1
 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/2.0.0.9
 Host: en.wikipedia.org
 Accept: */*
 Accept-Encoding: UTF-8
-Cookie: enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=c3b18e94e7e6327f4fa413ebda2055de; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
-Content-Length: 86
+Cookie: enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=2843edd207e0efaa02ae7c8eaf0313cf; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
 Content-Type: application/x-www-form-urlencoded
 
-* upload completely sent off: 86 out of 86 bytes
 < HTTP/1.1 200 OK
-* Server Apache is not blacklisted
-< Server: Apache
+* Server nginx/1.6.2 is not blacklisted
+< Server: nginx/1.6.2
+< Date: Tue, 14 Apr 2015 14:42:13 GMT
+< Content-Type: text/xml; charset=utf-8
+< Transfer-Encoding: chunked
+< Connection: keep-alive
 < X-Powered-By: HHVM/3.3.1
 < Cache-control: private, must-revalidate, max-age=0
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
-< P3P: CP="This is not a P3P policy! See http://en.wikipedia.org/wiki/Special:CentralAutoLogin/P3P for more info."
 < Vary: Accept-Encoding
-* Replaced cookie centralauth_User="Dst2015" for domain wikipedia.org, path /, expire 1431527976
-< Set-Cookie: centralauth_User=Dst2015; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; domain=.wikipedia.org; httponly
-* Replaced cookie centralauth_Token="a318f7eb27cfaf4f2b40188ec34a8af6" for domain wikipedia.org, path /, expire 1431527976
-< Set-Cookie: centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; domain=.wikipedia.org; httponly
-* Replaced cookie centralauth_Session="75e12fd941e2cf011a5ac160a7eafccf" for domain wikipedia.org, path /, expire 0
-< Set-Cookie: centralauth_Session=75e12fd941e2cf011a5ac160a7eafccf; path=/; domain=.wikipedia.org; httponly
-* Replaced cookie forceHTTPS="deleted" for domain wikipedia.org, path /, expire 1428935976
-< Set-Cookie: forceHTTPS=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; Max-Age=0; path=/; domain=.wikipedia.org; httponly
-* Replaced cookie enwikiUserID="24559429" for domain en.wikipedia.org, path /, expire 1431527976
-< Set-Cookie: enwikiUserID=24559429; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; httponly
-* Replaced cookie enwikiUserName="Dst2015" for domain en.wikipedia.org, path /, expire 1431527976
-< Set-Cookie: enwikiUserName=Dst2015; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; httponly
-* Replaced cookie forceHTTPS="true" for domain en.wikipedia.org, path /, expire 1431527976
-< Set-Cookie: forceHTTPS=true; expires=Wed, 13-May-2015 15:39:32 GMT; Max-Age=2592000; path=/; httponly
-< Content-Type: text/xml; charset=utf-8
-< X-Varnish: 639914598, 319779362, 1776006176
+< X-Varnish: 556169056, 1462682917, 1222182877
 < Via: 1.1 varnish, 1.1 varnish, 1.1 varnish
-< Content-Length: 209
-< Accept-Ranges: bytes
-< Date: Mon, 13 Apr 2015 15:39:32 GMT
 < Age: 0
-< Connection: keep-alive
-< X-Cache: cp1055 miss (0), cp3005 miss (0), cp3014 frontend miss (0)
+< X-Cache: cp1052 miss (0), cp3003 miss (0), cp3030 frontend miss (0)
+< X-Analytics: https=1
 < 
-* Connection #61 to host en.wikipedia.org left intact
+* Connection #247 to host en.wikipedia.org left intact

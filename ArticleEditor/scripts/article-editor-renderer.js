@@ -11,6 +11,7 @@ var ArticleRenderer = function (vals) {
 	var GLOBAL_controller = vals.controller;
 	var GLOBAL_introID = 0;
 	var GLOBAL_introTextID = 0;
+	var GLOBAL_editToken = "";
 
 	//DataSets for operations
 	var allNodesBackup = new vis.DataSet();
@@ -53,6 +54,7 @@ var ArticleRenderer = function (vals) {
 	var dataRetriever = new DataRetriever({
 			articleRenderer : articleRenderer
 		});
+
 	articleRenderer.getDataRetriever = function () {
 		return dataRetriever;
 	}
@@ -244,6 +246,68 @@ var ArticleRenderer = function (vals) {
 		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
+
+	articleRenderer.updateSection = function (id) {
+		if (idInRange(id)) {
+			var item = GLOBAL_data.nodes.get(id);
+			//console.log("UPDATE SECTION: " + JSON.stringify(item.sectionInfos));
+			var sectionData = dataRetriever.reloadSection(item.index, articleRenderer.CBupdateSection);
+		}
+	}
+
+	articleRenderer.CBupdateSection = function (JSONResponse) {
+		var object = JSON.parse(JSON.stringify(JSONResponse));
+		console.log("CBupdateSection object : " + JSON.stringify(object));
+		//console.log("CBupdateSection item : " +
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.type == "text") {
+				if (item.sectionInfos.sections.length > 0) {
+					if (item.sectionInfos.sections[0].line == object.parse.sections[0].line) {
+						var textOfSection = "";
+						if (object.parse.sections.length > 1) {
+							textOfSection = object.parse.wikitext['*'];
+							textOfSection = trimToOneParagraph(textOfSection, object.parse.sections[0].line);
+						} else {
+							textOfSection = object.parse.wikitext['*'];
+						}
+						var originalText = textOfSection;
+						var rawText = getTextOfSection(object.parse.sections[0].line);
+						if (textOfSection != "" && textOfSection.length > 10) {
+							var value = textOfSection.split(' ').length;
+							textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
+							GLOBAL_data.nodes.update({
+								id : item.id,
+								title : textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
+								label : textOfSection,
+								originalText : originalText,
+								rawText : rawText,
+								quality : 0,
+								sectionInfos : object.parse,
+								imagesToThisNode : object.parse.images,
+								refsToThisNode : object.parse.externallinks
+							});
+						}
+					}
+				}
+			}
+		}
+		//articleRenderer.redraw();
+		articleRenderer.redrawEverything();
+		articleRenderer.showQuality();
+
+	}
+
+	articleRenderer.redrawEverything = function() {
+		for (var i = 0; i < 2; i++) {
+			articleRenderer.showImages();
+			articleRenderer.showReferences();
+		}
+		articleRenderer.redraw();
+
+	}
+
 	articleRenderer.resizeSections = function () {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
@@ -345,7 +409,6 @@ var ArticleRenderer = function (vals) {
 		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
-
 	articleRenderer.hideReferences = function () {
 		showReferencesFlag = false;
 		var items = GLOBAL_data.nodes.get();
@@ -430,6 +493,7 @@ var ArticleRenderer = function (vals) {
 					y : currentLevel * yOffset + GLOBAL_minY,
 					title : sectionInfos[i].line,
 					label : sectionInfos[i].line, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+					index : sectionInfos[i].index,
 					value : 1,
 					allowedToMoveX : true,
 					allowedToMoveY : true,
@@ -450,6 +514,7 @@ var ArticleRenderer = function (vals) {
 				} else {
 					textOfSection = sectionData.wikitext['*'];
 				}
+				var originalText = textOfSection;
 				//console.log("LINE: " + sectionInfos[i].line);
 				var rawText = getTextOfSection(sectionInfos[i].line);
 
@@ -467,6 +532,8 @@ var ArticleRenderer = function (vals) {
 						y : currentLevel * yOffset + 800 +  + GLOBAL_minY,
 						title : textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
 						label : textOfSection,
+						originalText : originalText,
+						index : sectionInfos[i].index,
 						value : value,
 						shape : 'box',
 						allowedToMoveX : true,
@@ -513,6 +580,7 @@ var ArticleRenderer = function (vals) {
 					y : currentLevel * yOffset + GLOBAL_minY,
 					title : sectionInfos[i].line,
 					label : sectionInfos[i].line, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+					index : sectionInfos[i].index,
 					value : 1,
 					allowedToMoveX : true,
 					allowedToMoveY : true,
@@ -533,6 +601,7 @@ var ArticleRenderer = function (vals) {
 					textOfSection = sectionData.wikitext['*'];
 				}
 				var rawText = getTextOfSection(sectionInfos[i].line);
+				var originalText = textOfSection;
 				if (textOfSection != "" && textOfSection.length > 10) {
 
 					var value = textOfSection.split(' ').length;
@@ -544,6 +613,8 @@ var ArticleRenderer = function (vals) {
 						y : currentLevel * yOffset + GLOBAL_minX,
 						title : textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
 						label : textOfSection,
+						originalText : originalText,
+						index : sectionInfos[i].index,
 						shape : 'box',
 						value : value,
 						allowedToMoveX : true,
@@ -596,6 +667,7 @@ var ArticleRenderer = function (vals) {
 			y : 0,
 			title : title,
 			label : title, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+			index : 0,
 			value : 1,
 			allowedToMoveX : true,
 			allowedToMoveY : true,
@@ -606,6 +678,7 @@ var ArticleRenderer = function (vals) {
 		GLOBAL_introID = GLOBAL_idCounter;
 		GLOBAL_idCounter++;
 		var wikitext = intro.wikitext['*'];
+		var originalText = wikitext;
 		wikitext = repalceNewLineWithTwoNewLines(wikitext, "\n", "\n\n", 1);
 		wikitext = replaceCharacterWithAnother(wikitext, " ", '\n', 10);
 		var rawText = getIntroOfArticle();
@@ -617,7 +690,9 @@ var ArticleRenderer = function (vals) {
 			title : "Introduction",
 			shape : "box",
 			label : wikitext, // + ' currentLEVEL: ' + currentLevel + ' x: ' + (sectionInfos[i].level * xOffset) + ' y: ' + (sectionsInSameLevel * yOffset),
+			originalText : originalText,
 			value : 1,
+			index : 0,
 			allowedToMoveX : true,
 			allowedToMoveY : true,
 			wikiLevel : 1,
@@ -1661,11 +1736,14 @@ var ArticleRenderer = function (vals) {
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			if (idInRange(item.id) && item.type == "section") {
-				var object = {score: 0, numTextElements: 0};
+				var object = {
+					score : 0,
+					numTextElements : 0
+				};
 				var sectionData = calculateScoreForSection(item.id, object);
 				GLOBAL_data.nodes.update({
 					id : item.id,
-					quality : (sectionData.score/sectionData.numTextElements)
+					quality : (sectionData.score / sectionData.numTextElements)
 				});
 			}
 		}
@@ -1677,7 +1755,7 @@ var ArticleRenderer = function (vals) {
 			var item = items[i];
 
 			if (item.masterId == id && idInRange(item.id)) {
-				if (item.type == "text"){
+				if (item.type == "text") {
 					object.score += item.quality;
 					object.numTextElements++;
 				}
