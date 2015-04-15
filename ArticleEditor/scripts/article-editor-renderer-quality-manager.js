@@ -46,18 +46,26 @@ var QualityManager = function (vals) {
 			var qualityAllLinks = adaptValue(allLinks / good_allLinks);
 			//console.log(tooltip+": "+flesch + " " + kincaid + " " + numImages + " " + externalRefs + " " + internalLinks + " " + allLinks );
 			//console.log(tooltip+": "+qualityFlesch + " " + qualityKincaid + " " + qualityImages + " " + qualityExternalRefs + " " + qualityInternalLinks + " " + qualityAllLinks );
+
+			qualityFleschWordCount = parseFloat(adaptValue(parseFloat(qualityFleschWordCount) * parseFloat(weightFlesch)));
+			qualityKincaid = parseFloat(adaptValue(parseFloat(qualityKincaid) * parseFloat(weightKincaid)));
+			qualityImages = parseFloat(adaptValue(parseFloat(qualityImages) * parseFloat(weightImageQuality)));
+			qualityExternalRefs = parseFloat(adaptValue(parseFloat(qualityExternalRefs) * parseFloat(weightExternalRefs)));
+			qualityAllLinks = parseFloat(adaptValue(parseFloat(qualityAllLinks) * parseFloat(weightAllLinks)));
+
 			var help = (parseFloat(((parseFloat(qualityFleschWordCount) + parseFloat(qualityKincaid) + parseFloat(qualityImages) + parseFloat(qualityExternalRefs)/*+ parseFloat(qualityInternalLinks)*/
 							 + parseFloat(qualityAllLinks)))));
 			help = help / 5;
 
 			var score = help;
 			console.log(tooltip + "SCORE: " + score + " " + numImages + " / " + good_numPics + " = " + qualityImages);
-			parameters.qualityFleschWordCount = parseFloat(qualityFleschWordCount);
-			parameters.qualityKincaid = parseFloat(qualityKincaid);
-			parameters.qualityImages = parseFloat(qualityImages);
-			parameters.qualityExternalRefs = parseFloat(qualityExternalRefs);
+
+			parameters.qualityFleschWordCount = qualityFleschWordCount;//parseFloat(adaptValue(parseFloat(qualityFleschWordCount) * parseFloat(weightFlesch)));
+			parameters.qualityKincaid = qualityKincaid;//parseFloat(adaptValue(parseFloat(qualityKincaid) * parseFloat(weightKincaid)));
+			parameters.qualityImages = qualityImages;//parseFloat(adaptValue(parseFloat(qualityImages) * parseFloat(weightImageQuality)));
+			parameters.qualityExternalRefs = qualityExternalRefs;//parseFloat(adaptValue(parseFloat(qualityExternalRefs) * parseFloat(weightExternalRefs)));
 			//parameters.qualityInternalLinks =  parseFloat(qualityInternalLinks);
-			parameters.qualityAllLinks = parseFloat(qualityAllLinks);
+			parameters.qualityAllLinks = qualityAllLinks;//parseFloat(adaptValue(parseFloat(qualityAllLinks) * parseFloat(weightAllLinks)));
 			//parameters.flesch = flesch;
 			//parameters.wordcount = text.split(' ').length;
 			//parameters.fleschWordCount = fleschWordCount;

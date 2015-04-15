@@ -1,38 +1,33 @@
-* Hostname was NOT found in DNS cache
+* Hostname was found in DNS cache
 *   Trying 91.198.174.192...
-* Connected to en.wikipedia.org (91.198.174.192) port 443 (#247)
-* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
-* Server certificate:
-* 	 subject: C=US; ST=California; L=San Francisco; O=Wikimedia Foundation, Inc.; CN=*.wikipedia.org
-* 	 start date: 2014-11-21 18:06:02 GMT
-* 	 expire date: 2015-11-22 18:06:02 GMT
-* 	 subjectAltName: en.wikipedia.org matched
-* 	 issuer: C=BE; O=GlobalSign nv-sa; CN=GlobalSign Organization Validation CA - SHA256 - G2
-* 	 SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.
-> GET /w/api.php?action=query&meta=tokens&format=xml HTTP/1.1
+* Connected to en.wikipedia.org (91.198.174.192) port 80 (#5)
+> POST /w/api.php?action=edit&format=xml HTTP/1.1
 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/2.0.0.9
 Host: en.wikipedia.org
 Accept: */*
 Accept-Encoding: UTF-8
-Cookie: enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=2843edd207e0efaa02ae7c8eaf0313cf; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
-Content-Type: application/x-www-form-urlencoded
+Cookie: enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=d8e4b794c311e9736f22e1f9f7a157dd; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
+Content-Type:multipart/form-data
+Content-Length: 3001
+Expect: 100-continue
 
+< HTTP/1.1 100 Continue
 < HTTP/1.1 200 OK
-* Server nginx/1.6.2 is not blacklisted
-< Server: nginx/1.6.2
-< Date: Tue, 14 Apr 2015 14:42:13 GMT
-< Content-Type: text/xml; charset=utf-8
-< Transfer-Encoding: chunked
-< Connection: keep-alive
+* Server Apache is not blacklisted
+< Server: Apache
 < X-Powered-By: HHVM/3.3.1
 < Cache-control: private, must-revalidate, max-age=0
 < X-Content-Type-Options: nosniff
 < X-Frame-Options: SAMEORIGIN
 < Vary: Accept-Encoding
-< X-Varnish: 556169056, 1462682917, 1222182877
+< Content-Type: text/xml; charset=utf-8
+< X-Varnish: 834877186, 1803667921, 1877047794
 < Via: 1.1 varnish, 1.1 varnish, 1.1 varnish
+< Content-Length: 206
+< Accept-Ranges: bytes
+< Date: Wed, 15 Apr 2015 09:03:05 GMT
 < Age: 0
-< X-Cache: cp1052 miss (0), cp3003 miss (0), cp3030 frontend miss (0)
-< X-Analytics: https=1
+< Connection: keep-alive
+< X-Cache: cp1055 miss (0), cp3012 miss (0), cp3014 frontend miss (0)
 < 
-* Connection #247 to host en.wikipedia.org left intact
+* Connection #5 to host en.wikipedia.org left intact

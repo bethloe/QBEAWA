@@ -278,11 +278,26 @@ var ArticleController = function (vals) {
 		} else
 			alert("U r not logged in!!!");
 	}
-	
-	articleController.updateSection = function (id){
+
+	articleController.updateSection = function (id) {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].updateSection(id);
 		}
+	}
+
+	articleController.changeValueOfCheckbox = function (id, isSet) {
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].changeValueOfCheckbox(id, isSet);
+		}
+	}
+	
+	articleController.getItem = function(id){
+		for (var i = 0; i < articleRenderers.length; i++) {
+			var item = articleRenderers[i].getItem(id);
+			if(item!=false)
+				return item;
+		}
+		return null;
 	}
 	//-------------------- EVENTS ----------------------
 
@@ -341,6 +356,9 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.onClick = function (properties) {
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].onClick(properties);
+		}
 		//console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
 		/*var x = properties.pointer.canvas.x;
 		var y = properties.pointer.canvas.y;
@@ -364,6 +382,10 @@ var ArticleController = function (vals) {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].onDragEnd(properties);
 		}
+	}
+	
+	articleController.showSettings = function(){
+			$("#dialogSettings").dialog("open");
 	}
 
 	articleController.init = function () {

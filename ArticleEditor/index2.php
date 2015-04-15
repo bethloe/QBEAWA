@@ -8,11 +8,12 @@
   <script type="text/javascript" src="scripts/rawData.js"></script>
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
   <script type="text/javascript" src="libs/underscore-min.js" ></script>
+  <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
 
   <script type="text/javascript" src="scripts/article-editor-php-requests.js"></script>
   
- <script src="libs/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
- <link href="libs/jquery-ui-1.11.4.custom/jquery-ui.css" rel="stylesheet">
+  <script src="libs/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+  <link href="libs/jquery-ui-1.11.4.custom/jquery-ui.css" rel="stylesheet">
   <!-- HTML5 rich editor -->
   <script src="libs/external/jquery.hotkeys.js"></script>
   <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
@@ -28,9 +29,15 @@
   <script type="text/javascript" src="scripts/article-editor-renderer-semantic-zooming.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer.js"></script>
   <script type="text/javascript" src="scripts/article-editor-controller.js"></script>
-        <link rel="stylesheet" type="text/css" href="menu/css/demo.css" />
-        <link rel="stylesheet" type="text/css" href="menu/css/style8.css" />
-        <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css' />
+  <link rel="stylesheet" type="text/css" href="menu/css/demo.css" />
+  <link rel="stylesheet" type="text/css" href="menu/css/style8.css" />
+  <link rel="stylesheet" type="text/css" href="css/progressBar.css" />
+  <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css' />
+		
+   <link rel="stylesheet" type="text/css" href="libs/wikitexteditorMarkItUp/markitup/skins/markitup/style.css" />
+   <link rel="stylesheet" type="text/css" href="libs/wikitexteditorMarkItUp/markitup/sets/wiki/style.css" />
+   <script type="text/javascript" src="libs/wikitexteditorMarkItUp/markitup/jquery.markitup.js"></script>
+   <script type="text/javascript" src="libs/wikitexteditorMarkItUp/markitup/sets/wiki/set.js"></script>
 
 
   <style type="text/css">
@@ -210,6 +217,14 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                             </div>
                         </a>
                     </li>
+                    <li>
+                        <a onclick="articleController.showSettings()">
+                            <span class="ca-icon">S</span>
+                            <div class="ca-content">
+                                <h2 class="ca-main">settings</h2>
+                            </div>
+                        </a>
+                    </li>
                 </ul>
 </div>
 <br/>
@@ -245,6 +260,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <!--<button onclick="articleController.fillDataNew()"> show the article </button>-->
 <div id="dialog" title="Dialog Title">
 	<textarea id="node-label" rows="30" cols="100" ></textarea>
+	
 </div>
 <div id="articleViewer" title="Dialog Title">
 	<div id="articleViewerQualityTableDiv" align="center"> </div> 
@@ -262,7 +278,18 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 	<tr><td>Password: </td><td><input id="loginPassword" type="password"  value="kc2015"/></td></tr>
 </table>
 </div>
-
+<div id="dialogSettings" title="Settings">
+<table>
+<tr><td>Strictness of the assessment (only changes the color)</td><td> <input id="sliderStrictness" type="range"  min="0" max="100" value="50"/></td></tr>
+<tr><td align="center"><b>Names</b></td><td align="center"><b>Weights</b></td></tr>
+<tr><td>Flesch score</td><td> <input id="sliderFlesch" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Kincaid score</td><td> <input id="sliderKincaid" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Image quality</td><td> <input id="sliderImageQuality" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Quality of external refs</td><td> <input id="sliderExternalRefs" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Quality of all links</td><td> <input id="sliderAllLinks" type="range"  min="0" max="100" /></td></tr>
+<tr><td></td><td><input onclick="resetToDefaultSettings()" type="button" value="reset values" /></td></tr>
+</table>
+</div>
 
 <table style="background-color: white"> 
 <tr>
@@ -274,7 +301,14 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <div style="height: 340px; width:400px;    overflow:scroll;">
 <span> <b> Article information </b> </span>
 <hr/>
-<div id="overallScore"> 
+<div > 
+ <p id="overallScore" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
+  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
+        <!-- <progress id="progressBarOverallScore" max="100" value="100" class="html5">
+            <div class="progress-bar">
+                <span style="width: 80%">80%</span>
+            </div>
+        </progress> -->
 </div> 
 <hr /> 
 <div id="qualityParameters"> 
@@ -295,29 +329,40 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 </script>
 <script>
 
-  $(function(){
-$('#editor').wysiwyg();
+  $(function () {
+  	//$('#editor').wysiwyg();
+  	$('#node-label').markItUp(mySettings);
+  });
+
+  $("#dialog").dialog({
+  	autoOpen : false,
+  	width : 1000,
+  	modal : true
+  });
+
+  $("#articleViewer").dialog({
+  	autoOpen : false,
+  	width : 1000,
+  	height : 800,
+  	modal : true
+  });
+
+  $("#dialogLogin").dialog({
+  	autoOpen : false,
+  	width : 400,
+  	height : 210,
+  	modal : true
   });
   
-	$("#dialog").dialog({
-		autoOpen : false,
-		width : 1000,
-		modal : true
-	});
-  
-	$("#articleViewer").dialog({
-		autoOpen : false,
-		width : 1000,
-		height: 800,
-		modal : true
-	});
-  
-	$("#dialogLogin").dialog({
-		autoOpen : false,
-		width : 400,
-		height: 210,
-		modal : true
-	});
+    $("#dialogSettings").dialog({
+  	autoOpen : false,
+  	width : 400,
+  	height : 400,
+  	modal : false
+  });
+	
 </script>
+
+  <script type="text/javascript" src="scripts/article-editor-settings.js"></script>
 </body>
 </html>
