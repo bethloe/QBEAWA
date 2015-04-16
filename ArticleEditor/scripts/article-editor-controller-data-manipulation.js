@@ -3,6 +3,7 @@ var DataManipulator = function (vals) {
 	var GLOBAL_data = vals.data;
 	var GLOBAL_articleName = vals.articleName;
 	var GLOBAL_controller = vals.controller;
+	var GLOBAL_interval;
 
 	var dataManipulator = {};
 	//TODO PUT IT INTO UTILITY
@@ -158,6 +159,70 @@ var DataManipulator = function (vals) {
 				alert("NOT POSSIBLE");
 		}
 	}
+	var GLOBAL_intervalCounter = 0;
+	dataManipulator.editAnimation = function (startOrStop) {
+		console.log("EDITANIMATION");
+		if (startOrStop) {
+			/*if (GLOBAL_intervalCounter == 6) {
+				$("#editAnimationContainer").html(GLOBAL_intervalCounter + 1);
+				GLOBAL_intervalCounter++;
+				GLOBAL_intervalCounter = 0;
+				return;
+			} else {
+				$("#editAnimationContainer").html(GLOBAL_intervalCounter + 1);
+				GLOBAL_intervalCounter++;
+				return;
+			}*/
+		} else {
+		//	clearInterval(GLOBAL_interval);
+			$("#dialogEditInProgres").dialog("close");
+		}
+	}
+
+	dataManipulator.addNode = function (data) {
+		//console.log("ADD NODE: " + JSON.stringify(data));
+		if (currentSelectedSectionId != -1) {
+			var item = GLOBAL_data.nodes.get(currentSelectedSectionId);
+			console.log("ID: " + currentSelectedSectionId + " REST: " + JSON.stringify(item));
+			$("#createNewNodeMasterName").html("You are adding to " + item.title);
+		} else {
+			$("#createNewNodeMasterName").html("You are creating a new top section");
+		}
+		$("#dialogCreateNewNode").dialog({
+			buttons : [{
+					text : "Save",
+					click : function () {
+						var editToken = GLOBAL_controller.getEditToken();
+						var textarea = $("#createSectionTextArea");
+						var text = textarea.val();
+						var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
+						text = text.replaceHtmlEntites();
+						text = text.replace(/&/g, "and");
+						var params = "";
+						if (currentSelectedSectionIndex != -1) {
+							params = "action=edit&title=" + GLOBAL_articleName + "&section=" + currentSelectedSectionIndex + "&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+						} else {
+							params = "action=edit&title=" + GLOBAL_articleName + "&section=new&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+						}
+						console.log("PARAMS: " + params);
+						//UPDATING TEXT TO WIKIPEDIA!
+						articleController.newSection(url, params);
+
+						$(this).dialog("close");
+						$("#dialogEditInProgres").dialog("open");
+						GLOBAL_interval = setInterval(dataManipulator.editAnimation(true), 500);
+					}
+				}, {
+					text : "Cancel",
+					click : function () {
+						$(this).dialog("close");
+					}
+				}
+			]
+		});
+
+		$("#dialogCreateNewNode").dialog("open");
+	}
 
 	function generateRawText(text) {
 		var rawText = "";
@@ -219,7 +284,7 @@ var DataManipulator = function (vals) {
 							//UPDATING TEXT TO WIKIPEDIA!
 							articleController.editRequest(url, params, item.id);
 							// GET THE NEW VERSION FROM WIKIPEDIA (rawtext, images which are maybe added to this section, etc)
-						
+
 							//TODO MAKE A REQUEST TO THE WIKIPAGE!!! (WITH THE SANDBOX WE CAN DO THIS :-) )
 
 
@@ -236,7 +301,9 @@ var DataManipulator = function (vals) {
 							});*/
 							//console.log("RAW TEXT: " + rawText);
 							//GLOBAL_controller.showQuality();
-							$(this).dialog("close");
+							$(this).dialog("close");							
+							$("#dialogEditInProgres").dialog("open");
+							GLOBAL_interval = setInterval(dataManipulator.editAnimation(true), 500);
 						}
 					}, {
 						text : "Cancel",
@@ -247,11 +314,11 @@ var DataManipulator = function (vals) {
 				]
 			});
 			//console.log("SECTIONITEM: " + JSON.stringify(sectionItem));
-			if(sectionItem != null){
+			if (sectionItem != null) {
 				$("#dialog").dialog('option', 'title', sectionItem.label);
-			}else{
-					$("#dialog").dialog('option', 'title', "NOT EDITABLE RIGHT NOW"); //TODO!!!! GLOBAL_data 
-		
+			} else {
+				$("#dialog").dialog('option', 'title', "NOT EDITABLE RIGHT NOW"); //TODO!!!! GLOBAL_data
+
 			}
 			$("#dialog").dialog("open");
 			event.preventDefault();

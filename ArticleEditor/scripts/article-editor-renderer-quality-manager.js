@@ -44,8 +44,7 @@ var QualityManager = function (vals) {
 			var qualityExternalRefs = adaptValue(externalRefs / good_extLinks);
 			//var qualityInternalLinks = adaptValue(internalLinks / good_iwlinks);
 			var qualityAllLinks = adaptValue(allLinks / good_allLinks);
-			//console.log(tooltip+": "+flesch + " " + kincaid + " " + numImages + " " + externalRefs + " " + internalLinks + " " + allLinks );
-			//console.log(tooltip+": "+qualityFlesch + " " + qualityKincaid + " " + qualityImages + " " + qualityExternalRefs + " " + qualityInternalLinks + " " + qualityAllLinks );
+		
 
 			qualityFleschWordCount = parseFloat(adaptValue(parseFloat(qualityFleschWordCount) * parseFloat(weightFlesch)));
 			qualityKincaid = parseFloat(adaptValue(parseFloat(qualityKincaid) * parseFloat(weightKincaid)));
@@ -53,19 +52,19 @@ var QualityManager = function (vals) {
 			qualityExternalRefs = parseFloat(adaptValue(parseFloat(qualityExternalRefs) * parseFloat(weightExternalRefs)));
 			qualityAllLinks = parseFloat(adaptValue(parseFloat(qualityAllLinks) * parseFloat(weightAllLinks)));
 
-			var help = (parseFloat(((parseFloat(qualityFleschWordCount) + parseFloat(qualityKincaid) + parseFloat(qualityImages) + parseFloat(qualityExternalRefs)/*+ parseFloat(qualityInternalLinks)*/
-							 + parseFloat(qualityAllLinks)))));
-			help = help / 5;
+			var help = (parseFloat(((parseFloat(qualityFleschWordCount) * parseFloat(influenceFlesch) + parseFloat(qualityKincaid) * parseFloat(influenceKincaid) + parseFloat(qualityImages) * parseFloat(influenceImageQuality) + parseFloat(qualityExternalRefs) * parseFloat(influenceExternalRefs)/*+ parseFloat(qualityInternalLinks)*/
+							 + parseFloat(qualityAllLinks) * parseFloat(influenceAllLinks)))));
+			//help = help / 5;
 
 			var score = help;
-			console.log(tooltip + "SCORE: " + score + " " + numImages + " / " + good_numPics + " = " + qualityImages);
+			//console.log(tooltip + "SCORE: " + score + " " + numImages + " / " + good_numPics + " = " + qualityImages);
 
-			parameters.qualityFleschWordCount = qualityFleschWordCount;//parseFloat(adaptValue(parseFloat(qualityFleschWordCount) * parseFloat(weightFlesch)));
-			parameters.qualityKincaid = qualityKincaid;//parseFloat(adaptValue(parseFloat(qualityKincaid) * parseFloat(weightKincaid)));
-			parameters.qualityImages = qualityImages;//parseFloat(adaptValue(parseFloat(qualityImages) * parseFloat(weightImageQuality)));
-			parameters.qualityExternalRefs = qualityExternalRefs;//parseFloat(adaptValue(parseFloat(qualityExternalRefs) * parseFloat(weightExternalRefs)));
+			parameters.qualityFleschWordCount = qualityFleschWordCount; //parseFloat(adaptValue(parseFloat(qualityFleschWordCount) * parseFloat(weightFlesch)));
+			parameters.qualityKincaid = qualityKincaid; //parseFloat(adaptValue(parseFloat(qualityKincaid) * parseFloat(weightKincaid)));
+			parameters.qualityImages = qualityImages; //parseFloat(adaptValue(parseFloat(qualityImages) * parseFloat(weightImageQuality)));
+			parameters.qualityExternalRefs = qualityExternalRefs; //parseFloat(adaptValue(parseFloat(qualityExternalRefs) * parseFloat(weightExternalRefs)));
 			//parameters.qualityInternalLinks =  parseFloat(qualityInternalLinks);
-			parameters.qualityAllLinks = qualityAllLinks;//parseFloat(adaptValue(parseFloat(qualityAllLinks) * parseFloat(weightAllLinks)));
+			parameters.qualityAllLinks = qualityAllLinks; //parseFloat(adaptValue(parseFloat(qualityAllLinks) * parseFloat(weightAllLinks)));
 			//parameters.flesch = flesch;
 			//parameters.wordcount = text.split(' ').length;
 			//parameters.fleschWordCount = fleschWordCount;
@@ -74,7 +73,7 @@ var QualityManager = function (vals) {
 			//parameters.externalRefs = externalRefs;
 			//parameters.allLinks = allLinks;
 			parameters.score = score;
-			console.log("calculateQuality flesch and knincaid: " + tooltip + " " + fleschWordCount + " " + flesch + " " + kincaid + " IWLINKGS: " + allLinks + " " + qualityAllLinks + " " + parameters.qualityAllLinks);
+		//	console.log("calculateQuality flesch and knincaid: " + tooltip + " " + fleschWordCount + " " + flesch + " " + kincaid + " IWLINKGS: " + allLinks + " " + qualityAllLinks + " " + parameters.qualityAllLinks);
 
 			return parameters;
 		} else {

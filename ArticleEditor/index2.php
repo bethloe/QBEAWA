@@ -260,7 +260,18 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <!--<button onclick="articleController.fillDataNew()"> show the article </button>-->
 <div id="dialog" title="Dialog Title">
 	<textarea id="node-label" rows="30" cols="100" ></textarea>
-	
+</div>
+<div id="dialogCreateNewNode" title="Create new node">
+	<h1> What would you like to add? </h1>
+	<hr />
+	<div id="createNewNodeMasterName"> </div>
+	<select id="uploadSelect" name="top5" > 
+      <option>Section</option> 
+      <option>Image</option> 
+    </select> 
+	<div id="uploadDiv"> 
+	  		<textarea id="createSectionTextArea" rows="30" cols="100" ></textarea>
+	</div>
 </div>
 <div id="articleViewer" title="Dialog Title">
 	<div id="articleViewerQualityTableDiv" align="center"> </div> 
@@ -278,6 +289,9 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 	<tr><td>Password: </td><td><input id="loginPassword" type="password"  value="kc2015"/></td></tr>
 </table>
 </div>
+<div id="dialogEditInProgres" title="Edit in progress">
+	<div id="editAnimationContainer" >Your changes are getting saved right now. This can take up to 20 sec.</div>
+</div>
 <div id="dialogSettings" title="Settings">
 <table>
 <tr><td>Strictness of the assessment (only changes the color)</td><td> <input id="sliderStrictness" type="range"  min="0" max="100" value="50"/></td></tr>
@@ -287,6 +301,12 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <tr><td>Image quality</td><td> <input id="sliderImageQuality" type="range"  min="0" max="100" /></td></tr>
 <tr><td>Quality of external refs</td><td> <input id="sliderExternalRefs" type="range"  min="0" max="100" /></td></tr>
 <tr><td>Quality of all links</td><td> <input id="sliderAllLinks" type="range"  min="0" max="100" /></td></tr>
+<tr><td align="center"><b>Names</b></td><td align="center"><b>Influence</b></td></tr>
+<tr><td>Flesch score</td><td> <input id="sliderFleschInfluence" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Kincaid score</td><td> <input id="sliderKincaidInfluence" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Image quality</td><td> <input id="sliderImageQualityInfluence" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Quality of external refs</td><td> <input id="sliderExternalRefsInfluence" type="range"  min="0" max="100" /></td></tr>
+<tr><td>Quality of all links</td><td> <input id="sliderAllLinksInfluence" type="range"  min="0" max="100" /></td></tr>
 <tr><td></td><td><input onclick="resetToDefaultSettings()" type="button" value="reset values" /></td></tr>
 </table>
 </div>
@@ -328,10 +348,10 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 			articleController.init();
 </script>
 <script>
-
   $(function () {
   	//$('#editor').wysiwyg();
   	$('#node-label').markItUp(mySettings);
+  		$('#createSectionTextArea').markItUp(mySettings);
   });
 
   $("#dialog").dialog({
@@ -353,12 +373,37 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   	height : 210,
   	modal : true
   });
-  
-    $("#dialogSettings").dialog({
+
+  $("#dialogSettings").dialog({
   	autoOpen : false,
   	width : 400,
-  	height : 400,
+  	height : 650,
   	modal : false
+  });
+
+  $("#dialogCreateNewNode").dialog({
+  	autoOpen : false,
+  	width : 1000,
+  	height : 800,
+  	modal : false
+  });
+  
+  $("#dialogEditInProgres").dialog({
+  	autoOpen : false,
+  	width : 400,
+  	height : 150,
+  	modal : true
+  });
+  
+  $("#uploadSelect").change(function () {
+  	console.log($(this).val());
+  	if ($(this).val() == "Section") {
+  		$("#uploadDiv").html("<textarea id=\"createSectionTextArea\" rows=\"30\" cols=\"100\" ></textarea>");
+  		$('#createSectionTextArea').markItUp(mySettings);
+  	} else 	if ($(this).val() == "Image") {
+  		$("#uploadDiv").html("");
+  	//	$('#createSectionTextArea').markItUp(mySettings);
+  	}
   });
 	
 </script>

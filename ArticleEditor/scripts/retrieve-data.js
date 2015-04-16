@@ -213,7 +213,7 @@ var DataRetriever = function (vals) {
 
 	var handleSectionContentData = function (JSONResponse) {
 		var object = JSON.parse(JSON.stringify(JSONResponse));
-		console.log("object : " + JSON.stringify(object.parse.sections[0]));
+		//console.log("object : " + JSON.stringify(object.parse.sections[0]));
 		GLOBAL_sectionContentData.push(object.parse);
 		allDataRetrieved++;
 	}

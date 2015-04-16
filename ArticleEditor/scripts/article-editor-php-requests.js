@@ -15,6 +15,21 @@ var PhpConnector = function (vals) {
 		});
 	}
 
+	phpConnector.createRequest =  function (url, params, callbackFunction) {
+
+		$.post("editRequests.php", {
+			operation : "edit",
+			url : url,
+			params : params
+		})
+		.done(function (data) {
+			console.log("SOMETHING HAPPEND (CREATE REQUEST)");
+			console.log("DATA: " + data);
+			callbackFunction();
+			//GLOBAL_controller.setEditToken(data);
+		});
+	}
+	
 	phpConnector.editRequest = function (url, params, id, callbackFunction) {
 
 		$.post("editRequests.php", {

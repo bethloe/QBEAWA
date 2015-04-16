@@ -55,6 +55,10 @@ var ArticleController = function (vals) {
 		onEdit : function (data, callback) {
 			dataManipulator.editNodes(data, callback);
 		},
+		onAdd : function (data, callback) {
+			console.log("IN HERE");
+			dataManipulator.addNode(data);
+		},
 		physics : {
 			barnesHut : {
 				gravitationalConstant : 0,
@@ -272,6 +276,13 @@ var ArticleController = function (vals) {
 		return editToken;
 	}
 
+	articleController.newSection = function (url, params) {
+		if (isLoggedIn) {
+			phpConnector.createRequest(url, params, articleController.newSectionCreated);
+		} else
+			alert("U r not logged in!!!");
+	}
+
 	articleController.editRequest = function (url, params, id) {
 		if (isLoggedIn) {
 			phpConnector.editRequest(url, params, id, articleController.updateSection);
@@ -283,6 +294,13 @@ var ArticleController = function (vals) {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].updateSection(id);
 		}
+		dataManipulator.editAnimation(false);
+	}
+
+	articleController.newSectionCreated = function (id) {
+		console.log("NEW SECTION CREATED");
+		articleController.reset();
+		articleController.retrieveData();
 	}
 
 	articleController.changeValueOfCheckbox = function (id, isSet) {
@@ -290,14 +308,18 @@ var ArticleController = function (vals) {
 			articleRenderers[i].changeValueOfCheckbox(id, isSet);
 		}
 	}
-	
-	articleController.getItem = function(id){
+
+	articleController.getItem = function (id) {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			var item = articleRenderers[i].getItem(id);
-			if(item!=false)
+			if (item != false)
 				return item;
 		}
 		return null;
+	}
+
+	articleController.addNode = function () {
+		dataManipulator.addNode(data);
 	}
 	//-------------------- EVENTS ----------------------
 
@@ -383,9 +405,9 @@ var ArticleController = function (vals) {
 			articleRenderers[i].onDragEnd(properties);
 		}
 	}
-	
-	articleController.showSettings = function(){
-			$("#dialogSettings").dialog("open");
+
+	articleController.showSettings = function () {
+		$("#dialogSettings").dialog("open");
 	}
 
 	articleController.init = function () {

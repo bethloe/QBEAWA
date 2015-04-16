@@ -457,12 +457,8 @@ var ArticleRenderer = function (vals) {
 
 	var defaultQualityScoreItems = function (sectionName) {
 		if (sectionName == 'References' || sectionName == 'See also' || sectionName == 'Notes' || sectionName == 'Sources' || sectionName == 'Further reading' || sectionName == 'External links') {
-			console.log("DEFAULT: " + sectionName + " = false");
-
 			return false;
-
 		}
-		console.log("DEFAULT: " + sectionName + " = true");
 		return true;
 	}
 
@@ -1528,8 +1524,12 @@ var ArticleRenderer = function (vals) {
 		return allNodesBackup.get(id);
 	}
 	articleRenderer.onClick = function (properties) {
-		console.log("ONCLICK");
-		if (!selectHelper) {
+		console.log("ONCLICK1");
+		if (!selectHelper && !isAddNodeMode) {
+			console.log("ONCLICK2");
+			currentSelectedSectionIndex = -1;
+			currentSelectedSectionId = -1;
+			console.log("CID3: " + currentSelectedSectionId);
 			var item = GLOBAL_data.nodes.get(properties.nodes[0]);
 			//Highlight all elements which are connected to that
 
@@ -1546,8 +1546,12 @@ var ArticleRenderer = function (vals) {
 		}
 		selectHelper = false;
 	}
+
 	var selectHelper = false;
 	articleRenderer.onSelect = function (properties) {
+		currentSelectedSectionIndex = -1;
+		currentSelectedSectionId = -1;
+		console.log("CID: " + currentSelectedSectionId);
 		//console.log("ON SELECT " + properties.nodes);
 		//GLOBAL_network.focusOnNode(properties.nodes);
 		if (properties.nodes.length == 1) {
@@ -1567,7 +1571,6 @@ var ArticleRenderer = function (vals) {
 			for (var i = 0; i < edges.length; i++) {
 				var itemEdge = edges[i];
 				if (itemEdge.from == item.id || itemEdge.to == item.id) {
-					console.log("itemEdge: " + JSON.stringify(itemEdge));
 					GLOBAL_data.edges.update({
 						id : itemEdge.id,
 						color : 'red',
@@ -1590,7 +1593,16 @@ var ArticleRenderer = function (vals) {
 			//GLOBAL_data.nodes.update({id : connectedItemID, color: {border: 'red'}});
 			}*/
 			//------------------------------------------------------------
+			if ((item.type == "section" || item.type == "text") && isAddNodeMode) {
+				currentSelectedSectionIndex = item.index;
+				currentSelectedSectionId = item.index;
+				console.log("CID1: " + currentSelectedSectionId);
+				GLOBAL_controller.addNode();
+			}
 			if (item.type == "text") {
+				currentSelectedSectionIndex = item.index;
+				currentSelectedSectionId = item.index;
+				console.log("CID2: " + currentSelectedSectionId);
 				var text = item.label;
 				$("#editor").html(text);
 
@@ -1604,9 +1616,9 @@ var ArticleRenderer = function (vals) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td> \
-																																										  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
-																																										  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																										  </td><td>" + status + "</td></tr>");
+																																																																													  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
+																																																																													  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																													  </td><td>" + status + "</td></tr>");
 					}
 					if (item.useForQualityCalculation)
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\" checked></td><td></td></tr>");
@@ -1614,14 +1626,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																							$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																								if (!$(this).is(':checked')) { \
-																																																																									articleController.changeValueOfCheckbox($(this).val(), true); \
-																																																																								} \
-																																																																								else{\
-																																																																									articleController.changeValueOfCheckbox($(this).val(), false); \
-																																																																								} \
-																																																																							}); </script>";
+																																																																																																$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																	if (!$(this).is(':checked')) { \
+																																																																																																		articleController.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																	} \
+																																																																																																	else{\
+																																																																																																		articleController.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																	} \
+																																																																																																}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {

@@ -33807,6 +33807,10 @@ return /******/ (function(modules) { // webpackBootstrap
    */
   exports._createManipulatorBar = function() {
     // remove bound functions
+	//D St. 
+	isAddNodeMode = false;
+	//console.log("exports._createManipulatorBar");
+	//end
     if (this.boundFunction) {
       this.off('select', this.boundFunction);
     }
@@ -33956,6 +33960,10 @@ return /******/ (function(modules) { // webpackBootstrap
    */
   exports._createAddNodeToolbar = function() {
     // clear the toolbar
+		//D St. 
+	isAddNodeMode = true;
+	//console.log("exports._createAddNodeToolbar");
+	//end
     this._clearManipulatorBar();
     if (this.boundFunction) {
       this.off('select', this.boundFunction);
