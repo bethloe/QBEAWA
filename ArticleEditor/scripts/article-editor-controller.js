@@ -282,6 +282,14 @@ var ArticleController = function (vals) {
 		} else
 			alert("U r not logged in!!!");
 	}
+	
+	articleController.newImage = function (url, params) {
+		if (isLoggedIn) {
+			phpConnector.createRequest(url, params, articleController.newImageCreated);
+		} else
+			alert("U r not logged in!!!");
+	}
+	
 
 	articleController.editRequest = function (url, params, id) {
 		if (isLoggedIn) {
@@ -296,7 +304,12 @@ var ArticleController = function (vals) {
 		}
 		dataManipulator.editAnimation(false);
 	}
-
+	
+	articleController.newImageCreated = function (id) {
+		console.log("NEW Image CREATED");
+		articleController.reset();
+		articleController.retrieveData();
+	}
 	articleController.newSectionCreated = function (id) {
 		console.log("NEW SECTION CREATED");
 		articleController.reset();
@@ -320,6 +333,18 @@ var ArticleController = function (vals) {
 
 	articleController.addNode = function () {
 		dataManipulator.addNode(data);
+	}
+
+	articleController.getDataRetrieverById = function (id) {
+		for (var i = 0; i < articleRenderers.length; i++) {
+			var currentDataRetriever = articleRenderers[i].getDataRetrieverById(id);
+			if (currentDataRetriever != false)
+				return currentDataRetriever;
+		}
+	}
+
+	articleController.closeEditDialog = function () {
+		dataManipulator.closeEditDialog();
 	}
 	//-------------------- EVENTS ----------------------
 

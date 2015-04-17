@@ -9,6 +9,8 @@
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
   <script type="text/javascript" src="libs/underscore-min.js" ></script>
   <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
+  <script src="libs/JavaScript-Load-Image-master/js/load-image.all.min.js"></script>
+   
 
   <script type="text/javascript" src="scripts/article-editor-php-requests.js"></script>
   
@@ -228,7 +230,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                 </ul>
 </div>
 <br/>
-
+<!-- <input type="file" id="file-input">	<div id="fileDisplayArea"></div> -->
 				<!-- NOT USEFUL ANYMORE -->
 				<!-- <button onclick="articleController.splitSectionsIntoParagraphs()"> split sections into paragraphs </button>
 				 <button onclick="articleController.combineParagaphsToSections()"> combine paragraphs to sections </button> -->
@@ -400,12 +402,53 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   	if ($(this).val() == "Section") {
   		$("#uploadDiv").html("<textarea id=\"createSectionTextArea\" rows=\"30\" cols=\"100\" ></textarea>");
   		$('#createSectionTextArea').markItUp(mySettings);
-  	} else 	if ($(this).val() == "Image") {
-  		$("#uploadDiv").html("");
-  	//	$('#createSectionTextArea').markItUp(mySettings);
+  	} else if ($(this).val() == "Image") {
+  		$("#uploadDiv").html("<input type=\"file\" id=\"file-input\"> <div id=\"fileDisplayArea\"></div>");
+  		var fileInput = document.getElementById('file-input');
+  		var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+  		fileInput.addEventListener('change', function (e) {
+  			var file = fileInput.files[0];
+  			var imageType = /image.*/;
+
+  			if (file.type.match(imageType)) {
+  				var reader = new FileReader();
+
+  				reader.onload = function (e) {
+  					fileDisplayArea.innerHTML = "";
+
+  					var img = new Image();
+  					//console.log("READER RESULT: " + reader.result);
+  					img.src = reader.result;
+					currentImageSrc = reader.result;
+					img.id = "imageToUpload";
+  					fileDisplayArea.appendChild(img);
+  				}
+
+  				reader.readAsDataURL(file);
+  			} else {
+  				fileDisplayArea.innerHTML = "File not supported!"
+  			}
+  		});
   	}
   });
-	
+  
+
+/*document.getElementById('file-input').onchange = function (e) {
+
+
+	loadImage(
+		e.target.files[0],
+		function (img) {
+		//$("#uploadDiv").append(img);
+		console.log("img: " + img.src);
+
+		document.body.appendChild(img);
+	}, {
+		maxWidth : 600
+	} // Options
+	);
+}*/
 </script>
 
   <script type="text/javascript" src="scripts/article-editor-settings.js"></script>

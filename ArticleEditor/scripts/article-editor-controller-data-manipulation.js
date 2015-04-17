@@ -164,21 +164,24 @@ var DataManipulator = function (vals) {
 		console.log("EDITANIMATION");
 		if (startOrStop) {
 			/*if (GLOBAL_intervalCounter == 6) {
-				$("#editAnimationContainer").html(GLOBAL_intervalCounter + 1);
-				GLOBAL_intervalCounter++;
-				GLOBAL_intervalCounter = 0;
-				return;
+			$("#editAnimationContainer").html(GLOBAL_intervalCounter + 1);
+			GLOBAL_intervalCounter++;
+			GLOBAL_intervalCounter = 0;
+			return;
 			} else {
-				$("#editAnimationContainer").html(GLOBAL_intervalCounter + 1);
-				GLOBAL_intervalCounter++;
-				return;
+			$("#editAnimationContainer").html(GLOBAL_intervalCounter + 1);
+			GLOBAL_intervalCounter++;
+			return;
 			}*/
 		} else {
-		//	clearInterval(GLOBAL_interval);
+			//	clearInterval(GLOBAL_interval);
 			$("#dialogEditInProgres").dialog("close");
 		}
 	}
 
+	dataManipulator.closeEditDialog = function () {
+		$("#dialogEditInProgres").dialog("close");
+	}
 	dataManipulator.addNode = function (data) {
 		//console.log("ADD NODE: " + JSON.stringify(data));
 		if (currentSelectedSectionId != -1) {
@@ -192,25 +195,42 @@ var DataManipulator = function (vals) {
 			buttons : [{
 					text : "Save",
 					click : function () {
-						var editToken = GLOBAL_controller.getEditToken();
-						var textarea = $("#createSectionTextArea");
-						var text = textarea.val();
-						var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
-						text = text.replaceHtmlEntites();
-						text = text.replace(/&/g, "and");
-						var params = "";
-						if (currentSelectedSectionIndex != -1) {
-							params = "action=edit&title=" + GLOBAL_articleName + "&section=" + currentSelectedSectionIndex + "&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
-						} else {
-							params = "action=edit&title=" + GLOBAL_articleName + "&section=new&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
-						}
-						console.log("PARAMS: " + params);
-						//UPDATING TEXT TO WIKIPEDIA!
-						articleController.newSection(url, params);
+						console.log($("#uploadSelect").val());
+						if ($("#uploadSelect").val() == "Section") {
+							var editToken = GLOBAL_controller.getEditToken();
+							var textarea = $("#createSectionTextArea");
+							var text = textarea.val();
+							var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
+							var params = "";
+							if (currentSelectedSectionIndex != -1) {
+								//Just perform a normal update
+								text = addRestOfTheSectionForCreate(item.title, currentSelectedSectionId, text);
+								text = text.replaceHtmlEntites();
+								text = text.replace(/&/g, "and");
+								console.log("---------------------THE TEXT: \n" + text);
+								console.log("-----------------------------------------------")
+								params = "action=edit&title=" + GLOBAL_articleName + "&section=" + currentSelectedSectionIndex + "&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+							} else {
+								text = text.replaceHtmlEntites();
+								text = text.replace(/&/g, "and");
+								params = "action=edit&title=" + GLOBAL_articleName + "&section=new&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+							}
+							console.log("PARAMS: " + params);
+							//UPDATING TEXT TO WIKIPEDIA!
+							articleController.newSection(url, params);
 
-						$(this).dialog("close");
-						$("#dialogEditInProgres").dialog("open");
-						GLOBAL_interval = setInterval(dataManipulator.editAnimation(true), 500);
+							$(this).dialog("close");
+							$("#dialogEditInProgres").dialog("open");
+							GLOBAL_interval = setInterval(dataManipulator.editAnimation(true), 500);
+						}else if($("#uploadSelect").val() == 'Image'){
+							var editToken = GLOBAL_controller.getEditToken();
+							var image = $("#imageToUpload"); 
+							console.log("IMAGE: " + currentImageSrc);
+							var url = "http://en.wikipedia.org/w/api.php?action=upload&format=xml";
+							var params = "api.php?action=upload&filename=Test.jpg&file="+currentImageSrc+"&token="+editToken;
+						
+							articleController.newImage(url, params);
+						}
 					}
 				}, {
 					text : "Cancel",
@@ -255,6 +275,46 @@ var DataManipulator = function (vals) {
 				return translate[entity];
 			}));
 	};
+	var addRestOfTheSectionForCreate = function (sectionName, id, text) {
+		var dataRetriever = GLOBAL_controller.getDataRetrieverById(id);
+		var sectionData = dataRetriever.getSectionContentData(sectionName);
+		alert(sectionData.sections.length);
+		var help = "";
+		if (sectionData.sections.length > 1) {
+			//NOW WE KNOW THAT WE HAVE TO ADD THE REST OF THE SECTION TO THE TEXT IN ORDER TO UPDATE THE WHOLE SECTION
+			//OTHERWISE WE WOULD LOOSE ALL SUBSECTIONS
+			alert("ADDING REST LENGTH: " + sectionData.sections.length);
+			var textHelp = "";
+			//for (var i = 0; i < sectionData.sections.length; i++) {
+			textHelp += ("\n" + dataRetriever.getSectionContentData(sectionData.sections[0].line).wikitext['*']); //THE WHOLE TEXT IS IN THIS SECTION
+			//}
+
+			return (textHelp + "\n" + text);
+		}
+		return text;
+	}
+
+	var addRestOfTheSectionForUpdate = function (sectionName, id, text) {
+		var dataRetriever = GLOBAL_controller.getDataRetrieverById(id);
+		var sectionData = null;
+		console.log("sectionName: " + sectionName);
+		if (sectionName == "Introduction") {
+			//; do nothing
+		} else {
+			sectionData = dataRetriever.getSectionContentData(sectionName);
+			alert(sectionData.sections.length);
+			if (sectionData.sections.length > 1) {
+				//NOW WE KNOW THAT WE HAVE TO ADD THE REST OF THE SECTION TO THE TEXT IN ORDER TO UPDATE THE WHOLE SECTION
+				//OTHERWISE WE WOULD LOOSE ALL SUBSECTIONS
+				alert("ADDING REST");
+				for (var i = 1; i < sectionData.sections.length; i++) {
+					text += ("\n" + dataRetriever.getSectionContentData(sectionData.sections[i].line).wikitext['*']);
+				}
+			}
+		}
+
+		return text;
+	}
 
 	dataManipulator.editNodes = function (data, callback) {
 		var item = GLOBAL_data.nodes.get(data.id);
@@ -274,26 +334,32 @@ var DataManipulator = function (vals) {
 							console.log("EDITTOKEN: " + editToken);
 							var textarea = $("#node-label");
 							var text = textarea.val();
+							//Get the rest of the section if necessary
+							text = addRestOfTheSectionForUpdate(item.title, item.id, text);
+							/*var dataRetriever = GLOBAL_controller.getDataRetrieverById(item.id);
+							var sectionData = dataRetriever.getSectionContentData(sectionItem.label);
+							alert(sectionData.sections.length);
+							if (sectionData.sections.length > 1) {
+							//NOW WE KNOW THAT WE HAVE TO ADD THE REST OF THE SECTION TO THE TEXT IN ORDER TO UPDATE THE WHOLE SECTION
+							//OTHERWISE WE WOULD LOOSE ALL SUBSECTIONS
+							alert("ADDING REST");
+							for (var i = 1; i < sectionData.sections.length; i++) {
+							text += ("\n" + dataRetriever.getSectionContentData(sectionData.sections[i].line).wikitext['*']);
+							}
+							}*/
+
 							var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
-							//text = _.unescape(text); // DOES IT WORK?????
+							//text = _.unescape(text); // DOES IT WORK????? answer: no
 							text = text.replaceHtmlEntites();
 							console.log("TEXT: " + text);
 							text = text.replace(/&/g, "and");
-							alert("INDEX: " + sectionItem.index);
+							//alert("INDEX: " + sectionItem.index);
 							var params = "action=edit&title=" + GLOBAL_articleName + "&section=" + sectionItem.index + "&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
 							//UPDATING TEXT TO WIKIPEDIA!
 							articleController.editRequest(url, params, item.id);
-							// GET THE NEW VERSION FROM WIKIPEDIA (rawtext, images which are maybe added to this section, etc)
-
-							//TODO MAKE A REQUEST TO THE WIKIPAGE!!! (WITH THE SANDBOX WE CAN DO THIS :-) )
-
-
+							//GET THE NEW VERSION FROM WIKIPEDIA (rawtext, images which are maybe added to this section, etc)
+							//MAKE A REQUEST TO THE WIKIPAGE!!! (WITH THE SANDBOX WE CAN DO THIS :-) )
 							/*var rawText = textarea.val();
-
-
-
-
-
 							console.log("rawText: " + rawText);
 							GLOBAL_data.nodes.update({
 							id : item.id,
@@ -301,7 +367,7 @@ var DataManipulator = function (vals) {
 							});*/
 							//console.log("RAW TEXT: " + rawText);
 							//GLOBAL_controller.showQuality();
-							$(this).dialog("close");							
+							$(this).dialog("close");
 							$("#dialogEditInProgres").dialog("open");
 							GLOBAL_interval = setInterval(dataManipulator.editAnimation(true), 500);
 						}

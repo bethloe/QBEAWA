@@ -14,3 +14,5 @@ var influenceKincaid = parseFloat((100/numberOfMetrics)/100);
 var influenceImageQuality = parseFloat((100/numberOfMetrics)/100);
 var influenceExternalRefs = parseFloat((100/numberOfMetrics)/100);
 var influenceAllLinks = parseFloat((100/numberOfMetrics)/100);
+//------------------------------------------------------------------------------
+var currentImageSrc; 
