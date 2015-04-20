@@ -388,9 +388,7 @@ p#p_question {
 
 */
 #eexcess_controls_left_panel {
-    float: left;
-    display: flex;
-    align-items: stretch;
+    //display: flex;
     width: 17%;
     height: calc(100% - 1em);
     padding: .5em;
@@ -399,11 +397,24 @@ p#p_question {
     box-shadow: inset .1em .1em .5em #aaa, inset -.1em -.1em .5em #aaa;
 }
 
+/* QM container */
+#eexcess_qm_container{
+    overflow-y: auto;
+    width: calc(100% - 0.5em);
+	height: 300px;
+   /* max-height: 50%;*/
+    padding: 8px 4px;
+    /*background: white;*/
+    background: -webkit-linear-gradient(top, rgba(30, 30, 30, 1), rgba(50, 50, 50, 0.5), rgba(30, 30, 30, 1));
+    box-shadow: inset .2em .2em .5em #ccc, inset -.2em -.2em .5em #ccc;
+}
 /*  Keyword cloud containing keywords in blue sclae  */
 
-#eexcess_keywords_container {
+#eexcess_measures_container {
+	cursor: pointer;
     overflow-y: auto;
-    width: 100%;
+    width: calc(100% - 0.5em);
+	height: calc(100% - 350px);
    /* max-height: 50%;*/
     padding: 8px 4px;
     /*background: white;*/
@@ -423,17 +434,38 @@ p#p_question {
 	-webkit-box-shadow: 0em 0.1em 0.3em #222;
     /*box-shadow: 0em 0.1em 0.3em -0.1em #888;*/
     box-shadow: 0em 0.1em 0.3em #222;
-    color: #111;
+    color: white;
     text-shadow: -0.1em 0.1em 0.5em #eee;
 	opacity: 1.0;
-	cursor: move;
+	cursor: pointer;
 }
 
 .eexcess_keyword_tag:hover {
-	color: #eee;
+	color: white;
     text-shadow: none;
 }
 
+.eexcess_measures_tag{
+	display: inline-block;
+	pointer-events: all;
+	margin: 0.2em;
+	padding: 3px 5px;
+	/*border: 0.1em #222 solid;*/
+	-webkit-border-radius: 7px;
+    border-radius: 7px;
+	-webkit-box-shadow: 0em 0.1em 0.3em #222;
+    /*box-shadow: 0em 0.1em 0.3em -0.1em #888;*/
+    box-shadow: 0em 0.1em 0.3em #222;
+    color: white;
+    text-shadow: -0.1em 0.1em 0.5em #eee;
+	opacity: 1.0;
+	cursor: pointer;
+}
+
+.eexcess_measures_tag:hover {
+	color: white;
+    text-shadow: none;
+}
 /*
     div on the upper side of #eexcess_controls_left_panel.
     Wraps #eexcess_controls_chart and #eexcess_controls_chart, which enclose pairs  of span-select DOM elements
@@ -531,6 +563,56 @@ VIS PANEL (center of screen)
     VIS PANEL CONTROLS
 
 ********************************************************************************************************************************************/
+#eexcess_equation_controls{
+    display: inline-flex;
+    width: 100%;
+    height: 4.5%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+.icon{
+	cursor: pointer;
+	border: 1px solid black;
+}
+
+.icon:hover{
+	background: red;
+}
+
+#eexcess_equation_stack{
+    display: inline-flex;
+    width: 100%;
+    //height: 9%;
+    min-height: 4.5em;
+	background-color: white;
+}
+
+#eexcess_equation_composer{
+	float:left;
+    display: inline-flex;
+    width: 100%;
+   // height: 9%;
+    min-height: 4.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+#eexcess_equation_composer_table{
+	float: left;
+}
+
+#eexcess_equation_composer_table, th, td{
+	font-size: 40px;
+	border: 1px solid black;
+	cursor:pointer;
+}
+#eexcess_equation_composer_table td:hover{
+	background-color: red;
+	border: 1px solid black;
+	cursor:pointer;
+}
 
 
 #eexcess_vis_panel_controls {
@@ -615,7 +697,6 @@ VIS PANEL (center of screen)
     box-shadow: 0em 7px 6px -6px #333;
     -webkit-text-shadow: -0.1em 0.1em 0.5em #eee;
     text-shadow: -0.1em 0.1em 0.5em #eee;
-
 }
 
 .eexcess_keyword_tag_in_box:hover {
@@ -1250,3 +1331,69 @@ VIS PANEL (center of screen)
     font-size: 1.1em; */
 }
 
+
+/* For equation */ 
+#equition_stack_main{
+	width: 100%;
+	float: left;
+	font-size: 40px;
+	padding: 2px;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+.eexcess_equation_text{
+	cursor: default;
+	float:left;
+	display: inline-block;
+	text-align: left;
+	line-height: 4em; 
+	vertical-align: middle;
+    height: 4em;
+	//margin: 0.8em .3em 0.2em 0.3em;
+    //padding: .2em;
+	background: none;
+}
+.eexcess_equation_empty_box{
+	cursor: default;
+	float:left;
+	display: inline-block;
+	text-align: left;
+	width: 4em;
+    height: 4em;
+	//margin: 0.8em .3em 0.2em 0.3em;
+    //padding: .2em;
+	//border-radius: 1em;
+	-webkit-border-radius: 0.3em;
+	-webkit-box-shadow: 0em 7px 6px -6px #333;
+    box-shadow: 0em 7px 6px -6px #333;
+    -webkit-text-shadow: -0.1em 0.1em 0.5em #eee;
+    text-shadow: -0.1em 0.1em 0.5em #eee;
+	border: 5px solid red;  
+	background: none;
+}
+
+.eexcess_equation_tag_in_box{
+	cursor: default;
+	display: inline-block;
+	text-align: left;
+	float:left;
+	min-width: 8em;
+    min-height: 8em;
+	//margin: 0.8em .3em 0.2em 0.3em;
+    //padding: .2em;
+	//border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+	-webkit-box-shadow: 0em 7px 6px -6px #333;
+    box-shadow: 0em 7px 6px -6px #333;
+    -webkit-text-shadow: -0.1em 0.1em 0.5em #eee;
+    text-shadow: -0.1em 0.1em 0.5em #eee;
+}
+
+.eexcess_equation_tag_in_box:hover {
+    box-shadow: 2px 2px 5px #555, -2px -2px 5px #555;
+}
+
+
+.eexcess_equation_tag_in_box > text {
+	opacity: 0.5;
+}

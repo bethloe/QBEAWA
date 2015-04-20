@@ -150,7 +150,6 @@ var Controller = function (vals) {
 	}
 
 	controller.test = function () {
-		console.log("TEST");
 	}
 
 	controller.calculateQMScore = function (brick) {
@@ -166,7 +165,6 @@ var Controller = function (vals) {
 	}
 
 	controller.setData = function (d) {
-		console.log("SET DATA");
 		data = d;
 		menuBricksEventHandler.setData(data);
 		moveableBricksEventHandler.setData(data);

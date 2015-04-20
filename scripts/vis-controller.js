@@ -23,8 +23,10 @@ var VisController = function () {
 
 	var mainPanel = "#eexcess_main_panel"; // Panel containing tag cloug, canvas (in #eexcess_vis) and content list
 	var inputCriteria = '.eexcess_vis_controls_input';
-	var tagContainer = "#eexcess_keywords_container"; // Selector for div wrapping keyword tags
+	var qmContainer = "#eexcess_qm_container";
+	var measuresContainer = "#eexcess_measures_container"; // Selector for div wrapping keyword tags
 	var tagClass = ".eexcess_keyword_tag"; // Selector for all keyword tags
+	var tagClassMeasures = ".eexcess_measures_tag"; // Selector for all measures tags
 	var tagId = "#tag-"; // Id selector for tags in tag container
 	var tagPos = "tag-pos-"; // attribute for keyword tags. value assigned = index
 	var tagBox = "#eexcess_keywords_box"; // Selector for div where tags are droppped
@@ -83,10 +85,12 @@ var VisController = function () {
 	var dataset,
 	data, // contains the data to be visualized
 	keywords,
+	measures, // The measures from the wiki articles
 	query, // string representing the query that triggered the current recommendations
 	sampleText,
 	task,
-	questions;
+	questions,
+	equationEditor;//The equationEditor will be set after data are retrieved
 
 	//Connection to DB for QM Visualization
 	var databaseConnector;
@@ -164,18 +168,18 @@ var VisController = function () {
 	EVTHANDLER.listItemClicked = function (d, i) {
 		LIST.selectListItem(i);
 	};
-	
+
 	////////	content list item dblclick	////////
-	EVTHANDLER.listItemDblclicked = function(d, i){
+	EVTHANDLER.listItemDblclicked = function (d, i) {
 		//TODO GO ON HERE
 		console.log("listItemDblclicked");
 		var actualIndex = rankingModel.getActualIndex(i);
 		var currentData = data[actualIndex];
 		qmEditorController.setValues(currentData);
 		qmEditorController.setShowValues(true);
-		
+
 		openQMEditor();
-		
+
 	};
 	////////	list item mouseover	////////
 	EVTHANDLER.listItemHovered = function (d, index) {
@@ -195,7 +199,7 @@ var VisController = function () {
 			return getGradientString("#0066ff", [1, 0.8, 1]);
 		})
 		.style('border', '1px solid #0066ff')
-		.style("color", "#eee");
+		.style("color", "white");
 	};
 
 	////////	Tag in box mouseouted	////////
@@ -208,7 +212,7 @@ var VisController = function () {
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
-		.style("color", "#111");
+		.style("color", "#white");
 	};
 
 	////////	Delete tag click	////////
@@ -519,9 +523,9 @@ var VisController = function () {
 	 * */
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
-		$(tagContainer).empty();
+		$(qmContainer).empty();
 		// Append one div per tag
-		d3.select(tagContainer).selectAll(tagClass)
+		d3.select(qmContainer).selectAll(tagClass)
 		.data(keywords)
 		.enter()
 		.append("div")
@@ -544,6 +548,31 @@ var VisController = function () {
 		})
 		.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
+
+		d3.select(measuresContainer).selectAll(tagClassMeasures)
+		.data(measures)
+		.enter()
+		.append("div")
+		.attr("class", "eexcess_measures_tag")
+		.attr("id", function (k, i) {
+			return "tag-" + i;
+		})
+		.attr('tag-pos', function (k, i) {
+			return i;
+		})
+		.attr('is-selected', false)
+		.style("background", function (k) {
+			return '#21B571';
+		})
+		.style('border', function (k) {
+			return '1px solid #21B571';
+		})
+		.text(function (k) {
+			return k.name;
+		})
+		.on("click", function(data) {equationEditor.fillGap(data)});
+		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
+		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
 
 		// bind drag behavior to each tag
 		$(tagClass).draggable(BEHAVIOR.draggableOptions);
@@ -698,7 +727,7 @@ var VisController = function () {
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
-		.style("color", "#111")
+		.style("color", "white")
 		.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
 
@@ -706,7 +735,7 @@ var VisController = function () {
 		// Re-append to tag container, in the corresponding postion
 		var tagIndex = parseInt($(tag).attr('tag-pos'));
 		var i = tagIndex - 1;
-		var firstTagIndex = $(tagContainer).find(tagClass + ':eq(0)').attr('tag-pos');
+		var firstTagIndex = $(qmContainer).find(tagClass + ':eq(0)').attr('tag-pos');
 		while (i >= firstTagIndex && $(tagId + '' + i).attr('is-selected').toBool())
 			--i;
 		// Remove from tag box
@@ -714,7 +743,7 @@ var VisController = function () {
 		if (i >= firstTagIndex) // The current tag should be inserted after another (tag-pos == i)
 			$(tagId + '' + i).after(tag);
 		else // The current tag is inserted in the first position of tag container
-			$(tagContainer).prepend(tag);
+			$(qmContainer).prepend(tag);
 	};
 
 	TAGCLOUD.updateTagColor = function () {
@@ -757,7 +786,6 @@ var VisController = function () {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	var LIST = {};
 
 	LIST.internal = {
@@ -1543,10 +1571,11 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-																																														{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-																																														{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																		{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
+																																																		{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
+																																																		{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		keywords = IQMetrics; //dataset['keywords'];
+		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
 		//console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();
 
@@ -1606,6 +1635,11 @@ var VisController = function () {
 	this.ListItemUnhovered = function (index) {
 		LIST.unhoverListItem(index, true);
 	};
+	
+	visController.setEquationEditor = function(eE){
+		console.log("equationEditor is set");
+		equationEditor = eE;
+	}
 
 	return visController;
 }

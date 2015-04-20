@@ -8,6 +8,7 @@ var GLOBAL_CrawledArticles = {};
 var GLOBAL_numElements = 17;
 var GLOBAL_interval;
 var GLOBAL_generatingDataCnt = 0;
+var visController;
 
 var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
 	$.ajax({
@@ -19,7 +20,11 @@ var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
 	});
 }
 
-var searchArticle = function (keyword, maxNumSearch) {
+var getVisController = function(){
+	return visController;
+}	
+
+var searchArticle = function (keyword, maxNumSearch, equationEditor) {
 	GLOBAL_keyWord = $("#article-name").val(); //keyword;
 	GLOBAL_maxNumSearch = parseInt($("#max-num").val()); //maxNumSearch;
 	GLOBAL_searchCount = 0;
@@ -33,8 +38,9 @@ var searchArticle = function (keyword, maxNumSearch) {
 	}, 2000);*/
 	GLOBAL_interval = setInterval(showAllDataAsList, 1000);
 
-	var visController = new VisController();
+	visController = new VisController();
 	visController.showPreparingMessage("Generating Data.");
+	equationEditor.setVisController(visController);
 	GLOBAL_generatingDataCnt += 1;
 }
 
@@ -68,7 +74,6 @@ var handleSearch = function (JSONResponse) {
 var showAllDataAsList = function () {
 	//CHECK IF WE ARE DONE:
 	var done = true;
-	var visController = new VisController();
 
 	var crawledArticles = 0;
 	for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
