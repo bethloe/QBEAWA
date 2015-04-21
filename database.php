@@ -67,6 +67,67 @@ if($operation == 'storeFormula'){
 	}	
 }
 
+
+if($operation == 'storeEquation'){
+	$name = $_POST ['name'];
+	$equation = $_POST ['equation'];
+	//$sql = "insert into formulas (f_content) values ('"+ $formula +"')";
+	$sql = "insert into equations (e_name, e_content) VALUES ('".$name."', '".$equation."')";
+	if ($conn->query($sql) === TRUE) {
+		echo "operation storeEquation done ";
+	} else {
+		$sql = "update equations set e_content = '".$equation."' where e_name = '".$name."'";
+		if ($conn->query($sql) === TRUE) {
+			echo "operation storeEquation done ";
+		} else {
+			echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+	}
+}else if($operation == 'getAllEquations'){
+	$sql = "SELECT e_name, e_content FROM equations";
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+		// output data of each row
+		$help = array();
+		while($row = $result->fetch_assoc()) {
+			$help[$row["e_name"]] = $row["e_content"];
+		}
+		$post_data = json_encode(array('equations' => $help));
+		echo $post_data;
+	} else {
+		echo "no results";
+	}	
+}else if($operation == 'storeEquationViz'){
+	$qmvizName = $_POST ['QMVizName'];
+	$qmvizData = $_POST ['QMVizData'];
+	$sql = "insert into equationviz (ev_name, ev_content) VALUES ('". $qmvizName ."','".$qmvizData."')";
+	if ($conn->query($sql) === TRUE) {
+		echo "operation storeVizToQM done ";
+	} else {
+		$sql = "update equationviz set ev_content = '".$qmvizData."' where ev_name = '".$qmvizName."'";
+		if ($conn->query($sql) === TRUE) {
+			echo "operation storeVizToQM done ";
+		} else {
+			echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+	}
+}else if($operation == 'getEquationViz'){
+	$sql = "SELECT ev_name, ev_content FROM equationviz";
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+		// output data of each row
+		$help = array();
+		while($row = $result->fetch_assoc()) {
+			$help[$row["ev_name"]] = $row["ev_content"];
+		}
+		$post_data = json_encode(array('qmvizs' => $help));
+		echo $post_data;
+	} else {
+		echo "no results";
+	}	
+}
+
+
 $conn->close ();
 
 ?>

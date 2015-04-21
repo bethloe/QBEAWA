@@ -107,6 +107,8 @@ and open the template in the editor.
                 <div id="eexcess_equation_controls">
 					
 					<div class="icon" onclick="equationEditor.createNewQM()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
+					<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.resetData()"/></div>
+					
 					<div class="icon" > <img src="media/undo.png" height="30"/ title="undo" onclick="equationEditor.undo()"> </div> 
 					<div class="icon" ><img src="media/redo.png" title="redo" height="30"  onclick="equationEditor.redo()" /></div>
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
@@ -138,9 +140,9 @@ and open the template in the editor.
 				<div id="eexcess_equation_composer">
 					<div style="float:left; font-size: 25px; border:0px;"><b> <button style="height: 2em; border:0px;" onclick="equationEditor.hideMenuEquationEditor()"> math </button> </b></div>
 				<table id="eexcess_equation_composer_table">
-					<tr><td onclick="equationEditor.simpleSymbol('+')">+</td><td onclick="equationEditor.simpleSymbol('&minus;')"> &minus;</td><td onclick="equationEditor.simpleSymbol('&times')">&times; </td><td onclick="equationEditor.simpleSymbol('&divide')">&divide;</td><td onclick="equationEditor.bricks()">()</td></tr>
+					<tr><td onclick="equationEditor.simpleSymbol('+')">+</td><td onclick="equationEditor.simpleSymbol('-')"> &minus;</td><td onclick="equationEditor.simpleSymbol('*')">&times; </td><td onclick="equationEditor.simpleSymbol('/')">&divide;</td><td onclick="equationEditor.bricks()">()</td></tr>
 					<tr><td onclick="equationEditor.radical()"><sup>n</sup>&radic;</td><td onclick="equationEditor.exponentiate()"> x<sup>n</sup></td><td onclick="equationEditor.logarithm()">log<sub>n</sub></td><td></td><td></td></tr>
-					<tr><td onclick="equationEditor.sum()">&sum;</td><td onclick="equationEditor.prod()">&prod;</td><td></td><td ></td><td></td></tr>
+					<!--<tr><td onclick="equationEditor.sum()">&sum;</td><td onclick="equationEditor.prod()">&prod;</td><td></td><td ></td><td></td></tr> -->
 					</table>
 				</div> 
                 <div id="eexcess_vis_panel_controls">

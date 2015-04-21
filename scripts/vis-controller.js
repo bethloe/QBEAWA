@@ -90,7 +90,7 @@ var VisController = function () {
 	sampleText,
 	task,
 	questions,
-	equationEditor;//The equationEditor will be set after data are retrieved
+	equationEditor; //The equationEditor will be set after data are retrieved
 
 	//Connection to DB for QM Visualization
 	var databaseConnector;
@@ -159,6 +159,7 @@ var VisController = function () {
 		TAGCLOUD.clearTagbox();
 		TAGCLOUD.buildTagCloud();
 		LIST.resetContentList();
+		console.log("EVTHANDLER.btnResetClicked");
 		VISPANEL.resetRanking();
 		DOCPANEL.clear();
 	};
@@ -227,11 +228,11 @@ var VisController = function () {
 
 	EVTHANDLER.clickOnTag = function (tag) {
 		console.log("clickOnTag " + tag.text());
-		var qmName = tag.text();
+		/*var qmName = tag.text();
 		//databaseConnector.getAllQMVizs
 		qmEditorController.loadData(allVizs[qmName]);
 		qmEditorController.setShowValues(false);
-		openQMEditor();
+		openQMEditor();*/
 	};
 
 	////////	Draggable	////////
@@ -547,7 +548,11 @@ var VisController = function () {
 			return k.term;
 		})
 		.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
-		.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
+		.on("mouseout", EVTHANDLER.tagInBoxMouseOuted)
+		.on("click", function (data) {
+			console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
+			equationEditor.loadMetric(data.term, allVizs[data.term]);
+		});
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -570,7 +575,9 @@ var VisController = function () {
 		.text(function (k) {
 			return k.name;
 		})
-		.on("click", function(data) {equationEditor.fillGap(data)});
+		.on("click", function (data) {
+			equationEditor.fillGap(data)
+		});
 		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
 
@@ -615,7 +622,6 @@ var VisController = function () {
 	}
 
 	TAGCLOUD.buildDroppedTag = function (tag) {
-
 		// Append dragged tag onto tag box
 		$(tagBox).append(tag);
 
@@ -698,6 +704,7 @@ var VisController = function () {
 		if (selectedTags.length == 0) {
 			$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
 			LIST.resetContentList();
+			console.log("TAGCLOUD.deleteTagInBox");
 			VISPANEL.resetRanking();
 		} else {
 			LIST.rankRecommendations();
@@ -921,6 +928,28 @@ var VisController = function () {
 		VISPANEL.drawRanking();
 	};
 
+	LIST.rankRecommendationsWithEquation = function (name) {
+		var tmp = [];
+		tmp.push({
+			'term' : 'tmp',
+			'stem' : 'tmp',
+			'weight' : 1
+		});
+
+		rankingModel.update(tmp, rankingMode);
+		this.highlightListItems();
+		var status = rankingModel.getStatus();
+		// Synchronizes rendering methods
+		if (status == RANKING_STATUS.new || status == RANKING_STATUS.update) {
+			this.colorKeywordsInTitles();
+			this.addRankingPositions();
+			this.hideUnrankedItems();
+			this.updateItemsBackground();
+		}
+		LIST.animateContentList(status);
+		DOCPANEL.clear();
+		VISPANEL.drawRanking();
+	};
 	/**
 	 * Appends a yellow circle indicating the ranking position and a colored legend stating #positionsChanged
 	 *
@@ -1284,6 +1313,7 @@ var VisController = function () {
 	};
 
 	VISPANEL.resetRanking = function () {
+		console.log("VISPANEL.resetRanking");
 		if (showRanking)
 			rankingVis.reset();
 	};
@@ -1436,6 +1466,7 @@ var VisController = function () {
 		//if (dataset["tool-aided"] === 'yes') {
 		TAGCLOUD.clearTagbox();
 		TAGCLOUD.buildTagCloud();
+		console.log("initializeNextQuestion");
 		VISPANEL.resetRanking();
 		//}
 		LIST.buildContentList();
@@ -1485,12 +1516,39 @@ var VisController = function () {
 		$('#task_question_message').undim();
 	}
 
+	//FROM EQUATION COMPOSER
+	visController.newQMFromEquationComposer = function (name, equation, vizData) {
+		var test = '{"stem":"' + name + '","term":"' + name + '","repeated":2,"variations":{"worker":9}}';
+		var alreadyInKeywords = false;
+		keywords.forEach(function (k) {
+			if (k.term == name)
+				alreadyInKeywords = true;
+		});
+		if (!alreadyInKeywords)
+			keywords.push(JSON.parse(test));
+
+		databaseConnector.storeEquation(name, equation);
+		databaseConnector.storeEquationViz(name, vizData);
+		allVizs[name] = vizData;
+
+		rankingModel.newQMFromEquationComposer(name, equation);
+		EVTHANDLER.btnResetClicked();
+	}
+
+	visController.rankWithEquation = function (equation) {
+		EVTHANDLER.btnResetClicked();
+		rankingModel.setTempEquation(equation);
+		LIST.rankRecommendationsWithEquation();
+
+	}
+
+	//-------------------------------------------------------------------------
+
 	visController.newQM = function (formulas, JSONFormatOfVis) {
 		//console.log("newQM: " + JSONFormatOfVis);
 		for (var i = 0; i < formulas.length; i++) {
 			//console.log("FORMULAS: " + formulas[i]);
-			//CREATE NEW QM
-			//TODO GO ON HERE
+
 			var newTag = formulas[i].split("=")[0];
 			var test = '{"stem":"' + newTag + '","term":"' + newTag + '","repeated":2,"variations":{"worker":9}}';
 			var alreadyInKeywords = false;
@@ -1551,13 +1609,79 @@ var VisController = function () {
 		}
 	}
 
+	function loadEquations(equations) {
+		for (var i = 0; i < equations.length; i++) {
+			//CREATE NEW QM
+			var newTag = formulas[i].split("=")[0];
+			var test = '{"stem":"' + newTag + '","term":"' + newTag + '","repeated":2,"variations":{"worker":9}}';
+			var alreadyInKeywords = false;
+			keywords.forEach(function (k) {
+				if (k.term == newTag)
+					alreadyInKeywords = true;
+			});
+			if (!alreadyInKeywords)
+				keywords.push(JSON.parse(test));
+
+			rankingModel.newQMFromEquationComposer(equations[i]);
+
+		}
+		EVTHANDLER.btnResetClicked();
+	}
+
+	function retrieveAllEquations(JSONequationsString) {
+		/*if (equations != "no results") {
+		var hequations = JSON.parse(equations);
+		var test = hequations.equations;
+
+		if (test.length > 0)
+		loadEquations(test);
+		}*/
+		console.log("retrieveAllEquations");
+		if (JSONequationsString != "no results") {
+			console.log("retrieveAllEquations2");
+			var equations = JSON.parse(JSONequationsString);
+			var allEquations = equations.equations;
+
+			for (var key in allEquations) {
+				console.log(key + " : " + allEquations[key]);
+				var test = '{"stem":"' + key + '","term":"' + key + '","repeated":2,"variations":{"worker":9}}';
+				var alreadyInKeywords = false;
+				keywords.forEach(function (k) {
+					if (k.term == key)
+						alreadyInKeywords = true;
+				});
+				if (!alreadyInKeywords) {
+					console.log("ADD TO KEYWORDS");
+					keywords.push(JSON.parse(test));
+				}
+
+				rankingModel.newQMFromEquationComposer(key, allEquations[key]);
+			}
+		}
+		EVTHANDLER.btnResetClicked();
+
+		console.log("KEYWORDS: " + JSON.stringify(keywords));
+	}
+
+	function retrieveAllEquationizs(JSONvisualizationsString) {
+		if (JSONvisualizationsString != "no results") {
+			var visualizations = JSON.parse(JSONvisualizationsString);
+			var allQMVizs = visualizations.qmvizs;
+
+			for (var key in allQMVizs) {
+				allVizs[key] = allQMVizs[key];
+			}
+		}
+	}
+
 	visController.init = function (articles) {
 		//dataset = JSON.parse($("#dataset").text());
 		//console.log(JSON.stringify(dataset));
 
 		databaseConnector = new DatabaseConnector();
-		databaseConnector.getAllFormulas(retrieveAllFormulas);
-		databaseConnector.getAllQMVizs(retrieveAllQMVizs);
+		//databaseConnector.getAllFormulas(retrieveAllFormulas); TODO
+		//databaseConnector.getAllQMVizs(retrieveAllQMVizs);
+
 
 		data = articles['data']; // contains the data to be visualized
 		// query = dataset['query'];				// string representing the query that triggered the current recommendations
@@ -1571,14 +1695,15 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																		{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-																																																		{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-																																																		{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																						{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
 		//console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();
 
+		databaseConnector.getAllEquations(retrieveAllEquations);
+		databaseConnector.getEquationViz(retrieveAllEquationizs);
 		rankingModel = new RankingModel(data);
 		rankingVis = new RankingVis(root, self);
 
@@ -1635,8 +1760,8 @@ var VisController = function () {
 	this.ListItemUnhovered = function (index) {
 		LIST.unhoverListItem(index, true);
 	};
-	
-	visController.setEquationEditor = function(eE){
+
+	visController.setEquationEditor = function (eE) {
 		console.log("equationEditor is set");
 		equationEditor = eE;
 	}

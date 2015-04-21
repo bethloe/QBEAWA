@@ -20,9 +20,9 @@ var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
 	});
 }
 
-var getVisController = function(){
+var getVisController = function () {
 	return visController;
-}	
+}
 
 var searchArticle = function (keyword, maxNumSearch, equationEditor) {
 	GLOBAL_keyWord = $("#article-name").val(); //keyword;
@@ -159,18 +159,18 @@ var showAllDataAsTable = function () {
 		$('#output').empty();
 		var content = "<table border=\"1\">";
 		content += "<tr><th>Article Name</th><th>Total Number of Edits</th><th>Number of Registered User Edits</th><th>Number of Anonymous User Edits</th><th>Number of Admin Edits</th> \
-																																																																	<th>Admin Edit Share</th><th>Number of Unique Editors</th><th>Article length (in # of characters)</th><th>Currency (in days)</th><th>Num. of Internal Links (This value is wrong I guess)</th> \
-																																																																	<th>Num. of External Links</th><th>Num. of Pages which links to this page</th><th>Num. of Images</th><th>Article age (in days)</th><th>Diversity</th> \
-																																																																	<th>Flesch</th><th>Kincaid</th><th>Num. of Internal Broken Links</th><th>Number of Reverts (no permissions)</th><th>Article Median Revert Time (no permissions)</th><th>Article Connectivity (Have problems with that)</th> \
-																																																																	<th>Article Median Revert Time (no permissions)</th><th>Information noise(content) (Have to figure that out)</th>";
+																																																																			<th>Admin Edit Share</th><th>Number of Unique Editors</th><th>Article length (in # of characters)</th><th>Currency (in days)</th><th>Num. of Internal Links (This value is wrong I guess)</th> \
+																																																																			<th>Num. of External Links</th><th>Num. of Pages which links to this page</th><th>Num. of Images</th><th>Article age (in days)</th><th>Diversity</th> \
+																																																																			<th>Flesch</th><th>Kincaid</th><th>Num. of Internal Broken Links</th><th>Number of Reverts (no permissions)</th><th>Article Median Revert Time (no permissions)</th><th>Article Connectivity (Have problems with that)</th> \
+																																																																			<th>Article Median Revert Time (no permissions)</th><th>Information noise(content) (Have to figure that out)</th>";
 
 		for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
 			//console.log(GLOBAL_dataCollector[i].getJSONString());
 			var jsonData = JSON.parse(GLOBAL_dataCollector[i].getJSONString());
 			content += "<tr><td>" + jsonData.title + "</td><td>" + jsonData.numEdits + "</td><td>" + jsonData.numRegisteredUserEdits + "</td><td>" + jsonData.numAnonymousUserEdits + "</td><td>" + jsonData.numAdminUserEdits + "</td> \
-																																																																																																					<td>" + jsonData.adminEditShare + "</td><td>" + jsonData.numUniqueEditors + "</td><td>" + jsonData.articleLength + "</td><td>" + jsonData.currency + "</td><td>" + jsonData.internalLinks + "</td> \
-																																																																																																					<td>" + jsonData.externalLinks + "</td><td>" + jsonData.linksHere + "</td><td>" + jsonData.numImages + "</td><td>" + jsonData.articleAge + "</td><td>" + jsonData.diversity + "</td> \
-																																																																																																					<td>" + jsonData.flesch + "</td><td>" + jsonData.kincaid + "</td></tr>";
+																																																																																																								<td>" + jsonData.adminEditShare + "</td><td>" + jsonData.numUniqueEditors + "</td><td>" + jsonData.articleLength + "</td><td>" + jsonData.currency + "</td><td>" + jsonData.internalLinks + "</td> \
+																																																																																																								<td>" + jsonData.externalLinks + "</td><td>" + jsonData.linksHere + "</td><td>" + jsonData.numImages + "</td><td>" + jsonData.articleAge + "</td><td>" + jsonData.diversity + "</td> \
+																																																																																																								<td>" + jsonData.flesch + "</td><td>" + jsonData.kincaid + "</td></tr>";
 
 		}
 		content += "</table>";

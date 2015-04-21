@@ -260,7 +260,7 @@ function RankingVis(domRoot, visControllerInterface){
 	*
 	* ***************************************************************************************************************/
 	RANKING.Render.draw = function(rankingModel, containerHeight, colorScale){
-
+		console.log("RAKING MODEL STATUS: " + rankingModel.getStatus());
         if(rankingModel.getStatus() == RANKING_STATUS.no_ranking)
 			return this.reset();
         $(root).empty();
@@ -500,6 +500,7 @@ function RankingVis(domRoot, visControllerInterface){
 	*
 	* ***************************************************************************************************************/
 	RANKING.Render.reset = function(){
+		console.log("RESET CALLED");
         isRankingDrawn = false;
         selectedIndex = 'undefined';
 

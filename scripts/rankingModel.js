@@ -5,9 +5,11 @@ var RankingModel = (function () {
 		this.ranking = new RankingArray();
 		this.previousRanking = new RankingArray();
 		this.formulas = [];
+		this.equations = [];
 		this.data = data;
 		this.status = RANKING_STATUS.no_ranking;
 		this.mode = RANKING_MODE.overall_score;
+		this.tmpEquation = "";
 	}
 
 	/**
@@ -30,7 +32,6 @@ var RankingModel = (function () {
 
 				// if item doesn't contain query term => maxScore and overallScore are not changed
 				//ranking[i].overallScore += termScore;
-
 				var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
 				if (QMscore < 0)
 					QMscore = 0;
@@ -41,6 +42,7 @@ var RankingModel = (function () {
 					stem : q.stem,
 					weightedScore : QMscore
 				});
+
 			});
 		});
 		return ranking;
@@ -126,17 +128,65 @@ var RankingModel = (function () {
 		}
 	};
 
+	var calculateQMsWithEquations = function (_data, _equations, _tmpEquation) {
+		for (var j = 0; j < _equations.length; j++) {
+			//console.log("DATA: " + JSON.stringify(_data));
+
+			_data.forEach(function (d, i) {
+				var equation = _equations[j].equation;
+				var name = _equations[j].name;
+				//TODO CALCULATION IS WRONG IF MULT OR DIV GET USED!
+				for (var key in d) {
+					if (d.hasOwnProperty(key)) {
+						//alert(key + " -> " + d[key]);
+						var re = new RegExp(key, "g");
+						equation = equation.replace(re, d[key]);
+					}
+				}
+				var result = math.eval(equation);
+				console.log("EQUATION: " + equation + " RESULT: " + result);
+				d[name] = result;
+				console.log("ONE SET: " + JSON.stringify(d));
+			});
+		}
+		if (_tmpEquation != "") {
+			_data.forEach(function (d, i) {
+				var equation = _tmpEquation;
+				var name = "tmp";
+				//TODO CALCULATION IS WRONG IF MULT OR DIV GET USED!
+				for (var key in d) {
+					if (d.hasOwnProperty(key)) {
+						//alert(key + " -> " + d[key]);
+						var re = new RegExp(key, "g");
+						equation = equation.replace(re, d[key]);
+					}
+				}
+				var result = math.eval(equation);
+				console.log("TMP EQUATION: " + equation + " RESULT: " + result);
+				d[name] = result;
+				console.log("TMP ONE SET: " + JSON.stringify(d));
+			});
+		}
+	};
+
 	/****************************************************************************************************
 	 *
 	 *   RankingModel Prototype
 	 *
 	 ****************************************************************************************************/
+	// Array Remove - By John Resig (MIT Licensed)
+	Array.prototype.remove = function (from, to) {
+		var rest = this.slice((to || from) + 1 || this.length);
+		this.length = from < 0 ? this.length + from : from;
+		return this.push.apply(this, rest);
+	};
 
 	RankingModel.prototype = {
 		update : function (keywords, rankingMode) {
 			this.mode = rankingMode || RANKING_MODE.overall_score;
 			this.previousRanking = this.ranking.clone();
-			calculateQMs(this.data, this.formulas);
+			//calculateQMs(this.data, this.formulas);
+			calculateQMsWithEquations(this.data, this.equations, this.tmpEquation);
 			this.ranking = computeScores(this.data, keywords).sortBy(this.mode).addPositionsChanged(this.previousRanking);
 			this.status = updateStatus(this.ranking, this.previousRanking);
 			/*console.log('RANKING');
@@ -174,6 +224,28 @@ var RankingModel = (function () {
 
 		newQM : function (formula) {
 			this.formulas.push(formula);
+		},
+
+		newQMFromEquationComposer : function (name, equation) {
+			var object = {
+				name : name,
+				equation : equation
+			};
+			var indexToDelete = -1;
+			for (var i = 0; i < this.equations.length; i++) {
+				if (this.equations[i].name == name) {
+					indexToDelete = i;
+				}
+			}
+			if (indexToDelete != -1) {
+				console.log("WE HAVE TO DELETE: " + indexToDelete);
+				this.equations.remove(indexToDelete);
+			}
+			this.equations.push(object);
+		},
+
+		setTempEquation : function (equation) {
+			this.tmpEquation = equation;
 		},
 
 		calculateQMs : function () {

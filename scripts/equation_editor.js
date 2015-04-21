@@ -10,6 +10,8 @@ var EquationEditor = function (vals) {
 	var currentlySelectedBoxId = -1;
 	var isAddBeforeSelected = false;
 	var isAddAfterSelected = false;
+	var visController;
+	var nameOfLoadedMetric = "";
 
 	//INSERTS: ----------------------------------------------------------------
 	equationEditor.simpleSymbol = function (symbol) {
@@ -37,8 +39,9 @@ var EquationEditor = function (vals) {
 			//else if (isAddAfterSelected) {}
 			//else {
 			equationEditor.bricks();
-			$(equationStack).prepend(" <div type=\"radical\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\"><sup>" + order + "</sup>&radic;</div></div>");
+			$(equationStack).prepend(" <div type=\"radical\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\"><sup type=\"radical\">" + order + "</sup>&radic;</div></div>");
 			checkProgressArray();
+			rerank();
 			//}
 		}
 	}
@@ -52,8 +55,9 @@ var EquationEditor = function (vals) {
 			//else if (isAddAfterSelected) {}
 			//else {
 			equationEditor.bricks();
-			$(equationStack).append(" <div  type=\"exponent\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\"><sup>" + order + "</sup></div></div> ");
+			$(equationStack).append(" <div  type=\"exponent\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\"><sup type=\"pow\">" + order + "</sup></div></div> ");
 			checkProgressArray();
+			rerank();
 			//}
 		}
 	}
@@ -67,8 +71,9 @@ var EquationEditor = function (vals) {
 			//else if (isAddAfterSelected) {}
 			//else {
 			equationEditor.bricks();
-			$(equationStack).prepend(" <div  type=\"logarithm\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">log<sub>" + order + "</sub></div></div> ");
+			$(equationStack).prepend(" <div  type=\"logarithm\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\">log<sub type=\"logarithm\">" + order + "</sub></div></div> ");
 			checkProgressArray();
+			rerank();
 			//}
 		}
 	}
@@ -106,8 +111,8 @@ var EquationEditor = function (vals) {
 			//	if (isAddBeforeSelected) {}
 			//	else if (isAddAfterSelected) {}
 			//	else {
-			$(equationStack).prepend(" <div type=\"brick\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">(</div></div> ");
-			$(equationStack).append(" <div type=\"brick\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">)</div></div> ");
+			$(equationStack).prepend(" <div type=\"brickP\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\">(</div></div> ");
+			$(equationStack).append(" <div type=\"brickA\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\">)</div></div> ");
 			//		}
 		}
 		checkProgressArray();
@@ -115,9 +120,20 @@ var EquationEditor = function (vals) {
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 
+	equationEditor.resetData = function () {
+		nameOfLoadedMetric = "";
+		progressArrayPosition = -1;
+		progressArray.splice(0, progressArray.length);
+		idCnt = 0;
+		prevState = "";
+		currentlySelectedBox = "";
+		currentlySelectedBoxId = -1;
+		isAddBeforeSelected = false;
+		isAddAfterSelected = false;
+		$(equationStack).html("");
+	}
 
 	var checkProgressArray = function () {
-
 		progressArray.push($(equationStack).html());
 		if (progressArrayPosition != -1) {
 			progressArrayPosition++;
@@ -144,6 +160,7 @@ var EquationEditor = function (vals) {
 
 	equationEditor.highlightBox = function (id) {
 		console.log("HIGHLIGHT BOX " + 'equation' + id);
+
 		$(equationStack).children(".eexcess_equation_empty_box").css({
 			"border" : "5px solid red"
 		});
@@ -152,22 +169,50 @@ var EquationEditor = function (vals) {
 			"border" : "0.2em solid #21B571"
 		});
 
+		$(equationStack).children(".eexcess_equation_text").css({
+			"border" : "0px"
+		});
+
 		if (currentlySelectedBoxId == id) {
 
-			$('#equation' + id).css({
-				"border" : "5px solid red"
-			});
+			if ($('#equation' + id).attr("type") == "box") {
+				$('#equation' + id).css({
+					"border" : "5px solid red"
+				});
+			} else if($('#equation' + id).attr("type") == "filledBox") {
+				$('#equation' + id).css({
+					"border" : "0.2em solid #21B571"
+				});
+			}else {
+				$('#equation' + id).css({
+					"border" : "0px"
+				});
+			}
 			currentlySelectedBox = "";
 			currentlySelectedBoxId = -1;
 			return;
 		}
 		currentlySelectedBoxId = id;
 		currentlySelectedBox = '#equation' + id;
-
-		$(currentlySelectedBox).css({
-			"border" : "5px solid blue"
-		});
-
+		if ($('#equation' + id).attr("type") == "brickP") {
+			console.log("TEST " + '#equation' + id);
+			$('#equation' + id).css({
+				"border" : "5px solid blue"
+			});
+			$('#equation' + (id + 1)).css({
+				"border" : "5px solid blue"
+			});
+		} else if ($('#equation' + id).attr("type") == "brickA") {
+			$('#equation' + id).css({
+				"border" : "5px solid blue"
+			});
+			$('#equation' + (id - 1)).css({
+				"border" : "5px solid blue"
+			});
+		} else
+			$(currentlySelectedBox).css({
+				"border" : "5px solid blue"
+			});
 	}
 
 	equationEditor.redo = function () {
@@ -177,6 +222,7 @@ var EquationEditor = function (vals) {
 		} else
 			notPossible();
 		equationEditor.print();
+		rerank();
 	}
 
 	equationEditor.print = function () {
@@ -194,22 +240,28 @@ var EquationEditor = function (vals) {
 		} else
 			notPossible();
 		equationEditor.print();
+		rerank();
 	}
 
 	equationEditor.deleteSelectedElement = function () {
-		console.log("HERE: " + $(currentlySelectedBox).attr("type"));
-		if ($(currentlySelectedBox).attr("type") == "box") {
+		console.log("HERE: " + currentlySelectedBox + " " + $(currentlySelectedBox).attr("type"));
+		if ($(currentlySelectedBox).attr("type") == "box" || $(currentlySelectedBox).attr("type") == "filledBox") {
 			if ($('#equation' + (currentlySelectedBoxId - 1)).html() !== undefined)
 				$('#equation' + (currentlySelectedBoxId - 1)).remove();
 			else
 				$('#equation' + (currentlySelectedBoxId + 1)).remove();
-		} else if ($(currentlySelectedBox).attr("type") == "radical") {
+		} else if ($(currentlySelectedBox).attr("type") == "radical" || $(currentlySelectedBox).attr("type") == "logarithm" || $(currentlySelectedBox).attr("type") == "exponent") {
 			$('#equation' + (currentlySelectedBoxId - 1)).remove();
 			$('#equation' + (currentlySelectedBoxId - 2)).remove();
+		} else if ($(currentlySelectedBox).attr("type") == "brickP") {
+			$('#equation' + (currentlySelectedBoxId + 1)).remove();
+		} else if ($(currentlySelectedBox).attr("type") == "brickA") {
+			$('#equation' + (currentlySelectedBoxId - 1)).remove();
 		}
 		$(currentlySelectedBox).remove();
 		checkProgressArray();
 
+		rerank();
 	}
 
 	equationEditor.hideMenuEquationEditor = function () {
@@ -274,31 +326,101 @@ var EquationEditor = function (vals) {
 		return false;
 	}
 
-	equationEditor.setVisController = function (visController) {
+	equationEditor.setVisController = function (visControllerPar) {
+		visController = visControllerPar;
 		visController.setEquationEditor(equationEditor);
+	}
+
+	var rerank = function () {
+		if ($(equationStack).find(".eexcess_equation_empty_box").length == 0) {
+			//Rank the articles
+			visController.rankWithEquation(getEquation());
+			//GLOBAL_TEMPNAMECOUNTER++;
+		}
+	}
+
+	equationEditor.slideStop = function () {
+		console.log("SLIDE STOP");
+		rerank();
+	}
+
+	var sliderOptions = {
+		orientation : 'horizontal',
+		animate : true,
+		range : "min",
+		min : 0,
+		max : 1,
+		step : 0.1,
+		value : 1,
+		stop : equationEditor.slideStop
+	}
+
+	var sliderOptionsLoad = {
+		orientation : 'horizontal',
+		animate : true,
+		range : "min",
+		min : 0,
+		max : 1,
+		step : 0.1,
+		//value : 1,
+		stop : equationEditor.slideStop
 	}
 
 	//FROM VIS:
 	equationEditor.fillGap = function (data) {
 		if (currentlySelectedBoxId != -1) {
 			console.log("FILL GAP: " + JSON.stringify(data));
-			var output = "<div id=\"equation" + currentlySelectedBoxId + "\" onclick=\"equationEditor.highlightBox(" + currentlySelectedBoxId + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid #21B571; display: inline-block; background: #21B571;\"><div id=\"neededText\">" + data.name + "</div><img class=\"eexcess_tag_img\" src=\"media/fancybox_sprite_close.png\"> <div class=\"div-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all\" aria-disabled=\"false\"> <div class=\"ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min\" style=\"width: 100%;\"></div> <a class=\"ui-slider-handle ui-state-default ui-corner-all\" href=\"#\" style=\"left: 100%;\"></a></div></div>";
+			/*<div class=\"div-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all\" aria-disabled=\"false\"> <div class=\"ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min\" style=\"width: 100%;\"></div> <a class=\"ui-slider-handle ui-state-default ui-corner-all\" href=\"#\" style=\"left: 100%;\"></a></div>*/
+			var output = "<div type=\"filledBox\" id=\"equation" + currentlySelectedBoxId + "\" onclick=\"equationEditor.highlightBox(" + currentlySelectedBoxId + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid #21B571; display: inline-block; background: #21B571;\"><div id=\"neededText\">" + data.name + "</div></div>";
+
 			$("#equation" + currentlySelectedBoxId).replaceWith(output);
+			$("<div class='div-slider'></div>").appendTo($("#equation" + currentlySelectedBoxId)).slider(sliderOptions);
 			//$(equationStack).append(output);
 			currentlySelectedBoxId = -1;
 			checkProgressArray();
+			rerank();
 		} else {
 			notPossible();
 		}
 	}
 
-	equationEditor.createNewQM = function () {
+	equationEditor.loadMetric = function (name, htmlValue) {
+		equationEditor.resetData();
+		$(equationStack).html(htmlValue);
+		$(equationStack).find("div").each(function () {
+			var id = this.id;
+			console.log("ID: " + id);
+			var res = id.split("quation");
+			if (res.length > 1) {
+				if (parseInt(res[1]) > idCnt)
+					idCnt = parseInt(res[1]);
+			}
+		});
+		$(equationStack).find(".div-slider").each(function () {
+			var sliderValue = $(this).attr("sliderValue");
+			console.log("SLIDER VALUE: " + sliderValue);
+			$(this).slider(sliderOptions);
+			$(this).slider("value", sliderValue);
+		});
+		console.log("LOAD IDCNT: " + idCnt);
+		nameOfLoadedMetric = name;
+		rerank();
+	}
+
+	var getEquation = function () {
 		var allElementsString = "";
 		$(equationStack).find('*').each(function () {
 			//allElementsString += $(this).val();
 			if (this.id.indexOf("equation") > -1) {
 				//console.log();
+				var weight = $(this).find(".div-slider").slider("value");
+				$(this).find(".div-slider").attr("sliderValue", weight);
+				if (weight >= 0 && weight <= 1)
+					allElementsString += weight + "*";
+
 				allElementsString += $(this).find("#neededText").html();
+
+				//console.log("HTML: " + $(this).find("#neededText").html() + " SLIDER VALUE: " + $(this).find(".div-slider").slider("value"));
 			}
 		});
 		console.log("ALLE: " + allElementsString);
@@ -311,11 +433,52 @@ var EquationEditor = function (vals) {
 			allElementsString = ret;
 			ret = checkForRadicals(allElementsString);
 		}
-		//console.log("RESULT: " +Parser.evaluate(allElementsString, { flesch: 3, kincaid: 7 }));
-		allElementsString = allElementsString.replace(/flesch/g, '9');
-		allElementsString = allElementsString.replace(/kincaid/g, '7');
-		console.log("BEFORE PARSING: " + allElementsString);
-		console.log("RESULT: " + math.eval(allElementsString));
+		ret = checkForLogarithms(allElementsString);
+		while (ret != false) {
+			allElementsString = ret;
+			ret = checkForLogarithms(allElementsString);
+		}
+		ret = checkForExponentiate(allElementsString);
+		while (ret != false) {
+			allElementsString = ret;
+			ret = checkForExponentiate(allElementsString);
+		}
+		//allElementsString = allElementsString.replace(/flesch/g, '9');
+		//allElementsString = allElementsString.replace(/kincaid/g, '7');
+		//console.log("BEFORE PARSING: " + allElementsString);
+		//console.log("RESULT: " + math.eval(allElementsString));
+
+		return allElementsString;
+	}
+
+	equationEditor.createNewQM = function () {
+		if (nameOfLoadedMetric != "") {
+			var answer = confirm('Overwrite existing metric?');
+			if (answer) {
+				console.log('yes');
+				var equation = getEquation();
+				var vizData = $(equationStack).html();
+				visController.newQMFromEquationComposer(nameOfLoadedMetric, equation, vizData);
+
+			} else {
+				var name = prompt("Quality Metric name:", "Insert name here!");
+				if (name != null) {
+				var equation = getEquation();
+				var vizData = $(equationStack).html();
+					visController.newQMFromEquationComposer(name, equation, vizData);
+				} else
+					alert("ERROR");
+			}
+		} else {
+			var name = prompt("Quality Metric name:", "Insert name here!");
+			if (name != null) {
+				var equation = getEquation();
+				var vizData = $(equationStack).html();
+				console.log("vizData: " + vizData);
+				visController.newQMFromEquationComposer(name, equation, vizData);
+			} else
+				alert("ERROR");
+		}
 	}
 
 	var brickCounter = function (string, startpoint) {
@@ -335,13 +498,103 @@ var EquationEditor = function (vals) {
 		}
 	}
 
+	var brickCounterBackward = function (string, startpoint) {
+		console.log("stringB: " + string);
+		console.log("stringB: " + string[startpoint]);
+		var brickCnt = 1;
+		for (var i = startpoint - 1; i >= 0; i--) {
+			if (string[i] == ")") {
+				brickCnt++;
+			}
+			if (string[i] == "(") {
+				brickCnt--;
+			}
+			if (brickCnt == 0) {
+				return i;
+			}
+		}
+	}
+
+	var checkForExponentiate = function (allElementsString) {
+		var newString = "";
+		if (allElementsString.indexOf("<sup type=\"pow\">") > -1) {
+
+			//newString = allElementsString.substring(0, allElementsString.indexOf("<sup type=\"radical\">"));
+			//console.log("NEW STRING1: " + newString);
+			var begin = allElementsString.indexOf("<sup type=\"pow\">") + "<sup type=\"pow\">".length;
+			if (allElementsString.indexOf("</sup>") > -1) {
+				var end = allElementsString.indexOf("</sup>");
+				console.log("BEGIN: " + begin + " END: " + end);
+				var exponent = allElementsString.substring(begin, end);
+				console.log("EXPONENT: " + exponent);
+				newString += "," + exponent + ")";
+				console.log("NEW STRING1: " + newString);
+
+				newString += allElementsString.substring(end + "</sup>".length, allElementsString.length);
+				console.log("NEW STRING2: " + newString);
+
+				var firstBrick = brickCounterBackward(allElementsString, begin - "<sup type=\"pow\">".length - 1);
+				newString = allElementsString.substring(firstBrick, begin - "<sup type=\"pow\">".length - 1) + newString;
+				console.log("NEW STRING3: " + newString);
+
+				newString = allElementsString.substring(0, firstBrick) + "pow" + newString;
+				console.log("NEW STRING4: " + newString);
+
+			} else {
+				//alert("EXP error2")
+				return false;
+			}
+
+		} else {
+			//alert("EXP error1")
+			return false;
+		}
+		return newString;
+	}
+
+	var checkForLogarithms = function (allElementsString) {
+		var newString = "";
+		console.log("HERE: " + allElementsString.indexOf("log"));
+		if (allElementsString.indexOf("<sub type=\"logarithm\">") > -1) {
+			newString = allElementsString.substring(0, allElementsString.indexOf("<sub type=\"logarithm\">"));
+			newString += "(";
+			console.log("NEW STRING1: " + newString);
+			var begin = allElementsString.indexOf("<sub type=\"logarithm\">") + "<sub type=\"logarithm\">".length;
+			if (allElementsString.indexOf("</sub>") > -1) {
+				var end = allElementsString.indexOf("</sub>");
+				console.log("BEGIN: " + begin + " END: " + end);
+				var base = allElementsString.substring(begin, end);
+				console.log("BASE: " + base);
+				var lastBrick = brickCounter(allElementsString, allElementsString.indexOf("</sub>") + "</sub>".length + 1);
+				newString += allElementsString.substring(allElementsString.indexOf("</sub>") + "</sub>".length, lastBrick);
+				console.log("NEW STRING2: " + newString);
+				newString += (")/log(" + base + "))");
+				console.log("NEW STRING3: " + newString);
+				newString += allElementsString.substring(lastBrick + 1, allElementsString.length);
+				console.log("NEW STRING4: " + newString);
+
+			} else {
+				//alert("LOG error2");
+				console.log("LOG error2");
+				return false;
+			}
+
+		} else {
+			//alert("LOG error1");
+			console.log("LOG error1");
+			return false;
+		}
+
+		return newString;
+	}
+
 	var checkForRadicals = function (allElementsString) {
 		var newString = "";
 		console.log("HERE: " + allElementsString.indexOf("√"));
-		if (allElementsString.indexOf("<sup>") > -1) {
-			newString = allElementsString.substring(0, allElementsString.indexOf("<sup>"));
+		if (allElementsString.indexOf("<sup type=\"radical\">") > -1) {
+			newString = allElementsString.substring(0, allElementsString.indexOf("<sup type=\"radical\">"));
 			console.log("NEW STRING1: " + newString);
-			var begin = allElementsString.indexOf("<sup>") + 5;
+			var begin = allElementsString.indexOf("<sup type=\"radical\">") + "<sup type=\"radical\">".length;
 			if (allElementsString.indexOf("</sup>") > -1) {
 				var end = allElementsString.indexOf("</sup>");
 				console.log("BEGIN: " + begin + " END: " + end);
@@ -356,13 +609,13 @@ var EquationEditor = function (vals) {
 				newString += allElementsString.substring(lastBrick + 1, allElementsString.length);
 				console.log("NEW STRING4: " + newString);
 			} else {
-				alert("error2")
+				//alert("error2")
 
 				return false;
 			}
 
 		} else {
-			alert("error1")
+			//alert("error1")
 
 			return false;
 		}
