@@ -100,6 +100,7 @@ var VisController = function () {
 	selectedTags = [], // array of DOM elements contained in the tag box
 	rankingMode = RANKING_MODE.overall_score,
 	showRanking;
+	selectedTagsForEquationEditor = [];
 
 	// Ranking object
 	var rankingModel;
@@ -522,6 +523,14 @@ var VisController = function () {
 	 * Append one tag per keyword and add drag & drop behavior
 	 *
 	 * */
+
+	// Array Remove - By John Resig (MIT Licensed)
+	Array.prototype.remove = function (from, to) {
+		var rest = this.slice((to || from) + 1 || this.length);
+		this.length = from < 0 ? this.length + from : from;
+		return this.push.apply(this, rest);
+	};
+
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
 		$(qmContainer).empty();
@@ -534,24 +543,58 @@ var VisController = function () {
 		.attr("id", function (k, i) {
 			return "tag-" + i;
 		})
+		.attr('contenteditable', false)
 		.attr('tag-pos', function (k, i) {
 			return i;
 		})
 		.attr('is-selected', false)
-		.style("background", function (k) {
+		.attr('ImSelected', false)
+		.attr('unselectable', "on")
+		.attr('onselectstart', "return false")
+		.attr('onmousedown', "return false")
+		.style("background", "#08519c" /*function (k) {
 			return getGradientString(tagColorScale(k.colorCategory + 1), [1, 0.7, 1]);
-		})
+			}*/
+		)
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
 		.text(function (k) {
 			return k.term;
 		})
-		.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
-		.on("mouseout", EVTHANDLER.tagInBoxMouseOuted)
+		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
+		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted)
 		.on("click", function (data) {
-			console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
-			equationEditor.loadMetric(data.term, allVizs[data.term]);
+			if (equationEditor.isShiftPressed() == false) {
+				console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
+				equationEditor.loadMetric(data.term, allVizs[data.term]);
+			} else {
+				console.log("HILF: " + d3.select(this).attr("ImSelected"));
+				if (d3.select(this).attr("ImSelected") == "true") {
+					console.log("IN HERE");
+					d3.select(this).attr("ImSelected", false);
+					d3.select(this).style("background", "#08519c");
+					var indexToDelete = -1;
+					for (var i = 0; i < selectedTagsForEquationEditor.length; i++) {
+						var tag = selectedTagsForEquationEditor[i];
+						if (tag.name == data.term) {
+							indexToDelete = i;
+						}
+					}
+					if (indexToDelete != -1) {
+						selectedTagsForEquationEditor.remove(indexToDelete);
+					}
+				} else {
+					d3.select(this).attr("ImSelected", true);
+					d3.select(this).style("background", "red");
+					var object = {
+						name : data.term,
+						viz : allVizs[data.term],
+						type : "metric"
+					};
+					selectedTagsForEquationEditor.push(object);
+				}
+			}
 		});
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
@@ -565,7 +608,12 @@ var VisController = function () {
 		.attr('tag-pos', function (k, i) {
 			return i;
 		})
+		.attr('contenteditable', false)
 		.attr('is-selected', false)
+		.attr('ImSelected', false)
+		.attr('unselectable', "on")
+		.attr('onselectstart', "return false")
+		.attr('onmousedown', "return false")
 		.style("background", function (k) {
 			return '#21B571';
 		})
@@ -576,16 +624,42 @@ var VisController = function () {
 			return k.name;
 		})
 		.on("click", function (data) {
-			equationEditor.fillGap(data)
+			if (equationEditor.isShiftPressed() == false) {
+				equationEditor.fillGap(data)
+			} else {
+				if (d3.select(this).attr("ImSelected") == "true") {
+					d3.select(this).attr("ImSelected", false);
+					d3.select(this).style("background", "#21B571");
+					var indexToDelete = -1;
+					for (var i = 0; i < selectedTagsForEquationEditor.length; i++) {
+						var tag = selectedTagsForEquationEditor[i];
+						if (tag.name == data.name) {
+							indexToDelete = i;
+						}
+					}
+					if (indexToDelete != -1) {
+						selectedTagsForEquationEditor.remove(indexToDelete);
+					}
+				} else {
+					d3.select(this).attr("ImSelected", true);
+					d3.select(this).style("background", "red");
+					var object = {
+						name : data.name,
+						viz : "",
+						type : "measure"
+					};
+					selectedTagsForEquationEditor.push(object);
+				}
+			}
 		});
 		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
 
 		// bind drag behavior to each tag
-		$(tagClass).draggable(BEHAVIOR.draggableOptions);
+		//$(tagClass).draggable(BEHAVIOR.draggableOptions);
 
 		// bind droppable behavior to tag box
-		$(tagBox).droppable(BEHAVIOR.droppableOptions);
+		//$(tagBox).droppable(BEHAVIOR.droppableOptions);
 	};
 
 	TAGCLOUD.dropTagInTagBox = function (tag) {
@@ -937,6 +1011,25 @@ var VisController = function () {
 		});
 
 		rankingModel.update(tmp, rankingMode);
+		this.highlightListItems();
+		var status = rankingModel.getStatus();
+		// Synchronizes rendering methods
+		if (status == RANKING_STATUS.new || status == RANKING_STATUS.update) {
+			this.colorKeywordsInTitles();
+			this.addRankingPositions();
+			this.hideUnrankedItems();
+			this.updateItemsBackground();
+		}
+		LIST.animateContentList(status);
+		DOCPANEL.clear();
+		VISPANEL.drawRanking();
+	};
+	
+	
+	LIST.rankRecommendationsWithEquationMulti = function (data) {
+
+
+		rankingModel.update(data, rankingMode);
 		this.highlightListItems();
 		var status = rankingModel.getStatus();
 		// Synchronizes rendering methods
@@ -1494,6 +1587,7 @@ var VisController = function () {
 	 * */
 
 	var visController = {};
+
 	visController.updateHeaderInfoSection = function (text) {
 		$(headerInfoSection).html(text);
 	}
@@ -1539,9 +1633,22 @@ var VisController = function () {
 		EVTHANDLER.btnResetClicked();
 		rankingModel.setTempEquation(equation);
 		LIST.rankRecommendationsWithEquation();
-
 	}
+	
+	visController.rankWithEquationMulti = function (data) {
+		EVTHANDLER.btnResetClicked();
+		rankingModel.setTempEquation("");
+		LIST.rankRecommendationsWithEquationMulti(data);
+	}	
 
+	visController.loadTheSelectedCombinationOfMetrics = function () {
+		console.log("loadTheSelectedCombinationOfMetrics");
+		equationEditor.loadACombination(selectedTagsForEquationEditor);
+	}
+	
+	visController.clearSelectedTagsForEquationEditorArray = function(){
+		selectedTagsForEquationEditor.splice(0, selectedTagsForEquationEditor.length);
+	}
 	//-------------------------------------------------------------------------
 
 	visController.newQM = function (formulas, JSONFormatOfVis) {
@@ -1695,7 +1802,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																						{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																		{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

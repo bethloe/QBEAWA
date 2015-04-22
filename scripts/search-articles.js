@@ -178,3 +178,4 @@ var showAllDataAsTable = function () {
 		$('#output').append(content);
 	}
 }
+

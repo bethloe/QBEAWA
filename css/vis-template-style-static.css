@@ -584,7 +584,6 @@ VIS PANEL (center of screen)
 #eexcess_equation_stack{
     display: inline-flex;
     width: 100%;
-    //height: 9%;
     min-height: 4.5em;
 	background-color: white;
 }
@@ -603,12 +602,31 @@ VIS PANEL (center of screen)
 	float: left;
 }
 
-#eexcess_equation_composer_table, th, td{
+#eexcess_equation_composer_table td{
 	font-size: 40px;
 	border: 1px solid black;
 	cursor:pointer;
 }
 #eexcess_equation_composer_table td:hover{
+	background-color: red;
+	border: 1px solid black;
+	cursor:pointer;
+}
+
+#eexcess_equation_composer_table2{
+    display: none;
+	float: left;
+	
+}
+
+#eexcess_equation_composer_table2 td{
+	font-size: 20px;
+	padding: 0px;
+	margin: 0px;
+	border: 1px solid black;
+	cursor:pointer;
+}
+#eexcess_equation_composer_table2 td:hover{
 	background-color: red;
 	border: 1px solid black;
 	cursor:pointer;
@@ -1396,4 +1414,15 @@ VIS PANEL (center of screen)
 
 .eexcess_equation_tag_in_box > text {
 	opacity: 0.5;
+}
+
+/* MATH THING: */
+
+.MathJax_Display: {
+    margin: 0px;
+},
+
+.MathJax .merror: {
+    padding: 0px;
+	margin: 0px;
 }

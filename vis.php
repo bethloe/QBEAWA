@@ -30,6 +30,9 @@ and open the template in the editor.
 		<script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
         <link rel="stylesheet" type="text/css" href="libs/ui/jquery-ui-1.10.4.custom.min.css">
 		<script type="text/javascript" src="libs/CanvasInput.min.js"></script>
+		
+		
+<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
         <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingArray.js" charset="utf-8"></script>
@@ -124,7 +127,9 @@ and open the template in the editor.
 					<!-- <tr style="height: 4em"> <td style="border: 0px "> <sup>2</sup>&radic;</td> <td style="border: 0px ">(</td><td style="border: 4px solid red; width: 4em; height: 4em"></td> <td style="border: 0px ">&minus; </td>  <td style="border: 4px solid red; width: 4em; height: 4em"></td><td style="border: 0px; ">)</td></tr></table>-->
 					
 					<!-- Version 2 -->
-					<div id="equition_stack_main"><!-- <div style="border: 2px solid blue;"> <div class="eexcess_equation_empty_box"> </div> <div class="eexcess_equation_text"> &minus; </div> <div class="eexcess_equation_empty_box"> </div></div><div class="eexcess_equation_text">&minus; </div> <div class="eexcess_equation_empty_box"> </div> --></div>
+					
+					<div id="equition_stack_main_help_load" style="display: none" > </div>
+					<div id="equition_stack_main" onclick="equationEditor.clickOnEquationStackMain()"><!-- <div style="border: 2px solid blue;"> <div class="eexcess_equation_empty_box"> </div> <div class="eexcess_equation_text"> &minus; </div> <div class="eexcess_equation_empty_box"> </div></div><div class="eexcess_equation_text">&minus; </div> <div class="eexcess_equation_empty_box"> </div> --></div>
 					
 					
 					<!-- <div class="eexcess_equation_empty_box" id="tag-0" tag-pos="0" is-selected="true" > </div> -->
@@ -143,6 +148,10 @@ and open the template in the editor.
 					<tr><td onclick="equationEditor.simpleSymbol('+')">+</td><td onclick="equationEditor.simpleSymbol('-')"> &minus;</td><td onclick="equationEditor.simpleSymbol('*')">&times; </td><td onclick="equationEditor.simpleSymbol('/')">&divide;</td><td onclick="equationEditor.bricks()">()</td></tr>
 					<tr><td onclick="equationEditor.radical()"><sup>n</sup>&radic;</td><td onclick="equationEditor.exponentiate()"> x<sup>n</sup></td><td onclick="equationEditor.logarithm()">log<sub>n</sub></td><td></td><td></td></tr>
 					<!--<tr><td onclick="equationEditor.sum()">&sum;</td><td onclick="equationEditor.prod()">&prod;</td><td></td><td ></td><td></td></tr> -->
+					</table>
+					
+				<table id="eexcess_equation_composer_table2">
+					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prod()">$$\prod$$</td><td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><td onclick="equationEditor.showWholeEquation()">show everything</td><td></td></tr> 
 					</table>
 				</div> 
                 <div id="eexcess_vis_panel_controls">
@@ -221,6 +230,20 @@ and open the template in the editor.
         <script type="text/javascript" src="scripts/vis-controller.js" charset="utf-8"></script>
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
 		<script type="text/javascript" src="scripts/QMformula-editor.js"></script>
-
+		<script>
+		document.onkeydown = function (event) {
+			if(event.keyCode == 16)
+				equationEditor.shiftPressed(true);	
+			
+		}
+		document.onkeyup = function (event) {
+			if(event.keyCode == 16)
+				equationEditor.shiftPressed(false);	
+			
+		}
+		</script>
+		
     </body>
+	
+	
 </html>

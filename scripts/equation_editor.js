@@ -3,6 +3,7 @@ var EquationEditor = function (vals) {
 	var equationEditor = {};
 	var idCnt = 0;
 	var equationStack = "#equition_stack_main";
+	var equationStackToLoad = "#equition_stack_main_help_load";
 	var progressArray = [];
 	var progressArrayPosition = -1;
 	var prevState = "";
@@ -12,6 +13,11 @@ var EquationEditor = function (vals) {
 	var isAddAfterSelected = false;
 	var visController;
 	var nameOfLoadedMetric = "";
+	var isShiftPressed = false;
+	var mode = "single";
+	var alpha = false;
+	var shrinkLevel = 1;
+	/*mode can be single or multi*/
 
 	//INSERTS: ----------------------------------------------------------------
 	equationEditor.simpleSymbol = function (symbol) {
@@ -25,7 +31,7 @@ var EquationEditor = function (vals) {
 			} else if (isAddAfterSelected) {
 				$("<div  id=\"equation" + (idCnt++) + "\" type=\"symbol\" class=\"eexcess_equation_text\"><div id=\"neededText\">" + symbol + "</div></div> <div type=\"box\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_empty_box\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"> </div>  ").insertAfter($(currentlySelectedBox));
 			} else
-				$(equationStack).append(" <div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">" + symbol + "</div></div> <div type=\"box\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_empty_box\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"> </div>");
+				$(equationStack).append("<div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">" + symbol + "</div></div> <div type=\"box\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_empty_box\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"> </div>");
 		}
 		checkProgressArray();
 	}
@@ -90,6 +96,40 @@ var EquationEditor = function (vals) {
 		//}
 	}
 
+	equationEditor.sumMulti = function () {
+		if (!checkIfOperationIsPermitted())
+			return;
+		alpha = false;
+		equationEditor.resetData();
+		mode = "multi";
+		console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
+		for (var i = 0; i < currentDataArray.length; i++) {
+			var data = currentDataArray[i];
+			console.log("DATA: " + JSON.stringify(data));
+			var color = data.type == "metric" ? "#08519c" : "#21B571";
+			if (i + 1 < currentDataArray.length) {
+				$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">+</div></div>");
+
+				$("<div class='div-slider'></div>").appendTo($("#equation" + (idCnt - 2))).slider(sliderOptions);
+			} else {
+				$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+
+				$("<div class='div-slider'></div>").appendTo($("#equation" + (idCnt - 1))).slider(sliderOptions);
+			}
+
+		}
+
+		$("#eexcess_equation_composer_table").css("display", "none");
+		$("#eexcess_equation_composer_table2").css("display", "inline");
+		checkProgressArray();
+		rerank();
+	}
+	equationEditor.euclidean = function () {
+		if (!checkIfOperationIsPermitted())
+			return;
+
+	}
+
 	equationEditor.prod = function () {
 		if (!checkIfOperationIsPermitted())
 			return;
@@ -121,6 +161,7 @@ var EquationEditor = function (vals) {
 	//-------------------------------------------------------------------------
 
 	equationEditor.resetData = function () {
+		mode = "single";
 		nameOfLoadedMetric = "";
 		progressArrayPosition = -1;
 		progressArray.splice(0, progressArray.length);
@@ -131,6 +172,8 @@ var EquationEditor = function (vals) {
 		isAddBeforeSelected = false;
 		isAddAfterSelected = false;
 		$(equationStack).html("");
+		$("#eexcess_equation_composer_table").css("display", "inline");
+		$("#eexcess_equation_composer_table2").css("display", "none");
 	}
 
 	var checkProgressArray = function () {
@@ -149,9 +192,10 @@ var EquationEditor = function (vals) {
 				} else
 				progressArray.splice(0, progressArray.length - 1);*/
 			}
-		} else {}
+		}
 		prevState = $(equationStack).html();
 		equationEditor.print();
+		shrinkElementsIfNecessary(-1);
 	}
 
 	var notPossible = function () {
@@ -165,8 +209,17 @@ var EquationEditor = function (vals) {
 			"border" : "5px solid red"
 		});
 
-		$(equationStack).children(".eexcess_equation_tag_in_box").css({
-			"border" : "0.2em solid #21B571"
+		$(equationStack).children(".eexcess_equation_tag_in_box").each(function () {
+			if ($(this).attr("innerType") == "metric") {
+				$(this).css({
+					"border" : "0.2em solid #08519c"
+				});
+			} else {
+				$(this).css({
+					"border" : "0.2em solid #21B571"
+				});
+
+			}
 		});
 
 		$(equationStack).children(".eexcess_equation_text").css({
@@ -179,11 +232,16 @@ var EquationEditor = function (vals) {
 				$('#equation' + id).css({
 					"border" : "5px solid red"
 				});
-			} else if($('#equation' + id).attr("type") == "filledBox") {
-				$('#equation' + id).css({
-					"border" : "0.2em solid #21B571"
-				});
-			}else {
+			} else if ($('#equation' + id).attr("type") == "filledBox") {
+				if ($('#equation' + id).attr("innerType") == "metric") {
+					$('#equation' + id).css({
+						"border" : "0.2em solid #08519c"
+					});
+				} else
+					$('#equation' + id).css({
+						"border" : "0.2em solid #21B571"
+					});
+			} else {
 				$('#equation' + id).css({
 					"border" : "0px"
 				});
@@ -263,14 +321,21 @@ var EquationEditor = function (vals) {
 
 		rerank();
 	}
-
+	var mathTable = 1;
 	equationEditor.hideMenuEquationEditor = function () {
 
-		console.log($("#eexcess_equation_composer_table").is(":visible"));
-		if ($("#eexcess_equation_composer_table").is(":visible"))
+		if ($("#eexcess_equation_composer_table2").is(":visible")) {
+			$("#eexcess_equation_composer_table2").hide("slow");
+			mathTable = 2;
+		}
+		if ($("#eexcess_equation_composer_table").is(":visible")) {
 			$("#eexcess_equation_composer_table").hide("slow");
-		else
+			mathTable = 1;
+		} else if (mathTable == 1) {
 			$("#eexcess_equation_composer_table").show("slow");
+		} else {
+			$("#eexcess_equation_composer_table2").show("slow");
+		}
 	}
 	equationEditor.addBeforeSelected = function () {
 		console.log("addBeforeSelected");
@@ -332,11 +397,26 @@ var EquationEditor = function (vals) {
 	}
 
 	var rerank = function () {
-		if ($(equationStack).find(".eexcess_equation_empty_box").length == 0) {
+		if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "single") {
 			//Rank the articles
 			visController.rankWithEquation(getEquation());
 			//GLOBAL_TEMPNAMECOUNTER++;
+		} else if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "multi" && alpha == true) {
+			//Rank the articles
+			var tmp = [];
+			for (var i = 0; i < currentDataArray.length; i++) {
+				var data = currentDataArray[i];
+				tmp.push({
+					'term' : data.name,
+					'stem' : data.name,
+					'weight' : 1
+				});
+			}
+			visController.rankWithEquationMulti(tmp);
+			//GLOBAL_TEMPNAMECOUNTER++;
 		}
+
+		shrinkElementsIfNecessary(-1);
 	}
 
 	equationEditor.slideStop = function () {
@@ -407,6 +487,69 @@ var EquationEditor = function (vals) {
 		rerank();
 	}
 
+	var mutiLoadHelper = function (name, htmlValue) {
+		console.log("MULTILOADHELPER");
+		//equationEditor.resetData();
+		$(equationStack).append(htmlValue);
+		$(equationStack).find("div").each(function () {
+			var id = this.id;
+			console.log("ID: " + id);
+			var res = id.split("quation");
+			if (res.length > 1) {
+				if (parseInt(res[1]) > idCnt)
+					idCnt = parseInt(res[1]);
+			}
+		});
+		$(equationStack).find(".div-slider").each(function () {
+			var sliderValue = $(this).attr("sliderValue");
+			console.log("SLIDER VALUE: " + sliderValue);
+			$(this).slider(sliderOptions);
+			$(this).slider("value", sliderValue);
+		});
+		console.log("LOAD IDCNT: " + idCnt);
+		nameOfLoadedMetric = name;
+	}
+
+	var currentDataArray;
+	equationEditor.loadACombination = function (dataArray) {
+		equationEditor.resetData();
+		currentDataArray = dataArray.slice();
+		alpha = true;
+		console.log("currentDataArray: " + currentDataArray.length);
+		mode = "multi";
+		$(equationStack).append("<div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\"> <font face=\"Symbol\">a</font> </div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">{</div></div>");
+		for (var i = 0; i < dataArray.length; i++) {
+			var data = dataArray[i];
+			var color = data.type == "metric" ? "#08519c" : "#21B571";
+			if (i + 1 < dataArray.length)
+				$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
+			else
+				$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+		}
+		$(equationStack).append("<div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">}</div></div>");
+
+		$("#eexcess_equation_composer_table").css("display", "none");
+		$("#eexcess_equation_composer_table2").css("display", "inline");
+		rerank();
+	}
+
+	equationEditor.showWholeEquation = function () {
+		equationEditor.resetData();
+		for (var i = 0; i < currentDataArray.length; i++) {
+			var data = currentDataArray[i];
+			if (data.type == "metric") {
+				mutiLoadHelper(data.name, data.viz);
+				if (i + 1 < currentDataArray.length)
+					$(equationStack).append("<div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">+</div></div>");
+			} else {
+				$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+				if (i + 1 < currentDataArray.length)
+					$(equationStack).append("<div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">+</div></div>");
+			}
+
+		}
+	}
+
 	var getEquation = function () {
 		var allElementsString = "";
 		$(equationStack).find('*').each(function () {
@@ -463,8 +606,8 @@ var EquationEditor = function (vals) {
 			} else {
 				var name = prompt("Quality Metric name:", "Insert name here!");
 				if (name != null) {
-				var equation = getEquation();
-				var vizData = $(equationStack).html();
+					var equation = getEquation();
+					var vizData = $(equationStack).html();
 					visController.newQMFromEquationComposer(name, equation, vizData);
 				} else
 					alert("ERROR");
@@ -622,5 +765,79 @@ var EquationEditor = function (vals) {
 		return newString;
 	}
 
+	var shrinkElementsIfNecessary = function (operation) {
+		/*var sumWidth = 0;
+		console.log("HTML: " + $(equationStack).html());
+		$(equationStack).find("*").each(function () {
+			console.log($(this).id + " widht: " + $(this).width());
+			sumWidth += $(this).width();
+		});
+		//Use the variable shrinkLevel
+		console.log("SUM WIDTH: " + sumWidth + " equationStack width " + $(equationStack).width());
+		if (sumWidth > ($(equationStack).width())) {
+			if ((operation == -1 || operation == 2)) {
+				shrinkLevel++;
+				$(equationStack).find("*").each(function () {
+					if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
+						var newWidth = parseInt($(this).width()) / 2;
+						var newHeight = parseInt($(this).height()) / 2;
+						$(this).css("width", newWidth + "px");
+						$(this).css("height", newHeight + "px");
+					} else if($(this).attr("class") == "eexcess_equation_text"){
+						var newHeight = parseInt($(this).height()) / 2;
+						$(this).css("height", newHeight + "px");
+						$(this).css("line-height", newHeight + "px");
+						console.log("LINE HIGHT: " + $(this).css("line-height"));
+					}
+					//	$(this).css("line-height", newHeight + "px");
+				});
+				console.log("SHRINK ELEMENTS");
+				shrinkElementsIfNecessary(1);
+			}
+		}
+		if (sumWidth < ($(equationStack).width())) {
+			if (shrinkLevel > 1 && (operation == -1 || operation == 2)) {
+				$(equationStack).find("*").each(function () {
+					if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
+						var newWidth = parseInt($(this).width()) * 2;
+						var newHeight = parseInt($(this).height()) * 2;
+						$(this).css("width", newWidth + "px");
+						$(this).css("height", newHeight + "px");
+						$(this).css("line-height", newHeight + "px");
+					}
+
+					var newHeight = parseInt($(this).height()) * 2;
+					$(this).css("line-height", newHeight + "px");
+				});
+				console.log("EXTEND ELEMENTS");
+				shrinkLevel--;
+
+				shrinkElementsIfNecessary(2);
+			}
+		}*/
+	}
+
+	//EVENTS:
+	equationEditor.shiftPressed = function (isShiftPressedPar) {
+
+		if (isShiftPressed != isShiftPressedPar) {
+			if (isShiftPressedPar == false) {
+				$(".eexcess_keyword_tag").css("background", "#08519c");
+				$(".eexcess_measures_tag").css("background", "#21B571");
+				visController.clearSelectedTagsForEquationEditorArray();
+			}
+			isShiftPressed = isShiftPressedPar;
+			console.log("shift pressed: " + isShiftPressed);
+		}
+	}
+
+	equationEditor.isShiftPressed = function () {
+		return isShiftPressed;
+	}
+
+	equationEditor.clickOnEquationStackMain = function () {
+		if (isShiftPressed)
+			visController.loadTheSelectedCombinationOfMetrics();
+	}
 	return equationEditor;
 }
