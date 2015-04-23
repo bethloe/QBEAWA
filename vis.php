@@ -117,7 +117,10 @@ and open the template in the editor.
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
 					<div class="icon" id="divAddBeforeSelected" onclick="equationEditor.addBeforeSelected()" ><img src="media/add.png" title="insert before" height="30" /> before</div>
 					<div class="icon" id="divAddAfterSelected"  onclick="equationEditor.addAfterSlected()" ><img src="media/add.png" title="insert after" height="30"/> after</div>
-					
+					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
+					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
+					<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
+					<div id="equationStackSmall"> </div>
 					
 				</div> 
                 <div id="eexcess_equation_stack">
@@ -128,7 +131,7 @@ and open the template in the editor.
 					
 					<!-- Version 2 -->
 					
-					<div id="equition_stack_main_help_load" style="display: none" > </div>
+					<div id="equition_stack_main_hidden" style="display: none" > </div>
 					<div id="equition_stack_main" onclick="equationEditor.clickOnEquationStackMain()"><!-- <div style="border: 2px solid blue;"> <div class="eexcess_equation_empty_box"> </div> <div class="eexcess_equation_text"> &minus; </div> <div class="eexcess_equation_empty_box"> </div></div><div class="eexcess_equation_text">&minus; </div> <div class="eexcess_equation_empty_box"> </div> --></div>
 					
 					

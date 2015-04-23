@@ -530,7 +530,7 @@ var VisController = function () {
 		this.length = from < 0 ? this.length + from : from;
 		return this.push.apply(this, rest);
 	};
-
+	
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
 		$(qmContainer).empty();
@@ -1781,6 +1781,9 @@ var VisController = function () {
 		}
 	}
 
+	visController.getAllVizs = function(){
+		return allVizs;
+	}
 	visController.init = function (articles) {
 		//dataset = JSON.parse($("#dataset").text());
 		//console.log(JSON.stringify(dataset));

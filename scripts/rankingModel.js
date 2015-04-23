@@ -111,7 +111,7 @@ var RankingModel = (function () {
 					var weight = parseFloat(wholeItem[1]);
 					var parameterName = wholeItem[2];
 					if (parameterName != undefined) {
-						console.log("PARAMETERNAME: " + parameterName + " VALUE: " + d[parameterName]);
+						//console.log("PARAMETERNAME: " + parameterName + " VALUE: " + d[parameterName]);
 						if (operation == '+')
 							result += (weight * d[parameterName]);
 						else if (operation == '-')
@@ -123,31 +123,34 @@ var RankingModel = (function () {
 					}
 				}
 				d[QMName] = result;
-				console.log("ONE SET: " + JSON.stringify(d));
+				//console.log("ONE SET: " + JSON.stringify(d));
 			});
 		}
 	};
 
 	var calculateQMsWithEquations = function (_data, _equations, _tmpEquation) {
-		for (var j = 0; j < _equations.length; j++) {
-			//console.log("DATA: " + JSON.stringify(_data));
 
-			_data.forEach(function (d, i) {
-				var equation = _equations[j].equation;
-				var name = _equations[j].name;
-				//TODO CALCULATION IS WRONG IF MULT OR DIV GET USED!
-				for (var key in d) {
-					if (d.hasOwnProperty(key)) {
-						//alert(key + " -> " + d[key]);
-						var re = new RegExp(key, "g");
-						equation = equation.replace(re, d[key]);
+		if (_tmpEquation == "") {
+			for (var j = 0; j < _equations.length; j++) {
+				//console.log("DATA: " + JSON.stringify(_data));
+
+				_data.forEach(function (d, i) {
+					var equation = _equations[j].equation;
+					var name = _equations[j].name;
+					//TODO CALCULATION IS WRONG IF MULT OR DIV GET USED!
+					for (var key in d) {
+						if (d.hasOwnProperty(key)) {
+							//alert(key + " -> " + d[key]);
+							var re = new RegExp(key, "g");
+							equation = equation.replace(re, d[key]);
+						}
 					}
-				}
-				var result = math.eval(equation);
-				console.log("EQUATION: " + equation + " RESULT: " + result);
-				d[name] = result;
-				console.log("ONE SET: " + JSON.stringify(d));
-			});
+					var result = math.eval(equation);
+					//console.log("EQUATION: " + equation + " RESULT: " + result);
+					d[name] = result;
+					//console.log("ONE SET: " + JSON.stringify(d));
+				});
+			}
 		}
 		if (_tmpEquation != "") {
 			_data.forEach(function (d, i) {
@@ -162,7 +165,7 @@ var RankingModel = (function () {
 					}
 				}
 				var result = math.eval(equation);
-				console.log("TMP EQUATION: " + equation + " RESULT: " + result);
+				//console.log("TMP EQUATION: " + equation + " RESULT: " + result);
 				d[name] = result;
 				console.log("TMP ONE SET: " + JSON.stringify(d));
 			});
@@ -238,7 +241,7 @@ var RankingModel = (function () {
 				}
 			}
 			if (indexToDelete != -1) {
-				console.log("WE HAVE TO DELETE: " + indexToDelete);
+				//console.log("WE HAVE TO DELETE: " + indexToDelete);
 				this.equations.remove(indexToDelete);
 			}
 			this.equations.push(object);

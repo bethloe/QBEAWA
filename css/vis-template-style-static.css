@@ -572,6 +572,11 @@ VIS PANEL (center of screen)
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
 
+#equationStackSmall{
+	cursor: pointer;
+	border: 1px solid black;
+}
+
 .icon{
 	cursor: pointer;
 	border: 1px solid black;
@@ -1395,8 +1400,9 @@ VIS PANEL (center of screen)
 	display: inline-block;
 	text-align: left;
 	float:left;
-	min-width: 8em;
-    min-height: 8em;
+	overflow:overlay;
+	width: 8em;
+    height: 8em;
 	//margin: 0.8em .3em 0.2em 0.3em;
     //padding: .2em;
 	//border-radius: 0.3em;
