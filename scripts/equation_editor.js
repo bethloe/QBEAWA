@@ -18,6 +18,8 @@ var EquationEditor = function (vals) {
 	var alpha = false;
 	var shrinkLevel = 1;
 	var zoomArray = [];
+	var timerViz;
+	var timerCalc;
 	/*mode can be single or multi*/
 
 	//INSERTS: ----------------------------------------------------------------
@@ -153,11 +155,13 @@ var EquationEditor = function (vals) {
 
 		}
 
-		$("#eexcess_equation_composer_table").css("display", "none");
-		$("#eexcess_equation_composer_table2").css("display", "inline");
+		$("#eexcess_equation_composer_table").css("display", "inline");
+		$("#eexcess_equation_composer_table2").css("display", "none");
 		checkProgressArray();
 		rerank();
 		shrinkElementsIfNecessary(1);
+		visController.tmpStoreEquationComposer($(equationStack).html());
+		$("#equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + "New Combination" + "</div>");
 	}
 
 	equationEditor.euclidean = function () {
@@ -165,18 +169,51 @@ var EquationEditor = function (vals) {
 			return;
 	}
 
-	equationEditor.prod = function () {
+	equationEditor.prodMulti = function () {
 		if (!checkIfOperationIsPermitted())
 			return;
-		//if (isAddBeforeSelected) {}
-		//else if (isAddAfterSelected) {}
-		//else {
-		equationEditor.bricks();
-		$(equationStack).prepend(" <div type=\"prod\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">&prod;</div></div> ");
-		adjustNewElementsToShrinkLevel(idCnt - 1);
+		alpha = false;
+		equationEditor.resetData();
+		mode = "multi";
+		//console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
+		for (var i = 0; i < currentDataArray.length; i++) {
+			var data = currentDataArray[i];
+			//console.log("DATA: " + JSON.stringify(data));
+			var color = data.type == "metric" ? "#08519c" : "#21B571";
+			if (i + 1 < currentDataArray.length) {
+
+				if (data.type != "metric") {
+					$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">*</div></div>");
+					$("<div class='div-slider'></div>").appendTo($("#equation" + (idCnt - 2))).slider(sliderOptions);
+				} else {
+
+					$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt) + ")\" ondblclick=\"equationEditor.showMetric(" + (idCnt++) + ")\"  class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">*</div></div>");
+				}
+				adjustNewElementsToShrinkLevel(idCnt - 2);
+				adjustNewElementsToShrinkLevel(idCnt - 1);
+			} else {
+
+				if (data.type != "metric") {
+					$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"   class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+
+					$("<div class='div-slider'></div>").appendTo($("#equation" + (idCnt - 1))).slider(sliderOptions);
+				} else {
+					$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt) + ")\" ondblclick=\"equationEditor.showMetric(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+
+				}
+
+				adjustNewElementsToShrinkLevel(idCnt - 1);
+			}
+
+		}
+		console.log("HERE prodMulti");
+		$("#eexcess_equation_composer_table").css("display", "inline");
+		$("#eexcess_equation_composer_table2").css("display", "none");
 		checkProgressArray();
+		rerank();
 		shrinkElementsIfNecessary(1);
-		//}
+		visController.tmpStoreEquationComposer($(equationStack).html());
+		$("#equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + "New Combination" + "</div>");
 	}
 
 	equationEditor.bricks = function () {
@@ -200,7 +237,10 @@ var EquationEditor = function (vals) {
 
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
-
+	equationEditor.clearEquationComposer = function () {
+		$("#equationStackSmall").html("New Equation");
+		equationEditor.resetData();
+	}
 	equationEditor.resetData = function () {
 		mode = "single";
 		shrinkLevel = 1;
@@ -228,11 +268,6 @@ var EquationEditor = function (vals) {
 				progressArray.splice(0, progressArray.length);
 				progressArray.push(prevState);
 				progressArray.push($(equationStack).html());
-				/*	if (progressArrayPosition > 0) {
-				console.log("splic(" + (progressArrayPosition - 1) + "," + (progressArray.length - 1) + ")");
-				progressArray.splice(progressArrayPosition - 1, progressArray.length - 1);
-				} else
-				progressArray.splice(0, progressArray.length - 1);*/
 			}
 		}
 		prevState = $(equationStack).html();
@@ -436,6 +471,7 @@ var EquationEditor = function (vals) {
 	equationEditor.setVisController = function (visControllerPar) {
 		visController = visControllerPar;
 		visController.setEquationEditor(equationEditor);
+		visController.setTimer(timerCalc);
 	}
 	var repairSliders = function () {
 		$(equationStack).find(".div-slider").each(function () {
@@ -449,6 +485,8 @@ var EquationEditor = function (vals) {
 	}
 
 	var rerank = function () {
+		//timerViz.reset();
+		//timerViz.start();
 		if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "single") {
 			//Rank the articles
 			//1. We have to break it down into the detail view
@@ -488,13 +526,13 @@ var EquationEditor = function (vals) {
 			$(equationStack).html(backupCurrentView);
 			repairSliders();
 		}
-
+		//timerViz.stop();
 	}
 
 	equationEditor.slideStop = function (event, ui) {
-		
-		$("#"+event.target.parentElement.id).find(".div-slider").each(function () {
-				$(this).attr("sliderValue", ui.value);
+
+		$("#" + event.target.parentElement.id).find(".div-slider").each(function () {
+			$(this).attr("sliderValue", ui.value);
 		});
 		rerank();
 	}
@@ -525,7 +563,7 @@ var EquationEditor = function (vals) {
 		if (currentlySelectedBoxId != -1) {
 			//console.log("FILL GAP: " + JSON.stringify(data));
 			/*<div class=\"div-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all\" aria-disabled=\"false\"> <div class=\"ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min\" style=\"width: 100%;\"></div> <a class=\"ui-slider-handle ui-state-default ui-corner-all\" href=\"#\" style=\"left: 100%;\"></a></div>*/
-			var output = "<div type=\"filledBox\" id=\"equation" + currentlySelectedBoxId + "\" onclick=\"equationEditor.highlightBox(" + currentlySelectedBoxId + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid #21B571; display: inline-block; background: #21B571;\"><div id=\"neededText\">" + data.name + "</div></div>";
+			var output = "<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" type=\"filledBox\" id=\"equation" + currentlySelectedBoxId + "\" onclick=\"equationEditor.highlightBox(" + currentlySelectedBoxId + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid #21B571; display: inline-block; background: #21B571;\"><div id=\"neededText\">" + data.name + "</div></div>";
 
 			$("#equation" + currentlySelectedBoxId).replaceWith(output);
 			$("<div class='div-slider'></div>").appendTo($("#equation" + currentlySelectedBoxId)).slider(sliderOptions);
@@ -541,7 +579,11 @@ var EquationEditor = function (vals) {
 		}
 	}
 
-	equationEditor.loadMetric = function (name, htmlValue) {
+	equationEditor.loadMetric = function (name, htmlValue, eraseZoomArray) {
+		if (eraseZoomArray) {
+			$("#equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + name + "</div>");
+			zoomArray.splice(0, zoomArray.length);
+		}
 		equationEditor.resetData();
 		$(equationStack).html(htmlValue);
 		$(equationStack).find("div").each(function () {
@@ -632,6 +674,7 @@ var EquationEditor = function (vals) {
 
 	var currentDataArray;
 	equationEditor.loadACombination = function (dataArray) {
+		$("#equationStackSmall").html("");
 		var allVizs = visController.getAllVizs();
 		equationEditor.resetData();
 		currentDataArray = dataArray.slice();
@@ -646,12 +689,12 @@ var EquationEditor = function (vals) {
 			var data = dataArray[i];
 			var color = data.type == "metric" ? "#08519c" : "#21B571";
 			if (i + 1 < dataArray.length) {
-				$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
+				$(equationStack).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
 
 				adjustNewElementsToShrinkLevel(idCnt - 2);
 				adjustNewElementsToShrinkLevel(idCnt - 1);
 			} else {
-				$(equationStack).append("<div innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+				$(equationStack).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:20px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
 				adjustNewElementsToShrinkLevel(idCnt - 1);
 			}
 		}
@@ -670,13 +713,13 @@ var EquationEditor = function (vals) {
 			if ($(this).attr("id") != undefined) {
 				if (getNameOfHTMLId($(this).attr("id")) != "") {
 
-					console.log("SHOWWOLEEQUATION: " + getNameOfHTMLId($(this).attr("id")));
+					//console.log("SHOWWHOLEEQUATION: " + getNameOfHTMLId($(this).attr("id")));
 					replaceHelper($(this).attr("id"), getNameOfHTMLId($(this).attr("id")));
 					equationEditor.showWholeEquation();
 				}
 			}
 		});
-		shrinkElementsIfNecessary(1);
+		//shrinkElementsIfNecessary(1);
 	}
 
 	var getEquation = function () {
@@ -722,11 +765,10 @@ var EquationEditor = function (vals) {
 
 		return allElementsString;
 	}
-
 	equationEditor.createNewQM = function () {
 		console.log("SAVE");
-		if (nameOfLoadedMetric != "") {
-		console.log("SAVE2");
+		if (nameOfLoadedMetric != "" && nameOfLoadedMetric != "temp") {
+			console.log("SAVE2");
 			var answer = confirm('Overwrite existing metric?');
 			if (answer) {
 				//console.log('yes');
@@ -751,9 +793,15 @@ var EquationEditor = function (vals) {
 					alert("ERROR");
 			}
 		} else {
-		console.log("SAVE3");
+			console.log("SAVE3 " + nameOfLoadedMetric);
 			var name = prompt("Quality Metric name:", "Insert name here!");
 			if (name != null) {
+
+				if (nameOfLoadedMetric == "temp" || nameOfLoadedMetric == "") {
+					console.log("IN HERE");
+					$("#equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + name + "</div>");
+					nameOfLoadedMetric = name;
+				}
 				var backupCurrentView = $(equationStack).html();
 				equationEditor.showWholeEquation();
 				var equation = getEquation();
@@ -945,10 +993,11 @@ var EquationEditor = function (vals) {
 		});
 
 		//Use the variable shrinkLevel
-		//console.log("SUM WIDTH: " + sumWidth + " equationStack width " + $(equationStack).width());
+		console.log("SUM WIDTH: " + sumWidth + " > equationStack width " + $(equationStack).width());
 		if (sumWidth > ($(equationStack).width())) {
 			if ((operation == -1 || operation == 1)) {
 				shrinkLevel++;
+				console.log("--------------------> +shrinklevel: " + shrinkLevel);
 				$(equationStack).find("*").each(function () {
 					//	console.log($(this).attr("id") +" TYPE: " + $(this).attr("type"));
 					if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
@@ -993,6 +1042,7 @@ var EquationEditor = function (vals) {
 				});
 				//console.log("EXTEND ELEMENTS");
 				shrinkLevel--;
+				console.log("--------------------> -shrinklevel: " + shrinkLevel);
 
 				shrinkElementsIfNecessary(1);
 			}
@@ -1034,20 +1084,30 @@ var EquationEditor = function (vals) {
 		}
 
 	}
+	var printZoomArray = function () {
+		console.log("--------------> Zoom Array: ")
+		for (var i = 0; i < zoomArray.length; i++) {
+			console.log("--------------> " + i + " " + zoomArray[i]);
+		}
+		console.log("<--------------")
 
+	}
 	//EVENTS:
 	equationEditor.showMetric = function (id) {
 		var name = getNameOfId(id);
 		if (name != "") {
-			$("#equation" + id).find("#neededText").html()
 			console.log("NAME: " + name);
-			if (nameOfLoadedMetric != "")
-				zoomArray.push(nameOfLoadedMetric);
-			equationEditor.resetData();
+			var help = nameOfLoadedMetric;
 			var allVizs = visController.getAllVizs();
 			if (allVizs[name]) {
+				$("#equationStackSmall").append(" <div style=\"display: inline-block\"> &rarr; </div> <div class=\"eexcess_keyword_tag\" style=\"background: #08519c\">" + name + "</div>");
+				equationEditor.resetData();
+				equationEditor.loadMetric(name, allVizs[name], false);
+				if (help != "")
+					zoomArray.push(help);
+				else
+					zoomArray.push("temp");
 				nameOfLoadedMetric = name;
-				equationEditor.loadMetric(name, allVizs[name]);
 				//$(equationStack).html(allVizs[name]);
 				rerank();
 			} else {
@@ -1056,6 +1116,7 @@ var EquationEditor = function (vals) {
 		} else {
 			alert("ERROR showMetric SHOULD NEVER HAPPEN2");
 		}
+		printZoomArray();
 	}
 
 	equationEditor.showMore = function () {
@@ -1064,13 +1125,16 @@ var EquationEditor = function (vals) {
 			var name = zoomArray[zoomArray.length - 1];
 			var allVizs = visController.getAllVizs();
 			if (allVizs[name]) {
-				equationEditor.loadMetric(name, allVizs[name]);
+				$("#equationStackSmall div:last-child").remove();
+				$("#equationStackSmall div:last-child").remove();
+				equationEditor.loadMetric(name, allVizs[name], false);
 			}
 			zoomArray.remove(zoomArray.length - 1);
 		} else {
 			notPossible();
 			rerank();
 		}
+		printZoomArray();
 	}
 
 	equationEditor.shiftPressed = function (isShiftPressedPar) {
@@ -1094,6 +1158,11 @@ var EquationEditor = function (vals) {
 	equationEditor.clickOnEquationStackMain = function () {
 		if (isShiftPressed)
 			visController.loadTheSelectedCombinationOfMetrics();
+	}
+
+	equationEditor.setTimers = function (timerVizPar, timerCalcPar) {
+		timerViz = timerVizPar;
+		timerCalc = timerCalcPar;
 	}
 	return equationEditor;
 }

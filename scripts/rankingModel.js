@@ -1,7 +1,7 @@
 
 var RankingModel = (function () {
 
-	function RankingModel(data) {
+	function RankingModel(data, visController) {
 		this.ranking = new RankingArray();
 		this.previousRanking = new RankingArray();
 		this.formulas = [];
@@ -10,6 +10,7 @@ var RankingModel = (function () {
 		this.status = RANKING_STATUS.no_ranking;
 		this.mode = RANKING_MODE.overall_score;
 		this.tmpEquation = "";
+		this.visController = visController;
 	}
 
 	/**
@@ -17,6 +18,7 @@ var RankingModel = (function () {
 	 *
 	 * */
 	var computeScores = function (_data, query) {
+		console.log("computeScores");
 		var ranking = new RankingArray();
 		var norms = calculateEuclidenNormForEachQM(_data, query);
 		//console.log("NORMS: " + JSON.stringify(norms));
@@ -32,7 +34,11 @@ var RankingModel = (function () {
 
 				// if item doesn't contain query term => maxScore and overallScore are not changed
 				//ranking[i].overallScore += termScore;
-				var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
+				console.log("Q.weight: " + parseFloat(q.weight));
+				var QMscore = (parseFloat(d[q.term]) * unitQueryVectorDot).round(3);
+				
+				//var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
+				console.log("name: " + q.term + " score: " + QMscore);
 				if (QMscore < 0)
 					QMscore = 0;
 				ranking[i].overallScore += QMscore;
@@ -128,48 +134,79 @@ var RankingModel = (function () {
 		}
 	};
 
-	var calculateQMsWithEquations = function (_data, _equations, _tmpEquation) {
+	var calculateEuclidenNormForMeasure = function (_data, measure) {
+		var eNorm = 0;
+		_data.forEach(function (d, i) { //Iteration over all articles
+			eNorm += d[measure] * d[measure];
+		});
+		eNorm = Math.sqrt(eNorm);
+		return eNorm;
+	};
 
+	var calculateQMsWithEquations = function (_data, _equations, _tmpEquation) {
+		var dataForPieChart = [];
 		if (_tmpEquation == "") {
 			for (var j = 0; j < _equations.length; j++) {
 				//console.log("DATA: " + JSON.stringify(_data));
 
 				_data.forEach(function (d, i) {
+					//var innerDataForPieChart = [];
 					var equation = _equations[j].equation;
 					var name = _equations[j].name;
-					//TODO CALCULATION IS WRONG IF MULT OR DIV GET USED!
 					for (var key in d) {
+						//var object = {};
 						if (d.hasOwnProperty(key)) {
 							//alert(key + " -> " + d[key]);
 							var re = new RegExp(key, "g");
-							equation = equation.replace(re, d[key]);
+							//Normalize values first
+							var help = d[key] / calculateEuclidenNormForMeasure(_data, key);
+							equation = equation.replace(re, help);
+							//	object.name = key;
+							//	object.value = help;
+							//innerDataForPieChart.push(object);
 						}
 					}
 					var result = math.eval(equation);
 					//console.log("EQUATION: " + equation + " RESULT: " + result);
 					d[name] = result;
 					//console.log("ONE SET: " + JSON.stringify(d));
-				});
+				}
+
+					//dataForPieChart.push(innerDataForPieChart);
+				);
 			}
 		}
 		if (_tmpEquation != "") {
 			_data.forEach(function (d, i) {
 				var equation = _tmpEquation;
 				var name = "tmp";
-				//TODO CALCULATION IS WRONG IF MULT OR DIV GET USED!
+				var currentTitle = d.title;
 				for (var key in d) {
+
+					var object = {};
+
 					if (d.hasOwnProperty(key)) {
 						//alert(key + " -> " + d[key]);
 						var re = new RegExp(key, "g");
-						equation = equation.replace(re, d[key]);
+						//Normalize values first
+						var help = d[key] / calculateEuclidenNormForMeasure(_data, key);
+						var equationOld = equation;
+						equation = equation.replace(re, help);
+						if (equation != equationOld) {
+							object.title = d.title;
+							object.name = key;
+							object.value = help;
+							dataForPieChart.push(object);
+						}
 					}
 				}
 				var result = math.eval(equation);
 				//console.log("TMP EQUATION: " + equation + " RESULT: " + result);
 				d[name] = result;
-				console.log("TMP ONE SET: " + JSON.stringify(d));
+				//console.log("TMP ONE SET: " + JSON.stringify(d));
 			});
 		}
+		visController.setDataForPieChart(dataForPieChart);
 	};
 
 	/****************************************************************************************************

@@ -31,9 +31,16 @@ and open the template in the editor.
         <link rel="stylesheet" type="text/css" href="libs/ui/jquery-ui-1.10.4.custom.min.css">
 		<script type="text/javascript" src="libs/CanvasInput.min.js"></script>
 		
-		
-<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+		<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="libs/jpplot.1.0.8/dist/excanvas.js"></script><![endif]-->
+		<script language="javascript" type="text/javascript" src="libs/jpplot.1.0.8/dist/jquery.jqplot.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="libs/jpplot.1.0.8/dist/jquery.jqplot.css" />
+		<script type="text/javascript" src="libs/jpplot.1.0.8/dist/plugins/jqplot.pieRenderer.min.js"></script>
+		<script type="text/javascript" src="libs/jpplot.1.0.8/dist/plugins/jqplot.donutRenderer.min.js"></script>
+	
+		<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+		<script type="text/javascript" src="scripts/Stopwatch.js" charset="utf-8"> </script>
+		
         <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingArray.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingModel.js" charset="utf-8"></script>
@@ -84,7 +91,7 @@ and open the template in the editor.
                 <p id="p_question"></p> -->
 	  		</section>
 	  		<section id="eexcess_header_control_section">
-                <input type="button" id="eexcess_list_button" value="Show List" />
+                 <input type="button" id="eexcess_list_button" value="Show List" />
                 <input type="button" id="eexcess_text_button" value="Show Text" />
                 <input type="button" id="eexcess_finished_button" value="Finished" />
 
@@ -110,16 +117,18 @@ and open the template in the editor.
                 <div id="eexcess_equation_controls">
 					
 					<div class="icon" onclick="equationEditor.createNewQM()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
-					<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.resetData()"/></div>
+					<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.clearEquationComposer()"/></div>
 					
-					<div class="icon" > <img src="media/undo.png" height="30"/ title="undo" onclick="equationEditor.undo()"> </div> 
-					<div class="icon" ><img src="media/redo.png" title="redo" height="30"  onclick="equationEditor.redo()" /></div>
+					<!-- <div class="icon" > <img src="media/undo.png" height="30"/ title="undo" onclick="equationEditor.undo()"> </div> 
+					<div class="icon" ><img src="media/redo.png" title="redo" height="30"  onclick="equationEditor.redo()" /></div> -->
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
 					<div class="icon" id="divAddBeforeSelected" onclick="equationEditor.addBeforeSelected()" ><img src="media/add.png" title="insert before" height="30" /> before</div>
 					<div class="icon" id="divAddAfterSelected"  onclick="equationEditor.addAfterSlected()" ><img src="media/add.png" title="insert after" height="30"/> after</div>
 					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
 					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
-					<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
+					<!--<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
+					<div id="stopwatchViz" class="icon"></div>
+					<div id="stopwatchCalc"  class="icon"></div>-->
 					<div id="equationStackSmall"> </div>
 					
 				</div> 
@@ -154,7 +163,7 @@ and open the template in the editor.
 					</table>
 					
 				<table id="eexcess_equation_composer_table2">
-					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prod()">$$\prod$$</td><td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><td onclick="equationEditor.showWholeEquation()">show everything</td><td></td></tr> 
+					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><!--<td onclick="equationEditor.showWholeEquation()">show everything</td>--> <td></td><td></td></tr> 
 					</table>
 				</div> 
                 <div id="eexcess_vis_panel_controls">
@@ -187,11 +196,14 @@ and open the template in the editor.
             </div>
 
             <div id="eexcess_document_panel">
-                <div id="eexcess_document_details">
-                    <div>
+			
+						<div id="chart1" > 
+                    <p> </p></div>
+               <!-- <div id="eexcess_document_details">-->
+                    <!--<div>
                         <label>Score: </label>
                         <h3 id="eexcess_document_details_title"></h3>
-                    </div>
+                    </div>-->
                     
                     <!--
                     <div>
@@ -203,7 +215,7 @@ and open the template in the editor.
                         <span id="eexcess_document_details_provider"></span>
                     </div>
                     -->
-                </div>
+                <!--</div>-->
                 <div id="eexcess_document_viewer">
                     <p> </p>
                 </div>
@@ -242,8 +254,36 @@ and open the template in the editor.
 		document.onkeyup = function (event) {
 			if(event.keyCode == 16)
 				equationEditor.shiftPressed(false);	
-			
 		}
+		
+		//var timerStopwatchViz = new Stopwatch(document.getElementById("stopwatchViz"));
+		//var timerStopwatchCalc = new Stopwatch(document.getElementById("stopwatchCalc"));
+		//equationEditor.setTimers(timerStopwatchViz, timerStopwatchCalc);
+		//timerStopwatchViz.start();
+		//timerStopwatchCalc.start();
+	/*	$(document).ready(function () {
+			console.log("DOCUMENT IS READY");
+			var data = [
+				['Heavy Industry', 0.3], ['Retail', 0.61], ['Light Industry', 0.75],
+				['Out of home', 0.8], ['Commuting', 0.1], ['Orientation', 0.4]
+			];
+			var plot1 = jQuery.jqplot('chart1', [data], {
+					seriesDefaults : {
+						// Make this a pie chart.
+						renderer : jQuery.jqplot.PieRenderer,
+						rendererOptions : {
+							// Put data labels on the pie slices.
+							// By default, labels show the percentage of the slice.
+							showDataLabels : true
+						}
+					},
+					legend : {
+						show : true,
+						location : 'e'
+					}
+				});
+
+		});*/
 		</script>
 		
     </body>

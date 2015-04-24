@@ -106,6 +106,10 @@ var VisController = function () {
 	var rankingModel;
 	var rankingVis;
 
+	var dataForPieChart = [];
+
+	//timer
+	var timer;
 	// Color scales
 	var tagColorRange = colorbrewer.Blues[TAG_CATEGORIES + 1];
 	tagColorRange.splice(tagColorRange.indexOf("#08519c"), 1, "#2171b5");
@@ -530,7 +534,7 @@ var VisController = function () {
 		this.length = from < 0 ? this.length + from : from;
 		return this.push.apply(this, rest);
 	};
-	
+
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
 		$(qmContainer).empty();
@@ -566,10 +570,10 @@ var VisController = function () {
 		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted)
 		.on("click", function (data) {
 			if (equationEditor.isShiftPressed() == false) {
-				console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
-				equationEditor.loadMetric(data.term, allVizs[data.term]);
+				//	console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
+				equationEditor.loadMetric(data.term, allVizs[data.term], true);
 			} else {
-				console.log("HILF: " + d3.select(this).attr("ImSelected"));
+				//	console.log("HILF: " + d3.select(this).attr("ImSelected"));
 				if (d3.select(this).attr("ImSelected") == "true") {
 					console.log("IN HERE");
 					d3.select(this).attr("ImSelected", false);
@@ -1003,6 +1007,7 @@ var VisController = function () {
 	};
 
 	LIST.rankRecommendationsWithEquation = function (name) {
+		//timer.start();
 		var tmp = [];
 		tmp.push({
 			'term' : 'tmp',
@@ -1023,12 +1028,12 @@ var VisController = function () {
 		LIST.animateContentList(status);
 		DOCPANEL.clear();
 		VISPANEL.drawRanking();
+		//timer.stop();
 	};
-	
-	
+
 	LIST.rankRecommendationsWithEquationMulti = function (data) {
 
-
+		//timer.start();
 		rankingModel.update(data, rankingMode);
 		this.highlightListItems();
 		var status = rankingModel.getStatus();
@@ -1042,6 +1047,7 @@ var VisController = function () {
 		LIST.animateContentList(status);
 		DOCPANEL.clear();
 		VISPANEL.drawRanking();
+		//timer.stop();
 	};
 	/**
 	 * Appends a yellow circle indicating the ranking position and a colored legend stating #positionsChanged
@@ -1483,19 +1489,52 @@ var VisController = function () {
 	};
 
 	DOCPANEL.showDocument = function (index) {
-		$(documentDetailsTitle).html(this.internal.highlightKeywordsInText(data[index].title, true));
-		$(documentDetailsYear).html(data[index].articleAge);
+		//$(documentDetailsTitle).html(this.internal.highlightKeywordsInText(data[index].title, true));
+		//$(documentDetailsYear).html(data[index].articleAge);
+	//	console.log(JSON.stringify(data));
 		//$(documentDetailsLanguage).html(data[index].facets.language);
 		//$(documentDetailsProvider).html(data[index].facets.provider);
-		var QMData = "Volatility: " + data[index].Volatility.round(3) + "<br />" +
-			"Authority: " + data[index].Authority.round(3) + "<br />" +
-			"Complexity: " + data[index].Complexity.round(3) + "<br />" +
-			"Informativeness: " + data[index].Informativeness.round(3) + "<br />" +
-			"Consistency: " + data[index].Consistency.round(3) + "<br />" +
-			"Currency: " + data[index].Currency.round(3) + "<br />" +
-			"Completeness: " + data[index].Completeness.round(3);
+		/*	var QMData = "Volatility: " + data[index].Volatility.round(3) + "<br />" +
+		"Authority: " + data[index].Authority.round(3) + "<br />" +
+		"Complexity: " + data[index].Complexity.round(3) + "<br />" +
+		"Informativeness: " + data[index].Informativeness.round(3) + "<br />" +
+		"Consistency: " + data[index].Consistency.round(3) + "<br />" +
+		"Currency: " + data[index].Currency.round(3) + "<br />" +
+		"Completeness: " + data[index].Completeness.round(3);*/
+		var currentTitle = data[index].title;
 
-		$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
+		var pieData = [];
+		console.log("DATAFORPIECHART LENGTH:" + dataForPieChart.length);
+		for (var i = 0; i < dataForPieChart.length; i++) {
+			var currentPieChartData = dataForPieChart[i];
+			if (currentPieChartData.title == currentTitle) {
+				console.log("in here " + currentPieChartData.name+" "+ currentPieChartData.value);
+				var pieDataInner = [currentPieChartData.name, currentPieChartData.value];
+				pieData.push(pieDataInner);
+			}
+		}
+		console.log("pieDatat length: " + pieData.length);
+		$("#chart1").html("");
+		var plot1 = jQuery.jqplot('chart1', [pieData], {
+				seriesDefaults : {
+					// Make this a pie chart.
+					renderer : jQuery.jqplot.PieRenderer,
+					rendererOptions : {
+						// Put data labels on the pie slices.
+						// By default, labels show the percentage of the slice.
+						showDataLabels : true,
+						textColor : "black"
+					}
+				},
+				legend : {
+					show : true,
+					location : 'e',
+					textColor : "black"
+				}
+			});
+
+		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"http://en.wikipedia.org/wiki/" + currentTitle + "\" seamless></iframe>");
+		//$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
 		$(documentViewer + ' p').hide();
 		$(documentViewer + ' p').fadeIn('slow');
 		$(documentViewer).scrollTo('top');
@@ -1506,8 +1545,9 @@ var VisController = function () {
 		$(documentDetailsYear).empty();
 		$(documentDetailsLanguage).empty();
 		$(documentDetailsProvider).empty();
-		//$(documentViewer).empty();
-		$(documentViewer + ' p').fadeOut('slow');
+		$(documentViewer).empty();
+		$("#chart1").empty();
+		//$(documentViewer + ' p').fadeOut('slow');
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1629,25 +1669,33 @@ var VisController = function () {
 		EVTHANDLER.btnResetClicked();
 	}
 
+	visController.tmpStoreEquationComposer = function (vizData) {
+		allVizs["temp"] = vizData;
+	}
+
 	visController.rankWithEquation = function (equation) {
-		EVTHANDLER.btnResetClicked();
+		//EVTHANDLER.btnResetClicked();
 		rankingModel.setTempEquation(equation);
 		LIST.rankRecommendationsWithEquation();
 	}
-	
+
 	visController.rankWithEquationMulti = function (data) {
-		EVTHANDLER.btnResetClicked();
+		//EVTHANDLER.btnResetClicked();
 		rankingModel.setTempEquation("");
 		LIST.rankRecommendationsWithEquationMulti(data);
-	}	
+	}
 
 	visController.loadTheSelectedCombinationOfMetrics = function () {
 		console.log("loadTheSelectedCombinationOfMetrics");
 		equationEditor.loadACombination(selectedTagsForEquationEditor);
 	}
-	
-	visController.clearSelectedTagsForEquationEditorArray = function(){
+
+	visController.clearSelectedTagsForEquationEditorArray = function () {
 		selectedTagsForEquationEditor.splice(0, selectedTagsForEquationEditor.length);
+	}
+	visController.setTimer = function (timerPar) {
+		timer = timerPar;
+		//timer.start();
 	}
 	//-------------------------------------------------------------------------
 
@@ -1743,14 +1791,14 @@ var VisController = function () {
 		if (test.length > 0)
 		loadEquations(test);
 		}*/
-		console.log("retrieveAllEquations");
+		//console.log("retrieveAllEquations");
 		if (JSONequationsString != "no results") {
-			console.log("retrieveAllEquations2");
+			//console.log("retrieveAllEquations2");
 			var equations = JSON.parse(JSONequationsString);
 			var allEquations = equations.equations;
 
 			for (var key in allEquations) {
-				console.log(key + " : " + allEquations[key]);
+				//console.log(key + " : " + allEquations[key]);
 				var test = '{"stem":"' + key + '","term":"' + key + '","repeated":2,"variations":{"worker":9}}';
 				var alreadyInKeywords = false;
 				keywords.forEach(function (k) {
@@ -1758,7 +1806,7 @@ var VisController = function () {
 						alreadyInKeywords = true;
 				});
 				if (!alreadyInKeywords) {
-					console.log("ADD TO KEYWORDS");
+					//	console.log("ADD TO KEYWORDS");
 					keywords.push(JSON.parse(test));
 				}
 
@@ -1767,7 +1815,7 @@ var VisController = function () {
 		}
 		EVTHANDLER.btnResetClicked();
 
-		console.log("KEYWORDS: " + JSON.stringify(keywords));
+		//console.log("KEYWORDS: " + JSON.stringify(keywords));
 	}
 
 	function retrieveAllEquationizs(JSONvisualizationsString) {
@@ -1781,9 +1829,14 @@ var VisController = function () {
 		}
 	}
 
-	visController.getAllVizs = function(){
+	visController.getAllVizs = function () {
 		return allVizs;
 	}
+
+	visController.setDataForPieChart = function (dataForPieChartPar) {
+		dataForPieChart = dataForPieChartPar;
+	}
+
 	visController.init = function (articles) {
 		//dataset = JSON.parse($("#dataset").text());
 		//console.log(JSON.stringify(dataset));
@@ -1805,7 +1858,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																		{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
@@ -1814,7 +1867,7 @@ var VisController = function () {
 
 		databaseConnector.getAllEquations(retrieveAllEquations);
 		databaseConnector.getEquationViz(retrieveAllEquationizs);
-		rankingModel = new RankingModel(data);
+		rankingModel = new RankingModel(data, self);
 		rankingVis = new RankingVis(root, self);
 
 		// only for evaluation

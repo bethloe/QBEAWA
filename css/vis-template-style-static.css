@@ -423,6 +423,7 @@ p#p_question {
 }
 
 /*  keywords in keyword container  */
+
 .eexcess_keyword_tag{
 	display: inline-block;
 	pointer-events: all;
@@ -1073,6 +1074,15 @@ VIS PANEL (center of screen)
 }
 
 #eexcess_document_details div span {
+}
+#chart1 {
+ display: flex;
+    flex-wrap: wrap;
+	min-height: 18em;
+    text-align: left;
+    padding: .5em;
+    color: black;
+    text-shadow: 0em .1em #444
 }
 
 #eexcess_document_viewer {
