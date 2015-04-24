@@ -1515,6 +1515,7 @@ var VisController = function () {
 		}
 		console.log("pieDatat length: " + pieData.length);
 		$("#chart1").html("");
+		if(pieData.length > 0){
 		var plot1 = jQuery.jqplot('chart1', [pieData], {
 				seriesDefaults : {
 					// Make this a pie chart.
@@ -1532,7 +1533,7 @@ var VisController = function () {
 					textColor : "black"
 				}
 			});
-
+		}
 		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"http://en.wikipedia.org/wiki/" + currentTitle + "\" seamless></iframe>");
 		//$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
 		$(documentViewer + ' p').hide();
