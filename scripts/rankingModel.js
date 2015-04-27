@@ -35,7 +35,7 @@ var RankingModel = (function () {
 				// if item doesn't contain query term => maxScore and overallScore are not changed
 				//ranking[i].overallScore += termScore;
 				console.log("Q.weight: " + parseFloat(q.weight));
-				var QMscore = (parseFloat(d[q.term]) * unitQueryVectorDot).round(3);
+				var QMscore = (parseFloat(d[q.term] / norms[q.term]) * unitQueryVectorDot).round(3);
 				
 				//var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
 				console.log("name: " + q.term + " score: " + QMscore);

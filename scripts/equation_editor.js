@@ -238,6 +238,7 @@ var EquationEditor = function (vals) {
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 	equationEditor.clearEquationComposer = function () {
+		visController.resetHighlighting();
 		$("#equationStackSmall").html("New Equation");
 		equationEditor.resetData();
 	}
@@ -483,6 +484,10 @@ var EquationEditor = function (vals) {
 				$(this).slider("value", sliderValue);
 		});
 	}
+	
+	equationEditor.rerankPublic = function () {
+		rerank();
+	}
 
 	var rerank = function () {
 		//timerViz.reset();
@@ -511,7 +516,7 @@ var EquationEditor = function (vals) {
 					'weight' : 1
 				});
 			}
-			visController.rankWithEquationMulti(tmp);
+			visController.rankWithEquationMulti(tmp, currentDataArray.length);
 			//GLOBAL_TEMPNAMECOUNTER++;
 		} else if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "multi" && alpha == false) {
 			//Rank the articles
@@ -527,6 +532,9 @@ var EquationEditor = function (vals) {
 			repairSliders();
 		}
 		//timerViz.stop();
+		
+		visController.resetHighlighting();
+		highlightUsedElements();
 	}
 
 	equationEditor.slideStop = function (event, ui) {
@@ -601,6 +609,8 @@ var EquationEditor = function (vals) {
 		nameOfLoadedMetric = name;
 		rerank();
 		shrinkElementsIfNecessary(1);
+		visController.resetHighlighting();
+		highlightUsedElements();
 	}
 
 	var replaceHelper = function (idToReplace, name) {
@@ -722,6 +732,16 @@ var EquationEditor = function (vals) {
 		//shrinkElementsIfNecessary(1);
 	}
 
+	var highlightUsedElements = function () {
+		var allElementsArray = [];
+		$(equationStack).find('*').each(function () {
+			if (this.id.indexOf("equation") > -1) {
+				allElementsArray.push($(this).find("#neededText").html());
+			}
+		});
+		visController.highlightElements(allElementsArray);
+	}
+
 	var getEquation = function () {
 		var allElementsString = "";
 		$(equationStack).find('*').each(function () {
@@ -772,11 +792,11 @@ var EquationEditor = function (vals) {
 			var answer = confirm('Overwrite existing metric?');
 			if (answer) {
 				//console.log('yes');
-
 				var backupCurrentView = $(equationStack).html();
 				equationEditor.showWholeEquation();
 				var equation = getEquation();
 				$(equationStack).html(backupCurrentView);
+				repairSliders();
 				var vizData = $(equationStack).html();
 				visController.newQMFromEquationComposer(nameOfLoadedMetric, equation, vizData);
 
@@ -787,6 +807,7 @@ var EquationEditor = function (vals) {
 					equationEditor.showWholeEquation();
 					var equation = getEquation();
 					$(equationStack).html(backupCurrentView);
+					repairSliders();
 					var vizData = $(equationStack).html();
 					visController.newQMFromEquationComposer(name, equation, vizData);
 				} else
@@ -806,6 +827,7 @@ var EquationEditor = function (vals) {
 				equationEditor.showWholeEquation();
 				var equation = getEquation();
 				$(equationStack).html(backupCurrentView);
+				repairSliders();
 				var vizData = $(equationStack).html();
 				//console.log("vizData: " + vizData);
 				visController.newQMFromEquationComposer(name, equation, vizData);

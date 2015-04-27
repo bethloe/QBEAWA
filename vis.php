@@ -179,9 +179,9 @@ and open the template in the editor.
                         </button>
                     </div>
 
-                    <div id="eexcess_keywords_box">
-                        <p>Drop tags here!</p>
-                    </div>
+                    <!-- <div id="eexcess_keywords_box">
+                       <p>Drop tags here!</p> 
+                    </div>-->
                 </div>
 
                 <div id="eexcess_vis_panel_canvas">

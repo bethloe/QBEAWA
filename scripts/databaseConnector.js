@@ -10,7 +10,7 @@ var DatabaseConnector = function (vals) {
 		})
 		.done(function (data) {
 			console.log(data);
-			alert("Formula saved!");
+		//	alert("Formula saved!");
 		});
 	}
 
@@ -22,7 +22,7 @@ var DatabaseConnector = function (vals) {
 		})
 		.done(function (data) {
 			console.log(data);
-			alert("Visualization data saved!");
+			//alert("Visualization data saved!");
 		});
 	}
 
@@ -52,7 +52,7 @@ var DatabaseConnector = function (vals) {
 		})
 		.done(function (data) {
 			console.log(data);
-			alert("Equation saved!");
+			//alert("Equation saved!");
 		});
 	}
 
@@ -64,7 +64,7 @@ var DatabaseConnector = function (vals) {
 		})
 		.done(function (data) {
 			console.log(data);
-			alert("Visualization data saved!");
+			//alert("Visualization data saved!");
 		});
 	}
 

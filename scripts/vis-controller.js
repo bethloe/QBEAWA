@@ -518,7 +518,7 @@ var VisController = function () {
 	 * */
 	TAGCLOUD.clearTagbox = function () {
 		$(tagBox).empty();
-		$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
+		//$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
 		selectedTags = [];
 		TAGCLOUD.updateTagColor();
 	};
@@ -780,7 +780,7 @@ var VisController = function () {
 		TAGCLOUD.updateTagColor();
 
 		if (selectedTags.length == 0) {
-			$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
+			//$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
 			LIST.resetContentList();
 			console.log("TAGCLOUD.deleteTagInBox");
 			VISPANEL.resetRanking();
@@ -1002,6 +1002,7 @@ var VisController = function () {
 			this.updateItemsBackground();
 		}
 		LIST.animateContentList(status);
+		$(".eexcess_list").css("height", 26 + "px");
 		DOCPANEL.clear();
 		VISPANEL.drawRanking();
 	};
@@ -1026,12 +1027,13 @@ var VisController = function () {
 			this.updateItemsBackground();
 		}
 		LIST.animateContentList(status);
+		$(".eexcess_list").css("height", 26  + "px");
 		DOCPANEL.clear();
 		VISPANEL.drawRanking();
 		//timer.stop();
 	};
 
-	LIST.rankRecommendationsWithEquationMulti = function (data) {
+	LIST.rankRecommendationsWithEquationMulti = function (data, numElements) {
 
 		//timer.start();
 		rankingModel.update(data, rankingMode);
@@ -1045,8 +1047,13 @@ var VisController = function () {
 			this.updateItemsBackground();
 		}
 		LIST.animateContentList(status);
+		$(".eexcess_list").css("height", 26 * numElements + "px");
 		DOCPANEL.clear();
-		VISPANEL.drawRanking();
+		if (showRanking) {
+			rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
+			$(visPanelCanvas).scrollTo('top');
+		}
+		//VISPANEL.drawRanking();
 		//timer.stop();
 	};
 	/**
@@ -1491,7 +1498,7 @@ var VisController = function () {
 	DOCPANEL.showDocument = function (index) {
 		//$(documentDetailsTitle).html(this.internal.highlightKeywordsInText(data[index].title, true));
 		//$(documentDetailsYear).html(data[index].articleAge);
-	//	console.log(JSON.stringify(data));
+		//	console.log(JSON.stringify(data));
 		//$(documentDetailsLanguage).html(data[index].facets.language);
 		//$(documentDetailsProvider).html(data[index].facets.provider);
 		/*	var QMData = "Volatility: " + data[index].Volatility.round(3) + "<br />" +
@@ -1508,31 +1515,31 @@ var VisController = function () {
 		for (var i = 0; i < dataForPieChart.length; i++) {
 			var currentPieChartData = dataForPieChart[i];
 			if (currentPieChartData.title == currentTitle) {
-				console.log("in here " + currentPieChartData.name+" "+ currentPieChartData.value);
+				console.log("in here " + currentPieChartData.name + " " + currentPieChartData.value);
 				var pieDataInner = [currentPieChartData.name, currentPieChartData.value];
 				pieData.push(pieDataInner);
 			}
 		}
 		console.log("pieDatat length: " + pieData.length);
 		$("#chart1").html("");
-		if(pieData.length > 0){
-		var plot1 = jQuery.jqplot('chart1', [pieData], {
-				seriesDefaults : {
-					// Make this a pie chart.
-					renderer : jQuery.jqplot.PieRenderer,
-					rendererOptions : {
-						// Put data labels on the pie slices.
-						// By default, labels show the percentage of the slice.
-						showDataLabels : true,
+		if (pieData.length > 0) {
+			var plot1 = jQuery.jqplot('chart1', [pieData], {
+					seriesDefaults : {
+						// Make this a pie chart.
+						renderer : jQuery.jqplot.PieRenderer,
+						rendererOptions : {
+							// Put data labels on the pie slices.
+							// By default, labels show the percentage of the slice.
+							showDataLabels : true,
+							textColor : "black"
+						}
+					},
+					legend : {
+						show : true,
+						location : 'e',
 						textColor : "black"
 					}
-				},
-				legend : {
-					show : true,
-					location : 'e',
-					textColor : "black"
-				}
-			});
+				});
 		}
 		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"http://en.wikipedia.org/wiki/" + currentTitle + "\" seamless></iframe>");
 		//$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
@@ -1668,6 +1675,7 @@ var VisController = function () {
 
 		rankingModel.newQMFromEquationComposer(name, equation);
 		EVTHANDLER.btnResetClicked();
+		equationEditor.rerankPublic();
 	}
 
 	visController.tmpStoreEquationComposer = function (vizData) {
@@ -1680,10 +1688,10 @@ var VisController = function () {
 		LIST.rankRecommendationsWithEquation();
 	}
 
-	visController.rankWithEquationMulti = function (data) {
+	visController.rankWithEquationMulti = function (data, numElements) {
 		//EVTHANDLER.btnResetClicked();
 		rankingModel.setTempEquation("");
-		LIST.rankRecommendationsWithEquationMulti(data);
+		LIST.rankRecommendationsWithEquationMulti(data, numElements);
 	}
 
 	visController.loadTheSelectedCombinationOfMetrics = function () {
@@ -1698,6 +1706,41 @@ var VisController = function () {
 		timer = timerPar;
 		//timer.start();
 	}
+	visController.highlightElements = function (allElementsArray) {
+		d3.select(qmContainer).selectAll(tagClass).each(function () {
+			for (var i = 0; i < allElementsArray.length; i++) {
+				var element = allElementsArray[i];
+				if (d3.select(this).text() == element) {
+					d3.select(this).style('border', function (k) {
+						return '3px solid red';
+					});
+				}
+
+			}
+		});
+
+		d3.select(measuresContainer).selectAll(tagClassMeasures).each(function () {
+			for (var i = 0; i < allElementsArray.length; i++) {
+				var element = allElementsArray[i];
+				if (d3.select(this).text() == element) {
+					d3.select(this).style('border', function (k) {
+						return '3px solid red';
+					});
+				}
+
+			}
+		});
+	}
+
+	visController.resetHighlighting = function () {
+		d3.select(qmContainer).selectAll(tagClass).style('border', function (k) {
+			return '1px solid #08519c';
+		});
+		d3.select(measuresContainer).selectAll(tagClassMeasures).style('border', function (k) {
+			return '1px solid #21B571';
+		});
+	}
+
 	//-------------------------------------------------------------------------
 
 	visController.newQM = function (formulas, JSONFormatOfVis) {
@@ -1723,7 +1766,7 @@ var VisController = function () {
 			rankingModel.newQM(formulas[i]);
 
 		}
-		EVTHANDLER.btnResetClicked();
+		//EVTHANDLER.btnResetClicked();
 	}
 
 	function loadQMformulas(formulas) {
@@ -1742,7 +1785,7 @@ var VisController = function () {
 			rankingModel.newQM(formulas[i]);
 
 		}
-		EVTHANDLER.btnResetClicked();
+		//EVTHANDLER.btnResetClicked();
 	}
 	function retrieveAllFormulas(formulas) {
 		if (formulas != "no results") {
@@ -1859,7 +1902,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																						{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

@@ -658,7 +658,7 @@ VIS PANEL (center of screen)
 	display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 45%;
+    width: 100%;
     background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
