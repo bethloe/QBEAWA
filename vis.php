@@ -125,8 +125,8 @@ and open the template in the editor.
 				<div class="eexcess_equation_ranking_operation">
 						
 						<div class="icon" > Quality metric normalization method for ranking: </div> 
-					<div id="defaultRank" class="icon" style="background-color: red;" onclick="equationEditor.setNormMethodRank('default')" title="default"> $$\frac{m_i}{\sum_{i=0}^N(|a(m_i)_i|)}$$ </div> 
-					<div id="euclideanRank"  class="icon" onclick="equationEditor.setNormMethodRank('euclidean')" title="euclidean norm"> $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div> 
+					<div id="defaultRank" class="icon"  onclick="equationEditor.setNormMethodRank('default')" title="default"> $$\frac{m_i}{\sum_{i=0}^N(|a(m_i)_i|)}$$ </div> 
+					<div id="euclideanRank"  class="icon" style="background-color: red;" onclick="equationEditor.setNormMethodRank('euclidean')" title="euclidean norm"> $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div> 
 					<div id="pnormRank" class="icon" onclick="equationEditor.setNormMethodRank('pNorm')" title="p-norm"> $$\frac{m_i}{\sqrt[p](\sum_{i=1}^N(|a(m_i)_i|^p))}$$ </div> 
 					<div id="maxnormRank" class="icon" onclick="equationEditor.setNormMethodRank('maxNorm')" title="Maximum norm"> $$\frac{m_i}{max(|m_i|,...,|m_n|)}$$ </div> 
 						

@@ -13,7 +13,7 @@ var RankingModel = (function () {
 		this.visController = visController;
 		this.normMethod = "default";
 		this.p = 0;
-		this.normMethodRank = "default";
+		this.normMethodRank = "euclidean";
 		this.pRank = 0;
 	}
 

@@ -394,6 +394,13 @@ var EquationEditor = function (vals) {
 			$('#equation' + (currentlySelectedBoxId + 1)).remove();
 		} else if ($(currentlySelectedBox).attr("type") == "brickA") {
 			$('#equation' + (currentlySelectedBoxId - 1)).remove();
+		}else if(currentlySelectedBox == ""){
+			var answer = confirm('Are you sure you want to delete the whole QM?');
+			if (answer) {
+				visController.deleteWholeQM(nameOfLoadedMetric);
+				equationEditor.clearEquationComposer();
+				return;
+			}
 		}
 		$(currentlySelectedBox).remove();
 		checkProgressArray();

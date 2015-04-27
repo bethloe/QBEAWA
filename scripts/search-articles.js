@@ -9,6 +9,8 @@ var GLOBAL_numElements = 17;
 var GLOBAL_interval;
 var GLOBAL_generatingDataCnt = 0;
 var visController;
+var GLOBLA_getFeaturedArticlesLink = "action=query&format=json&list=categorymembers&cmlimit=10&cmtitle=Category:Featured%20articles&continue"
+var GLOBLA_getFeaturedArticlesLinkContinue = "action=query&format=json&list=categorymembers&cmlimit=10&cmtitle=Category:Featured%20articles"
 
 var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
 	$.ajax({
@@ -31,6 +33,8 @@ var searchArticle = function (keyword, maxNumSearch, equationEditor) {
 	GLOBAL_dataCollector = [];
 	GLOBAL_CrawledArticles = {};
 	retrieveData(GLOBAL_linkToAPI + "action=query&list=search&format=json&srsearch=" + GLOBAL_keyWord + "&srlimit=max&srprop=&continue", handleSearch);
+	//retrieveData(GLOBAL_linkToAPI + GLOBLA_getFeaturedArticlesLink, handleSearchFeaturedArticles);
+	
 	//showAllData();
 	/*window.setInterval(function () {
 	console.log("IN HERE");
@@ -42,6 +46,36 @@ var searchArticle = function (keyword, maxNumSearch, equationEditor) {
 	visController.showPreparingMessage("Generating Data.");
 	equationEditor.setVisController(visController);
 	GLOBAL_generatingDataCnt += 1;
+}
+
+var handleSearchFeaturedArticles = function (JSONResponse) {
+	var articles = JSON.parse(JSON.stringify(JSONResponse));
+	var JSONArticleTitles = articles.query.categorymembers;
+
+	for (var i = 0; i < JSONArticleTitles.length; i++) {
+		if (GLOBAL_searchCount >= GLOBAL_maxNumSearch) {
+			return;
+		}
+		if (!GLOBAL_CrawledArticles.hasOwnProperty(JSONArticleTitles[i].title)) {
+			GLOBAL_CrawledArticles[JSONArticleTitles[i].title] = 1;
+			var dr = new DataRetriever({
+					title : JSONArticleTitles[i].title
+				});
+			GLOBAL_dataCollector.push(dr);
+			dr.getAllMeasures();
+			GLOBAL_searchCount += 1;
+		}
+	}
+	if (articles.hasOwnProperty("continue")) {
+		if (articles.continue.hasOwnProperty("cmcontinue")) {
+			//GET REST OF THE DATA:
+			//retrieveData(GLOBAL_linkToAPI + GLOBLA_getFeaturedArticlesLinkContinue  + "&cmcontinue="+articles.continue.cmcontinue+"&continue", //handleSearchFeaturedArticles);
+			
+			retrieveData(GLOBAL_linkToAPI + "action=query&list=search&format=json&srsearch=" + GLOBAL_keyWord + "&srlimit=10&srprop=&continue", handleSearch);
+		}
+	} else {
+		console.log("SEARCH IS DONE");
+	}
 }
 
 var handleSearch = function (JSONResponse) {

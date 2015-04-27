@@ -125,6 +125,19 @@ if($operation == 'storeEquation'){
 	} else {
 		echo "no results";
 	}	
+}else if($operation == 'delteEquationInclViz'){
+	$name = $_POST ['equationName'];
+	$sql = "DELETE FROM equations where e_name='".$name."'";
+	if ($conn->query($sql) === TRUE) {
+		$sql = "DELETE FROM equationviz where ev_name='".$name."'";
+		if ($conn->query($sql) === TRUE) {
+			echo "operation delteEquationInclViz done ";
+		}else {
+			echo "Error: " . $sql . "<br>" . $conn->error;
+		}
+	} else {
+		echo "Error: " . $sql . "<br>" . $conn->error;
+	}	
 }
 
 

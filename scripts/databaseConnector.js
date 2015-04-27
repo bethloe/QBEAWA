@@ -86,6 +86,16 @@ var DatabaseConnector = function (vals) {
 		});
 	}
 	
+	databaseConnector.delteEquationInclViz = function(name) {
+	$.post("database.php", {
+			operation : "delteEquationInclViz",
+			equationName : name
+		})
+		.done(function (data) {
+			console.log(data);
+			//alert(data);
+		});
+	}
 	
 	return databaseConnector;
 

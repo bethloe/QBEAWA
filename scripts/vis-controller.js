@@ -1747,6 +1747,32 @@ var VisController = function () {
 	visController.setNormMethodRank = function(normMethod, p){
 		rankingModel.setNormMethodRank(normMethod, p);
 	}
+	visController.deleteWholeQM = function(nameOfQM){
+		//Delete from keywords
+		var indexToDelete = -1;
+		for(var i = 0; i<keywords.length; i++){
+			if(keywords[i].term == nameOfQM){
+				indexToDelete = i;
+			}
+		}
+		if(indexToDelete != -1)
+			keywords.remove(indexToDelete);
+			
+		//Delete from allVizs
+		indexToDelete = -1;
+		for(var i = 0; i<allVizs.length; i++){
+			if(allVizs[i].name == nameOfQM){
+				indexToDelete = i;
+			}
+		}
+		if(indexToDelete != -1)
+			allVizs.remove(indexToDelete);
+			
+		//Delete from Database
+		databaseConnector.delteEquationInclViz(nameOfQM);
+		
+		EVTHANDLER.btnResetClicked();
+	}
 	//-------------------------------------------------------------------------
 
 	visController.newQM = function (formulas, JSONFormatOfVis) {
