@@ -1740,7 +1740,13 @@ var VisController = function () {
 			return '1px solid #21B571';
 		});
 	}
-
+	
+	visController.setNormMethod = function(normMethod, p){
+		rankingModel.setNormMethod(normMethod, p);
+	}
+	visController.setNormMethodRank = function(normMethod, p){
+		rankingModel.setNormMethodRank(normMethod, p);
+	}
 	//-------------------------------------------------------------------------
 
 	visController.newQM = function (formulas, JSONFormatOfVis) {
@@ -1948,6 +1954,8 @@ var VisController = function () {
 		$('#eexcess_topic_text_section').css('boxShadow', '.5em .5em 1em #aaa, -.5em .5em 1em #aaa, .5em .5em 1em #aaa');
 		showRanking = false;
 		}*/
+		
+		equationEditor.dataAvailable();
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

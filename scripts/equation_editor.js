@@ -20,6 +20,8 @@ var EquationEditor = function (vals) {
 	var zoomArray = [];
 	var timerViz;
 	var timerCalc;
+	var areDataAvailable = false;
+	var isShowNormPanels = false;
 	/*mode can be single or multi*/
 
 	//INSERTS: ----------------------------------------------------------------
@@ -484,7 +486,7 @@ var EquationEditor = function (vals) {
 				$(this).slider("value", sliderValue);
 		});
 	}
-	
+
 	equationEditor.rerankPublic = function () {
 		rerank();
 	}
@@ -492,49 +494,51 @@ var EquationEditor = function (vals) {
 	var rerank = function () {
 		//timerViz.reset();
 		//timerViz.start();
-		if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "single") {
-			//Rank the articles
-			//1. We have to break it down into the detail view
-			//Maybe we should use a hidden div to do that
-			var backupCurrentView = $(equationStack).html();
-			console.log("equationEditor.showWholeEquation()");
-			equationEditor.showWholeEquation();
-			//2. Now we can rank it normally
-			visController.rankWithEquation(getEquation());
-			//3. Show the combined view
-			$(equationStack).html(backupCurrentView);
-			//LOAD IT AGAIN
-			repairSliders();
-		} else if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "multi" && alpha == true) {
-			//Rank the articles
-			var tmp = [];
-			for (var i = 0; i < currentDataArray.length; i++) {
-				var data = currentDataArray[i];
-				tmp.push({
-					'term' : data.name,
-					'stem' : data.name,
-					'weight' : 1
-				});
-			}
-			visController.rankWithEquationMulti(tmp, currentDataArray.length);
-			//GLOBAL_TEMPNAMECOUNTER++;
-		} else if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "multi" && alpha == false) {
-			//Rank the articles
-			//1. We have to break it down into the detail view
-			//Maybe we should use a hidden div to do that
-			var backupCurrentView = $(equationStack).html();
-			equationEditor.showWholeEquation();
-			//2. Now we can rank it normally
-			visController.rankWithEquation(getEquation());
+		if (areDataAvailable) {
+			if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "single") {
+				//Rank the articles
+				//1. We have to break it down into the detail view
+				//Maybe we should use a hidden div to do that
+				var backupCurrentView = $(equationStack).html();
+				console.log("equationEditor.showWholeEquation()");
+				equationEditor.showWholeEquation();
+				//2. Now we can rank it normally
+				visController.rankWithEquation(getEquation());
+				//3. Show the combined view
+				$(equationStack).html(backupCurrentView);
+				//LOAD IT AGAIN
+				repairSliders();
+			} else if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "multi" && alpha == true) {
+				//Rank the articles
+				var tmp = [];
+				for (var i = 0; i < currentDataArray.length; i++) {
+					var data = currentDataArray[i];
+					tmp.push({
+						'term' : data.name,
+						'stem' : data.name,
+						'weight' : 1
+					});
+				}
+				visController.rankWithEquationMulti(tmp, currentDataArray.length);
+				//GLOBAL_TEMPNAMECOUNTER++;
+			} else if ($(equationStack).find(".eexcess_equation_empty_box").length == 0 && mode == "multi" && alpha == false) {
+				//Rank the articles
+				//1. We have to break it down into the detail view
+				//Maybe we should use a hidden div to do that
+				var backupCurrentView = $(equationStack).html();
+				equationEditor.showWholeEquation();
+				//2. Now we can rank it normally
+				visController.rankWithEquation(getEquation());
 
-			//3. Show the combined view
-			$(equationStack).html(backupCurrentView);
-			repairSliders();
+				//3. Show the combined view
+				$(equationStack).html(backupCurrentView);
+				repairSliders();
+			}
+			//timerViz.stop();
+
+			visController.resetHighlighting();
+			highlightUsedElements();
 		}
-		//timerViz.stop();
-		
-		visController.resetHighlighting();
-		highlightUsedElements();
 	}
 
 	equationEditor.slideStop = function (event, ui) {
@@ -1186,5 +1190,73 @@ var EquationEditor = function (vals) {
 		timerViz = timerVizPar;
 		timerCalc = timerCalcPar;
 	}
+
+	equationEditor.setNormMethod = function (normMethod) {
+		$("#default").css("background-color", "transparent");
+		$("#euclidean").css("background-color", "transparent");
+		$("#pnorm").css("background-color", "transparent");
+		$("#maxnorm").css("background-color", "transparent");
+		$("#nonorm").css("background-color", "transparent");
+		var p = -1;
+		if (normMethod == "pNorm") {
+			$("#pnorm").css("background-color", "red");
+			var pPar = prompt("p:", "3");
+			if (pPar == null)
+				return;
+			else
+				p = pPar;
+		} else if (normMethod == "default") {
+			$("#default").css("background-color", "red");
+		} else if (normMethod == "euclidean")
+			$("#euclidean").css("background-color", "red");
+		else if (normMethod == "maxNorm")
+			$("#maxnorm").css("background-color", "red");
+		else if (normMethod == "noNorm")
+			$("#nonorm").css("background-color", "red");
+
+		visController.setNormMethod(normMethod, p);
+		rerank();
+	}
+
+	equationEditor.setNormMethodRank = function (normMethod) {
+		$("#defaultRank").css("background-color", "transparent");
+		$("#euclideanRank").css("background-color", "transparent");
+		$("#pnormRank").css("background-color", "transparent");
+		$("#maxnormRank").css("background-color", "transparent");
+		var p = -1;
+		if (normMethod == "pNorm") {
+			$("#pnormRank").css("background-color", "red");
+			var pPar = prompt("p:", "3");
+			if (pPar == null)
+				return;
+			else
+				p = pPar;
+		} else if (normMethod == "default") {
+			$("#defaultRank").css("background-color", "red");
+		} else if (normMethod == "euclidean")
+			$("#euclideanRank").css("background-color", "red");
+		else if (normMethod == "maxNorm")
+			$("#maxnormRank").css("background-color", "red");
+		else if (normMethod == "noNorm")
+			$("#nonormRank").css("background-color", "red");
+
+		visController.setNormMethodRank(normMethod, p);
+		rerank();
+	}
+
+	equationEditor.dataAvailable = function () {
+		areDataAvailable = true;
+	}
+
+	equationEditor.showNormPanels = function () {
+		if (isShowNormPanels) {
+			$(".eexcess_equation_ranking_operation").css("display", "none");
+			isShowNormPanels = false;
+		} else {
+			isShowNormPanels = true;
+			$(".eexcess_equation_ranking_operation").css("display", "inline-flex");
+		}
+	}
+
 	return equationEditor;
 }

@@ -91,9 +91,9 @@ and open the template in the editor.
                 <p id="p_question"></p> -->
 	  		</section>
 	  		<section id="eexcess_header_control_section">
-                 <input type="button" id="eexcess_list_button" value="Show List" />
-                <input type="button" id="eexcess_text_button" value="Show Text" />
-                <input type="button" id="eexcess_finished_button" value="Finished" />
+                 <input type="button" id="eexcess_list_button" value="Show List" style="display:none"/>
+                <input type="button" id="eexcess_text_button" value="Show Text" style="display:none" />
+                <input type="button" id="eexcess_finished_button" value="Finished" style="display:none" />
 
                 <section id="eexcess_selected_items_section" style="display:none"></section>
                 <section id="eexcess_topic_text_section" style="display:none">
@@ -113,7 +113,24 @@ and open the template in the editor.
 
             <div id="eexcess_vis_panel" >
 
-			
+                <div class="eexcess_equation_ranking_operation">
+					<div class="icon" > Parameter normalization method: </div> 
+					<div id="default" class="icon" style="background-color: red;" onclick="equationEditor.setNormMethod('default')" title="default"> $$\frac{m_i}{\sum_{i=0}^N(|a(m_i)_i|)}$$ </div> 
+					<div id="euclidean"  class="icon" onclick="equationEditor.setNormMethod('euclidean')" title="euclidean norm"> $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div> 
+					<div id="pnorm" class="icon" onclick="equationEditor.setNormMethod('pNorm')" title="p-norm"> $$\frac{m_i}{\sqrt[p](\sum_{i=1}^N(|a(m_i)_i|^p))}$$ </div> 
+					<div id="maxnorm" class="icon" onclick="equationEditor.setNormMethod('maxNorm')" title="Maximum norm"> $$\frac{m_i}{max(|m_i|,...,|m_n|)}$$ </div> 
+						<div id="nonorm" class="icon" onclick="equationEditor.setNormMethod('noNorm')" title="No norm"> no normalization</div> 
+				</div> 
+				
+				<div class="eexcess_equation_ranking_operation">
+						
+						<div class="icon" > Quality metric normalization method for ranking: </div> 
+					<div id="defaultRank" class="icon" style="background-color: red;" onclick="equationEditor.setNormMethodRank('default')" title="default"> $$\frac{m_i}{\sum_{i=0}^N(|a(m_i)_i|)}$$ </div> 
+					<div id="euclideanRank"  class="icon" onclick="equationEditor.setNormMethodRank('euclidean')" title="euclidean norm"> $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div> 
+					<div id="pnormRank" class="icon" onclick="equationEditor.setNormMethodRank('pNorm')" title="p-norm"> $$\frac{m_i}{\sqrt[p](\sum_{i=1}^N(|a(m_i)_i|^p))}$$ </div> 
+					<div id="maxnormRank" class="icon" onclick="equationEditor.setNormMethodRank('maxNorm')" title="Maximum norm"> $$\frac{m_i}{max(|m_i|,...,|m_n|)}$$ </div> 
+						
+				</div>
                 <div id="eexcess_equation_controls">
 					
 					<div class="icon" onclick="equationEditor.createNewQM()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
@@ -124,6 +141,8 @@ and open the template in the editor.
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
 					<div class="icon" id="divAddBeforeSelected" onclick="equationEditor.addBeforeSelected()" ><img src="media/add.png" title="insert before" height="30" /> before</div>
 					<div class="icon" id="divAddAfterSelected"  onclick="equationEditor.addAfterSlected()" ><img src="media/add.png" title="insert after" height="30"/> after</div>
+					<div class="icon"  onclick="equationEditor.showNormPanels()" ><img src="media/settings.png" title="show norm panel" height="30"/> </div>
+					
 					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
 					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
 					<!--<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
@@ -163,12 +182,12 @@ and open the template in the editor.
 					</table>
 					
 				<table id="eexcess_equation_composer_table2">
-					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><!--<td onclick="equationEditor.showWholeEquation()">show everything</td>--> <td></td><td></td></tr> 
+					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><!--<td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><td onclick="equationEditor.showWholeEquation()">show everything</td> <td></td><td></td> --></tr>
 					</table>
 				</div> 
                 <div id="eexcess_vis_panel_controls">
                     <div id="eexcess_ranking_controls">
-                        <button id="eexcess_btnreset">
+                        <!-- <button id="eexcess_btnreset">
                             <img src="media/batchmaster/refresh.png" title="Reset" />
                         </button>
                         <button id="eexcess_btn_sort_by_overall_score" title="Sort by overall score" sort-by="overallScore">
@@ -176,7 +195,8 @@ and open the template in the editor.
                         </button>
                         <button id="eexcess_btn_sort_by_max_score" title="Sort by maximum score" sort-by="maxScore">
                             <img src="media/sort-down.png" />
-                        </button>
+                        </button> -->
+				
                     </div>
 
                     <!-- <div id="eexcess_keywords_box">
