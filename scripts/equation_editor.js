@@ -1264,6 +1264,14 @@ var EquationEditor = function (vals) {
 			$(".eexcess_equation_ranking_operation").css("display", "inline-flex");
 		}
 	}
+    
+    equationEditor.rankQMs = function(){
+        console.log("rankQMs");
+        if(areDataAvailable)
+        {
+            visController.rankQMs();
+        }
+    }
 
 	return equationEditor;
 }

@@ -399,6 +399,7 @@ p#p_question {
 
 /* QM container */
 #eexcess_qm_container{
+    position:relative;
     overflow-y: auto;
     width: calc(100% - 0.5em);
 	height: 300px;
@@ -408,6 +409,13 @@ p#p_question {
     background: -webkit-linear-gradient(top, rgba(30, 30, 30, 1), rgba(50, 50, 50, 0.5), rgba(30, 30, 30, 1));
     box-shadow: inset .2em .2em .5em #ccc, inset -.2em -.2em .5em #ccc;
 }
+
+#eexcess_qm_container_rank_button{
+	position: absolute;
+    bottom: 00px;
+    right: 0px;
+}
+
 /*  Keyword cloud containing keywords in blue sclae  */
 
 #eexcess_measures_container {
@@ -810,7 +818,7 @@ VIS PANEL (center of screen)
 #eexcess_vis_panel_canvas {
     display: inline-block;
     width: 100%;
-    height: 90%;
+    height: 75%;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -863,7 +871,58 @@ VIS PANEL (center of screen)
 .eexcess_list a {
     color: #333;
 }
+/* RANK QMS: */
 
+#rank_QMs{
+	display: inline-block;
+    float: left;
+	vertical-align: top;
+    width: 45%;
+}
+
+
+
+/*
+    List body in "#eexcess_content"
+*/
+#rank_QMs ul{
+	clear:both;
+    width: 100%;
+    margin: 0;
+    margin-left: 1px;
+    padding: 0;
+    list-style: none;
+    display:block;
+    padding-bottom: 1px;
+
+}
+
+
+/*
+    <li> items in "#eexcess_content ul". Each <li> wraps 2 container <div>s: ".eexcess_item_ctl" and ".eexcess_ritem_container"
+*/
+.rank_QMs_list_li {
+list-style-type: none;
+    position: relative;
+    height: 26px;
+    vertical-align: top;
+    -webkit-transition: box-shadow 4s linear;
+}
+
+.rank_QMs_list_li a {
+    color: #333;
+}
+/***************	Encloses item title   **************/
+
+.rank_QMs_list_ritem_container {
+    display: inline-flex;
+    align-items: center;
+    width: calc(100% - 78px);
+    height: 100%;
+    margin-left: 2px;
+    vertical-align: top;
+    text-align: left;
+}
 
 /***************	<li> background style   **************/
 

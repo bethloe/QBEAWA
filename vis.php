@@ -106,7 +106,14 @@ and open the template in the editor.
 		<div id="eexcess_main_panel">
 
             <div id="eexcess_controls_left_panel">
-                <div id="eexcess_qm_container"></div>
+               <!-- <div id="rank_QMs" style="display:none">
+                        <ul class="rank_QMs_list"></ul>
+                </div>-->
+                <div id="eexcess_qm_container">
+                    <!--<div id="eexcess_qm_container_rank_button">
+                        <button onclick="equationEditor.rankQMs()"> rank </button>
+                    </div>-->
+                </div>
 				<hr />
                 <div id="eexcess_measures_container"></div>
             </div>
@@ -185,8 +192,8 @@ and open the template in the editor.
 					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><!--<td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><td onclick="equationEditor.showWholeEquation()">show everything</td> <td></td><td></td> --></tr>
 					</table>
 				</div> 
-                <div id="eexcess_vis_panel_controls">
-                    <div id="eexcess_ranking_controls">
+                 <!--<div id="eexcess_vis_panel_controls">
+                   <div id="eexcess_ranking_controls">
                         <!-- <button id="eexcess_btnreset">
                             <img src="media/batchmaster/refresh.png" title="Reset" />
                         </button>
@@ -195,14 +202,14 @@ and open the template in the editor.
                         </button>
                         <button id="eexcess_btn_sort_by_max_score" title="Sort by maximum score" sort-by="maxScore">
                             <img src="media/sort-down.png" />
-                        </button> -->
+                        </button> 
 				
                     </div>
 
                     <!-- <div id="eexcess_keywords_box">
                        <p>Drop tags here!</p> 
                     </div>-->
-                </div>
+             <!--   </div>-->
 
                 <div id="eexcess_vis_panel_canvas">
 					<div id="output"> </div>

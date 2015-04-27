@@ -601,6 +601,13 @@ var VisController = function () {
 			}
 		});
 
+		$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
+						                        <button onclick=\"equationEditor.rankQMs()\"> rank </button>\
+						                    </div>");
+		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
+			                        <ul class=\"rank_QMs_list\"></ul>\
+			                </div>");
+
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
 		.enter()
@@ -1027,7 +1034,7 @@ var VisController = function () {
 			this.updateItemsBackground();
 		}
 		LIST.animateContentList(status);
-		$(".eexcess_list").css("height", 26  + "px");
+		$(".eexcess_list").css("height", 26 + "px");
 		DOCPANEL.clear();
 		VISPANEL.drawRanking();
 		//timer.stop();
@@ -1740,38 +1747,89 @@ var VisController = function () {
 			return '1px solid #21B571';
 		});
 	}
-	
-	visController.setNormMethod = function(normMethod, p){
+
+	visController.setNormMethod = function (normMethod, p) {
 		rankingModel.setNormMethod(normMethod, p);
 	}
-	visController.setNormMethodRank = function(normMethod, p){
+	visController.setNormMethodRank = function (normMethod, p) {
 		rankingModel.setNormMethodRank(normMethod, p);
 	}
-	visController.deleteWholeQM = function(nameOfQM){
+	visController.deleteWholeQM = function (nameOfQM) {
 		//Delete from keywords
 		var indexToDelete = -1;
-		for(var i = 0; i<keywords.length; i++){
-			if(keywords[i].term == nameOfQM){
+		for (var i = 0; i < keywords.length; i++) {
+			if (keywords[i].term == nameOfQM) {
 				indexToDelete = i;
 			}
 		}
-		if(indexToDelete != -1)
+		if (indexToDelete != -1)
 			keywords.remove(indexToDelete);
-			
+
 		//Delete from allVizs
 		indexToDelete = -1;
-		for(var i = 0; i<allVizs.length; i++){
-			if(allVizs[i].name == nameOfQM){
+		for (var i = 0; i < allVizs.length; i++) {
+			if (allVizs[i].name == nameOfQM) {
 				indexToDelete = i;
 			}
 		}
-		if(indexToDelete != -1)
+		if (indexToDelete != -1)
 			allVizs.remove(indexToDelete);
-			
+
 		//Delete from Database
 		databaseConnector.delteEquationInclViz(nameOfQM);
-		
+
 		EVTHANDLER.btnResetClicked();
+	}
+
+	visController.rankQMs = function () {
+		console.log("rankQMs VIS CONTROLLER");
+		$("#eexcess_qm_container").html("<div id=\"rank_QMs\" style=\"display:none\">\
+			                        <ul class=\"rank_QMs_list\"></ul>\
+			                </div>");
+		var content = d3.select("#rank_QMs .rank_QMs_list").selectAll("li").data(keywords);
+
+		var aListItem = content.enter()
+			.append("li")
+			.attr("class", "rank_QMs_list_li")
+			.attr("id", function (d, i) {
+				return "data-rank-pos-" + i;
+			})
+			.attr("pos", function (d, i) {
+				return i;
+			})
+            .style("opacity", 1);
+
+
+		// div 2 wraps the recommendation title (as a link), a short description and a large description (not used yet)
+		var contentDiv = aListItem.append("div")
+			.attr("class", "rank_QMs_list_ritem_container");
+
+		contentDiv.append("h3")
+		.append("a")
+		.attr("class", "rank_QMs_list_ritem_container")
+		.attr('id', function (d, i) {
+			return 'item-rank-title-' + i;
+		})
+		.attr("href", "#")
+		//  .on("click", function(d){ window.open(d.uri, '_blank'); })
+		.html(function (d) {
+			return LIST.internal.getFormattedTitle(d.term);
+		});
+
+		$(contentPanel).scrollTo("top");
+        
+        
+		$("#rank_QMs").css("display", "inline-block");
+        keywords.forEach(function (d, i) {
+                console.log("IN HERE " +i);
+				if (i % 2 == 0)
+					$("#data-rank-pos-" + i).addClass('light_background');
+				else
+					$("#data-rank-pos-" + i).addClass('dark_background');
+
+			});
+
+	
 	}
 	//-------------------------------------------------------------------------
 
@@ -1934,7 +1992,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																						{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
@@ -1980,7 +2038,7 @@ var VisController = function () {
 		$('#eexcess_topic_text_section').css('boxShadow', '.5em .5em 1em #aaa, -.5em .5em 1em #aaa, .5em .5em 1em #aaa');
 		showRanking = false;
 		}*/
-		
+
 		equationEditor.dataAvailable();
 	};
 
