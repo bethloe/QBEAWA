@@ -1272,6 +1272,11 @@ var EquationEditor = function (vals) {
             visController.rankQMs();
         }
     }
+	
+	equationEditor.returnFromRankQMs = function(){
+		$("#eexcess_qm_container").html("");
+		visController.reloadQMs();
+	}
 
 	return equationEditor;
 }

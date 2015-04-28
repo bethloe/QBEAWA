@@ -411,9 +411,10 @@ p#p_question {
 }
 
 #eexcess_qm_container_rank_button{
-	position: absolute;
+	/*position: absolute;
     bottom: 00px;
-    right: 0px;
+    right: 0px;*/
+	margin-top:20px;
 }
 
 /*  Keyword cloud containing keywords in blue sclae  */
@@ -919,7 +920,7 @@ list-style-type: none;
     align-items: center;
     width: calc(100% - 78px);
     height: 100%;
-    margin-left: 2px;
+    /*margin-left: 2px;*/
     vertical-align: top;
     text-align: left;
 }
@@ -1059,6 +1060,12 @@ list-style-type: none;
 	text-align: center;
 }
 
+#eexcess_canvas_rankQM {
+	display: inline-block;
+    width: 55%;
+    min-height: 99%;
+	text-align: center;
+}
 
 /*
     <div> appended to #eexcess_canvas when a message should be displayed. E.g. when a new search is triggered or no data are received.

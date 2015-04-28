@@ -105,6 +105,7 @@ var VisController = function () {
 	// Ranking object
 	var rankingModel;
 	var rankingVis;
+	var rankingQMVis;
 
 	var dataForPieChart = [];
 
@@ -602,11 +603,12 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
-						                        <button onclick=\"equationEditor.rankQMs()\"> rank </button>\
-						                    </div>");
+																																							                        <img width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
+																																							                    </div>");
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-			                        <ul class=\"rank_QMs_list\"></ul>\
-			                </div>");
+																																				                        <ul class=\"rank_QMs_list\"></ul>\
+																																				                   </div>\
+																																								   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -1781,12 +1783,125 @@ var VisController = function () {
 		EVTHANDLER.btnResetClicked();
 	}
 
+	visController.getKeywords = function () {
+		return keywords;
+	}
+
+	var calculateEuclidenNormForMeasure = function (_data, measure) {
+		console.log("calculateEuclidenNormForMeasure");
+		var eNorm = 0;
+
+		for (var r = 0; r < _data.length; r++) { //Iteration over all articles
+			var currentData = JSON.parse(_data[r]);
+			eNorm += Math.sqrt(currentData[measure] * currentData[measure]) * Math.sqrt(currentData[measure] * currentData[measure]);
+		}
+		eNorm = Math.sqrt(eNorm);
+		return eNorm;
+	};
+	function SortByScore(a, b) {
+		var aScore = a.score;
+		var bScore = b.score;
+		return ((aScore > bScore) ? -1 : ((aScore < bScore) ? 1 : 0));
+	}
+
+	var generateQMRanking = function (qmRankingArray) {
+		var allEquations = rankingModel.getEquations();
+		//dataForQMRanking /*see rankingQMsData.js*/
+		/*for (var r = 0; r < dataForQMRanking.length; r++) {
+		console.log("DATA:" + dataForQMRanking[r]);
+
+		}*/
+		var allRanks = [];
+		var toCheckLength = dataForQMRankingAlreadyEuclideanNormed.length / 2;
+		var arrayHelp = [];
+		for (var i = 0; i < qmRankingArray.length; i++) {
+			var qmRankingArrayInclScores = [];
+			var object = {};
+			object.QMName = qmRankingArray[i].name;
+			console.log("dataForQMRankingAlreadyEuclideanNormed.length: " +dataForQMRankingAlreadyEuclideanNormed.length );
+			console.log("dataForQMRanking.length: " +dataForQMRanking.length );
+			for (var r = 0; r < dataForQMRankingAlreadyEuclideanNormed.length; r++) {
+				var currentData = JSON.parse(dataForQMRankingAlreadyEuclideanNormed[r]);
+				var equation = "";
+				for (var j = 0; j < allEquations.length; j++) {
+					if (allEquations[j].name == qmRankingArray[i].name) {
+						equation = allEquations[j].equation;
+						break;
+					}
+				}
+
+				//console.log("THE EQUATION BEFORE: " + equation);
+				if (equation != "") {
+					var currentTitle = currentData.title;
+					for (var key in currentData) {
+						if (currentData.hasOwnProperty(key)) {
+							//	console.log(key + " -> " + currentData[key]);
+
+							var re = new RegExp(key, "g");
+							//Normalize values first
+							//var help = currentData[key] / calculateEuclidenNormForMeasure(dataForQMRankingAlreadyEuclideanNormed, key);
+							equation = equation.replace(re, currentData[key]);
+							//if (key != "title" && key != "featured")
+							//	currentData[key] = help;
+						}
+					}
+
+					//console.log("THE EQUATION AFTER: " + equation);
+					var result = math.eval(equation);
+					var nObject = {};
+					nObject.name = currentData.title;
+					nObject.score = result;
+					nObject.featured = currentData.featured;
+					qmRankingArrayInclScores.push(nObject);
+
+					//arrayHelp.push(JSON.stringify(currentData));
+
+				}
+			}
+			qmRankingArrayInclScores.sort(SortByScore);
+			var rightCounter = 0;
+			
+			console.log("qmRankingArrayInclScores.length: " +qmRankingArrayInclScores.length );
+			for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
+				//console.log("HERE: " +  qmRankingArray[i].name + " "  +  qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score+  " "+qmRankingArrayInclScores[j].name );
+				if (j < toCheckLength - 1) {
+					if (qmRankingArrayInclScores[j].featured) {
+						rightCounter++;
+					}
+				}
+			}
+			rightCounter *= 2;
+			//object.data = qmRankingArrayInclScores;
+			//allRanks.push(object);
+			qmRankingArray[i].score = rightCounter;
+			console.log("DONE: " + qmRankingArray[i].name + " Score " + qmRankingArray[i].score);
+		}
+		//console.log("OUTPUT: " + JSON.stringify(arrayHelp));
+	}
 	visController.rankQMs = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		$("#eexcess_qm_container").html("<div id=\"rank_QMs\" style=\"display:none\">\
-			                        <ul class=\"rank_QMs_list\"></ul>\
-			                </div>");
-		var content = d3.select("#rank_QMs .rank_QMs_list").selectAll("li").data(keywords);
+																																					                        <ul class=\"rank_QMs_list\"></ul>\
+																																					                </div>\
+																																									<div id=\"eexcess_canvas_rankQM\"></div> \
+																																									<div id=\"eexcess_qm_container_rank_button\">\
+																																									  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" /> \
+																																									  </div>");
+
+		var allEquations = rankingModel.getEquations();
+		var qmRankingArray = [];
+		for (var i = 0; i < keywords.length; i++) {
+			var object = {};
+			object.name = keywords[i].term;
+			object.score = 0;
+			qmRankingArray.push(object);
+		}
+		generateQMRanking(qmRankingArray);
+		qmRankingArray.sort(SortByScore);
+		for (var i = 0; i < qmRankingArray.length; i++) {
+			console.log("qmRankingArray: " + qmRankingArray[i].name + " " + qmRankingArray[i].score);
+		}
+		var content = d3.select("#rank_QMs .rank_QMs_list").selectAll("li").data(qmRankingArray);
 
 		var aListItem = content.enter()
 			.append("li")
@@ -1797,12 +1912,14 @@ var VisController = function () {
 			.attr("pos", function (d, i) {
 				return i;
 			})
-            .style("opacity", 1);
-
+			.style("opacity", 1);
 
 		// div 2 wraps the recommendation title (as a link), a short description and a large description (not used yet)
 		var contentDiv = aListItem.append("div")
-			.attr("class", "rank_QMs_list_ritem_container");
+			.attr("class", "rank_QMs_list_ritem_container")
+			.on("click", function (d, i) {
+				equationEditor.loadMetric(d.name, allVizs[d.name], true);
+				});
 
 		contentDiv.append("h3")
 		.append("a")
@@ -1813,23 +1930,27 @@ var VisController = function () {
 		.attr("href", "#")
 		//  .on("click", function(d){ window.open(d.uri, '_blank'); })
 		.html(function (d) {
-			return LIST.internal.getFormattedTitle(d.term);
+			return LIST.internal.getFormattedTitle(d.name);
 		});
 
-		$(contentPanel).scrollTo("top");
-        
-        
+		$("#rank_QMs").scrollTo("top");
+
 		$("#rank_QMs").css("display", "inline-block");
-        keywords.forEach(function (d, i) {
-                console.log("IN HERE " +i);
-				if (i % 2 == 0)
-					$("#data-rank-pos-" + i).addClass('light_background');
-				else
-					$("#data-rank-pos-" + i).addClass('dark_background');
+		qmRankingArray.forEach(function (d, i) {
+			console.log("IN HERE " + i);
+			if (i % 2 == 0)
+				$("#data-rank-pos-" + i)
+				.addClass('light_background');
+			else
+				$("#data-rank-pos-" + i).addClass('dark_background');
 
-			});
+		});
 
-	
+		rankingQMVis.draw(qmRankingArray, $("#rank_QMs").height(), weightColorScale, allEquations, dataForQMRanking);
+	}
+
+	visController.reloadQMs = function () {
+		EVTHANDLER.btnResetClicked();
 	}
 	//-------------------------------------------------------------------------
 
@@ -1992,7 +2113,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																												{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
@@ -2003,6 +2124,7 @@ var VisController = function () {
 		databaseConnector.getEquationViz(retrieveAllEquationizs);
 		rankingModel = new RankingModel(data, self);
 		rankingVis = new RankingVis(root, self);
+		rankingQMVis = new RankingQMVis("#eexcess_canvas_rankQM", self);
 
 		// only for evaluation
 		//sampleText = dataset['text'];

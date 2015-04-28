@@ -55,9 +55,10 @@ var RankingModel = (function () {
 
 				// if item doesn't contain query term => maxScore and overallScore are not changed
 				//ranking[i].overallScore += termScore;
-				console.log("Q.weight: " + parseFloat(q.weight));
+				console.log("Q.weight: " + parseFloat(q.weight) + " q.term: " + d[q.term]);
 				var QMscore = (parseFloat(d[q.term] / norms[q.term]) * unitQueryVectorDot).round(3);
-
+				if (parseFloat(d[q.term]) == 0)
+					QMscore = 0;
 				//var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
 				console.log("name: " + q.term + " score: " + QMscore);
 				if (QMscore < 0)
@@ -140,7 +141,7 @@ var RankingModel = (function () {
 					if (Math.sqrt(d[q.term] * d[q.term]) > acumSquares[q.term])
 						acumSquares[q.term] = Math.sqrt(d[q.term] * d[q.term]);
 				} else {
-						acumSquares[q.term] = Math.sqrt(d[q.term] * d[q.term]);
+					acumSquares[q.term] = Math.sqrt(d[q.term] * d[q.term]);
 				}
 			});
 		});
@@ -250,7 +251,9 @@ var RankingModel = (function () {
 	};
 	var calculateNorm = function (d, key, _data, _normMethod, _p) {
 		var help = 0;
-		if (_normMethod == "default")
+		if (d[key] == 0)
+			help = 0;
+		else if (_normMethod == "default")
 			help = d[key] / calculateDefaultNormForMeasure(_data, key);
 		else if (_normMethod == "euclidean")
 			help = d[key] / calculateEuclidenNormForMeasure(_data, key);
@@ -419,6 +422,10 @@ var RankingModel = (function () {
 		setNormMethodRank : function (normMethodPar, pPar) {
 			this.normMethodRank = normMethodPar;
 			this.pRank = pPar;
+		},
+
+		getEquations : function () {
+			return this.equations;
 		}
 
 	};

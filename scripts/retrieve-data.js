@@ -1,5 +1,6 @@
 var DataRetriever = function (vals) {
 	var GLOBAL_title = vals.title;
+	var GLOBAL_featured = vals.featured;
 	var GLOBAL_linkToAPI = "http://en.wikipedia.org/w/api.php?";
 	var GLOBAL_cntEdits = 0;
 	var GLOBAL_cntEditsHELP = 0;
@@ -42,6 +43,7 @@ var DataRetriever = function (vals) {
 		//Calculate Edits:
 		//handleEditDataSync(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue");
 		GLOBAL_JSON.title = GLOBAL_title;
+		GLOBAL_JSON.featured = GLOBAL_featured;
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue", handleEditData);
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=info&titles=" + GLOBAL_title + "&continue", handleArticleLength);
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&titles=" + GLOBAL_title + "&rvlimit=1&rvprop=user|timestamp&rvdir=older&continue", handleCurrency);

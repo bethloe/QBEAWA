@@ -41,10 +41,12 @@ and open the template in the editor.
 
 		<script type="text/javascript" src="scripts/Stopwatch.js" charset="utf-8"> </script>
 		
+        <script type="text/javascript" src="scripts/rankingQMsData.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingArray.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingModel.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingVis.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/rankingQMVis.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/settings.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/utils.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/taskStorage.js" charset="utf-8"></script>

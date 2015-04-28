@@ -9,7 +9,7 @@ var GLOBAL_numElements = 17;
 var GLOBAL_interval;
 var GLOBAL_generatingDataCnt = 0;
 var visController;
-var GLOBLA_getFeaturedArticlesLink = "action=query&format=json&list=categorymembers&cmlimit=10&cmtitle=Category:Featured%20articles&continue"
+var GLOBLA_getFeaturedArticlesLink = "action=query&format=json&list=categorymembers&cmlimit=50&cmtitle=Category:Featured%20articles&continue"
 var GLOBLA_getFeaturedArticlesLinkContinue = "action=query&format=json&list=categorymembers&cmlimit=10&cmtitle=Category:Featured%20articles"
 
 var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
@@ -59,7 +59,8 @@ var handleSearchFeaturedArticles = function (JSONResponse) {
 		if (!GLOBAL_CrawledArticles.hasOwnProperty(JSONArticleTitles[i].title)) {
 			GLOBAL_CrawledArticles[JSONArticleTitles[i].title] = 1;
 			var dr = new DataRetriever({
-					title : JSONArticleTitles[i].title
+					title : JSONArticleTitles[i].title,
+					featured : true
 				});
 			GLOBAL_dataCollector.push(dr);
 			dr.getAllMeasures();
@@ -89,7 +90,8 @@ var handleSearch = function (JSONResponse) {
 		if (!GLOBAL_CrawledArticles.hasOwnProperty(JSONArticleTitles[i].title)) {
 			GLOBAL_CrawledArticles[JSONArticleTitles[i].title] = 1;
 			var dr = new DataRetriever({
-					title : JSONArticleTitles[i].title
+					title : JSONArticleTitles[i].title,
+					featured : false
 				});
 			GLOBAL_dataCollector.push(dr);
 			dr.getAllMeasures();
@@ -141,7 +143,12 @@ var showAllDataAsList = function () {
 		var articles = {
 			data : []
 		};
-
+		/*var array = [];
+		for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
+			array.push(GLOBAL_dataCollector[i].getJSONString());
+		}
+		console.log("OUTPUT: " + JSON.stringify(array));*/
+		
 		for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
 			var jsonData = JSON.parse(GLOBAL_dataCollector[i].getJSONString());
 			//Calculation of the QMs.
