@@ -22,6 +22,7 @@ var EquationEditor = function (vals) {
 	var timerCalc;
 	var areDataAvailable = false;
 	var isShowNormPanels = false;
+	var userMode = "normal";
 	/*mode can be single or multi*/
 
 	//INSERTS: ----------------------------------------------------------------
@@ -394,7 +395,7 @@ var EquationEditor = function (vals) {
 			$('#equation' + (currentlySelectedBoxId + 1)).remove();
 		} else if ($(currentlySelectedBox).attr("type") == "brickA") {
 			$('#equation' + (currentlySelectedBoxId - 1)).remove();
-		}else if(currentlySelectedBox == ""){
+		} else if (currentlySelectedBox == "") {
 			var answer = confirm('Are you sure you want to delete the whole QM?');
 			if (answer) {
 				visController.deleteWholeQM(nameOfLoadedMetric);
@@ -798,6 +799,11 @@ var EquationEditor = function (vals) {
 	}
 	equationEditor.createNewQM = function () {
 		console.log("SAVE");
+		$('#QM_Text').html($('#QM_TEXT_EDIT').val());
+		$('#QM_Text').css("display", "inline");
+		$('#edit_Icon_QM_Text').css("display", "inline");
+		$('#QM_TEXT_EDIT').remove();
+
 		if (nameOfLoadedMetric != "" && nameOfLoadedMetric != "temp") {
 			console.log("SAVE2");
 			var answer = confirm('Overwrite existing metric?');
@@ -1015,72 +1021,73 @@ var EquationEditor = function (vals) {
 	}
 
 	var shrinkElementsIfNecessary = function (operation) {
-		//console.log("------------------ shrinkElementsIfNecessary ------------------");
-		var sumWidth = 200;
-		//console.log("HTML: " + $(equationStack).html());
-		$(equationStack).find("*").each(function () {
-			if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox" || $(this).attr("class") == "eexcess_equation_text") {
-				//console.log($(this).id + " widht: " + $(this).width());
-				sumWidth += $(this).width();
-			}
-		});
+		if (userMode != "normal") {
+			//console.log("------------------ shrinkElementsIfNecessary ------------------");
+			var sumWidth = 200;
+			//console.log("HTML: " + $(equationStack).html());
+			$(equationStack).find("*").each(function () {
+				if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox" || $(this).attr("class") == "eexcess_equation_text") {
+					//console.log($(this).id + " widht: " + $(this).width());
+					sumWidth += $(this).width();
+				}
+			});
 
-		//Use the variable shrinkLevel
-		console.log("SUM WIDTH: " + sumWidth + " > equationStack width " + $(equationStack).width());
-		if (sumWidth > ($(equationStack).width())) {
-			if ((operation == -1 || operation == 1)) {
-				shrinkLevel++;
-				console.log("--------------------> +shrinklevel: " + shrinkLevel);
-				$(equationStack).find("*").each(function () {
-					//	console.log($(this).attr("id") +" TYPE: " + $(this).attr("type"));
-					if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
-						var newWidth = parseInt($(this).width()) / 2;
-						var newHeight = parseInt($(this).height()) / 2;
-						$(this).css("width", newWidth + "px");
-						$(this).css("height", newHeight + "px");
-						var fontSize = $(this).css("font-size");
-						var oldFontSize = parseInt(fontSize.split("px")[0]);
-						var newFontSize = oldFontSize - (oldFontSize / 4);
-						$(this).css("font-size", newFontSize + "px");
-					} else if ($(this).attr("class") == "eexcess_equation_text") {
-						var newHeight = parseInt($(this).height()) / 2;
-						$(this).css("height", newHeight + "px");
-						$(this).css("line-height", newHeight + "px");
-						//console.log("LINE HIGHT: " + $(this).css("line-height"));
-					}
-					//	$(this).css("line-height", newHeight + "px");
-				});
-				//console.log("SHRINK ELEMENTS");
-				shrinkElementsIfNecessary(1);
+			//Use the variable shrinkLevel
+			console.log("SUM WIDTH: " + sumWidth + " > equationStack width " + $(equationStack).width());
+			if (sumWidth > ($(equationStack).width())) {
+				if ((operation == -1 || operation == 1)) {
+					shrinkLevel++;
+					console.log("--------------------> +shrinklevel: " + shrinkLevel);
+					$(equationStack).find("*").each(function () {
+						//	console.log($(this).attr("id") +" TYPE: " + $(this).attr("type"));
+						if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
+							var newWidth = parseInt($(this).width()) / 2;
+							var newHeight = parseInt($(this).height()) / 2;
+							$(this).css("width", newWidth + "px");
+							$(this).css("height", newHeight + "px");
+							var fontSize = $(this).css("font-size");
+							var oldFontSize = parseInt(fontSize.split("px")[0]);
+							var newFontSize = oldFontSize - (oldFontSize / 4);
+							$(this).css("font-size", newFontSize + "px");
+						} else if ($(this).attr("class") == "eexcess_equation_text") {
+							var newHeight = parseInt($(this).height()) / 2;
+							$(this).css("height", newHeight + "px");
+							$(this).css("line-height", newHeight + "px");
+							//console.log("LINE HIGHT: " + $(this).css("line-height"));
+						}
+						//	$(this).css("line-height", newHeight + "px");
+					});
+					//console.log("SHRINK ELEMENTS");
+					shrinkElementsIfNecessary(1);
+				}
+			}
+			if (sumWidth < ($(equationStack).width())) {
+				if (shrinkLevel > 1 && (operation == -1 || operation == 2)) {
+					$(equationStack).find("*").each(function () {
+						if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
+							var newWidth = parseInt($(this).width()) * 2;
+							var newHeight = parseInt($(this).height()) * 2;
+							$(this).css("width", newWidth + "px");
+							$(this).css("height", newHeight + "px");
+							var fontSize = $(this).css("font-size");
+							var oldFontSize = parseInt(fontSize.split("px")[0]);
+							var newFontSize = (oldFontSize * 100) / (100 - 25);
+							$(this).css("font-size", newFontSize + "px");
+							//$(this).css("line-height", newHeight + "px");
+						} else if ($(this).attr("class") == "eexcess_equation_text") {
+							var newHeight = parseInt($(this).height()) * 2;
+							$(this).css("height", newHeight + "px");
+							$(this).css("line-height", newHeight + "px");
+						}
+					});
+					//console.log("EXTEND ELEMENTS");
+					shrinkLevel--;
+					console.log("--------------------> -shrinklevel: " + shrinkLevel);
+
+					shrinkElementsIfNecessary(1);
+				}
 			}
 		}
-		if (sumWidth < ($(equationStack).width())) {
-			if (shrinkLevel > 1 && (operation == -1 || operation == 2)) {
-				$(equationStack).find("*").each(function () {
-					if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
-						var newWidth = parseInt($(this).width()) * 2;
-						var newHeight = parseInt($(this).height()) * 2;
-						$(this).css("width", newWidth + "px");
-						$(this).css("height", newHeight + "px");
-						var fontSize = $(this).css("font-size");
-						var oldFontSize = parseInt(fontSize.split("px")[0]);
-						var newFontSize = (oldFontSize * 100) / (100 - 25);
-						$(this).css("font-size", newFontSize + "px");
-						//$(this).css("line-height", newHeight + "px");
-					} else if ($(this).attr("class") == "eexcess_equation_text") {
-						var newHeight = parseInt($(this).height()) * 2;
-						$(this).css("height", newHeight + "px");
-						$(this).css("line-height", newHeight + "px");
-					}
-				});
-				//console.log("EXTEND ELEMENTS");
-				shrinkLevel--;
-				console.log("--------------------> -shrinklevel: " + shrinkLevel);
-
-				shrinkElementsIfNecessary(1);
-			}
-		}
-
 		//console.log("END ------------------ shrinkElementsIfNecessary ------------------");
 	}
 
@@ -1264,18 +1271,91 @@ var EquationEditor = function (vals) {
 			$(".eexcess_equation_ranking_operation").css("display", "inline-flex");
 		}
 	}
-    
-    equationEditor.rankQMs = function(){
-        console.log("rankQMs");
-        if(areDataAvailable)
-        {
-            visController.rankQMs();
-        }
-    }
-	
-	equationEditor.returnFromRankQMs = function(){
-		$("#eexcess_qm_container").html("");
-		visController.reloadQMs();
+
+	equationEditor.rankQMs = function () {
+		console.log("rankQMs");
+		if (areDataAvailable) {
+			visController.rankQMs();
+		}
+	}
+
+	equationEditor.returnFromRankQMs = function () {
+		if (areDataAvailable) {
+			$("#eexcess_qm_container").html("");
+			visController.reloadQMs();
+		}
+	}
+
+	var showTextOfQM = true;
+	equationEditor.showTextOfQM = function () {
+		if (areDataAvailable) {
+			if (!showTextOfQM) {
+				$('#equation_stack_text_of_QM').css("display", "inline-flex");
+				showTextOfQM = true;
+			} else {
+				$('#equation_stack_text_of_QM').css("display", "none");
+				showTextOfQM = false;
+			}
+		}
+		console.log("showTextOfQM");
+	}
+
+	equationEditor.editQMText = function () {
+		console.log("editQMText");
+		$('#equation_stack_text_of_QM').append("<textarea style=\"width: 100%\" id=\"QM_TEXT_EDIT\" class=\"boxsizingBorder\">" + $('#QM_Text').html() + "</textarea>")
+		$('#QM_Text').css("display", "none");
+		$('#edit_Icon_QM_Text').css("display", "none");
+	}
+
+	equationEditor.setUserMode = function (userModePar) {
+		if (userModePar == "advanced" && userMode == "advanced")
+			userMode = "normal";
+		else
+			userMode = userModePar;
+
+		equationEditor.setInterfaceToMode();
+	}
+
+	equationEditor.getUserMode = function () {
+		return userMode;
+	}
+
+	equationEditor.setInterfaceToMode = function () {
+		if (userMode == "normal") {
+			$("#eexcess_equation_controls").css("display", "none");
+			$("#eexcess_equation_stack").css("display", "none");
+			$("#eexcess_equation_composer").css("display", "none");
+			$("#heading_Quality_Measure").css("display", "none");
+			$("#eexcess_measures_container").css("display", "none");
+			$("#edit_Icon_QM_Text").css("display", "none");
+			$("#switch_to_expert_mode").css("display", "none");
+
+			$("#equation_stack_text_of_QM").css("display", "inline-flex");
+			$("#eexcess_equation_controls_normal_mode").css("display", "inline-flex");
+
+		} else if (userMode == "advanced") {
+			$("#eexcess_equation_controls").css("display", "none");
+			$("#eexcess_equation_composer").css("display", "none");
+			$("#heading_Quality_Measure").css("display", "none");
+			$("#eexcess_measures_container").css("display", "none");
+			$("#edit_Icon_QM_Text").css("display", "none");
+
+			$("#switch_to_expert_mode").css("display", "inline");
+			$("#equation_stack_text_of_QM").css("display", "inline-flex");
+			$("#eexcess_equation_controls_normal_mode").css("display", "inline-flex");
+			$("#eexcess_equation_stack").css("display", "inline-flex");
+		} else if (userMode == "expert") {
+			$("#eexcess_equation_controls").css("display", "inline-flex");
+			$("#eexcess_equation_stack").css("display", "inline-flex");
+			$("#eexcess_equation_composer").css("display", "inline-flex");
+			$("#heading_Quality_Measure").css("display", "inline-flex");
+			$("#eexcess_measures_container").css("display", "inline-block");
+			$("#edit_Icon_QM_Text").css("display", "inline-flex");
+
+			$("#switch_to_expert_mode").css("display", "none");
+			$("#equation_stack_text_of_QM").css("display", "none");
+			$("#eexcess_equation_controls_normal_mode").css("display", "none");
+		}
 	}
 
 	return equationEditor;

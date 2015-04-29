@@ -31,11 +31,15 @@ and open the template in the editor.
         <link rel="stylesheet" type="text/css" href="libs/ui/jquery-ui-1.10.4.custom.min.css">
 		<script type="text/javascript" src="libs/CanvasInput.min.js"></script>
 		
+		<link rel="stylesheet" href="libs/jquery-toggles-master/css/toggles.css">
+		<link rel="stylesheet" href="libs/jquery-toggles-master/css/themes/toggles-light.css">
+		
 		<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="libs/jpplot.1.0.8/dist/excanvas.js"></script><![endif]-->
 		<script language="javascript" type="text/javascript" src="libs/jpplot.1.0.8/dist/jquery.jqplot.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="libs/jpplot.1.0.8/dist/jquery.jqplot.css" />
 		<script type="text/javascript" src="libs/jpplot.1.0.8/dist/plugins/jqplot.pieRenderer.min.js"></script>
 		<script type="text/javascript" src="libs/jpplot.1.0.8/dist/plugins/jqplot.donutRenderer.min.js"></script>
+		<script type="text/javascript" src="libs/jquery-toggles-master/toggles.min.js"></script>
 	
 		<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
@@ -70,7 +74,6 @@ and open the template in the editor.
         <link rel="stylesheet" type="text/css" href="css/vis-template-chart-style.css" />
     </head>
     <body>
-
 		<script>  var equationEditor = new EquationEditor(); </script>
         <div id="dataset" style="display: none;">
             <?php
@@ -108,7 +111,19 @@ and open the template in the editor.
 		<div id="eexcess_main_panel">
 
             <div id="eexcess_controls_left_panel">
-               <!-- <div id="rank_QMs" style="display:none">
+			
+				<div id="eexcess_qm_container_rank_button">
+				<div id="eexcess_controls_left_panel_control_panel2"  style="position: relative;">
+					<div style="position: absolute; float:left; right: 60px; color: white;" > Rank Qality Metrics: </div>
+					<div class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
+				
+				</div>
+	               <!--  <img align="right" width="50" style="cursor: pointer" title="rank" src="media/ranking.png" onclick="equationEditor.rankQMs()" />-->
+				</div>
+				<div style="background-color: #08519c; color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Metrics are for todo...">
+					<span> Quality Metrics  </span> 
+				</div>
+              <!--  <div id="rank_QMs" style="display:none">
                         <ul class="rank_QMs_list"></ul>
                 </div>-->
                 <div id="eexcess_qm_container">
@@ -117,6 +132,9 @@ and open the template in the editor.
                     </div>-->
                 </div>
 				<hr />
+				<div id="heading_Quality_Measure" style="background-color: #21B571; color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Measures are for todo...">
+					<span> Quality Measures </span>
+				</div>
                 <div id="eexcess_measures_container"></div>
             </div>
 
@@ -151,15 +169,31 @@ and open the template in the editor.
 					<div class="icon" id="divAddBeforeSelected" onclick="equationEditor.addBeforeSelected()" ><img src="media/add.png" title="insert before" height="30" /> before</div>
 					<div class="icon" id="divAddAfterSelected"  onclick="equationEditor.addAfterSlected()" ><img src="media/add.png" title="insert after" height="30"/> after</div>
 					<div class="icon"  onclick="equationEditor.showNormPanels()" ><img src="media/settings.png" title="show norm panel" height="30"/> </div>
-					
+					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>
 					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
 					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
+					<div class="icon" ><img src="media/editing-done.png" title="editing done" height="30" onclick="equationEditor.setUserMode('advanced')"/></div>
+					
 					<!--<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
 					<div id="stopwatchViz" class="icon"></div>
 					<div id="stopwatchCalc"  class="icon"></div>-->
 					<div id="equationStackSmall"> </div>
 					
 				</div> 
+				
+				<div id="eexcess_equation_controls_normal_mode">
+					
+					<div class="icon" onclick="equationEditor.setUserMode('advanced')" > <img src="media/show-all.png" height="30"/ title="show detail view of quality measure" > </div> 
+					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>
+					<div class="icon" id="switch_to_expert_mode" ><img src="media/edit.png" title="edit Quality Metric" height="30" onclick="equationEditor.setUserMode('expert')"/></div>
+					
+					
+				</div> 
+				
+				<div id="equation_stack_text_of_QM" style="display: none" > 
+					<div id="QM_Text" > </div>
+					<div id="edit_Icon_QM_Text" style="position: absolute; bottom: 0px; right: 0px;"><img src="media/edit.png" title="edit text" height="30" onclick="equationEditor.editQMText()"/></div>	
+				</div>
                 <div id="eexcess_equation_stack">
 					<!-- VERSION 1 -->
 					 <!--<table style="display: inline-block; font-size: 40px;  border-collapse: collapse;"> -->
@@ -313,6 +347,20 @@ and open the template in the editor.
 				});
 
 		});*/
+		$(document).ready(function () {
+			$('.toggle').toggles({clicker:$('.clickme')});
+			$('.toggle').on('toggle', function (e, active) {
+			  if (active) {
+				equationEditor.rankQMs();
+				console.log("toggle on");
+			  } else {
+				equationEditor.returnFromRankQMs();
+				console.log("toggle off");
+			  }
+			});
+			
+			equationEditor.setInterfaceToMode();
+		});
 		</script>
 		
     </body>

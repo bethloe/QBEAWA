@@ -414,7 +414,10 @@ p#p_question {
 	/*position: absolute;
     bottom: 00px;
     right: 0px;*/
-	margin-top:20px;
+	margin-top:0px;
+	height: 20px;
+	width: 100%;
+	background-color: #aaa; 
 }
 
 /*  Keyword cloud containing keywords in blue sclae  */
@@ -595,6 +598,14 @@ VIS PANEL (center of screen)
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
 
+#eexcess_equation_controls_normal_mode{
+    display: inline-flex;
+    width: 100%;
+    height: 4.5%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
 
 #equationStackSmall{
 	cursor: pointer;
@@ -1454,6 +1465,14 @@ list-style-type: none;
     background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
+#equation_stack_text_of_QM{
+    display: inline-flex;
+    width: 100%;
+    height: 10%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
 .eexcess_equation_text{
 	cursor: default;
 	float:left;
@@ -1521,4 +1540,10 @@ list-style-type: none;
 .MathJax .merror: {
     padding: 0px;
 	margin: 0px;
+}
+
+.boxsizingBorder {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
 }

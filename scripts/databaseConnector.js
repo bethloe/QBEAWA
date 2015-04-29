@@ -44,11 +44,12 @@ var DatabaseConnector = function (vals) {
 		});
 	}
 	
-	databaseConnector.storeEquation = function (name, equation) {
+	databaseConnector.storeEquation = function (name, equation, text) {
 		$.post("database.php", {
 			operation : "storeEquation",
 			name : name,
-			equation : equation
+			equation : equation, 
+			text : text
 		})
 		.done(function (data) {
 			console.log(data);
@@ -77,6 +78,15 @@ var DatabaseConnector = function (vals) {
 		});
 	}
 
+	databaseConnector.getAllEquationTexts = function (callbackFunction) {
+		$.post("database.php", {
+			operation : "getAllEquationTexts"
+		})
+		.done(function (data) {
+			callbackFunction(data)
+		});
+	}
+	
 	databaseConnector.getEquationViz = function (callbackFunction) {
 		$.post("database.php", {
 			operation : "getEquationViz"

@@ -65,6 +65,7 @@ var VisController = function () {
 	var NO_IMG = "media/no-img.png";
 	var FAV_ICON_OFF = "media/favicon_off.png";
 	var FAV_ICON_ON = "media/favicon_on.png";
+	var EDIT_ICON = "media/edit_small.png";
 	var REMOVE_SMALL_ICON = "media/batchmaster/remove.png"
 		var ICON_EUROPEANA = "media/Europeana-favicon.ico";
 	var ICON_MENDELEY = "media/mendeley-favicon.ico";
@@ -95,6 +96,7 @@ var VisController = function () {
 	//Connection to DB for QM Visualization
 	var databaseConnector;
 	var allVizs = [];
+	var allQMTexts = [];
 	// Ancillary variables
 	var dataRanking, // array that represents the current ranking. Each item is an object specifying "originalIndex, "overallScore", "rankingPos" and "positionsChanged"
 	selectedTags = [], // array of DOM elements contained in the tag box
@@ -539,6 +541,10 @@ var VisController = function () {
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
 		$(qmContainer).empty();
+		
+			/*$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
+																																							                        <img align=\"right\" width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
+																																							                    </div>");*/
 		// Append one div per tag
 		d3.select(qmContainer).selectAll(tagClass)
 		.data(keywords)
@@ -573,6 +579,11 @@ var VisController = function () {
 			if (equationEditor.isShiftPressed() == false) {
 				//	console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
 				equationEditor.loadMetric(data.term, allVizs[data.term], true);
+				$('#QM_Text').html(allQMTexts[data.term]);
+				if(equationEditor.getUserMode() == "normal"){
+					d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c")
+					d3.select(this).style("background", "red");
+				}
 			} else {
 				//	console.log("HILF: " + d3.select(this).attr("ImSelected"));
 				if (d3.select(this).attr("ImSelected") == "true") {
@@ -602,9 +613,7 @@ var VisController = function () {
 			}
 		});
 
-		$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
-																																							                        <img width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
-																																							                    </div>");
+
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
 																																				                        <ul class=\"rank_QMs_list\"></ul>\
 																																				                   </div>\
@@ -961,8 +970,8 @@ var VisController = function () {
 		aListItem.append('div')
 		.attr('class', 'eexcess_favicon_section')
 		.append("img")
-		.attr('title', 'Mark as relevant')
-		.attr("src", FAV_ICON_OFF);
+		.attr('title', 'Edit the article')
+		.attr("src", EDIT_ICON);
 
 		LIST.updateItemsBackground();
 		LIST.bindEventHandlersToListItems();
@@ -975,12 +984,15 @@ var VisController = function () {
 		.on("click", function (d, i) {
 			EVTHANDLER.listItemClicked(d, i);
 		}).on("dblclick", function (d, i) {
-			EVTHANDLER.listItemDblclicked(d, i);
+			//EVTHANDLER.listItemDblclicked(d, i);
 		})
 		.on("mouseover", EVTHANDLER.listItemHovered)
 		.on("mouseout", EVTHANDLER.listItemUnhovered)
 		.select(favIconClass).select('img').on("click", function (d, i) {
-			EVTHANDLER.faviconClicked(d, i);
+			console.log(JSON.stringify(d));
+			var actualIndex = rankingModel.getActualIndex(i);
+			var currentData = data[actualIndex];
+			window.open('http://localhost/ArticleEditor/index2.php?title='+currentData.title);
 		});
 	};
 
@@ -1677,8 +1689,8 @@ var VisController = function () {
 		});
 		if (!alreadyInKeywords)
 			keywords.push(JSON.parse(test));
-
-		databaseConnector.storeEquation(name, equation);
+		allQMTexts[name] = $('#QM_Text').html();
+		databaseConnector.storeEquation(name, equation, allQMTexts[name]);
 		databaseConnector.storeEquationViz(name, vizData);
 		allVizs[name] = vizData;
 
@@ -1880,12 +1892,13 @@ var VisController = function () {
 	}
 	visController.rankQMs = function () {
 		console.log("rankQMs VIS CONTROLLER");
-		$("#eexcess_qm_container").html("<div id=\"rank_QMs\" style=\"display:none\">\
+		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
+		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
+												<div id=\"rank_QMs\" style=\"display:none\">\
 																																					                        <ul class=\"rank_QMs_list\"></ul>\
 																																					                </div>\
 																																									<div id=\"eexcess_canvas_rankQM\"></div> \
-																																									<div id=\"eexcess_qm_container_rank_button\">\
-																																									  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" /> \
+																																									 \
 																																									  </div>");
 
 		var allEquations = rankingModel.getEquations();
@@ -2083,7 +2096,20 @@ var VisController = function () {
 			}
 		}
 	}
+	
+	function retrieveAllEquationTexts(JSONTexts) {
+		console.log("retrieveAllEquationTexts " + JSONTexts);
+		if (JSONTexts != "no results") {
+			var texts = JSON.parse(JSONTexts);
+			var allQMTextsHelp = texts.equationTexts;
 
+			for (var key in allQMTextsHelp) {
+				allQMTexts[key] = allQMTextsHelp[key];
+				console.log( "KEY: " + key + " TEXT: " + allQMTexts[key]);
+			}
+		}
+	}
+	
 	visController.getAllVizs = function () {
 		return allVizs;
 	}
@@ -2121,6 +2147,7 @@ var VisController = function () {
 		//PREPROCESSING.extendKeywordsWithColorCategory();
 
 		databaseConnector.getAllEquations(retrieveAllEquations);
+		databaseConnector.getAllEquationTexts(retrieveAllEquationTexts);
 		databaseConnector.getEquationViz(retrieveAllEquationizs);
 		rankingModel = new RankingModel(data, self);
 		rankingVis = new RankingVis(root, self);

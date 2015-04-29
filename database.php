@@ -71,12 +71,13 @@ if($operation == 'storeFormula'){
 if($operation == 'storeEquation'){
 	$name = $_POST ['name'];
 	$equation = $_POST ['equation'];
+	$text = $_POST ['text'];
 	//$sql = "insert into formulas (f_content) values ('"+ $formula +"')";
-	$sql = "insert into equations (e_name, e_content) VALUES ('".$name."', '".$equation."')";
+	$sql = "insert into equations (e_name, e_content, e_text) VALUES ('".$name."', '".$equation."', '".$text."')";
 	if ($conn->query($sql) === TRUE) {
 		echo "operation storeEquation done ";
 	} else {
-		$sql = "update equations set e_content = '".$equation."' where e_name = '".$name."'";
+		$sql = "update equations set e_content = '".$equation."' , e_text = '".$text."'  where e_name = '".$name."'";
 		if ($conn->query($sql) === TRUE) {
 			echo "operation storeEquation done ";
 		} else {
@@ -93,6 +94,20 @@ if($operation == 'storeEquation'){
 			$help[$row["e_name"]] = $row["e_content"];
 		}
 		$post_data = json_encode(array('equations' => $help));
+		echo $post_data;
+	} else {
+		echo "no results";
+	}	
+}else if($operation == 'getAllEquationTexts'){
+	$sql = "SELECT e_name, e_text FROM equations";
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+		// output data of each row
+		$help = array();
+		while($row = $result->fetch_assoc()) {
+			$help[$row["e_name"]] = $row["e_text"];
+		}
+		$post_data = json_encode(array('equationTexts' => $help));
 		echo $post_data;
 	} else {
 		echo "no results";
