@@ -86,9 +86,15 @@ and open the template in the editor.
 	  			<span></span>
 	  		</section>
             <section id="eexcess_header_task_section">
-				<div id="eexcess_header_task_section_div"> Keword: <input type="text" id="article-name" value="Visualization" /> 
+				<div id="eexcess_header_task_section_div"> 
+				Mode:  <select id="modeSelector">
+					<option value="normal" selected="selected">Normal</option>
+					<option value="expert">Expert</option>
+			     </select>
+				Keyword: <input type="text" id="article-name" value="Visualization" /> 
 				 Max. number of results: <input type="number" id="max-num" value="5"/>
 				 <button onclick="searchArticle('visualization',50,equationEditor)"> retrieve data </button> 
+				 	
 				 <!-- <button class="popup_oeffnen"> show quality metric editor </button> -->
 				<!-- <button class="open_popup_article_editor"> show article editor </button> -->
 				 <!--<button onclick="showAllDataTest()"> show data </button> </div>
@@ -104,6 +110,7 @@ and open the template in the editor.
                 <section id="eexcess_topic_text_section" style="display:none">
                     <p></p>
                 </section>
+		
             </section>
       	</header>
 
@@ -183,8 +190,8 @@ and open the template in the editor.
 				
 				<div id="eexcess_equation_controls_normal_mode">
 					
-					<div class="icon" onclick="equationEditor.setUserMode('advanced')" > <img src="media/show-all.png" height="30"/ title="show detail view of quality measure" > </div> 
-					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>
+					<div class="icon" onclick="equationEditor.setUserMode('advanced')" > <img src="media/show-all.png" height="30"/ title="show detail view of Quality Metric" > </div> 
+					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of Quality Metric" height="30"/> </div>
 					<div class="icon" id="switch_to_expert_mode" ><img src="media/edit.png" title="edit Quality Metric" height="30" onclick="equationEditor.setUserMode('expert')"/></div>
 					
 					
@@ -303,7 +310,7 @@ and open the template in the editor.
 		</div>
  
     </div>
-	
+	<!--<div id="help1" > $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div>-->
         <div id="task_question_message"></div>
         <script type="text/javascript" src="scripts/vis-controller.js" charset="utf-8"></script>
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
@@ -348,18 +355,33 @@ and open the template in the editor.
 
 		});*/
 		$(document).ready(function () {
-			$('.toggle').toggles({clicker:$('.clickme')});
+			$('.toggle').toggles({
+				clicker : $('.clickme')
+			});
 			$('.toggle').on('toggle', function (e, active) {
-			  if (active) {
-				equationEditor.rankQMs();
-				console.log("toggle on");
-			  } else {
-				equationEditor.returnFromRankQMs();
-				console.log("toggle off");
-			  }
+				if (active) {
+					equationEditor.rankQMs();
+					console.log("toggle on");
+				} else {
+					equationEditor.returnFromRankQMs();
+					console.log("toggle off");
+				}
+			});
+
+			equationEditor.setInterfaceToMode();
+			$("#modeSelector").change(function () {
+
+				console.log("Handler for .change() called." + this.value);
+				if (this.value == "expert")
+					equationEditor.setUserMode("expert");
+				else if (this.value == "normal")
+					equationEditor.setUserMode("normal")
+
 			});
 			
-			equationEditor.setInterfaceToMode();
+			
+			//SET TOOLTIPS
+			//$('#euclidean').tooltip({ content :  $("#help1").html()});
 		});
 		</script>
 		

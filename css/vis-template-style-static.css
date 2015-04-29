@@ -288,8 +288,14 @@ p#p_question {
 
 
 #eexcess_header_control_section input[type="button"] {
-    align-self: center;
+    align-self: right;
     margin: 0em .3em;
+}
+
+#modeSelector {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	align: right; 
 }
 
 

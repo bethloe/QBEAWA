@@ -580,10 +580,10 @@ var VisController = function () {
 				//	console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
 				equationEditor.loadMetric(data.term, allVizs[data.term], true);
 				$('#QM_Text').html(allQMTexts[data.term]);
-				if(equationEditor.getUserMode() == "normal"){
+			//	if(equationEditor.getUserMode() == "normal"){
 					d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c")
 					d3.select(this).style("background", "red");
-				}
+				//}
 			} else {
 				//	console.log("HILF: " + d3.select(this).attr("ImSelected"));
 				if (d3.select(this).attr("ImSelected") == "true") {
