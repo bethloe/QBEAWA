@@ -359,6 +359,7 @@ p#p_question {
     display: flex;
     align-items: flex-end;
     width: 2em;
+	
 }
 
 /********************************************************************************************************************************************
@@ -613,7 +614,7 @@ VIS PANEL (center of screen)
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
 
-#equationStackSmall{
+.equationStackSmall{
 	cursor: pointer;
 	border: 1px solid black;
 }
@@ -621,6 +622,8 @@ VIS PANEL (center of screen)
 .icon{
 	cursor: pointer;
 	border: 1px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .icon:hover{
@@ -640,6 +643,16 @@ VIS PANEL (center of screen)
     width: 100%;
    // height: 9%;
     min-height: 4.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+#ranking_norm_selector{
+	float:left;
+    display: inline-flex;
+    width: 100%;
+   // height: 9%;
+    min-height: 2.5em;
     background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
@@ -1472,21 +1485,22 @@ list-style-type: none;
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
 #equation_stack_text_of_QM{
-    display: inline-flex;
+	position: relative;
+    display: inline-block;
     width: 100%;
-    height: 10%;
     min-height: 2.5em;
     background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+	padding-bottom: 35px;
 }
 .eexcess_equation_text{
 	cursor: default;
 	float:left;
 	display: inline-block;
 	text-align: left;
-	line-height: 4em; 
+	line-height: 2em; 
 	vertical-align: middle;
-    height: 4em;
+    height: 2em;
 	//margin: 0.8em .3em 0.2em 0.3em;
     //padding: .2em;
 	background: none;
@@ -1497,7 +1511,7 @@ list-style-type: none;
 	display: inline-block;
 	text-align: left;
 	width: 4em;
-    height: 4em;
+    height: 2em;
 	//margin: 0.8em .3em 0.2em 0.3em;
     //padding: .2em;
 	//border-radius: 1em;
@@ -1515,9 +1529,10 @@ list-style-type: none;
 	display: inline-block;
 	text-align: left;
 	float:left;
+	font-size: 15px;
 	overflow:overlay;
 	width: 8em;
-    height: 8em;
+    height: 4em;
 	//margin: 0.8em .3em 0.2em 0.3em;
     //padding: .2em;
 	//border-radius: 0.3em;

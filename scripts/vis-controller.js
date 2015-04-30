@@ -541,10 +541,10 @@ var VisController = function () {
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
 		$(qmContainer).empty();
-		
-			/*$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
-																																							                        <img align=\"right\" width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
-																																							                    </div>");*/
+
+		/*$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
+		<img align=\"right\" width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
+		</div>");*/
 		// Append one div per tag
 		d3.select(qmContainer).selectAll(tagClass)
 		.data(keywords)
@@ -580,9 +580,9 @@ var VisController = function () {
 				//	console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
 				equationEditor.loadMetric(data.term, allVizs[data.term], true);
 				$('#QM_Text').html(allQMTexts[data.term]);
-			//	if(equationEditor.getUserMode() == "normal"){
-					d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c")
-					d3.select(this).style("background", "red");
+				//	if(equationEditor.getUserMode() == "normal"){
+				d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c")
+				d3.select(this).style("background", "red");
 				//}
 			} else {
 				//	console.log("HILF: " + d3.select(this).attr("ImSelected"));
@@ -613,11 +613,10 @@ var VisController = function () {
 			}
 		});
 
-
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																				                        <ul class=\"rank_QMs_list\"></ul>\
-																																				                   </div>\
-																																								   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																							                        <ul class=\"rank_QMs_list\"></ul>\
+																																							                   </div>\
+																																											   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -992,7 +991,7 @@ var VisController = function () {
 			console.log(JSON.stringify(d));
 			var actualIndex = rankingModel.getActualIndex(i);
 			var currentData = data[actualIndex];
-			window.open('http://localhost/ArticleEditor/index2.php?title='+currentData.title);
+			window.open('http://localhost/ArticleEditor/index2.php?title=' + currentData.title);
 		});
 	};
 
@@ -1544,6 +1543,8 @@ var VisController = function () {
 		console.log("pieDatat length: " + pieData.length);
 		$("#chart1").html("");
 		if (pieData.length > 0) {
+			$("#chart1").css("display", "inline");
+			$("#equation_stack_text_of_QM").css("display", "none");
 			var plot1 = jQuery.jqplot('chart1', [pieData], {
 					seriesDefaults : {
 						// Make this a pie chart.
@@ -1576,6 +1577,8 @@ var VisController = function () {
 		$(documentDetailsProvider).empty();
 		$(documentViewer).empty();
 		$("#chart1").empty();
+		$("#chart1").css("display", "none");
+		$("#equation_stack_text_of_QM").css("display", "inline-flex");
 		//$(documentViewer + ' p').fadeOut('slow');
 	};
 
@@ -1830,8 +1833,8 @@ var VisController = function () {
 			var qmRankingArrayInclScores = [];
 			var object = {};
 			object.QMName = qmRankingArray[i].name;
-			console.log("dataForQMRankingAlreadyEuclideanNormed.length: " +dataForQMRankingAlreadyEuclideanNormed.length );
-			console.log("dataForQMRanking.length: " +dataForQMRanking.length );
+			console.log("dataForQMRankingAlreadyEuclideanNormed.length: " + dataForQMRankingAlreadyEuclideanNormed.length);
+			console.log("dataForQMRanking.length: " + dataForQMRanking.length);
 			for (var r = 0; r < dataForQMRankingAlreadyEuclideanNormed.length; r++) {
 				var currentData = JSON.parse(dataForQMRankingAlreadyEuclideanNormed[r]);
 				var equation = "";
@@ -1872,8 +1875,8 @@ var VisController = function () {
 			}
 			qmRankingArrayInclScores.sort(SortByScore);
 			var rightCounter = 0;
-			
-			console.log("qmRankingArrayInclScores.length: " +qmRankingArrayInclScores.length );
+
+			console.log("qmRankingArrayInclScores.length: " + qmRankingArrayInclScores.length);
 			for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
 				//console.log("HERE: " +  qmRankingArray[i].name + " "  +  qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score+  " "+qmRankingArrayInclScores[j].name );
 				if (j < toCheckLength - 1) {
@@ -1894,12 +1897,12 @@ var VisController = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-												<div id=\"rank_QMs\" style=\"display:none\">\
-																																					                        <ul class=\"rank_QMs_list\"></ul>\
-																																					                </div>\
-																																									<div id=\"eexcess_canvas_rankQM\"></div> \
-																																									 \
-																																									  </div>");
+															<div id=\"rank_QMs\" style=\"display:none\">\
+																																								                        <ul class=\"rank_QMs_list\"></ul>\
+																																								                </div>\
+																																												<div id=\"eexcess_canvas_rankQM\"></div> \
+																																												 \
+																																												  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		var qmRankingArray = [];
@@ -1932,7 +1935,8 @@ var VisController = function () {
 			.attr("class", "rank_QMs_list_ritem_container")
 			.on("click", function (d, i) {
 				equationEditor.loadMetric(d.name, allVizs[d.name], true);
-				});
+				$('#QM_Text').html(allQMTexts[data.name]);
+			});
 
 		contentDiv.append("h3")
 		.append("a")
@@ -1964,6 +1968,10 @@ var VisController = function () {
 
 	visController.reloadQMs = function () {
 		EVTHANDLER.btnResetClicked();
+	}
+
+	visController.resetColorOfQMMetrics = function () {
+		d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
 	}
 	//-------------------------------------------------------------------------
 
@@ -2096,7 +2104,7 @@ var VisController = function () {
 			}
 		}
 	}
-	
+
 	function retrieveAllEquationTexts(JSONTexts) {
 		console.log("retrieveAllEquationTexts " + JSONTexts);
 		if (JSONTexts != "no results") {
@@ -2105,11 +2113,11 @@ var VisController = function () {
 
 			for (var key in allQMTextsHelp) {
 				allQMTexts[key] = allQMTextsHelp[key];
-				console.log( "KEY: " + key + " TEXT: " + allQMTexts[key]);
+				console.log("KEY: " + key + " TEXT: " + allQMTexts[key]);
 			}
 		}
 	}
-	
+
 	visController.getAllVizs = function () {
 		return allVizs;
 	}
@@ -2139,7 +2147,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																												{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
@@ -2189,6 +2197,7 @@ var VisController = function () {
 		}*/
 
 		equationEditor.dataAvailable();
+		$("#eexcess_main_panel").css("display", "inline-flex");
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

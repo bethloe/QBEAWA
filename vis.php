@@ -44,6 +44,7 @@ and open the template in the editor.
 		<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 		<script type="text/javascript" src="scripts/Stopwatch.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/formulasForNOrmalization.js" charset="utf-8"> </script>
 		
         <script type="text/javascript" src="scripts/rankingQMsData.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
@@ -115,20 +116,21 @@ and open the template in the editor.
       	</header>
 
 	
-		<div id="eexcess_main_panel">
+		<div id="eexcess_main_panel" style="display: none;">
 
             <div id="eexcess_controls_left_panel">
 			
+				
+				<div style=" color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Metrics are for todo...">
+					<span style="background-color: #08519c; padding: 5px;"> Quality Metrics  </span> 
+				</div>
 				<div id="eexcess_qm_container_rank_button">
 				<div id="eexcess_controls_left_panel_control_panel2"  style="position: relative;">
-					<div style="position: absolute; float:left; right: 60px; color: white;" > Rank Qality Metrics: </div>
+					<div style="position: absolute; float:left; right: 60px; color: white;" > Rank Quality Metrics: </div>
 					<div class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
 				
 				</div>
 	               <!--  <img align="right" width="50" style="cursor: pointer" title="rank" src="media/ranking.png" onclick="equationEditor.rankQMs()" />-->
-				</div>
-				<div style="background-color: #08519c; color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Metrics are for todo...">
-					<span> Quality Metrics  </span> 
 				</div>
               <!--  <div id="rank_QMs" style="display:none">
                         <ul class="rank_QMs_list"></ul>
@@ -139,32 +141,42 @@ and open the template in the editor.
                     </div>-->
                 </div>
 				<hr />
-				<div id="heading_Quality_Measure" style="background-color: #21B571; color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Measures are for todo...">
-					<span> Quality Measures </span>
+				<div id="heading_Quality_Measure" style="  color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Measures are for todo...">
+					<span style="background-color: #21B571;  padding: 5px;" > Quality Measures </span>
 				</div>
+				<div id="quality_measrues_norm_selector">
+					<table align="center" ><tr><td> Norm: </td><td>  <select id="normMeasuresSelector">
+					<option value="default" selected="selected" id="default" title="taxicab nrom">taxicab norm</option>
+					<option value="euclidean" id="euclidean" title="euclidean norm">euclidean norm</option>
+					<option value="pNorm" id="pnorm" title="p-norm">p-norm</option>
+					<option value="maxNorm" id="maxnorm"  title="Maximum norm">maximum norm</option>
+					<option value="noNorm" id="nonorm" title="No norm">no normalization</option>
+			     </select>
+				 </td></tr></table>
+				 </div>
                 <div id="eexcess_measures_container"></div>
             </div>
 
             <div id="eexcess_vis_panel" >
 
-                <div class="eexcess_equation_ranking_operation">
+             <!--   <div class="eexcess_equation_ranking_operation">
 					<div class="icon" > Parameter normalization method: </div> 
-					<div id="default" class="icon" style="background-color: red;" onclick="equationEditor.setNormMethod('default')" title="default"> $$\frac{m_i}{\sum_{i=0}^N(|a(m_i)_i|)}$$ </div> 
-					<div id="euclidean"  class="icon" onclick="equationEditor.setNormMethod('euclidean')" title="euclidean norm"> $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div> 
-					<div id="pnorm" class="icon" onclick="equationEditor.setNormMethod('pNorm')" title="p-norm"> $$\frac{m_i}{\sqrt[p](\sum_{i=1}^N(|a(m_i)_i|^p))}$$ </div> 
-					<div id="maxnorm" class="icon" onclick="equationEditor.setNormMethod('maxNorm')" title="Maximum norm"> $$\frac{m_i}{max(|m_i|,...,|m_n|)}$$ </div> 
+					<div id="default" class="icon" style="background-color: red;" onclick="equationEditor.setNormMethod('default')" title="default"> taxicab norm </div> 
+					<div id="euclidean"  class="icon" onclick="equationEditor.setNormMethod('euclidean')" title="euclidean norm"> euclidean norm </div> 
+					<div id="pnorm" class="icon" onclick="equationEditor.setNormMethod('pNorm')" title="p-norm"> p-nrom </div> 
+					<div id="maxnorm" class="icon" onclick="equationEditor.setNormMethod('maxNorm')" title="Maximum norm"> maximum norm </div> 
 						<div id="nonorm" class="icon" onclick="equationEditor.setNormMethod('noNorm')" title="No norm"> no normalization</div> 
-				</div> 
+				</div> -->
 				
-				<div class="eexcess_equation_ranking_operation">
+				<!-- <div class="eexcess_equation_ranking_operation">
 						
 						<div class="icon" > Quality metric normalization method for ranking: </div> 
-					<div id="defaultRank" class="icon"  onclick="equationEditor.setNormMethodRank('default')" title="default"> $$\frac{m_i}{\sum_{i=0}^N(|a(m_i)_i|)}$$ </div> 
-					<div id="euclideanRank"  class="icon" style="background-color: red;" onclick="equationEditor.setNormMethodRank('euclidean')" title="euclidean norm"> $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div> 
-					<div id="pnormRank" class="icon" onclick="equationEditor.setNormMethodRank('pNorm')" title="p-norm"> $$\frac{m_i}{\sqrt[p](\sum_{i=1}^N(|a(m_i)_i|^p))}$$ </div> 
-					<div id="maxnormRank" class="icon" onclick="equationEditor.setNormMethodRank('maxNorm')" title="Maximum norm"> $$\frac{m_i}{max(|m_i|,...,|m_n|)}$$ </div> 
+					<div id="defaultRank" class="icon"  onclick="equationEditor.setNormMethodRank('default')" title="default"> taxicab norm </div> 
+					<div id="euclideanRank"  class="icon" style="background-color: red;" onclick="equationEditor.setNormMethodRank('euclidean')" title="euclidean norm"> euclidean norm  </div> 
+					<div id="pnormRank" class="icon" onclick="equationEditor.setNormMethodRank('pNorm')" title="p-norm"> p-nrom </div> 
+					<div id="maxnormRank" class="icon" onclick="equationEditor.setNormMethodRank('maxNorm')" title="Maximum norm"> maximum norm</div> 
 						
-				</div>
+				</div> -->
                 <div id="eexcess_equation_controls">
 					
 					<div class="icon" onclick="equationEditor.createNewQM()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
@@ -175,7 +187,7 @@ and open the template in the editor.
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
 					<div class="icon" id="divAddBeforeSelected" onclick="equationEditor.addBeforeSelected()" ><img src="media/add.png" title="insert before" height="30" /> before</div>
 					<div class="icon" id="divAddAfterSelected"  onclick="equationEditor.addAfterSlected()" ><img src="media/add.png" title="insert after" height="30"/> after</div>
-					<div class="icon"  onclick="equationEditor.showNormPanels()" ><img src="media/settings.png" title="show norm panel" height="30"/> </div>
+					<!--<div class="icon"  onclick="equationEditor.showNormPanels()" ><img src="media/settings.png" title="show norm panel" height="30"/> </div>-->
 					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>
 					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
 					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
@@ -184,7 +196,7 @@ and open the template in the editor.
 					<!--<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
 					<div id="stopwatchViz" class="icon"></div>
 					<div id="stopwatchCalc"  class="icon"></div>-->
-					<div id="equationStackSmall"> </div>
+					<div class="equationStackSmall"> </div>
 					
 				</div> 
 				
@@ -194,13 +206,14 @@ and open the template in the editor.
 					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of Quality Metric" height="30"/> </div>
 					<div class="icon" id="switch_to_expert_mode" ><img src="media/edit.png" title="edit Quality Metric" height="30" onclick="equationEditor.setUserMode('expert')"/></div>
 					
+					<div class="equationStackSmall"> </div>
 					
 				</div> 
 				
-				<div id="equation_stack_text_of_QM" style="display: none" > 
+				<!--<div id="equation_stack_text_of_QM" style="display: none" > 
 					<div id="QM_Text" > </div>
 					<div id="edit_Icon_QM_Text" style="position: absolute; bottom: 0px; right: 0px;"><img src="media/edit.png" title="edit text" height="30" onclick="equationEditor.editQMText()"/></div>	
-				</div>
+				</div>-->
                 <div id="eexcess_equation_stack">
 					<!-- VERSION 1 -->
 					 <!--<table style="display: inline-block; font-size: 40px;  border-collapse: collapse;"> -->
@@ -235,6 +248,15 @@ and open the template in the editor.
 					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><!--<td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><td onclick="equationEditor.showWholeEquation()">show everything</td> <td></td><td></td> --></tr>
 					</table>
 				</div> 
+				<div id="ranking_norm_selector">
+					<table align="center" ><tr><td> Norm: </td><td>  <select id="normRankingSelector">
+					<option value="default"  id="defaultRank" title="taxicab nrom">taxicab norm</option>
+					<option value="euclidean" selected="selected" id="euclideanRank" title="euclidean norm">euclidean norm</option>
+					<option value="pNorm" id="pnormRank" title="p-norm">p-norm</option>
+					<option value="maxNorm" id="maxnormRank"  title="Maximum norm">maximum norm</option>
+					 </select>
+					 </td></tr></table>
+				 </div>
                  <!--<div id="eexcess_vis_panel_controls">
                    <div id="eexcess_ranking_controls">
                         <!-- <button id="eexcess_btnreset">
@@ -266,8 +288,12 @@ and open the template in the editor.
             </div>
 
             <div id="eexcess_document_panel">
-			
-						<div id="chart1" > 
+			<div id="equation_stack_text_of_QM" style="display: none" > 
+					<div id="QM_Text" > </div>
+					<div id="edit_Icon_QM_Text" style="position: absolute; bottom: 0px; right: 0px;"><img src="media/edit.png" title="edit text" height="30" onclick="equationEditor.editQMText()"/></div>	
+					<div id="edit_Icon_QM_Text_Return" style="position: absolute; bottom: 0px; right: 0px;"><img src="media/return.png" title="return" height="30" onclick="equationEditor.editQMTextReturn()"/></div>	
+				</div>
+						<div id="chart1" style="display: none"> 
                     <p> </p></div>
                <!-- <div id="eexcess_document_details">-->
                     <!--<div>
@@ -379,9 +405,27 @@ and open the template in the editor.
 
 			});
 			
+			$("#normMeasuresSelector").change(function () {
+				console.log("Handler for normMeasuresSelector.change() called." + this.value);
+				equationEditor.setNormMethod(this.value);
+			});
+				
+			$("#normRankingSelector").change(function () {
+				console.log("Handler for normMeasuresSelector.change() called." + this.value);
+				equationEditor.setNormMethodRank(this.value);
+			});
+			
+			
 			
 			//SET TOOLTIPS
-			//$('#euclidean').tooltip({ content :  $("#help1").html()});
+			$('#default').tooltip({ content :  formulaDefault});
+			$('#euclidean').tooltip({ content :  formulaEuclidean});
+			$('#pnorm').tooltip({ content :  formulaPnorm});
+			$('#maxnorm').tooltip({ content :  formulaMaxnorm});
+			$('#defaultRank').tooltip({ content :  formulaDefault});
+			$('#euclideanRank').tooltip({ content :  formulaEuclidean});
+			$('#pnormRank').tooltip({ content :  formulaPnorm});
+			$('#maxnormRank').tooltip({ content :  formulaMaxnorm});
 		});
 		</script>
 		
