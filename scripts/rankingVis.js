@@ -107,7 +107,7 @@ function RankingVis(domRoot, visControllerInterface) {
 	 *
 	 * ***************************************************************************************************************/
 	RANKING.Render.drawStackedBars = function () {
-
+		console.log("data: " + JSON.stringify(data));
 		svg.selectAll(".stackedbar").data([]).exit();
 		svg.selectAll(".stackedbar").remove();
 		svg.selectAll(".stackedbar").data(data).enter();
@@ -151,7 +151,7 @@ function RankingVis(domRoot, visControllerInterface) {
 			})
 			.attr("width", 0)
 			.style("fill", function (d) {
-				return color(d.stem);
+				return "rgb(8, 81, 156)";
 			});
 
 			var bars = stackedBars.selectAll(".bar");
@@ -494,6 +494,125 @@ function RankingVis(domRoot, visControllerInterface) {
 		//// Adjust length of title in y-axis. Add position and #positions changed
 		//RANKING.Render.adjustTitlesInYAxis();
 	};
+	
+	/******************************************************************************************************************
+	 *
+	 *	DrawCombination ranking at first instance
+	 *
+	 * ***************************************************************************************************************/
+	RANKING.Render.drawCombinationStacked = function (rankingModel, containerHeight, colorScale) {
+		if (rankingModel.getStatus() == RANKING_STATUS.no_ranking)
+			return this.reset();
+		$(root).empty();
+
+		selectedIndex = 'undefined';
+		isRankingDrawn = true;
+
+		/******************************************************
+		 *	Define input variables
+		 ******************************************************/
+		RANKING.InitData = RANKING.Settings.getRankingInitData(rankingModel);
+		data = RANKING.InitData.data;
+
+		/******************************************************
+		 *	Define canvas dimensions
+		 ******************************************************/
+		RANKING.Dimensions = RANKING.Settings.getRankingDimensions(domRoot, containerHeight);
+		width = RANKING.Dimensions.width;
+		height = RANKING.Dimensions.height;
+		margin = RANKING.Dimensions.margin;
+
+		/******************************************************
+		 *	Define scales
+		 ******************************************************/
+
+		x = d3.scale.linear()
+			//.domain( [0, RANKING.Internal.topLimit(data, rankingCriteria)] )
+			//.domain( [0, data[0][rankingModel.getMode()]] )
+			.domain([0, 1])
+			.rangeRound([0, width]);
+
+		y = d3.scale.ordinal()
+			.domain(data.map(function (d, i) {
+					return i;
+				}))
+			.rangeBands([0, height], .02);
+
+		color = colorScale;
+
+		/******************************************************
+		 *	Define axis' function
+		 *****************************************************/
+
+		// X Axis
+		xAxis = d3.svg.axis()
+			.scale(x)
+			.orient("bottom")
+			//.tickFormat(d3.format(".2s"));
+			.tickFormat(function (value) {
+				if (value > 0 && value < 1)
+					return (value * 100) + '%';
+				return '';
+			});
+
+		// Y Axis
+		yAxis = d3.svg.axis()
+			.scale(y)
+			.orient("left")
+			.tickValues("");
+
+		/******************************************************
+		 *	Draw chart main components
+		 ******************************************************/
+
+		//// Add svg main components
+		svg = d3.select(root).append("svg")
+			.attr("class", "svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom + 30)
+			.append("g")
+			.attr("width", width)
+			.attr("height", height + 30)
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + (height) + ")")
+		.call(xAxis)
+		.append("text")
+		.attr("class", "label")
+		.attr("x", width)
+		.attr("y", -6)
+		.style("text-anchor", "end")
+		.text(function () {
+			if (rankingModel.getMode() === RANKING_MODE.overall_score)
+				return "Overall Score";
+			return 'Max. Score';
+		});
+
+		/*        svg.selectAll('.x.axis text')
+		.text(function(text){
+		if(parseFloat(text) == 0.0) return ""; return text;
+		});*/
+
+		svg.append("g")
+		.attr("class", "y axis")
+		.call(yAxis)
+		.selectAll("text")
+		/*.style('cursor', 'pointer')
+		.on('click', function(d, i){
+		var actualIndex = data.getIndexOf(d, 'title');
+		RANKING.Evt.itemClicked(actualIndex);
+		})*/
+	;
+
+		//// Create drop shadow to use as filter when a bar is hovered or selected
+		RANKING.Render.createShadow();
+		//// Add stacked bars
+		RANKING.Render.drawStackedBarsCombinationStacked();
+		//// Adjust length of title in y-axis. Add position and #positions changed
+		//RANKING.Render.adjustTitlesInYAxis();
+	};
 
 	/******************************************************************************************************************
 	 *
@@ -547,7 +666,8 @@ function RankingVis(domRoot, visControllerInterface) {
 						return x(data[j].weightedKeywords[i].x1) - x(data[j].weightedKeywords[i].x0);
 					})
 					.style("fill", function (d) {
-						return "#08519c" /*data[j].weightedKeywords[i].stem*/
+						console.log("FILL: " + colorsForRanking[colorSetting][j]);
+						return colorsForRanking[colorSetting][i]; /*data[j].weightedKeywords[i].stem*/
 					;
 					});
 					d3.select("#stackedbar-" + j).append("text").text(data[j].weightedKeywords[i].term + ":")
@@ -560,6 +680,74 @@ function RankingVis(domRoot, visControllerInterface) {
 		}, 800);
 
 	};
+	
+	/******************************************************************************************************************
+	 *
+	 *	Draw stacked bars either on draw or update methods. Animate with width transition
+	 *
+	 * ***************************************************************************************************************/
+	RANKING.Render.drawStackedBarsCombinationStacked = function () {
+
+		console.log("data: " + JSON.stringify(data));
+		svg.selectAll(".stackedbar").data([]).exit();
+		svg.selectAll(".stackedbar").remove();
+		svg.selectAll(".stackedbar").data(data).enter();
+
+		setTimeout(function () {
+
+			var stackedBars = svg.selectAll(".stackedbar")
+				.data(data)
+				.enter().append("g")
+				.attr("class", "stackedbar")
+				.attr("id", function (d, i) {
+					return "stackedbar-" + i;
+				})
+				.attr("transform", function (d, i) {
+					return "translate(0, " + y(i) + ")";
+				})
+				.on('click', RANKING.Evt.itemClicked)
+				.on('mouseover', RANKING.Evt.itemMouseOvered)
+				.on('mouseout', RANKING.Evt.itemMouseOuted);
+
+			stackedBars.append('rect')
+			.attr('class', function (d, i) {
+				if (i % 2 == 0)
+					return 'light_background';
+				return 'dark_background';
+			})
+			.attr('x', 0)
+			.attr('width', width)
+			.attr('height', y.rangeBand());
+
+			stackedBars.selectAll(".bar")
+			.data(function (d) {
+				return d.weightedKeywords;
+			})
+			.enter()
+			.append("rect")
+			.attr("class", "bar")
+			.attr("height", y.rangeBand())
+			.attr("x", function (d) {
+				return x(d.x0);
+			})
+			.attr("width", 0)
+			.style("fill", function (d, i) {
+				return colorsForRanking[colorSetting][i];
+			});
+
+			var bars = stackedBars.selectAll(".bar");
+
+			var t0 = bars.transition()
+				.duration(500)
+				.attr({
+					"width" : function (d) {
+						return x(d.x1) - x(d.x0);
+					}
+				});
+		}, 800);
+
+	};
+
 
 	/******************************************************************************************************************
 	 *
@@ -860,6 +1048,9 @@ function RankingVis(domRoot, visControllerInterface) {
 	RANKING.Ext = {
 		'drawCombination' : function (rankingModel, containerHeight, colorScale) {
 			RANKING.Render.drawCombination(rankingModel, containerHeight, colorScale);
+		},
+		'redrawStacked' : function(rankingModel, containerHeight, colorScale){
+				RANKING.Render.drawCombinationStacked(rankingModel, containerHeight, colorScale);
 		},
 		'draw' : function (rankingModel, containerHeight, colorScale) { // rankingModel, colorScale, rankingCriteria, status
 			if (status = 'new')

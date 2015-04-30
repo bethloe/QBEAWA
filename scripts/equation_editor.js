@@ -243,7 +243,7 @@ var EquationEditor = function (vals) {
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 	equationEditor.clearEquationComposer = function () {
-	visController.resetColorOfQMMetrics();
+		visController.resetColorOfQMMetrics();
 		visController.resetHighlighting();
 		$(".equationStackSmall").html("New Equation");
 		equationEditor.resetData();
@@ -602,7 +602,13 @@ var EquationEditor = function (vals) {
 		}
 	}
 
+	var showGuidedIcon = false;
+	equationEditor.setShowGuided = function (showGuided) {
+		showGuidedIcon = showGuided;
+	}
 	equationEditor.loadMetric = function (name, htmlValue, eraseZoomArray) {
+		if (showGuidedIcon)
+			$("#showMoreIcon").css("display", "inline-flex");
 		if (eraseZoomArray) {
 			$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + name + "</div>");
 			zoomArray.splice(0, zoomArray.length);
@@ -712,7 +718,7 @@ var EquationEditor = function (vals) {
 		adjustNewElementsToShrinkLevel(idCnt - 1);
 		for (var i = 0; i < dataArray.length; i++) {
 			var data = dataArray[i];
-			var color = data.type == "metric" ? "#08519c" : "#21B571";
+			var color = colorsForRanking[colorSetting][i];//data.type == "metric" ? "#08519c" : "#21B571";
 			if (i + 1 < dataArray.length) {
 				$(equationStack).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:15px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
 
@@ -1038,7 +1044,7 @@ var EquationEditor = function (vals) {
 
 			//Use the variable shrinkLevel
 			console.log("SUM WIDTH: " + sumWidth + " > equationStack width " + $(equationStack).width());
-			if (sumWidth > ($(equationStack).width()) ) {
+			if (sumWidth > ($(equationStack).width())) {
 				if ((operation == -1 || operation == 1)) {
 					shrinkLevel++;
 					console.log("--------------------> +shrinklevel: " + shrinkLevel);
@@ -1311,8 +1317,8 @@ var EquationEditor = function (vals) {
 		$('#edit_Icon_QM_Text').css("display", "none");
 		$('#edit_Icon_QM_Text_Return').css("display", "inline-flex");
 	}
-	
-	equationEditor.editQMTextReturn = function() {
+
+	equationEditor.editQMTextReturn = function () {
 		$('#QM_TEXT_EDIT').remove();
 		$('#QM_Text').css("display", "inline");
 		$('#edit_Icon_QM_Text_Return').css("display", "none");
@@ -1320,12 +1326,17 @@ var EquationEditor = function (vals) {
 	}
 
 	equationEditor.setUserMode = function (userModePar) {
-		if (userModePar == "advanced" && userMode == "advanced")
+		if (userModePar == "advanced" && userMode == "advanced") {
 			userMode = "normal";
-		else
-			userMode = userModePar;
+			equationEditor.setInterfaceToMode();
+			if (showGuidedIcon)
+				$("#showMoreIcon").css("display", "inline-flex");
 
-		equationEditor.setInterfaceToMode();
+		} else {
+			userMode = userModePar;
+			equationEditor.setInterfaceToMode();
+		}
+
 	}
 
 	equationEditor.getUserMode = function () {
@@ -1342,10 +1353,10 @@ var EquationEditor = function (vals) {
 			$("#edit_Icon_QM_Text").css("display", "none");
 			$("#edit_Icon_QM_Text_Return").css("display", "none");
 			$("#ranking_norm_selector").css("display", "none");
-			
+			$("#showMoreIcon").css("display", "none");
+
 			$("#switch_to_expert_mode").css("display", "none");
 			$("#quality_measrues_norm_selector").css("display", "none");
-			
 
 			$("#equation_stack_text_of_QM").css("display", "inline-flex");
 			$("#eexcess_equation_controls_normal_mode").css("display", "inline-flex");
@@ -1358,9 +1369,11 @@ var EquationEditor = function (vals) {
 			$("#edit_Icon_QM_Text").css("display", "none");
 			$("#edit_Icon_QM_Text_Return").css("display", "none");
 			$("#quality_measrues_norm_selector").css("display", "none");
+			if (showGuidedIcon)
+				$("#showMoreIcon").css("display", "inline-flex");
 
 			$("#ranking_norm_selector").css("display", "none");
-			
+
 			$("#switch_to_expert_mode").css("display", "inline");
 			$("#equation_stack_text_of_QM").css("display", "inline-flex");
 			$("#eexcess_equation_controls_normal_mode").css("display", "inline-flex");
@@ -1374,12 +1387,26 @@ var EquationEditor = function (vals) {
 			$("#edit_Icon_QM_Text").css("display", "inline-flex");
 			$("#quality_measrues_norm_selector").css("display", "inline");
 			$("#ranking_norm_selector").css("display", "inline-flex");
-			
 
+			$("#showMoreIcon").css("display", "none");
 			$("#switch_to_expert_mode").css("display", "none");
 			$("#edit_Icon_QM_Text_Return").css("display", "none");
 			$("#eexcess_equation_controls_normal_mode").css("display", "none");
 		}
+	}
+
+	equationEditor.savePressed = function () {
+		if (areDataAvailable && userMode == "expert") {
+			equationEditor.createNewQM();
+		}
+	}
+	
+	equationEditor.drawCombinationStacked = function(){
+		visController.drawCombinationStacked();
+	}
+	
+	equationEditor.drawCombinationSplitted = function(){
+		visController.drawCombinationSplitted();
 	}
 
 	return equationEditor;

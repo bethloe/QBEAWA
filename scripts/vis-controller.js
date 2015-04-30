@@ -1893,6 +1893,8 @@ var VisController = function () {
 		}
 		//console.log("OUTPUT: " + JSON.stringify(arrayHelp));
 	}
+	
+		var qmRankingArray = [];
 	visController.rankQMs = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
@@ -1905,7 +1907,7 @@ var VisController = function () {
 																																												  </div>");
 
 		var allEquations = rankingModel.getEquations();
-		var qmRankingArray = [];
+		qmRankingArray = [];
 		for (var i = 0; i < keywords.length; i++) {
 			var object = {};
 			object.name = keywords[i].term;
@@ -1972,6 +1974,14 @@ var VisController = function () {
 
 	visController.resetColorOfQMMetrics = function () {
 		d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
+	}
+	
+	visController.drawCombinationStacked = function () {
+		rankingVis.redrawStacked(rankingModel, $(contentPanel).height(), weightColorScale);
+	}
+	
+	visController.drawCombinationSplitted = function () {
+		rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
 	}
 	//-------------------------------------------------------------------------
 
