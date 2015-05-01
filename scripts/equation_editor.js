@@ -166,6 +166,8 @@ var EquationEditor = function (vals) {
 		visController.tmpStoreEquationComposer($(equationStack).html());
 		$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + "New Combination" + "</div>");
 		$("#QM_Text").html("");
+        
+			$("#draw_stacked_div").css("display", "none");
 	}
 
 	equationEditor.euclidean = function () {
@@ -219,6 +221,7 @@ var EquationEditor = function (vals) {
 		visController.tmpStoreEquationComposer($(equationStack).html());
 		$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + "New Combination" + "</div>");
 		$("#QM_Text").html("");
+			$("#draw_stacked_div").css("display", "none");
 	}
 
 	equationEditor.bricks = function () {
@@ -243,6 +246,8 @@ var EquationEditor = function (vals) {
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 	equationEditor.clearEquationComposer = function () {
+    
+			$("#draw_stacked_div").css("display", "none");
 		visController.resetColorOfQMMetrics();
 		visController.resetHighlighting();
 		$(".equationStackSmall").html("New Equation");
@@ -607,6 +612,7 @@ var EquationEditor = function (vals) {
 		showGuidedIcon = showGuided;
 	}
 	equationEditor.loadMetric = function (name, htmlValue, eraseZoomArray) {
+			$("#draw_stacked_div").css("display", "none");
 		if (showGuidedIcon)
 			$("#showMoreIcon").css("display", "inline-flex");
 		if (eraseZoomArray) {
@@ -705,6 +711,7 @@ var EquationEditor = function (vals) {
 
 	var currentDataArray;
 	equationEditor.loadACombination = function (dataArray) {
+		$("#draw_stacked_div").css("display", "inline");
 		$(".equationStackSmall").html("");
 		var allVizs = visController.getAllVizs();
 		equationEditor.resetData();
@@ -1354,6 +1361,8 @@ var EquationEditor = function (vals) {
 			$("#edit_Icon_QM_Text_Return").css("display", "none");
 			$("#ranking_norm_selector").css("display", "none");
 			$("#showMoreIcon").css("display", "none");
+			$("#draw_stacked_div").css("display", "none");
+            
 
 			$("#switch_to_expert_mode").css("display", "none");
 			$("#quality_measrues_norm_selector").css("display", "none");
@@ -1369,6 +1378,7 @@ var EquationEditor = function (vals) {
 			$("#edit_Icon_QM_Text").css("display", "none");
 			$("#edit_Icon_QM_Text_Return").css("display", "none");
 			$("#quality_measrues_norm_selector").css("display", "none");
+			$("#draw_stacked_div").css("display", "none");
 			if (showGuidedIcon)
 				$("#showMoreIcon").css("display", "inline-flex");
 
@@ -1406,7 +1416,7 @@ var EquationEditor = function (vals) {
 	}
 	
 	equationEditor.drawCombinationSplitted = function(){
-		visController.drawCombinationSplitted();
+		visController.drawCombinationSplitted(currentDataArray.length);
 	}
 
 	return equationEditor;

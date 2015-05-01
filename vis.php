@@ -263,7 +263,7 @@ and open the template in the editor.
 					<option value="maxNorm" id="maxnormRank"  title="Maximum norm">maximum norm</option>
 					 </select>
 					 </td></tr></table>
-					 <div style="display: inline; position: relative;"> <div style="position: absolute; float:left; right: 60px; color: black; width: 60px;"> Draw stacked:</div> 	<div id="draw_stacked_toggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
+					 <div id="draw_stacked_div" style="display: inline; position: relative;"> <div style="position: absolute; float:left; right: 60px; color: black; width: 60px;"> Draw stacked:</div> 	<div id="draw_stacked_toggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
 					 </div>
 				 </div>
                  <!--<div id="eexcess_vis_panel_controls">

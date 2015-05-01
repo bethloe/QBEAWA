@@ -1977,10 +1977,13 @@ var VisController = function () {
 	}
 	
 	visController.drawCombinationStacked = function () {
+    
+		$(".eexcess_list").css("height", 26 + "px");
 		rankingVis.redrawStacked(rankingModel, $(contentPanel).height(), weightColorScale);
 	}
 	
-	visController.drawCombinationSplitted = function () {
+	visController.drawCombinationSplitted = function (numElements) {
+		$(".eexcess_list").css("height", ( 26 * numElements) + "px");
 		rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
 	}
 	//-------------------------------------------------------------------------
