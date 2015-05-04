@@ -46,7 +46,6 @@ and open the template in the editor.
 		<script type="text/javascript" src="scripts/Stopwatch.js" charset="utf-8"> </script>
 		<script type="text/javascript" src="scripts/formulasForNOrmalization.js" charset="utf-8"> </script>
 		
-        <script type="text/javascript" src="scripts/colorsForRanking.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingQMsData.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingArray.js" charset="utf-8"></script>
@@ -89,16 +88,6 @@ and open the template in the editor.
 	  		</section>
             <section id="eexcess_header_task_section">
 				<div id="eexcess_header_task_section_div"> 
-					HELP:  <select id="modeSelectorHelp">
-					<option value="guided">guided</option>
-					<option value="notguided"  selected="selected">not guided</option>
-			     </select>
-				<div id="modeSelectorTop" style="display: inline" > Mode:  <select id="modeSelector">
-					<option value="normal" selected="selected">Normal</option>
-					<option value="expert">Expert</option>
-			     </select>
-				  </div>
-				  
 				Keyword: <input type="text" id="article-name" value="Visualization" /> 
 				 Max. number of results: <input type="number" id="max-num" value="5"/>
 				 <button onclick="searchArticle('visualization',50,equationEditor)"> retrieve data </button> 
@@ -128,13 +117,13 @@ and open the template in the editor.
             <div id="eexcess_controls_left_panel">
 			
 				
-				<div id="headlineQMs" style=" color: white; padding: 3px; margin: 10px; font-size: 14px;" title="">
+				<div style=" color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Metrics are for todo...">
 					<span style="background-color: #08519c; padding: 5px;"> Quality Metrics  </span> 
 				</div>
 				<div id="eexcess_qm_container_rank_button">
 				<div id="eexcess_controls_left_panel_control_panel2"  style="position: relative;">
-					<div id="rank_quality_metrics_text" style="position: absolute; float:left; right: 60px; color: white;" title=""> Rank Quality Metrics: </div>
-					<div id="rank_metrics_toggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
+					<div style="position: absolute; float:left; right: 60px; color: white;" > Rank Quality Metrics: </div>
+					<div class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
 				
 				</div>
 	               <!--  <img align="right" width="50" style="cursor: pointer" title="rank" src="media/ranking.png" onclick="equationEditor.rankQMs()" />-->
@@ -152,7 +141,7 @@ and open the template in the editor.
 					<span style="background-color: #21B571;  padding: 5px;" > Quality Measures </span>
 				</div>
 				<div id="quality_measrues_norm_selector">
-					<table id="normMeasuresTable" align="center" title="test" ><tr><td> Norm: </td><td>  <select id="normMeasuresSelector">
+					<table align="center" ><tr><td> Norm: </td><td>  <select id="normMeasuresSelector">
 					<option value="default" selected="selected" id="default" title="taxicab nrom">taxicab norm</option>
 					<option value="euclidean" id="euclidean" title="euclidean norm">euclidean norm</option>
 					<option value="pNorm" id="pnorm" title="p-norm">p-norm</option>
@@ -195,7 +184,7 @@ and open the template in the editor.
 					<div class="icon" id="divAddBeforeSelected" onclick="equationEditor.addBeforeSelected()" ><img src="media/add.png" title="insert before" height="30" /> before</div>
 					<div class="icon" id="divAddAfterSelected"  onclick="equationEditor.addAfterSlected()" ><img src="media/add.png" title="insert after" height="30"/> after</div>
 					<!--<div class="icon"  onclick="equationEditor.showNormPanels()" ><img src="media/settings.png" title="show norm panel" height="30"/> </div>-->
-					<!--<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>-->
+					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>
 					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
 					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
 					<div class="icon" ><img src="media/editing-done.png" title="editing done" height="30" onclick="equationEditor.setUserMode('advanced')"/></div>
@@ -203,21 +192,15 @@ and open the template in the editor.
 					<!--<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
 					<div id="stopwatchViz" class="icon"></div>
 					<div id="stopwatchCalc"  class="icon"></div>-->
-					<div class="equationStackSmall"> </div>				
-					<div id="show_equaiton_composer_div" style="position: absolute; top: 5px; right: 10px;"> <div style="float:left;"> Equation Composer: </div> 	<div id="show_equation_composer_toggle1" class="toggle toggle-light" style="float:left;" > </div></div>
-			
-					
+					<div class="equationStackSmall"> </div>
 					
 				</div> 
 				
 				<div id="eexcess_equation_controls_normal_mode">
 					
-					<div id="showMoreIcon" class="icon" onclick="equationEditor.setUserMode('advanced')" > <img src="media/show-all.png" height="30"/ title="show detail view of Quality Metric" > </div> 
-					<!--<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of Quality Metric" height="30"/> </div> -->
+					<div class="icon" onclick="equationEditor.setUserMode('advanced')" > <img src="media/show-all.png" height="30"/ title="show detail view of Quality Metric" > </div> 
+					<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of Quality Metric" height="30"/> </div>
 					<div class="icon" id="switch_to_expert_mode" ><img src="media/edit.png" title="edit Quality Metric" height="30" onclick="equationEditor.setUserMode('expert')"/></div>
-					
-					<div id="show_equaiton_composer_div" style="position: absolute; top: 5px; right: 10px;"> <div style="float:left;"> Equation Composer: </div> 	<div id="show_equation_composer_toggle2" class="toggle toggle-light" style="float:left;" > </div></div>
-			
 					
 					<div class="equationStackSmall"> </div>
 					
@@ -261,7 +244,7 @@ and open the template in the editor.
 					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><!--<td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><td onclick="equationEditor.showWholeEquation()">show everything</td> <td></td><td></td> --></tr>
 					</table>
 				</div> 
-				<div id="ranking_norm_selector" style="position: relative;">
+				<div id="ranking_norm_selector">
 					<table align="center" ><tr><td> Norm: </td><td>  <select id="normRankingSelector">
 					<option value="default"  id="defaultRank" title="taxicab nrom">taxicab norm</option>
 					<option value="euclidean" selected="selected" id="euclideanRank" title="euclidean norm">euclidean norm</option>
@@ -269,8 +252,6 @@ and open the template in the editor.
 					<option value="maxNorm" id="maxnormRank"  title="Maximum norm">maximum norm</option>
 					 </select>
 					 </td></tr></table>
-					 <div id="draw_stacked_div" style="display: inline; position: relative;"> <div style="position: absolute; float:left; right: 60px; color: black; width: 60px;"> Draw stacked:</div> 	<div id="draw_stacked_toggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
-					 </div>
 				 </div>
                  <!--<div id="eexcess_vis_panel_controls">
                    <div id="eexcess_ranking_controls">
@@ -358,21 +339,13 @@ and open the template in the editor.
 		<script type="text/javascript" src="scripts/QMformula-editor.js"></script>
 		<script>
 		document.onkeydown = function (event) {
-			if (event.keyCode == 16)
-				equationEditor.shiftPressed(true);
-			else if (event.ctrlKey || event.metaKey) {
-				switch (String.fromCharCode(event.which).toLowerCase()) {
-				case 's':
-					event.preventDefault();
-					equationEditor.savePressed();
-					break;
-				}
-			}
-
+			if(event.keyCode == 16)
+				equationEditor.shiftPressed(true);	
+			
 		}
 		document.onkeyup = function (event) {
-			if (event.keyCode == 16)
-				equationEditor.shiftPressed(false);
+			if(event.keyCode == 16)
+				equationEditor.shiftPressed(false);	
 		}
 		
 		//var timerStopwatchViz = new Stopwatch(document.getElementById("stopwatchViz"));
@@ -404,49 +377,10 @@ and open the template in the editor.
 
 		});*/
 		$(document).ready(function () {
-			$('#show_equation_composer_toggle2').toggles({
+			$('.toggle').toggles({
 				clicker : $('.clickme')
 			});
-			$('#show_equation_composer_toggle2').on('toggle', function (e, active) {
-				if (active) {
-					equationEditor.setUserMode("expert");
-					$('#show_equation_composer_toggle1').toggles(true);
-				} else {
-					$('#show_equation_composer_toggle1').toggles(false);
-					equationEditor.setUserMode("normal");
-				}
-			});
-
-			$('#show_equation_composer_toggle1').toggles({
-				clicker : $('.clickme')
-			});
-			$('#show_equation_composer_toggle1').on('toggle', function (e, active) {
-				if (active) {
-					equationEditor.setUserMode("expert");
-					$('#show_equation_composer_toggle2').toggles(true);
-				} else {
-					$('#show_equation_composer_toggle2').toggles(false);
-					equationEditor.setUserMode("normal");
-				}
-			});
-			$('#draw_stacked_toggle').toggles({
-				clicker : $('.clickme')
-			});
-			$('#draw_stacked_toggle').on('toggle', function (e, active) {
-				if (active) {
-					console.log("toggle on");
-					equationEditor.drawCombinationStacked();
-
-				} else {
-					equationEditor.drawCombinationSplitted();
-					console.log("toggle off");
-				}
-			});
-
-			$('#rank_metrics_toggle').toggles({
-				clicker : $('.clickme')
-			});
-			$('#rank_metrics_toggle').on('toggle', function (e, active) {
+			$('.toggle').on('toggle', function (e, active) {
 				if (active) {
 					equationEditor.rankQMs();
 					console.log("toggle on");
@@ -455,6 +389,7 @@ and open the template in the editor.
 					console.log("toggle off");
 				}
 			});
+
 			equationEditor.setInterfaceToMode();
 			$("#modeSelector").change(function () {
 
@@ -463,20 +398,6 @@ and open the template in the editor.
 					equationEditor.setUserMode("expert");
 				else if (this.value == "normal")
 					equationEditor.setUserMode("normal")
-
-			});
-			
-			$("#modeSelectorHelp").change(function () {
-
-				console.log("Handler for .change() called." + this.value);
-				if (this.value == "guided"){
-					$('#modeSelectorTop').css("display", "none");
-					equationEditor.setShowGuided(true);
-				}
-				else if (this.value == "notguided"){
-					equationEditor.setShowGuided(false);
-					$('#modeSelectorTop').css("display", "inline");
-					}
 
 			});
 			
@@ -501,12 +422,6 @@ and open the template in the editor.
 			$('#euclideanRank').tooltip({ content :  formulaEuclidean});
 			$('#pnormRank').tooltip({ content :  formulaPnorm});
 			$('#maxnormRank').tooltip({ content :  formulaMaxnorm});
-			$('#headlineQMs').tooltip({content : 'Quality Metrics helps you to rank your wikipedia articles. <br /> \
-												  <b> Click </b> on one of them and see how the ranking changes! '});
-			$('#heading_Quality_Measure').tooltip({content : 'Quality Measures are extracted data out of the wikipedia articles. <br /> You can use these measures to create new Quality Metrics or to edit already existing ones! '});
-			$('#normMeasuresTable').tooltip({content : 'In most cases it is good to bring all parameters to the same scale in order to be able to combine them. <br />For that reason you can choose between different normalization methods.'});
-			$('#rank_quality_metrics_text').tooltip({content : 'How good is each Quality Metric compared with the others? <br /> <b> Click on the toggle to find it out!</b>'});
-												  
 		});
 		</script>
 		

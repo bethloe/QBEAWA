@@ -164,7 +164,7 @@ var EquationEditor = function (vals) {
 		rerank();
 		shrinkElementsIfNecessary(1);
 		visController.tmpStoreEquationComposer($(equationStack).html());
-		$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + "New Combination" + "</div>");
+		$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #d95f02\">" + "New Combination" + "</div>");
 		$("#QM_Text").html("");
         
 			$("#draw_stacked_div").css("display", "none");
@@ -219,7 +219,7 @@ var EquationEditor = function (vals) {
 		rerank();
 		shrinkElementsIfNecessary(1);
 		visController.tmpStoreEquationComposer($(equationStack).html());
-		$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + "New Combination" + "</div>");
+		$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #d95f02\">" + "New Combination" + "</div>");
 		$("#QM_Text").html("");
 			$("#draw_stacked_div").css("display", "none");
 	}
@@ -616,7 +616,7 @@ var EquationEditor = function (vals) {
 		if (showGuidedIcon)
 			$("#showMoreIcon").css("display", "inline-flex");
 		if (eraseZoomArray) {
-			$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + name + "</div>");
+			$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #d95f02\">" + name + "</div>");
 			zoomArray.splice(0, zoomArray.length);
 		}
 		equationEditor.resetData();
@@ -854,7 +854,7 @@ var EquationEditor = function (vals) {
 
 				if (nameOfLoadedMetric == "temp" || nameOfLoadedMetric == "") {
 					console.log("IN HERE");
-					$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #08519c\">" + name + "</div>");
+					$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #d95f02\">" + name + "</div>");
 					nameOfLoadedMetric = name;
 				}
 				var backupCurrentView = $(equationStack).html();
@@ -1016,6 +1016,7 @@ var EquationEditor = function (vals) {
 		//console.log("EQUATIONID: " + id);
 		for (var i = 2; i <= shrinkLevel; i++) {
 			if ($("#equation" + id).attr("type") == "box" || $("#equation" + id).attr("type") == "filledBox") {
+			//	console.log("----------------------------> adjustNewElementsToShrinkLevel");
 				var newWidth = parseInt($("#equation" + id).width()) / 2;
 				var newHeight = parseInt($("#equation" + id).height()) / 2;
 				$("#equation" + id).css("width", newWidth + "px");
@@ -1025,7 +1026,7 @@ var EquationEditor = function (vals) {
 				var newFontSize = oldFontSize - (oldFontSize / 4);
 				$("#equation" + id).css("font-size", newFontSize + "px");
 
-				//console.log("#equation" + id + " TYPE: " + $("#equation" + id).attr("type") + " width: " + newWidth + " FONT-SIZE: " + $("#equation" + id).css("font-size"));
+			//	console.log("#equation" + id + " TYPE: " + $("#equation" + id).attr("type") + " width: " + newWidth + " FONT-SIZE: " + $("#equation" + id).css("font-size"));
 			} else if ($("#equation" + id).attr("class") == "eexcess_equation_text") {
 				var newHeight = parseInt($("#equation" + id).height()) / 2;
 				$("#equation" + id).css("height", newHeight + "px");
@@ -1034,7 +1035,7 @@ var EquationEditor = function (vals) {
 			}
 		}
 
-		//console.log("END: ------------------ adjustNewElementsToShrinkLevel ------------------");
+	//	console.log("END: ------------------ adjustNewElementsToShrinkLevel ------------------");
 	}
 
 	var shrinkElementsIfNecessary = function (operation) {
@@ -1157,7 +1158,10 @@ var EquationEditor = function (vals) {
 			var help = nameOfLoadedMetric;
 			var allVizs = visController.getAllVizs();
 			if (allVizs[name]) {
-				$(".equationStackSmall").append(" <div style=\"display: inline-block\"> &rarr; </div> <div class=\"eexcess_keyword_tag\" style=\"background: #08519c\">" + name + "</div>");
+				visController.resetColorOfQMMetrics();
+				visController.setColorOfQMMetrics(name);
+				$(".equationStackSmall").children().css("background", "#08519c");
+				$(".equationStackSmall").append(" <div style=\"display: inline-block\"> &rarr; </div> <div class=\"eexcess_keyword_tag\" style=\"background: #d95f02\">" + name + "</div>");
 				equationEditor.resetData();
 				equationEditor.loadMetric(name, allVizs[name], false);
 				if (help != "")
@@ -1182,8 +1186,12 @@ var EquationEditor = function (vals) {
 			var name = zoomArray[zoomArray.length - 1];
 			var allVizs = visController.getAllVizs();
 			if (allVizs[name]) {
+				visController.resetColorOfQMMetrics();
+				visController.setColorOfQMMetrics(name);
+				$(".equationStackSmall").children().css("background", "#08519c");
 				$(".equationStackSmall div:last-child").remove();
 				$(".equationStackSmall div:last-child").remove();
+				$(".equationStackSmall div:last-child").css("background", "#d95f02");
 				equationEditor.loadMetric(name, allVizs[name], false);
 			}
 			zoomArray.remove(zoomArray.length - 1);
@@ -1198,7 +1206,8 @@ var EquationEditor = function (vals) {
 		if (visController != null) {
 			if (isShiftPressed != isShiftPressedPar) {
 				if (isShiftPressedPar == false) {
-					$(".eexcess_keyword_tag").css("background", "#08519c");
+					//$(".eexcess_keyword_tag").css("background", "#08519c");
+					visController.resetColorOfQMMetricsButNotSelected();
 					$(".eexcess_measures_tag").css("background", "#21B571");
 					visController.clearSelectedTagsForEquationEditorArray();
 				}

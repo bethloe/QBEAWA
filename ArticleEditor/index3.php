@@ -43,23 +43,39 @@
 
 
   <style type="text/css">
+  #mainContent{
+  position: relative; width: 100%; left: 10px; overflow-x: scroll; overflow-y: hidden; height: 700px;
+  }
     #mynetwork {
+	position:absolute;
 	  top: 0px;
       width: 700px;
-      height: 700px;
+      height: 680px;
       border: 1px solid lightgray;
 	  float: left;
 	  background-color:white;
     }
+  .ui-resizable-helper { border: 2px dotted #00F; }
 	#wikiText {
+	position:absolute;
+	left: 700px;
 	 width: 700px;
       height: 700px;
       border: 1px solid lightgray;
-	  float: left;
 	  background-color:white;
-	  padding: 5px; 
-	  margin: 5px;
+	  padding-right: 5px; 
+	  padding-left: 5px; 
+	  margin-right: 5px; 
+	  margin-left: 5px; 
+	  overflow-y: auto;
 	}
+	#optionPanel {
+	position:absolute;
+	left: 1420px;
+	height: 680px;
+	float: left; 
+	background-color: white;
+	 }
    #mynetworkDetailView {
 	  top: 0px;
       width: 400px;
@@ -148,10 +164,10 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                         </a>
                     </li>
                     <li>
-                        <a onclick="articleController.colorLevels()">
+                        <a onclick="changeLayout()">
                             <span class="ca-icon">H</span>
                             <div class="ca-content">
-                                <h2 class="ca-main">color levels</h2>
+                                <h2 class="ca-main">change layout</h2>
                             </div>
                         </a>
                     </li>
@@ -322,16 +338,12 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 </table>
 </div>
 
-<table style="background-color: white"> 
-<tr>
-<td rowspan="2">
+<div id="mainContent" style="">
 <div id="mynetwork" ></div>
-</td>
-<td rowspan="2">
 <div id="wikiText" >
-	<textarea id="wikiTextTextarea" rows="35" cols="50" ></textarea>
+	<!--<textarea id="wikiTextTextarea" rows="35" cols="50" ></textarea>-->
 </div>
-</td>
+
 <td  rowspan="2">
 <div  id="optionPanel" style="" >
 <div style=" height: 340px; width:400px;  ">
@@ -346,24 +358,18 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
             </div>
         </progress> -->
 </div> 
+<div id="qualityParameters"> 
+</div>
+
 <hr /> 
 
 
 </div><div style="height: 340px; width:400px ">
 <div id="mynetworkDetailView"></div>
-<div id="qualityParameters"> 
 </div>
-</div></div>
-</td>
-</tr>
-</tr>
-<td>
-<!-- <div style="height: 340px; width:400px ">
-<div id="mynetworkDetailView"></div>
-</div>-->
-</td>
-</tr>
-</table>
+</div>
+</div>
+
 <script>
 			articleController.init();
 </script>
@@ -440,8 +446,8 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   					var img = new Image();
   					//console.log("READER RESULT: " + reader.result);
   					img.src = reader.result;
-					currentImageSrc = reader.result;
-					img.id = "imageToUpload";
+  					currentImageSrc = reader.result;
+  					img.id = "imageToUpload";
   					fileDisplayArea.appendChild(img);
   				}
 
@@ -452,72 +458,102 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   		});
   	}
   });
-  
 
-		$(document).ready(function () {
-			var width = 0;
-			$('#mynetwork').resizable();
-			$('#wikiText').resizable();
+  var isChangeLayout = false;
+  var changeLayout = function () {
+  	console.log("IN HERE changeLayout")
+  	if (!isChangeLayout) {
+  		$("#mynetwork").draggable({
+  			axis : "x",
+  			start : function () {},
+  			drag : function () {
+  				console.log("POSTITION1: " + $(this).offset().left + " " + $(this).width());
+  			},
+  			stop : function () {}
+  		});
+  		$("#wikiText").draggable({
+  			axis : "x",
+  			start : function () {},
+  			drag : function () {
+  				/*	console.log("POSTITION2: " + $(this).offset().left + " " +$(this).width());
+  				console.log("POSTITION2: " + ($(this).offset().left + $(this).width() ) + " > " +$("#optionPanel").offset().left);
+  				if($(this).offset().left + $(this).width() > $("#optionPanel").offset().left){
+  				//console.log("POSTITION2: IN HERE " + $("#optionPanel").css("position"));
+  				var help = 0;//$("#optionPanel").css("left");
+  				width = $("#optionPanel").width()+20;
+  				$("#optionPanel").css("left" , (help - $(this).width()-20));
+  				return false;
+  				//$("#wikiText").css("left",  (width));
+  				}*/
+  			},
+  			stop : function () {
 
-			$("#mynetwork").draggable({
-				axis : "x",
-				grid : [80, 80],
-				start : function () {},
-				drag : function () {
-					console.log("POSTITION1: " + $(this).offset().left + " " +$(this).width());
-				},
-				stop : function () {}
-			});
-			$("#wikiText").draggable({
-				axis : "x",
-				grid : [80, 80],
-				start : function () {},
-				drag : function () {
-					console.log("POSTITION2: " + $(this).offset().left + " " +$(this).width());
-					console.log("POSTITION2: " + ($(this).offset().left + $(this).width() ) + " > " +$("#optionPanel").offset().left);
-					if($(this).offset().left + $(this).width() > $("#optionPanel").offset().left){
-						//console.log("POSTITION2: IN HERE " + $("#optionPanel").css("position"));
-						var help = 0;//$("#optionPanel").css("left");
-						 width = $("#optionPanel").width()+20;
-						$("#optionPanel").css("left" , (help - $(this).width()-20));
-						return false;
-						//$("#wikiText").css("left",  (width));
-					}
-				},
-				stop : function () {
-				
-						//$("#wikiText").css("left",  (width));
-				}
+  				//$("#wikiText").css("left",  (width));
+  			}
 
-			});
-			$("#optionPanel").draggable({
-				axis : "x",
-				grid : [80, 80],
+  		});
+  		$("#optionPanel").draggable({
+  			axis : "x",
 
-				start : function () {},
-				drag : function () {
-					console.log("POSTITION3: " + $(this).offset().left + " " +$(this).width());
-				},
-				stop : function () {}
+  			start : function () {},
+  			drag : function () {
+  				console.log("POSTITION3: " + $(this).offset().left + " " + $(this).width());
+  			},
+  			stop : function () {}
 
-			});
-			//$('#optionPanel').resizable();
-		});
-/*document.getElementById('file-input').onchange = function (e) {
+  		});
+  		isChangeLayout = true;
+  	} else {
+  		console.log("IN HERE changeLayout2")
+  		$("#mynetwork").draggable("disable");
+  		$("#wikiText").draggable("disable");
+  		$("#optionPanel").draggable("disable");
+  		isChangeLayout = false;
+  	}
+  }
+  $(document).ready(function () {
+  	(function () {
+  		function scrollHorizontally(e) {
+  			e = window.event || e;
+  			var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+  			document.getElementById('mainContent').scrollLeft -= (delta * 40); // Multiplied by 40
+  			e.preventDefault();
+  		}
+  		if (document.getElementById('mainContent').addEventListener) {
+  			// IE9, Chrome, Safari, Opera
+  			document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
+  			// Firefox
+  			document.getElementById('mainContent').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+  		} else {
+  			// IE 6/7/8
+  			document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
+  		}
+  	})();
+  	var width = 0;
+  	$('#mynetwork').resizable({
+      helper: "ui-resizable-helper",
+      ghost: true});
+  	$('#wikiText').resizable({
+      helper: "ui-resizable-helper",
+      ghost: true});
+
+  	//$('#optionPanel').resizable();
+  });
+  /*document.getElementById('file-input').onchange = function (e) {
 
 
-	loadImage(
-		e.target.files[0],
-		function (img) {
-		//$("#uploadDiv").append(img);
-		console.log("img: " + img.src);
+  loadImage(
+  e.target.files[0],
+  function (img) {
+  //$("#uploadDiv").append(img);
+  console.log("img: " + img.src);
 
-		document.body.appendChild(img);
-	}, {
-		maxWidth : 600
-	} // Options
-	);
-}*/
+  document.body.appendChild(img);
+  }, {
+  maxWidth : 600
+  } // Options
+  );
+  }*/
 </script>
 
   <script type="text/javascript" src="scripts/article-editor-settings.js"></script>

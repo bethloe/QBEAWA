@@ -1,14 +1,14 @@
 * Hostname was found in DNS cache
 *   Trying 91.198.174.192...
-* Connected to en.wikipedia.org (91.198.174.192) port 80 (#80)
+* Connected to en.wikipedia.org (91.198.174.192) port 80 (#3)
 > POST /w/api.php?action=upload&format=xml HTTP/1.1
 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/2.0.0.9
 Host: en.wikipedia.org
 Accept: */*
 Accept-Encoding: UTF-8
-Cookie: enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=364228f43df738947fe48629303a535a; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
+Cookie: WMF-Last-Access=04-May-2015; enwikiSession=37d584b8eb356d25d6bc7a9057e8eac4; enwikiUserID=24559429; enwikiUserName=Dst2015; forceHTTPS=true; GeoIP=AT:Graz:47.0667:15.4500:v4; centralauth_Session=88ae557389208614d92b545c632fd091; centralauth_Token=a318f7eb27cfaf4f2b40188ec34a8af6; centralauth_User=Dst2015
 Content-Type:multipart/form-data
-Content-Length: 128225
+Content-Length: 263164
 Expect: 100-continue
 
 < HTTP/1.1 100 Continue
@@ -22,13 +22,15 @@ Expect: 100-continue
 < X-Frame-Options: SAMEORIGIN
 < Vary: Accept-Encoding
 < Content-Type: text/xml; charset=utf-8
-< X-Varnish: 585650838, 2134085240, 2090956898
+< X-Varnish: 2477427277, 3426415691, 113176038
 < Via: 1.1 varnish, 1.1 varnish, 1.1 varnish
 < Content-Length: 318
 < Accept-Ranges: bytes
-< Date: Fri, 17 Apr 2015 11:51:33 GMT
+< Date: Mon, 04 May 2015 11:35:11 GMT
 < Age: 0
 < Connection: keep-alive
 < X-Cache: cp1067 miss (0), cp3008 miss (0), cp3031 frontend miss (0)
+* Replaced cookie WMF-Last-Access="04-May-2015" for domain en.wikipedia.org, path /, expire 1433462400
+< Set-Cookie: WMF-Last-Access=04-May-2015;Path=/;HttpOnly;Expires=Fri, 05 Jun 2015 00:00:00 GMT
 < 
-* Connection #80 to host en.wikipedia.org left intact
+* Connection #3 to host en.wikipedia.org left intact

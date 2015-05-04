@@ -597,6 +597,7 @@ VIS PANEL (center of screen)
 
 
 #eexcess_equation_controls{
+	position: relative;
     display: inline-flex;
     width: 100%;
     height: 4.5%;
@@ -606,6 +607,7 @@ VIS PANEL (center of screen)
 }
 
 #eexcess_equation_controls_normal_mode{
+	position: relative;
     display: inline-flex;
     width: 100%;
     height: 4.5%;

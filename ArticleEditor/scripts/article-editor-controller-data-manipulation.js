@@ -59,6 +59,62 @@ var DataManipulator = function (vals) {
 		htmlForTable += "</table>";
 		$("#articleViewerQualityTableDiv").html(htmlForTable);
 	}
+	dataManipulator.showTheWholeArticleInMainView  = function (dataRetriever, qualityManager) {
+		//I NEED THE DATA RETRIEVER
+
+		var sectionContentDataArray = dataRetriever.getAllSectionContentData();
+		var intro = dataRetriever.getIntro();
+		var textOfSection = "";
+
+		if (intro.sections.length > 1) {
+			textOfSection = intro.wikitext['*'];
+			textOfSection = trimToOneParagraph(textOfSection, intro.sections[0].line);
+		} else {
+			textOfSection = intro.wikitext['*'];
+		}
+		var quality = qualityManager.calculateQuality(textOfSection, intro, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+		var backgroundColor = "";
+		if (quality.score == 0) {
+			backgroundColor = "#FF0000";
+		} else if (quality.score > 0 && quality.score <= 0.4) {
+			backgroundColor = "#FF4500";
+		} else if (quality.score > 0.4 && quality.score <= 0.6) {
+			backgroundColor = "#FFA500";
+		} else if (quality.score > 0.6 && quality.score <= 0.9) {
+			backgroundColor = "#00FF00";
+		} else if (quality.score > 0.9) {
+			backgroundColor = "#00EE00";
+		}
+		var htmlForDialog = ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + "Introduction" + "')\">" + textOfSection + "</div>");
+
+		for (var i = 0; i < sectionContentDataArray.length; i++) {
+			var sectionData = sectionContentDataArray[i];
+			var textOfSection = "";
+
+			if (sectionData.sections.length > 1) {
+				textOfSection = sectionData.wikitext['*'];
+				textOfSection = trimToOneParagraph(textOfSection, sectionData.sections[0].line);
+			} else {
+				textOfSection = sectionData.wikitext['*'];
+			}
+			var quality = qualityManager.calculateQuality(textOfSection, sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+			var backgroundColor = "";
+			if (quality.score == 0) {
+				backgroundColor = "#FF0000";
+			} else if (quality.score > 0 && quality.score <= 0.4) {
+				backgroundColor = "#FF4500";
+			} else if (quality.score > 0.4 && quality.score <= 0.6) {
+				backgroundColor = "#FFA500";
+			} else if (quality.score > 0.6 && quality.score <= 0.9) {
+				backgroundColor = "#00FF00";
+			} else if (quality.score > 0.9) {
+				backgroundColor = "#00EE00";
+			}
+			htmlForDialog += ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
+		}
+		//console.log("HTML : " + htmlForDialog);
+		$("#wikiText").append(htmlForDialog);
+	}
 	dataManipulator.showTheWholeArticle = function (dataRetriever, qualityManager) {
 		//I NEED THE DATA RETRIEVER
 

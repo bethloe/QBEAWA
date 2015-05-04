@@ -214,6 +214,10 @@ var ArticleController = function (vals) {
 		//TODO: Do a refactoring so that it work for more than one article at the end
 		dataManipulator.showQualityTableOfSection(sectionName, articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
+	
+	articleController.showTheWholeArticleInMainView = function(){
+		dataManipulator.showTheWholeArticleInMainView(articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
+	}
 
 	articleController.resizeSections = function () {
 		for (var i = 0; i < articleRenderers.length; i++) {
@@ -345,6 +349,7 @@ var ArticleController = function (vals) {
 
 	articleController.closeEditDialog = function () {
 		dataManipulator.closeEditDialog();
+		articleController.showTheWholeArticleInMainView();
 	}
 	//-------------------- EVENTS ----------------------
 

@@ -151,7 +151,7 @@ function RankingVis(domRoot, visControllerInterface) {
 			})
 			.attr("width", 0)
 			.style("fill", function (d) {
-				return "rgb(8, 81, 156)";
+				return "#d95f02";
 			});
 
 			var bars = stackedBars.selectAll(".bar");

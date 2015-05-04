@@ -89,15 +89,7 @@ and open the template in the editor.
 	  		</section>
             <section id="eexcess_header_task_section">
 				<div id="eexcess_header_task_section_div"> 
-					HELP:  <select id="modeSelectorHelp">
-					<option value="guided">guided</option>
-					<option value="notguided"  selected="selected">not guided</option>
-			     </select>
-				<div id="modeSelectorTop" style="display: inline" > Mode:  <select id="modeSelector">
-					<option value="normal" selected="selected">Normal</option>
-					<option value="expert">Expert</option>
-			     </select>
-				  </div>
+				
 				  
 				Keyword: <input type="text" id="article-name" value="Visualization" /> 
 				 Max. number of results: <input type="number" id="max-num" value="5"/>

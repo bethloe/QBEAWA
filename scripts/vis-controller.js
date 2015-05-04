@@ -545,9 +545,22 @@ var VisController = function () {
 		/*$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
 		<img align=\"right\" width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
 		</div>");*/
+		
+		var	qmRankingArrayHelper = [];
+		for (var i = 0; i < keywords.length; i++) {
+			var object = {};
+			object.name = keywords[i].term;
+			object.score = 0;
+			qmRankingArrayHelper.push(object);
+		}
+		generateQMRanking(qmRankingArrayHelper);
+		qmRankingArrayHelper.sort(SortByScore);
+		for(var i = 0; i< qmRankingArrayHelper.length; i++){
+			//console.log("
+		}
 		// Append one div per tag
 		d3.select(qmContainer).selectAll(tagClass)
-		.data(keywords)
+		.data(qmRankingArrayHelper)
 		.enter()
 		.append("div")
 		.attr("class", "eexcess_keyword_tag")
@@ -563,26 +576,26 @@ var VisController = function () {
 		.attr('unselectable', "on")
 		.attr('onselectstart', "return false")
 		.attr('onmousedown', "return false")
-		.style("background", "#08519c" /*function (k) {
-			return getGradientString(tagColorScale(k.colorCategory + 1), [1, 0.7, 1]);
-			}*/
+		.style("background",function (k, i) {
+			return "#08519c";
+			}
 		)
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
 		.text(function (k) {
-			return k.term;
+			return k.name;
 		})
 		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted)
 		.on("click", function (data) {
 			if (equationEditor.isShiftPressed() == false) {
-				//	console.log("buildTagCloud ON CLICK " + data.term + " " + allVizs[data.term]);
-				equationEditor.loadMetric(data.term, allVizs[data.term], true);
-				$('#QM_Text').html(allQMTexts[data.term]);
+				//	console.log("buildTagCloud ON CLICK " + data.name + " " + allVizs[data.name]);
+				equationEditor.loadMetric(data.name, allVizs[data.name], true);
+				$('#QM_Text').html(allQMTexts[data.name]);
 				//	if(equationEditor.getUserMode() == "normal"){
-				d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c")
-				d3.select(this).style("background", "red");
+				d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
+				d3.select(this).style("background", "#d95f02");
 				//}
 			} else {
 				//	console.log("HILF: " + d3.select(this).attr("ImSelected"));
@@ -593,7 +606,7 @@ var VisController = function () {
 					var indexToDelete = -1;
 					for (var i = 0; i < selectedTagsForEquationEditor.length; i++) {
 						var tag = selectedTagsForEquationEditor[i];
-						if (tag.name == data.term) {
+						if (tag.name == data.name) {
 							indexToDelete = i;
 						}
 					}
@@ -604,8 +617,8 @@ var VisController = function () {
 					d3.select(this).attr("ImSelected", true);
 					d3.select(this).style("background", "red");
 					var object = {
-						name : data.term,
-						viz : allVizs[data.term],
+						name : data.name,
+						viz : allVizs[data.name],
 						type : "metric"
 					};
 					selectedTagsForEquationEditor.push(object);
@@ -614,9 +627,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																							                        <ul class=\"rank_QMs_list\"></ul>\
-																																							                   </div>\
-																																											   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																										                        <ul class=\"rank_QMs_list\"></ul>\
+																																										                   </div>\
+																																														   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -1893,18 +1906,18 @@ var VisController = function () {
 		}
 		//console.log("OUTPUT: " + JSON.stringify(arrayHelp));
 	}
-	
-		var qmRankingArray = [];
+
+	var qmRankingArray = [];
 	visController.rankQMs = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-															<div id=\"rank_QMs\" style=\"display:none\">\
-																																								                        <ul class=\"rank_QMs_list\"></ul>\
-																																								                </div>\
-																																												<div id=\"eexcess_canvas_rankQM\"></div> \
-																																												 \
-																																												  </div>");
+																		<div id=\"rank_QMs\" style=\"display:none\">\
+																																											                        <ul class=\"rank_QMs_list\"></ul>\
+																																											                </div>\
+																																															<div id=\"eexcess_canvas_rankQM\"></div> \
+																																															 \
+																																															  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -1976,14 +1989,31 @@ var VisController = function () {
 		d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
 	}
 	
+	visController.resetColorOfQMMetricsButNotSelected = function () {
+		d3.select(qmContainer).selectAll(tagClass).filter(function (d, i) {
+			console.log("HERE: " + d3.select(this).style("background-color"));
+			if (d3.select(this).style("background-color") != "rgb(217, 95, 2)") {
+				d3.select(this).style("background", "#08519c");
+			}
+		});
+	}
+
+	visController.setColorOfQMMetrics = function (name) {
+		d3.select(qmContainer).selectAll(tagClass).filter(function (d, i) {
+			if (d3.select(this).text() == name) {
+				d3.select(this).style("background", "#d95f02");
+			}
+		});
+	}
+
 	visController.drawCombinationStacked = function () {
-    
+
 		$(".eexcess_list").css("height", 26 + "px");
 		rankingVis.redrawStacked(rankingModel, $(contentPanel).height(), weightColorScale);
 	}
-	
+
 	visController.drawCombinationSplitted = function (numElements) {
-		$(".eexcess_list").css("height", ( 26 * numElements) + "px");
+		$(".eexcess_list").css("height", (26 * numElements) + "px");
 		rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
 	}
 	//-------------------------------------------------------------------------
@@ -2160,7 +2190,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																				{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
