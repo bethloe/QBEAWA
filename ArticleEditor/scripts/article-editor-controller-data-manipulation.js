@@ -59,7 +59,41 @@ var DataManipulator = function (vals) {
 		htmlForTable += "</table>";
 		$("#articleViewerQualityTableDiv").html(htmlForTable);
 	}
-	dataManipulator.showTheWholeArticleInMainView  = function (dataRetriever, qualityManager) {
+
+	function getTextOfSection(sectionTitle, dataRetriever) {
+		var stringToSearch = "== \xA7" + sectionTitle + " ==";
+		var articleText = dataRetriever.getRawText();
+		var index = articleText.indexOf(stringToSearch);
+		if (index == -1) {
+			stringToSearch = "== " + sectionTitle + " ==";
+			index = articleText.indexOf(stringToSearch);
+			if (index == -1) {
+				stringToSearch = sectionTitle;
+				index = articleText.indexOf(stringToSearch);
+			}
+		}
+		var str = articleText.substring((index + stringToSearch.length), articleText.length);
+		str = deleteEqualsSigns(str, 0);
+		index = str.indexOf("==");
+		var ret = "";
+		if (index > -1)
+			ret = str.substr(0, index);
+		else
+			ret = str;
+		ret.replace("=", " ");
+		return ret;
+	}
+	function getIntroOfArticle(dataRetriever) {
+		var articleText = dataRetriever.getRawText();
+		index = articleText.indexOf("==");
+		var ret = "";
+		if (index > -1)
+			ret = articleText.substr(0, index);
+		else
+			ret = "";
+		return ret;
+	}
+	dataManipulator.showTheWholeArticleInMainView = function (dataRetriever, qualityManager) {
 		//I NEED THE DATA RETRIEVER
 
 		var sectionContentDataArray = dataRetriever.getAllSectionContentData();
@@ -72,7 +106,7 @@ var DataManipulator = function (vals) {
 		} else {
 			textOfSection = intro.wikitext['*'];
 		}
-		var quality = qualityManager.calculateQuality(textOfSection, intro, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+		var quality = qualityManager.calculateQuality(getIntroOfArticle(dataRetriever), intro, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
 		var backgroundColor = "";
 		if (quality.score == 0) {
 			backgroundColor = "#FF0000";
@@ -85,7 +119,7 @@ var DataManipulator = function (vals) {
 		} else if (quality.score > 0.9) {
 			backgroundColor = "#00EE00";
 		}
-		var htmlForDialog = ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + "Introduction" + "')\">" + textOfSection + "</div>");
+		var htmlForDialog = ("<div id=\"Introduction\" contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + "Introduction" + "')\">" + textOfSection + "</div>");
 
 		for (var i = 0; i < sectionContentDataArray.length; i++) {
 			var sectionData = sectionContentDataArray[i];
@@ -97,7 +131,7 @@ var DataManipulator = function (vals) {
 			} else {
 				textOfSection = sectionData.wikitext['*'];
 			}
-			var quality = qualityManager.calculateQuality(textOfSection, sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+			var quality = qualityManager.calculateQuality(getTextOfSection(sectionData.sections[0].line,dataRetriever), sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
 			var backgroundColor = "";
 			if (quality.score == 0) {
 				backgroundColor = "#FF0000";
@@ -110,10 +144,16 @@ var DataManipulator = function (vals) {
 			} else if (quality.score > 0.9) {
 				backgroundColor = "#00EE00";
 			}
-			htmlForDialog += ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
+			//var help = sectionData.sections[0].line;
+			//help = help.replace(/"/g, "\"");
+			console.log("HERE: " + sectionData.sections[0].line);
+			var desired = sectionData.sections[0].line.replace(/[^\w\s]/gi, '');
+			var idStr = desired.replace(/ /g, "_");
+			htmlForDialog += ("<div id=\"" + idStr + "\"contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
 		}
 		//console.log("HTML : " + htmlForDialog);
-		$("#wikiText").append(htmlForDialog);
+		$("#wikiTextInner").children().remove();
+		$("#wikiTextInner").append(htmlForDialog);
 	}
 	dataManipulator.showTheWholeArticle = function (dataRetriever, qualityManager) {
 		//I NEED THE DATA RETRIEVER
@@ -278,13 +318,13 @@ var DataManipulator = function (vals) {
 							$(this).dialog("close");
 							$("#dialogEditInProgres").dialog("open");
 							GLOBAL_interval = setInterval(dataManipulator.editAnimation(true), 500);
-						}else if($("#uploadSelect").val() == 'Image'){
+						} else if ($("#uploadSelect").val() == 'Image') {
 							var editToken = GLOBAL_controller.getEditToken();
-							var image = $("#imageToUpload"); 
+							var image = $("#imageToUpload");
 							console.log("IMAGE: " + currentImageSrc);
 							var url = "http://en.wikipedia.org/w/api.php?action=upload&format=xml";
-							var params = "api.php?action=upload&filename=Test.jpg&file="+currentImageSrc+"&token="+editToken;
-						
+							var params = "api.php?action=upload&filename=Test.jpg&file=" + currentImageSrc + "&token=" + editToken;
+
 							articleController.newImage(url, params);
 						}
 					}

@@ -25,6 +25,8 @@ var ArticleController = function (vals) {
 	var articleController = {};
 	var dataManipulator;
 
+	var sensiumRequester;
+
 	function update() {
 		var type = "continuous";
 		var roundness = 0.5;
@@ -86,6 +88,8 @@ var ArticleController = function (vals) {
 	articleController.retrieveData = function () {
 		console.log("articleController.retrieveData");
 		var articleName = $("#articleName").val();
+		sensiumRequester = new SensiumRequester();
+		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/wiki/" + articleName);
 		var articleRenderer = new ArticleRenderer({
 				network : network,
 				minID : minID,
@@ -144,16 +148,43 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.showReferences = function () {
+		if ($('#showReferences a span').attr("class") == "ca-icon") {
+			$('#showReferences a span').attr("class", "ca-icon-selected");
+			$('#showReferences a div h2').attr("class", "ca-main-selected");
+			$('#showReferences').css("background-color", "#000");
+		} else {
+			$('#showReferences a span').attr("class", "ca-icon");
+			$('#showReferences a div h2').attr("class", "ca-main");
+			$('#showReferences').css("background-color", "grey");
+		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showReferences();
 		}
 	}
 	articleController.hideReferences = function () {
+		if ($('#showReferences a span').attr("class") == "ca-icon") {
+			$('#showReferences a span').attr("class", "ca-icon-selected");
+			$('#showReferences a div h2').attr("class", "ca-main-selected");
+			$('#showReferences').css("background-color", "#000");
+		} else {
+			$('#showReferences a span').attr("class", "ca-icon");
+			$('#showReferences a div h2').attr("class", "ca-main");
+			$('#showReferences').css("background-color", "grey");
+		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].hideReferences();
 		}
 	}
 	articleController.showImages = function () {
+		if ($('#showImages a span').attr("class") == "ca-icon") {
+			$('#showImages a span').attr("class", "ca-icon-selected");
+			$('#showImages a div h2').attr("class", "ca-main-selected");
+			$('#showImages').css("background-color", "#000");
+		} else {
+			$('#showImages a span').attr("class", "ca-icon");
+			$('#showImages a div h2').attr("class", "ca-main");
+			$('#showImages').css("background-color", "grey");
+		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showImages();
 		}
@@ -189,6 +220,7 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.showQuality = function () {
+		articleController.showTheWholeArticleInMainView();
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showQuality();
 		}
@@ -204,18 +236,32 @@ var ArticleController = function (vals) {
 		network.destroy();
 		articleController.init();
 		$('#qualityParameters').html("");
-		$('#overallScore').html("");
+		$('#overallScore').html("<b>Quality score of the article:</b>");
+		$("#sensiumOverallScore").html("<b>Sensium score:</b>");
+		$('#wikiTextInner').children().remove();
+		$('#progressBarOverallScore').attr("value", "0");
+		//$('#progressBarSensiumOverallScore').attr("value", "0");
+		
+			$('#progressBarSensiumOverallScoreController').css("right",  200 - 0 * 200);
 	}
 	articleController.showTheWholeArticle = function () {
 		//TODO: Do a refactoring so that it work for more than one article at the end
 		dataManipulator.showTheWholeArticle(articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
+
+	articleController.highlightSectionInTree = function (sectionName) {
+		$("#editor_section_name").html(sectionName);
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].highlightSectionInTree(sectionName);
+		}
+	}
+
 	articleController.showQualityTable = function (sectionName) {
 		//TODO: Do a refactoring so that it work for more than one article at the end
 		dataManipulator.showQualityTableOfSection(sectionName, articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
-	
-	articleController.showTheWholeArticleInMainView = function(){
+
+	articleController.showTheWholeArticleInMainView = function () {
 		dataManipulator.showTheWholeArticleInMainView(articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
 
@@ -286,14 +332,13 @@ var ArticleController = function (vals) {
 		} else
 			alert("U r not logged in!!!");
 	}
-	
+
 	articleController.newImage = function (url, params) {
 		if (isLoggedIn) {
 			phpConnector.createRequest(url, params, articleController.newImageCreated);
 		} else
 			alert("U r not logged in!!!");
 	}
-	
 
 	articleController.editRequest = function (url, params, id) {
 		if (isLoggedIn) {
@@ -308,7 +353,11 @@ var ArticleController = function (vals) {
 		}
 		dataManipulator.editAnimation(false);
 	}
-	
+
+	articleController.reload = function (id) {
+		articleController.reset();
+		articleController.retrieveData();
+	}
 	articleController.newImageCreated = function (id) {
 		console.log("NEW Image CREATED");
 		articleController.reset();
@@ -438,6 +487,15 @@ var ArticleController = function (vals) {
 
 	articleController.showSettings = function () {
 		$("#dialogSettings").dialog("open");
+		if ($('#showSettings a span').attr("class") == "ca-icon") {
+			$('#showSettings a span').attr("class", "ca-icon-selected");
+			$('#showSettings a div h2').attr("class", "ca-main-selected");
+			$('#showSettings').css("background-color", "#000");
+		} else {
+			$('#showSettings a span').attr("class", "ca-icon");
+			$('#showSettings a div h2').attr("class", "ca-main");
+			$('#showSettings').css("background-color", "grey");
+		}
 	}
 
 	articleController.init = function () {
@@ -469,6 +527,12 @@ var ArticleController = function (vals) {
 
 		update();
 	}
+
+	articleController.sensium = function () {
+		var sensiumRequester = new SensiumRequester();
+		sensiumRequester.sensium();
+	}
+
 	return articleController;
 
 };

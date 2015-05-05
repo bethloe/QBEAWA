@@ -9,6 +9,7 @@
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
   <script type="text/javascript" src="libs/underscore-min.js" ></script>
   <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
+  <script type="text/javascript" src="scripts/article-editor-sensium-requester.js"></script>
   <script src="libs/JavaScript-Load-Image-master/js/load-image.all.min.js"></script>
    
 
@@ -35,6 +36,10 @@
   <link rel="stylesheet" type="text/css" href="menu/css/style8.css" />
   <link rel="stylesheet" type="text/css" href="css/progressBar.css" />
   <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css' />
+  <link rel="stylesheet" href="libs/jquery-toggles-master/css/toggles.css">
+  <link rel="stylesheet" href="libs/jquery-toggles-master/css/themes/toggles-light.css">
+  <script type="text/javascript" src="libs/jquery-toggles-master/toggles.min.js"></script>
+	
 		
    <link rel="stylesheet" type="text/css" href="libs/wikitexteditorMarkItUp/markitup/skins/markitup/style.css" />
    <link rel="stylesheet" type="text/css" href="libs/wikitexteditorMarkItUp/markitup/sets/wiki/style.css" />
@@ -63,11 +68,26 @@
       height: 700px;
       border: 1px solid lightgray;
 	  background-color:white;
-	  padding-right: 5px; 
-	  padding-left: 5px; 
 	  margin-right: 5px; 
 	  margin-left: 5px; 
-	  overflow-y: auto;
+	  overflow: hidden;
+	}
+	#wikiIFrame{
+	position:absolute;
+	left: 1420px;
+	 width: 700px;
+      height: 700px;
+      border: 1px solid lightgray;
+	  background-color:white;
+	  margin-right: 5px; 
+	  margin-left: 5px; 
+	  overflow: hidden;
+	}
+	#wikiTextInner{
+		position:absolute;
+      height: 650px;
+	 width: 100%;
+		overflow-y: scroll;
 	}
 	#optionPanel {
 	position:absolute;
@@ -126,6 +146,40 @@
       padding:10px;
       text-align: center;
     }
+	
+	#eexcess_equation_controls{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 4.5%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+.icon{
+	cursor: pointer;
+	border: 1px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+}
+
+.icon:hover{
+	cursor: pointer;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+	background-color: red;
+}
+
+#editor_section_name{
+	font-family: "arial";
+    font-weight: bold;
+	line-height:  2.5em;
+	vertical-align: middle;
+	
+}
   </style>
 </head>
 
@@ -156,6 +210,14 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <div id="menu" >
   <ul class="ca-menu">
                     <li>
+                        <a onclick="articleController.reload()">
+                            <span class="ca-icon">*</span>
+                            <div class="ca-content">
+                                <h2 class="ca-main">reload the article</h2>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
                         <a onclick="articleController.showAllItems()">
                             <span class="ca-icon">p</span>
                             <div class="ca-content">
@@ -163,7 +225,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                             </div>
                         </a>
                     </li>
-                    <li>
+                    <li id="changeLayout">
                         <a onclick="changeLayout()">
                             <span class="ca-icon">H</span>
                             <div class="ca-content">
@@ -171,7 +233,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                             </div>
                         </a>
                     </li>
-                    <li>
+                    <li id="showReferences">
                         <a onclick="articleController.showReferences()">
                             <span class="ca-icon" >,</span>
                             <div class="ca-content">
@@ -179,7 +241,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                             </div>
                         </a>
                     </li>
-                    <li>
+                    <li id="showImages">
                         <a onclick="articleController.showImages()">
                             <span class="ca-icon">I</span>
                             <div class="ca-content">
@@ -212,14 +274,6 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                         </a>
                     </li>
                     <li>
-                        <a onclick="articleController.showQuality()">
-                            <span class="ca-icon">.</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">show the quality of the article</h2>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
                         <a onclick="articleController.reset()">
                             <span class="ca-icon">J</span>
                             <div class="ca-content">
@@ -244,7 +298,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                             </div>
                         </a>
                     </li>
-                    <li>
+                    <li id="showSettings">
                         <a onclick="articleController.showSettings()">
                             <span class="ca-icon">S</span>
                             <div class="ca-content">
@@ -255,36 +309,6 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
                 </ul>
 </div>
 <br/>
-<!-- <input type="file" id="file-input">	<div id="fileDisplayArea"></div> -->
-				<!-- NOT USEFUL ANYMORE -->
-				<!-- <button onclick="articleController.splitSectionsIntoParagraphs()"> split sections into paragraphs </button>
-				 <button onclick="articleController.combineParagaphsToSections()"> combine paragraphs to sections </button> -->
-				 <!--<button onclick="articleController.resizeSections()"> resize sections </button> -->
-				 
-				 
-<!--
-				 <button onclick="articleController.showAllItems()"> show all items </button> 
-				 <button onclick="articleController.colorLevels(true)"> color levels </button>
-				 <button onclick="articleController.colorLevels(false)"> no color </button>
-				 <button onclick="articleController.showReferences()"> show external references</button>
-				 <button onclick="articleController.hideReferences()"> hide external references</button>
-				 <button onclick="articleController.showImages()"> show images</button>
-				 <button onclick="articleController.hideImages()"> hide images</button>
-				 <button onclick="articleController.posImages()"> reposition images</button>
-				 <button onclick="articleController.copy()"> copy (just for performance testing)</button>
-				 <button onclick="articleController.doRedraw()">redraw</button> <br />
-				 <button onclick="articleController.semanticZooming(true)"> semantic zooming on </button> 
-				 <button onclick="articleController.semanticZooming(false)"> semantic zooming off </button> 
-				 <button onclick="articleController.showOverview()"> show Overview </button> 
-				 <button onclick="articleController.showQuality()"> show the quality of the article </button> 
-				 <button onclick="articleController.reset()"> reset </button> 
-				 <br />
-				 <button onclick="articleController.showTheWholeArticle()"> show the whole article </button> -->
-				<!--Roundness (0..1): <input type="range" min="0" max="1" value="0.5" step="0.05" style="width:200px" id="roundnessSlider"> <input id="roundnessScreen" value="0.5"> (0.5 is max roundness for continuous, 1.0 for the others)-->
-	
-
-
-<!--<button onclick="articleController.fillDataNew()"> show the article </button>-->
 <div id="dialog" title="Dialog Title">
 	<textarea id="node-label" rows="30" cols="100" ></textarea>
 </div>
@@ -341,7 +365,18 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <div id="mainContent" style="">
 <div id="mynetwork" ></div>
 <div id="wikiText" >
-	<!--<textarea id="wikiTextTextarea" rows="35" cols="50" ></textarea>-->
+		      <div id="eexcess_equation_controls">
+					
+					<div class="icon" onclick="equationEditor.createNewQM()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
+					<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.clearEquationComposer()"/></div>
+					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
+					<div id="editor_section_name"> </div>
+					<div id="rank_quality_metrics_text" style="position: absolute; float:left; right: 60px;  top: 10px;" title=""> Show Wikipage: </div>
+					<div id="mytoggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px; line-height: 2.5em; vertical-align: middle; top: 10px;" > </div>
+				</div> 
+				<div id="wikiTextInner" >
+				
+				</div>
 </div>
 
 <td  rowspan="2">
@@ -358,7 +393,17 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
             </div>
         </progress> -->
 </div> 
-<div id="qualityParameters"> 
+
+<hr/>
+<div style="position: relative" > 
+ <p id="sensiumOverallScore" style="width:80%" data-value="80"><b>Sensium score: </b></p>
+ <br /> 
+  <img id="progressBarSensiumOverallScore" src="media/sensium.png" title="Sentiment detection allows you to decide of a given text talks positively or negatively about a subject. Sentiment detection is a common building block of online reputation management services for companies. Such a service scans social media, blogs and editorials, figuring out the general publics mood towards a company." style="width: 99%"/>
+  <img id="progressBarSensiumOverallScoreController" src="media/sensium_controller.png" style="position: absolute; top: 30px; right: 200px; height: 40px; "/>
+  
+</div> 
+
+<div id="qualityParameters" style="	overflow-x: auto;"> 
 </div>
 
 <hr /> 
@@ -406,7 +451,18 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   	autoOpen : false,
   	width : 400,
   	height : 650,
-  	modal : false
+  	modal : false,
+	close : function(){
+			if ($('#showSettings a span').attr("class") == "ca-icon") {
+			$('#showSettings a span').attr("class", "ca-icon-selected");
+			$('#showSettings a div h2').attr("class", "ca-main-selected");
+			$('#showSettings').css("background-color", "#000");
+		} else {
+			$('#showSettings a span').attr("class", "ca-icon");
+			$('#showSettings a div h2').attr("class", "ca-main");
+			$('#showSettings').css("background-color", "grey");
+		}
+	}
   });
 
   $("#dialogCreateNewNode").dialog({
@@ -422,6 +478,8 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   	height : 150,
   	modal : true
   });
+  
+ 
   
   $("#uploadSelect").change(function () {
   	console.log($(this).val());
@@ -461,13 +519,21 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 
   var isChangeLayout = false;
   var changeLayout = function () {
-  	console.log("IN HERE changeLayout")
-  	if (!isChangeLayout) {
+	if ($('#changeLayout a span').attr("class") == "ca-icon") {
+		$('#changeLayout a span').attr("class", "ca-icon-selected");
+		$('#changeLayout a div h2').attr("class", "ca-main-selected");
+		$('#changeLayout').css("background-color", "#000");
+	} else {
+		$('#changeLayout a span').attr("class", "ca-icon");
+		$('#changeLayout a div h2').attr("class", "ca-main");
+		$('#changeLayout').css("background-color", "grey");
+	}
+	if (!isChangeLayout) {
   		$("#mynetwork").draggable({
   			axis : "x",
   			start : function () {},
   			drag : function () {
-  				console.log("POSTITION1: " + $(this).offset().left + " " + $(this).width());
+  				//console.log("POSTITION1: " + $(this).offset().left + " " + $(this).width());
   			},
   			stop : function () {}
   		});
@@ -502,6 +568,9 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   			stop : function () {}
 
   		});
+  		$("#mynetwork").draggable("enable");
+  		$("#wikiText").draggable("enable");
+  		$("#optionPanel").draggable("enable");
   		isChangeLayout = true;
   	} else {
   		console.log("IN HERE changeLayout2")
@@ -512,13 +581,14 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   	}
   }
   $(document).ready(function () {
-  	(function () {
-  		function scrollHorizontally(e) {
+  function scrollHorizontally(e) {
   			e = window.event || e;
   			var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
   			document.getElementById('mainContent').scrollLeft -= (delta * 40); // Multiplied by 40
   			e.preventDefault();
   		}
+  	(function () {
+  		
   		if (document.getElementById('mainContent').addEventListener) {
   			// IE9, Chrome, Safari, Opera
   			document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
@@ -531,14 +601,67 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   	})();
   	var width = 0;
   	$('#mynetwork').resizable({
-      helper: "ui-resizable-helper",
-      ghost: true});
+  		helper : "ui-resizable-helper",
+  		ghost : true
+  	});
   	$('#wikiText').resizable({
-      helper: "ui-resizable-helper",
-      ghost: true});
-
+  		helper : "ui-resizable-helper",
+  		ghost : true
+  	});
+	
+	$("#wikiText").mouseover(function () {
+		document.getElementById('mainContent').removeEventListener('mousewheel', scrollHorizontally, false);
+		document.getElementById('mainContent').removeEventListener('DOMMouseScroll', scrollHorizontally, false);
+	});	
+	
+	$("#wikiText").mouseout(function () {
+		if (document.getElementById('mainContent').addEventListener) {
+  			// IE9, Chrome, Safari, Opera
+  			document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
+  			// Firefox
+  			document.getElementById('mainContent').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+  		} else {
+  			// IE 6/7/8
+  			document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
+  		}
+	});
+	$("#mynetwork").mouseover(function () {
+		document.getElementById('mainContent').removeEventListener('mousewheel', scrollHorizontally, false);
+		document.getElementById('mainContent').removeEventListener('DOMMouseScroll', scrollHorizontally, false);
+	});	
+	
+	$("#mynetwork").mouseout(function () {
+		if (document.getElementById('mainContent').addEventListener) {
+  			// IE9, Chrome, Safari, Opera
+  			document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
+  			// Firefox
+  			document.getElementById('mainContent').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+  		} else {
+  			// IE 6/7/8
+  			document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
+  		}
+	});
   	//$('#optionPanel').resizable();
-  });
+	
+
+	$('#mytoggle').toggles({
+		clicker : $('.clickme'),
+		text : {
+			on : '', // text for the ON position
+			off : 'OFF' // and off
+		}
+	});
+	$('#mytoggle').on('toggle', function (e, active) {
+		if (active) {
+			$("#wikiTextInner").children().remove();
+			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/wiki/User:Dst2015/sandbox\" style=\"width: 100%; height: 100%\"></iframe>");
+			console.log("toggle on");
+		} else {
+			articleController.showTheWholeArticleInMainView();
+			console.log("toggle off");
+		}
+	});
+	});
   /*document.getElementById('file-input').onchange = function (e) {
 
 

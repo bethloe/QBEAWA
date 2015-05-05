@@ -1538,6 +1538,7 @@ var ArticleRenderer = function (vals) {
 	articleRenderer.retrievingDataDone = function (text) {
 		$("#workingAnimation").html("<b>" + text + "</b>");
 		GLOBAL_controller.closeEditDialog();
+		articleRenderer.showQuality();
 	}
 
 	articleRenderer.changeValueOfCheckbox = function (id, isSet) {
@@ -1566,10 +1567,10 @@ var ArticleRenderer = function (vals) {
 	articleRenderer.onClick = function (properties) {
 		//console.log("ONCLICK1");
 		if (!selectHelper && !isAddNodeMode) {
-		//	console.log("ONCLICK2");
+			//	console.log("ONCLICK2");
 			currentSelectedSectionIndex = -1;
 			currentSelectedSectionId = -1;
-		//	console.log("CID3: " + currentSelectedSectionId);
+			//	console.log("CID3: " + currentSelectedSectionId);
 			var item = GLOBAL_data.nodes.get(properties.nodes[0]);
 			//Highlight all elements which are connected to that
 
@@ -1587,8 +1588,30 @@ var ArticleRenderer = function (vals) {
 		selectHelper = false;
 	}
 
+	articleRenderer.highlightSectionInTree = function (sectionName) {
+		console.log("highlightSectionInTree: " + sectionName);
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+
+			if (item.type == "text" && idInRange(item.id) && item.title == sectionName) {
+				var properties = {};
+				var nodes = [];
+				nodes.push(item.id);
+				properties.nodes = nodes;
+				articleRenderer.onSelect(properties, false);
+				console.log("on select done!");
+				break;
+			}
+		}
+
+	}
+
 	var selectHelper = false;
-	articleRenderer.onSelect = function (properties) {
+	articleRenderer.onSelect = function (properties, isScroll) {
+		isScroll = typeof isScroll !== 'undefined' ? isScroll : true;
+		console.log("ON SELECT");
+		colorTextBasedOnTheQulityValue();
 		currentSelectedSectionIndex = -1;
 		currentSelectedSectionId = -1;
 		//console.log("CID: " + currentSelectedSectionId);
@@ -1596,6 +1619,7 @@ var ArticleRenderer = function (vals) {
 		//GLOBAL_network.focusOnNode(properties.nodes);
 		if (properties.nodes.length == 1) {
 			var item = GLOBAL_data.nodes.get(properties.nodes[0]);
+			console.log("ON SELECT2 " + item);
 			//Highlight all elements which are connected to that
 			selectHelper = true;
 			var edges = GLOBAL_data.edges.get();
@@ -1636,16 +1660,37 @@ var ArticleRenderer = function (vals) {
 			if ((item.type == "section" || item.type == "text") && isAddNodeMode) {
 				currentSelectedSectionIndex = item.index;
 				currentSelectedSectionId = item.id;
-			//	console.log("CID1: " + currentSelectedSectionId);
+				//	console.log("CID1: " + currentSelectedSectionId);
 				if (item.title == "Introduction")
 					alert("This operation is not allowed!");
 				else
 					GLOBAL_controller.addNode();
 			}
 			if (item.type == "text") {
+				if (isScroll) {
+					$('#editor_section_name').html(item.title);
+					$('#wikiTextInner').scrollTop(0);
+
+					var desired = item.title.replace(/[^\w\s]/gi, '');
+					var idStr = desired.replace(/ /g, "_");
+					var help = "#" + idStr;
+					$('#wikiTextInner').animate({
+						scrollTop : $(help).offset().top - 300
+					},
+						'slow');
+				}
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					//title : item.quality,
+					color : {
+						background : "white",
+						border : 'blue',
+						borderWidth : 10
+					}
+				});
 				currentSelectedSectionIndex = item.index;
 				currentSelectedSectionId = item.id;
-			//	console.log("CID2: " + currentSelectedSectionId);
+				//	console.log("CID2: " + currentSelectedSectionId);
 				var text = item.label;
 				$("#editor").html(text);
 
@@ -1659,9 +1704,9 @@ var ArticleRenderer = function (vals) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td> \
-																																																																																																																																						  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
-																																																																																																																																						  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																						  </td><td>" + status + "</td></tr>");
+																																																																																																																																																																																							  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
+																																																																																																																																																																																							  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																							  </td><td>" + status + "</td></tr>");
 					}
 					if (item.useForQualityCalculation)
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\" checked></td><td></td></tr>");
@@ -1669,14 +1714,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																									$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																										if (!$(this).is(':checked')) { \
-																																																																																																																																											articleController.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																										} \
-																																																																																																																																										else{\
-																																																																																																																																											articleController.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																										} \
-																																																																																																																																									}); </script>";
+																																																																																																																																																																												$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																													if (!$(this).is(':checked')) { \
+																																																																																																																																																																														articleController.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																													} \
+																																																																																																																																																																													else{\
+																																																																																																																																																																														articleController.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																													} \
+																																																																																																																																																																												}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {
