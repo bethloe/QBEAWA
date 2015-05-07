@@ -13,6 +13,7 @@ var ArticleRenderer = function (vals) {
 	var GLOBAL_introTextID = 0;
 	var GLOBAL_editToken = "";
 	var GLOBAL_allData = new vis.DataSet();
+	var qualityFlawManager = new QualityFlawManager();
 
 	//DataSets for operations
 	var allNodesBackup = new vis.DataSet();
@@ -502,6 +503,7 @@ var ArticleRenderer = function (vals) {
 	}
 
 	articleRenderer.fillDataNew = function () {
+		qualityFlawManager.getQualityFlaws(dataRetriever.getRawTextWithData());
 		articleRenderer.cleanUp();
 		var intro = dataRetriever.getIntro();
 		var title = dataRetriever.getTitle();
@@ -554,58 +556,59 @@ var ArticleRenderer = function (vals) {
 				idCnt = GLOBAL_idCounter;
 				GLOBAL_idCounter++;
 				var sectionData = dataRetriever.getSectionContentData(sectionInfos[i].line);
-				var textOfSection = "";
+				if (sectionData != null) {
+					var textOfSection = "";
 
-				if (sectionData.sections.length > 1) {
-					textOfSection = sectionData.wikitext['*'];
-					textOfSection = trimToOneParagraph(textOfSection, sectionInfos[i].line);
-				} else {
-					textOfSection = sectionData.wikitext['*'];
+					if (sectionData.sections.length > 1) {
+						textOfSection = sectionData.wikitext['*'];
+						textOfSection = trimToOneParagraph(textOfSection, sectionInfos[i].line);
+					} else {
+						textOfSection = sectionData.wikitext['*'];
+					}
+					var originalText = textOfSection;
+					//console.log("LINE: " + sectionInfos[i].line);
+					var rawText = getTextOfSection(sectionInfos[i].line);
+
+					//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
+					//console.log("LENGTH: " + textOfSection.length);
+					if (textOfSection != "" && textOfSection.length > 10) {
+
+						var value = textOfSection.split(' ').length;
+						//	textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
+						textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
+						//console.log("images : " + JSON.stringify(sectionData.images));
+						GLOBAL_data.nodes.add({
+							id : GLOBAL_idCounter,
+							x : sectionsInSameLevel * xOffset + GLOBAL_minX,
+							y : currentLevel * yOffset + 800 +  + GLOBAL_minY,
+							title : sectionInfos[i].line, //textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
+							label : textOfSection,
+							originalText : originalText,
+							index : sectionInfos[i].index,
+							value : value,
+							shape : 'box',
+							allowedToMoveX : true,
+							allowedToMoveY : true,
+							wikiLevel : currentLevel,
+							masterId : idCnt, //if from == -1 the no master
+							type : 'text',
+							useForQualityCalculation : defaultQualityScoreItems(sectionInfos[i].line),
+							quality : 0,
+							rawText : rawText,
+							sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
+							imagesToThisNode : sectionData.images,
+							refsToThisNode : sectionData.externallinks
+						});
+						GLOBAL_data.edges.add({
+							from : idCnt,
+							to : GLOBAL_idCounter,
+							style : "arrow"
+						});
+						GLOBAL_idCounter++;
+
+						GLOBAL_network.redraw();
+					}
 				}
-				var originalText = textOfSection;
-				//console.log("LINE: " + sectionInfos[i].line);
-				var rawText = getTextOfSection(sectionInfos[i].line);
-
-				//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
-				//console.log("LENGTH: " + textOfSection.length);
-				if (textOfSection != "" && textOfSection.length > 10) {
-
-					var value = textOfSection.split(' ').length;
-					//	textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
-					textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
-					//console.log("images : " + JSON.stringify(sectionData.images));
-					GLOBAL_data.nodes.add({
-						id : GLOBAL_idCounter,
-						x : sectionsInSameLevel * xOffset + GLOBAL_minX,
-						y : currentLevel * yOffset + 800 +  + GLOBAL_minY,
-						title : sectionInfos[i].line, //textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
-						label : textOfSection,
-						originalText : originalText,
-						index : sectionInfos[i].index,
-						value : value,
-						shape : 'box',
-						allowedToMoveX : true,
-						allowedToMoveY : true,
-						wikiLevel : currentLevel,
-						masterId : idCnt, //if from == -1 the no master
-						type : 'text',
-						useForQualityCalculation : defaultQualityScoreItems(sectionInfos[i].line),
-						quality : 0,
-						rawText : rawText,
-						sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
-						imagesToThisNode : sectionData.images,
-						refsToThisNode : sectionData.externallinks
-					});
-					GLOBAL_data.edges.add({
-						from : idCnt,
-						to : GLOBAL_idCounter,
-						style : "arrow"
-					});
-					GLOBAL_idCounter++;
-
-					GLOBAL_network.redraw();
-				}
-
 			} else {
 				levelOld = currentLevel;
 				var sectionInSameLevelAlreadyDefined = false;
@@ -642,50 +645,53 @@ var ArticleRenderer = function (vals) {
 				idCnt = GLOBAL_idCounter;
 				GLOBAL_idCounter++;
 				var sectionData = dataRetriever.getSectionContentData(sectionInfos[i].line);
-				var textOfSection = "";
-				if (sectionData.sections.length > 1) {
-					textOfSection = sectionData.wikitext['*'];
-					textOfSection = trimToOneParagraph(textOfSection, sectionInfos[i].line);
-				} else {
-					textOfSection = sectionData.wikitext['*'];
-				}
-				var rawText = getTextOfSection(sectionInfos[i].line);
-				var originalText = textOfSection;
-				if (textOfSection != "" && textOfSection.length > 10) {
+				if (sectionData != null) {
 
-					var value = textOfSection.split(' ').length;
-					//		textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
-					textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
-					GLOBAL_data.nodes.add({
-						id : GLOBAL_idCounter,
-						x : sectionsInSameLevel * xOffset + 800 + GLOBAL_minX,
-						y : currentLevel * yOffset + GLOBAL_minX,
-						title : sectionInfos[i].line, //textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
-						label : textOfSection,
-						originalText : originalText,
-						index : sectionInfos[i].index,
-						shape : 'box',
-						value : value,
-						allowedToMoveX : true,
-						allowedToMoveY : true,
-						wikiLevel : currentLevel,
-						masterId : idCnt, //if from == -1 the no master
-						type : 'text',
-						useForQualityCalculation : defaultQualityScoreItems(sectionInfos[i].line),
-						quality : 0,
-						rawText : rawText,
-						sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
-						imagesToThisNode : sectionData.images,
-						refsToThisNode : sectionData.externallinks
-					});
-					GLOBAL_data.edges.add({
-						from : idCnt,
-						to : GLOBAL_idCounter,
-						style : "arrow"
-					});
-					GLOBAL_idCounter++;
-				}
+					var textOfSection = "";
+					if (sectionData.sections.length > 1) {
+						textOfSection = sectionData.wikitext['*'];
+						textOfSection = trimToOneParagraph(textOfSection, sectionInfos[i].line);
+					} else {
+						textOfSection = sectionData.wikitext['*'];
+					}
+					var rawText = getTextOfSection(sectionInfos[i].line);
+					var originalText = textOfSection;
+					if (textOfSection != "" && textOfSection.length > 10) {
 
+						var value = textOfSection.split(' ').length;
+						//		textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
+						textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
+						GLOBAL_data.nodes.add({
+							id : GLOBAL_idCounter,
+							x : sectionsInSameLevel * xOffset + 800 + GLOBAL_minX,
+							y : currentLevel * yOffset + GLOBAL_minX,
+							title : sectionInfos[i].line, //textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...",
+							label : textOfSection,
+							originalText : originalText,
+							index : sectionInfos[i].index,
+							shape : 'box',
+							value : value,
+							allowedToMoveX : true,
+							allowedToMoveY : true,
+							wikiLevel : currentLevel,
+							masterId : idCnt, //if from == -1 the no master
+							type : 'text',
+							useForQualityCalculation : defaultQualityScoreItems(sectionInfos[i].line),
+							quality : 0,
+							rawText : rawText,
+							sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
+							imagesToThisNode : sectionData.images,
+							refsToThisNode : sectionData.externallinks
+						});
+						GLOBAL_data.edges.add({
+							from : idCnt,
+							to : GLOBAL_idCounter,
+							style : "arrow"
+						});
+						GLOBAL_idCounter++;
+					}
+
+				}
 			}
 			//CHECK topIds
 			for (var j = 0; j < topIds.length; j++) {
@@ -1588,7 +1594,8 @@ var ArticleRenderer = function (vals) {
 		selectHelper = false;
 	}
 
-	articleRenderer.highlightSectionInTree = function (sectionName) {
+	articleRenderer.highlightSectionInTree = function (sectionName, isScroll) {
+		isScroll = typeof isScroll !== 'undefined' ? isScroll : false;
 		console.log("highlightSectionInTree: " + sectionName);
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
@@ -1599,7 +1606,7 @@ var ArticleRenderer = function (vals) {
 				var nodes = [];
 				nodes.push(item.id);
 				properties.nodes = nodes;
-				articleRenderer.onSelect(properties, false);
+				articleRenderer.onSelect(properties, isScroll);
 				console.log("on select done!");
 				break;
 			}
@@ -1704,9 +1711,9 @@ var ArticleRenderer = function (vals) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td> \
-																																																																																																																																																																																							  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
-																																																																																																																																																																																							  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																																																																							  </td><td>" + status + "</td></tr>");
+																																																																																																																																																																																																					  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
+																																																																																																																																																																																																					  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																																					  </td><td>" + status + "</td></tr>");
 					}
 					if (item.useForQualityCalculation)
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\" checked></td><td></td></tr>");
@@ -1714,14 +1721,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																																																												$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																																																													if (!$(this).is(':checked')) { \
-																																																																																																																																																																														articleController.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																																																													} \
-																																																																																																																																																																													else{\
-																																																																																																																																																																														articleController.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																																																													} \
-																																																																																																																																																																												}); </script>";
+																																																																																																																																																																																						$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																																							if (!$(this).is(':checked')) { \
+																																																																																																																																																																																								articleController.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																							} \
+																																																																																																																																																																																							else{\
+																																																																																																																																																																																								articleController.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																							} \
+																																																																																																																																																																																						}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {

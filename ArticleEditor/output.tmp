@@ -1,7 +1,6 @@
 * Hostname was found in DNS cache
-* Hostname in DNS cache was stale, zapped
 *   Trying 46.4.96.215...
-* Connected to api.sensium.io (46.4.96.215) port 80 (#47)
+* Connected to api.sensium.io (46.4.96.215) port 80 (#104)
 > POST /v1/extract HTTP/1.1
 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/2.0.0.9
 Host: api.sensium.io
@@ -14,9 +13,9 @@ Content-Length: 161
 < HTTP/1.1 200 OK
 * Server nginx/1.2.1 is not blacklisted
 < Server: nginx/1.2.1
-< Date: Tue, 05 May 2015 14:29:34 GMT
+< Date: Thu, 07 May 2015 14:56:13 GMT
 < Content-Type: application/json; charset=utf-8
 < Transfer-Encoding: chunked
 < Connection: keep-alive
 < 
-* Connection #47 to host api.sensium.io left intact
+* Connection #104 to host api.sensium.io left intact

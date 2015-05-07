@@ -139,9 +139,6 @@ var DataRetriever = function (vals) {
 		}*/
 	}
 
-
-
-	
 	dataRetriever.getIntro = function () {
 		return GLOBAL_intro;
 	}
@@ -151,9 +148,15 @@ var DataRetriever = function (vals) {
 	dataRetriever.getSectionContentData = function (sectionName) {
 		for (var i = 0; i < GLOBAL_sectionContentData.length; i++) {
 			//console.log("GLOBAL_sectionContentData[i].sections[0].index : " + GLOBAL_sectionContentData[i].sections[0].index);
-			if (GLOBAL_sectionContentData[i].sections[0].line == sectionName) {
-				//console.log("SECTIONINDEX: " + sectionIndex + " DATA : " + JSON.stringify(GLOBAL_sectionContentData[i]));
-				return GLOBAL_sectionContentData[i];
+			if (GLOBAL_sectionContentData[i] != undefined) {
+				if (GLOBAL_sectionContentData[i].hasOwnProperty("sections")) {
+					if (GLOBAL_sectionContentData[i].sections.length > 0) {
+						if (GLOBAL_sectionContentData[i].sections[0].line == sectionName) {
+							//console.log("SECTIONINDEX: " + sectionIndex + " DATA : " + JSON.stringify(GLOBAL_sectionContentData[i]));
+							return GLOBAL_sectionContentData[i];
+						}
+					}
+				}
 			}
 		}
 
@@ -178,8 +181,8 @@ var DataRetriever = function (vals) {
 	dataRetriever.getSectionInfos = function () {
 		return GLOBAL_sectionInfos;
 	}
-	
-	dataRetriever.reloadSection = function(sectionId, callbackFunction){
+
+	dataRetriever.reloadSection = function (sectionId, callbackFunction) {
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=&titles=" + GLOBAL_title + "&continue", handleRawText);
 		retrieveData(GLOBAL_linkToAPI + "action=parse&format=json&contentmodel=wikitext&generatexml&section=" + sectionId + "&page=" + GLOBAL_title + "&prop=wikitext|langlinks|categories|links|templates|images|externallinks|sections|revid|displaytitle|iwlinks|properties", callbackFunction);
 	}
@@ -301,12 +304,12 @@ var DataRetriever = function (vals) {
 		var mediatype = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].mediatype;
 		var object = {
 			url : url,
-			imageTitle : imageTitle, 
-			size: size,
-			user: user,
-			timestamp: timestamp,
-			comment: comment, 
-			mediatype: mediatype
+			imageTitle : imageTitle,
+			size : size,
+			user : user,
+			timestamp : timestamp,
+			comment : comment,
+			mediatype : mediatype
 		};
 		GLOBAL_imageArray.push(object);
 		//console.log("TITLE: " + imageTitle + " to IMAGE URL: " + url);

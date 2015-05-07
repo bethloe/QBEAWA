@@ -9,6 +9,7 @@
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
   <script type="text/javascript" src="libs/underscore-min.js" ></script>
   <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
+  <script type="text/javascript" src="scripts/article-editor-quality-flaw-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-sensium-requester.js"></script>
   <script src="libs/JavaScript-Load-Image-master/js/load-image.all.min.js"></script>
    
@@ -23,8 +24,15 @@
   <script src="libs/bootstrap-wysiwyg.js"></script>
 	
   
+  <script type="text/javascript" src="scripts/article-editor-colors-for-notifications.js"></script>
   <script type="text/javascript" src="libs/vis/dist/vis.js"></script>
   <link href="libs/vis/dist/vis.css" rel="stylesheet" type="text/css" />
+  <link href="libs/notificationcenter-master/css/notifcenter.css" rel="stylesheet" type="text/css" />
+  <script src="libs/notificationcenter-master/js/jquery.moment.js"></script>
+  <script src="libs/notificationcenter-master/js/jquery.livestamp.js"></script>
+  <script src="libs/notificationcenter-master/js/jquery.notificationcenter.js"></script>
+  <script src="libs/notificationcenter-master/js/jquery.timer.js"></script>
+  <script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
   <script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
   <script type="text/javascript" src="scripts/retrieve-data.js"></script>
   <script type="text/javascript" src="scripts/article-editor-controller-data-manipulation.js"></script>
@@ -65,7 +73,7 @@
 	position:absolute;
 	left: 700px;
 	 width: 700px;
-      height: 700px;
+      height: 680px;
       border: 1px solid lightgray;
 	  background-color:white;
 	  margin-right: 5px; 
@@ -94,16 +102,31 @@
 	left: 1420px;
 	height: 680px;
 	float: left; 
-	background-color: white;
+	   background: -webkit-linear-gradient(#f0f0f0, #636363); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f0f0f0, #636363); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f0f0f0, #636363); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f0f0f0, #636363); /* Standard syntax (must be last) */
 	 }
    #mynetworkDetailView {
-	  top: 0px;
+	  position: absolute;
+	  top: 30px;
       width: 400px;
-      height: 350px;
+      height: 280px;
       border: 1px solid lightgray;
 	  float: left;
 	  background-color:white;
     }
+	#qualityFlawView{
+	 top: 0px;
+      width: 400px;
+      height: 280px;
+	  float: left;
+    }
+	#qualityFlawViewText{
+	
+      height: 280px;
+	  overflow-y: auto;
+	}
 	
 	 #editor {
 	  background-color:white; overflow:scroll; height:350px; width: 400px;}
@@ -178,13 +201,51 @@
     font-weight: bold;
 	line-height:  2.5em;
 	vertical-align: middle;
+}
+
+
+
+.notificationDiv{
+	cursor: pointer;
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: white;
+	height: 50px;
+	line-height: 50px;
+	vertical-align: middle;
+	background-color: #525252;
+	border: 1px solid #bdbdbd;
+	-moz-border-radius-topright:12px;
+	-webkit-border-top-right-radius:12px;
+	border-top-right-radius:12px;
 	
+	-moz-border-radius-topleft:12px;
+	-webkit-border-top-left-radius:12px;
+	border-top-left-radius:12px;
+	
+	-moz-border-radius-bottomright:12px;
+	-webkit-border-bottom-right-radius:12px;
+	border-bottom-right-radius:12px;
+	
+	-moz-border-radius-bottomleft:12px;
+	-webkit-border-bottom-left-radius:12px;
+	border-bottom-left-radius:12px;
+
+}
+
+.notificationDiv:hover{
+
+	background-color: #bdbdbd;
 }
   </style>
 </head>
 
 <body bgcolor="white">
-
+<!-- THE Notification CENTER -->
+	
+	<!-- END ------->
+	
 <script>  var articleController = new ArticleController(); </script>
 <!-- Smooth curve type:
 <select id="dropdownID">
@@ -381,7 +442,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 
 <td  rowspan="2">
 <div  id="optionPanel" style="" >
-<div style=" height: 340px; width:400px;  ">
+<div style=" height: 380px; width:400px;  border-bottom: 2px solid black;">
 <span> <b> Article information </b> </span>
 <hr/>
 <div > 
@@ -402,15 +463,27 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   <img id="progressBarSensiumOverallScoreController" src="media/sensium_controller.png" style="position: absolute; top: 30px; right: 200px; height: 40px; "/>
   
 </div> 
+<hr />
 
-<div id="qualityParameters" style="	overflow-x: auto;"> 
+<div id="qualityParameters" style="overflow-x: auto; overflow-y: auto;"> 
 </div>
 
+
+</div>
+
+<div style=" height: 300px; width:400px; position: relative;">
+<span id="secondTitle"> <b> Notifications </b>  </span> 
 <hr /> 
+<div id="rank_quality_metrics_text" style="position: absolute;  right: 60px;  top: 0px;" title=""> Detail drawing: </div>
+<div id="mytoggle_detail_drawing" class="toggle toggle-light" style="position: absolute;  right: 0px; line-height: 2.5em; vertical-align: middle; top: 0px;" > </div>
+<div id="mynetworkDetailView" style="display: none; position: absolute; top: 20px;" ></div>
+<div id="qualityFlawView" style="position: absolute; top: 20px;">
 
 
-</div><div style="height: 340px; width:400px ">
-<div id="mynetworkDetailView"></div>
+<div id="qualityFlawViewText" >
+
+<div>
+</div>
 </div>
 </div>
 </div>
@@ -641,7 +714,24 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   			document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
   		}
 	});
-  	//$('#optionPanel').resizable();
+	
+		$("#qualityFlawView").mouseover(function () {
+			document.getElementById('mainContent').removeEventListener('mousewheel', scrollHorizontally, false);
+			document.getElementById('mainContent').removeEventListener('DOMMouseScroll', scrollHorizontally, false);
+		});
+
+		$("#qualityFlawView").mouseout(function () {
+			if (document.getElementById('mainContent').addEventListener) {
+				// IE9, Chrome, Safari, Opera
+				document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
+				// Firefox
+				document.getElementById('mainContent').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+			} else {
+				// IE 6/7/8
+				document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
+			}
+		});
+		//$('#optionPanel').resizable();
 	
 
 	$('#mytoggle').toggles({
@@ -661,22 +751,38 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 			console.log("toggle off");
 		}
 	});
+		$('#mytoggle_detail_drawing').toggles({
+		clicker : $('.clickme'),
+		text : {
+			on : '', // text for the ON position
+			off : 'OFF' // and off
+		}
 	});
-  /*document.getElementById('file-input').onchange = function (e) {
+	$('#mytoggle_detail_drawing').on('toggle', function (e, active) {
+		if (active) {
+			$('#mynetworkDetailView').css('display', 'inline');
+			$('#qualityFlawView').css('display', 'none');
+			$('#secondTitle').html("<b>Detail drawing</b>");
+			console.log("toggle on");
+		} else {
+			$('#mynetworkDetailView').css('display', 'none');
+			$('#qualityFlawView').css('display', 'inline');
+			$('#secondTitle').html("<b>Notifications</b>");
+			console.log("toggle off");
+		}
+	});
+	});
+	
+	var removeThisNotification = function (notificationID) {
+		if (!e)
+			var e = window.event;
+		e.cancelBubble = true;
+		if (e.stopPropagation)
+			e.stopPropagation();
+		console.log("REMOVE: " + notificationID);
+		$('#notification-' + notificationID).remove();
 
-
-  loadImage(
-  e.target.files[0],
-  function (img) {
-  //$("#uploadDiv").append(img);
-  console.log("img: " + img.src);
-
-  document.body.appendChild(img);
-  }, {
-  maxWidth : 600
-  } // Options
-  );
-  }*/
+	}
 </script>
 
   <script type="text/javascript" src="scripts/article-editor-settings.js"></script>

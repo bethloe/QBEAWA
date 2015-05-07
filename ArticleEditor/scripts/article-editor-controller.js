@@ -226,10 +226,6 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.reset = function () {
-		//console.log("RESET");
-		/*for (var i = 0; i < articleRenderers.length; i++) {
-		articleRenderers[i].reset();
-		}*/
 		//Actually we just have to remove the articleRenderers
 		articleRenderers.splice(0, articleRenderers.length);
 		//We destroy the network
@@ -240,9 +236,8 @@ var ArticleController = function (vals) {
 		$("#sensiumOverallScore").html("<b>Sensium score:</b>");
 		$('#wikiTextInner').children().remove();
 		$('#progressBarOverallScore').attr("value", "0");
-		//$('#progressBarSensiumOverallScore').attr("value", "0");
-		
-			$('#progressBarSensiumOverallScoreController').css("right",  200 - 0 * 200);
+		$('#progressBarSensiumOverallScoreController').css("right", 200 - 0 * 200);
+		$('#qualityFlawViewText').html("");
 	}
 	articleController.showTheWholeArticle = function () {
 		//TODO: Do a refactoring so that it work for more than one article at the end
@@ -399,6 +394,13 @@ var ArticleController = function (vals) {
 	articleController.closeEditDialog = function () {
 		dataManipulator.closeEditDialog();
 		articleController.showTheWholeArticleInMainView();
+	}
+
+	articleController.goToSection = function (sectionName) {
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[0].highlightSectionInTree(sectionName, true);
+		}
+
 	}
 	//-------------------- EVENTS ----------------------
 
