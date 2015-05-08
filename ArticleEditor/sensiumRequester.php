@@ -18,7 +18,8 @@ if ($operation == 'sensium') {
 	try {
 		echo sensiumTextRequest();
 	} catch (Exception $e) {
-		echo "FAILED: ".$e->getMessage();
+		echo "";
+		//echo "FAILED: ".$e->getMessage();
 	}
 }
 
@@ -70,6 +71,7 @@ function sensiumTextRequest() {
 
 	$params = '{"apiKey" : "'.$API_key.'", "text" : "'.$text.'", "language": "en",  "extractors": ["Sentiment"]}';
 	$data = httpRequest($API_url, $params);
+	$data = $_POST['sectionName']."||splithere||".$data;
 	if (empty($data)) {
 		throw new Exception("No data received from server. Check that API is enabled.");
 	}

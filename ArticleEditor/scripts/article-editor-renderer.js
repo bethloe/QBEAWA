@@ -1703,17 +1703,20 @@ var ArticleRenderer = function (vals) {
 
 				if (showQualityFlag) {
 					var masterItem = articleRenderer.getItem(item.masterId);
-
 					var allKeys = Object.keys(item.allQulityParameters);
-					var qmStr = "<table border='1' width='400' style=' max-width: 400px' >";
+					var qmStr = "<table border='1' width='400' style=' position: relative; max-width: 400px' >";
 					qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
 					for (var i = 0; i < allKeys.length; i++) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td> \
-																																																																																																																																																																																																					  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
-																																																																																																																																																																																																					  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																																																																																					  </td><td>" + status + "</td></tr>");
+																																																																																																																																																																																																																										  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
+																																																																																																																																																																																																																										  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																																																										  </td><td>" + status + "</td></tr>");
+					}
+					console.log("has sentiment score: " + item.sentimentScore);
+					if (item.sentimentScore != undefined) {
+						qmStr += ("<tr bgcolor=\"white\"><td>sentiment score</td><td style=\"position: relative;\">   <img class=\"progressBarSensiumSectionScore\" src=\"media/sensium.png\" title=\"Sentiment detection allows you to decide of a given text talks positively or negatively about a subject. Sentiment detection is a common building block of online reputation management services for companies. Such a service scans social media, blogs and editorials, figuring out the general publics mood towards a company.\" style=\"width: 99%\"/> <img class=\"progressBarSensiumSectionScoreController\" src=\"media/sensium_controller.png\" style=\"position: absolute; top: 5px; right: "+(40 -item.sentimentScore * 40)+"px; height: 15px; \"/> </td><td></td></tr>");
 					}
 					if (item.useForQualityCalculation)
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\" checked></td><td></td></tr>");
@@ -1721,14 +1724,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																																																																						$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																																																																							if (!$(this).is(':checked')) { \
-																																																																																																																																																																																								articleController.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																																																																							} \
-																																																																																																																																																																																							else{\
-																																																																																																																																																																																								articleController.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																																																																							} \
-																																																																																																																																																																																						}); </script>";
+																																																																																																																																																																																																					$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																																																						if (!$(this).is(':checked')) { \
+																																																																																																																																																																																																							articleController.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																																						} \
+																																																																																																																																																																																																						else{\
+																																																																																																																																																																																																							articleController.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																																						} \
+																																																																																																																																																																																																					}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {
@@ -1931,6 +1934,22 @@ var ArticleRenderer = function (vals) {
 		rawText = rawText.replace(/[\n\[&\/\\#,+()$~%.'":*?<>{}\]]/g, '');
 		//console.log("TITLE: " + title + " rawTEXTLENGT: " + rawText.length);
 		return rawText;
+	}
+
+	articleRenderer.setSentimentScoreOfSection = function (sectionName, sentimentScore) {
+		//	console.log("articleRenderer.setSentimentScoreOfSection : " + sectionName);
+		var items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			//console.log(item.type +" && "+ item.title + " == " +sectionName);
+			if (idInRange(item.id) && item.type == "text" && item.title == sectionName) {
+				//console.log("SET SENTIMENT SCORE OF SECTION : " + item.title);
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					sentimentScore : sentimentScore
+				});
+			}
+		}
 	}
 
 	articleRenderer.showQuality = function () {

@@ -26,10 +26,21 @@ var QualityManager = function (vals) {
 	qualityManager.calculateQuality = function (text, properties, tooltip) {
 		//console.log("calculateQuality: " + JSON.stringify(properties));
 		var parameters = {};
-		//console.log("HERE TEXT: " + tooltip + ": "+ text);
+		//console.log("HERE TEXT: " + text);
+
+		var sensiumRequester = GLBOAL_controller.getSensiumRequester();
+		var textforSensium = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+		textforSensium = textforSensium.toString().replace(/"/g, '\\"');
+		var sectionName = tooltip;
+		sensiumRequester.sensiumTextRequest(textforSensium, sectionName);
+
 		var stat = new textstatistics(text);
-		var flesch = stat.fleschKincaidReadingEase();
-		var kincaid = stat.fleschKincaidGradeLevel();
+		var flesch = 0;
+		var kincaid = 0;
+		if (text != "" && text != undefined) { 
+			flesch = stat.fleschKincaidReadingEase();
+			kincaid = stat.fleschKincaidGradeLevel();
+		}
 		var fleschWordCount = flesch * text.split(' ').length;
 		var qualityFleschWordCount = adaptValue(fleschWordCount / good_fleschWordCount);
 		var qualityFlesch = adaptValue(flesch / good_flesch);
@@ -44,7 +55,6 @@ var QualityManager = function (vals) {
 			var qualityExternalRefs = adaptValue(externalRefs / good_extLinks);
 			//var qualityInternalLinks = adaptValue(internalLinks / good_iwlinks);
 			var qualityAllLinks = adaptValue(allLinks / good_allLinks);
-		
 
 			qualityFleschWordCount = parseFloat(adaptValue(parseFloat(qualityFleschWordCount) * parseFloat(weightFlesch)));
 			qualityKincaid = parseFloat(adaptValue(parseFloat(qualityKincaid) * parseFloat(weightKincaid)));
@@ -73,7 +83,7 @@ var QualityManager = function (vals) {
 			//parameters.externalRefs = externalRefs;
 			//parameters.allLinks = allLinks;
 			parameters.score = score;
-		//	console.log("calculateQuality flesch and knincaid: " + tooltip + " " + fleschWordCount + " " + flesch + " " + kincaid + " IWLINKGS: " + allLinks + " " + qualityAllLinks + " " + parameters.qualityAllLinks);
+			//	console.log("calculateQuality flesch and knincaid: " + tooltip + " " + fleschWordCount + " " + flesch + " " + kincaid + " IWLINKGS: " + allLinks + " " + qualityAllLinks + " " + parameters.qualityAllLinks);
 
 			return parameters;
 		} else {

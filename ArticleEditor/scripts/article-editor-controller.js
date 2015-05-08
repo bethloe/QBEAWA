@@ -84,11 +84,12 @@ var ArticleController = function (vals) {
 		hover : true
 	};
 
+	
 	//-------------------- User Input -------------------
 	articleController.retrieveData = function () {
 		console.log("articleController.retrieveData");
 		var articleName = $("#articleName").val();
-		sensiumRequester = new SensiumRequester();
+		sensiumRequester = new SensiumRequester({controller : articleController});
 		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/wiki/" + articleName);
 		var articleRenderer = new ArticleRenderer({
 				network : network,
@@ -125,6 +126,10 @@ var ArticleController = function (vals) {
 			if (articleRenderers[i].getTitle() == articleName)
 				articleRenderers[i].fillDataNew();
 		}
+	}
+		
+	articleController.getSensiumRequester = function(){
+		return sensiumRequester;
 	}
 
 	articleController.showAllItems = function () {
@@ -396,11 +401,21 @@ var ArticleController = function (vals) {
 		articleController.showTheWholeArticleInMainView();
 	}
 
-	articleController.goToSection = function (sectionName) {
+	articleController.goToSection = function (sectionName, tag) {
+		//HIGHLIGHT TAG FIRST:
+		$(".highlight").contents().unwrap();
+		$('#wikiTextInner *').highlight(tag, "highlight");
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[0].highlightSectionInTree(sectionName, true);
 		}
 
+	}
+	
+	articleController.setSentimentScoreOfSection = function(sentimentScore, sectionName){
+	//	console.log("setSentimentScoreOfSection " + sectionName + " score " + sentimentScore);
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[0].setSentimentScoreOfSection(sectionName, sentimentScore);
+		}
 	}
 	//-------------------- EVENTS ----------------------
 

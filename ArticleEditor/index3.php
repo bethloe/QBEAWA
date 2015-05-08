@@ -4,9 +4,9 @@
   <title>Network | Static smooth curves</title>
 	<!-- THE MENU -->
 		
+  <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
   <script type="text/javascript" src="scripts/utility.js"></script>
   <script type="text/javascript" src="scripts/rawData.js"></script>
-  <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
   <script type="text/javascript" src="libs/underscore-min.js" ></script>
   <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
   <script type="text/javascript" src="scripts/article-editor-quality-flaw-manager.js"></script>
@@ -57,7 +57,7 @@
 
   <style type="text/css">
   #mainContent{
-  position: relative; width: 100%; left: 10px; overflow-x: scroll; overflow-y: hidden; height: 700px;
+  position: relative; width: 100%; left: 10px; overflow-x: auto; overflow-y: hidden; height: 700px;
   }
     #mynetwork {
 	position:absolute;
@@ -116,6 +116,13 @@
 	  float: left;
 	  background-color:white;
     }
+	#qualityParameters{
+	position:relative;
+	height: 200px;
+	overflow-x: auto; 
+	overflow-y: auto;
+	}
+	
 	#qualityFlawView{
 	 top: 0px;
       width: 400px;
@@ -123,8 +130,10 @@
 	  float: left;
     }
 	#qualityFlawViewText{
-	
+	  position: absolute;
+	  top: 10px;
       height: 280px;
+	  width: 100%;
 	  overflow-y: auto;
 	}
 	
@@ -237,6 +246,10 @@
 .notificationDiv:hover{
 
 	background-color: #bdbdbd;
+}
+
+.highlight{
+background-color: #ff2;
 }
   </style>
 </head>
@@ -465,7 +478,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 </div> 
 <hr />
 
-<div id="qualityParameters" style="overflow-x: auto; overflow-y: auto;"> 
+<div id="qualityParameters"> 
 </div>
 
 
@@ -476,8 +489,8 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <hr /> 
 <div id="rank_quality_metrics_text" style="position: absolute;  right: 60px;  top: 0px;" title=""> Detail drawing: </div>
 <div id="mytoggle_detail_drawing" class="toggle toggle-light" style="position: absolute;  right: 0px; line-height: 2.5em; vertical-align: middle; top: 0px;" > </div>
-<div id="mynetworkDetailView" style="display: none; position: absolute; top: 20px;" ></div>
-<div id="qualityFlawView" style="position: absolute; top: 20px;">
+<div id="mynetworkDetailView" style="  visibility: hidden; position: absolute; top: 20px;" ></div>
+<div id="qualityFlawView" style=" position: absolute; top: 20px;">
 
 
 <div id="qualityFlawViewText" >
@@ -713,27 +726,44 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
   			// IE 6/7/8
   			document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
   		}
+
 	});
-	
-		$("#qualityFlawView").mouseover(function () {
-			document.getElementById('mainContent').removeEventListener('mousewheel', scrollHorizontally, false);
-			document.getElementById('mainContent').removeEventListener('DOMMouseScroll', scrollHorizontally, false);
-		});
 
-		$("#qualityFlawView").mouseout(function () {
-			if (document.getElementById('mainContent').addEventListener) {
-				// IE9, Chrome, Safari, Opera
-				document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
-				// Firefox
-				document.getElementById('mainContent').addEventListener("DOMMouseScroll", scrollHorizontally, false);
-			} else {
-				// IE 6/7/8
-				document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
-			}
-		});
-		//$('#optionPanel').resizable();
-	
+	$("#qualityFlawView").mouseover(function () {
+		document.getElementById('mainContent').removeEventListener('mousewheel', scrollHorizontally, false);
+		document.getElementById('mainContent').removeEventListener('DOMMouseScroll', scrollHorizontally, false);
+	});
 
+	$("#qualityFlawView").mouseout(function () {
+		if (document.getElementById('mainContent').addEventListener) {
+			// IE9, Chrome, Safari, Opera
+			document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
+			// Firefox
+			document.getElementById('mainContent').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+		} else {
+			// IE 6/7/8
+			document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
+		}
+	});
+	//$('#optionPanel').resizable();
+
+
+	$("#qualityParameters").mouseover(function () {
+		document.getElementById('mainContent').removeEventListener('mousewheel', scrollHorizontally, false);
+		document.getElementById('mainContent').removeEventListener('DOMMouseScroll', scrollHorizontally, false);
+	});
+
+	$("#qualityParameters").mouseout(function () {
+		if (document.getElementById('mainContent').addEventListener) {
+			// IE9, Chrome, Safari, Opera
+			document.getElementById('mainContent').addEventListener("mousewheel", scrollHorizontally, false);
+			// Firefox
+			document.getElementById('mainContent').addEventListener("DOMMouseScroll", scrollHorizontally, false);
+		} else {
+			// IE 6/7/8
+			document.getElementById('mainContent').attachEvent("onmousewheel", scrollHorizontally);
+		}
+	});
 	$('#mytoggle').toggles({
 		clicker : $('.clickme'),
 		text : {
@@ -760,13 +790,18 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 	});
 	$('#mytoggle_detail_drawing').on('toggle', function (e, active) {
 		if (active) {
-			$('#mynetworkDetailView').css('display', 'inline');
-			$('#qualityFlawView').css('display', 'none');
+			//$('#mynetworkDetailView').css('display', 'inline');
+		//	$('#qualityFlawView').css('display', 'none');
+			$('#mynetworkDetailView').css('visibility', 'visible');
+			$('#qualityFlawView').css('visibility', 'hidden');
+			
 			$('#secondTitle').html("<b>Detail drawing</b>");
 			console.log("toggle on");
 		} else {
-			$('#mynetworkDetailView').css('display', 'none');
-			$('#qualityFlawView').css('display', 'inline');
+			//$('#mynetworkDetailView').css('display', 'none');
+			//$('#qualityFlawView').css('display', 'inline');
+			$('#mynetworkDetailView').css('visibility', 'hidden');
+			$('#qualityFlawView').css('visibility', 'visible');
 			$('#secondTitle').html("<b>Notifications</b>");
 			console.log("toggle off");
 		}

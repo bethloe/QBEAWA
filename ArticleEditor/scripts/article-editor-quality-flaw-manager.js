@@ -10,7 +10,7 @@ var QualityFlawManager = function (vals) {
 			description : "This article does not cite any references or sources. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
 		}, {
 			name : "{{unreferenced section",
-			alias : "There is a section which does not contain any references or sources!",
+			alias : "Section without references!",
 			description : "This section does not cite any references or sources. Please help improve this section by adding citations to reliable sources. Unsourced material may be challenged and removed."
 		}, {
 			name : "{{orphan",
@@ -18,15 +18,15 @@ var QualityFlawManager = function (vals) {
 			description : "Use this for articles that aren't linked to from any other pages."
 		}, {
 			name : "{{refimprove",
-			alias : "The article needs additional citations for verification!",
+			alias : "Additional citations for verification is needed!",
 			description : "This article needs additional citations for verification. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
-		}, {
+		},/* {
 			name : "{{refimprove section",
-			alias : "There is a section which needs additional citations for verifictaion!",
+			alias : "A section needs additional citations!",
 			description : "This section needs additional citations for verification. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
-		}, {
+		},*/{
 			name : "{{refimprove science",
-			alias : "The article need additional citations to second  to secondary or tertiary sources such as review articles, monographs, or textbooks!",
+			alias : "The article need additional citations!",
 			description : "This article needs additional citations to secondary or tertiary sources such as review articles, monographs, or textbooks. Please add references to provide context and establish notability for any primary research articles cited."
 		}, {
 			name : "{{film IMDb refimprove",
@@ -34,7 +34,7 @@ var QualityFlawManager = function (vals) {
 			description : "This media article uses IMDb for verification. IMDb may not be a reliable source for film and television information and is generally only cited as an external link. Please help by replacing IMDb with third-party reliable sources"
 		}, {
 			name : "{{BLP IMDb refimprove",
-			alias : "This biographical article needs additional citations for verification!",
+			alias : "This biographical article needs additional citations!",
 			description : "This biographical article needs additional citations for verification, as it includes attribution to IMDb. IMDb may not be a reliable source for biographical information. Please help by adding additional, reliable sources for verification. Contentious material about living persons that is unsourced or poorly sourced must be removed immediately, especially if potentially libelous or harmful."
 		}, {
 			name : "{{Empty section",
@@ -46,7 +46,7 @@ var QualityFlawManager = function (vals) {
 			description : "The article has at least one section that is empty"
 		}, {
 			name : "{{notability",
-			alias : "The topic of this article may not meet Wikipedia's general notability guideline!",
+			alias : "The topic may not meet Wikipedia's general notability guideline!",
 			description : "The topic of this article may not meet Wikipedia's general notability guideline. Please help to establish notability by adding reliable, secondary sources about the topic. If notability cannot be established, the article is likely to be merged, redirected, or deleted."
 		}, {
 			name : "{{no footnotes",
@@ -128,6 +128,26 @@ var QualityFlawManager = function (vals) {
 			name : "{{unreliable source?",
 			alias : "There is a source which is not reliable!",
 			description : "Wikipedia articles should be based on reliable, published sources, making sure that all majority and significant minority views that have appeared in those sources are covered."
+		}, {
+			name : "{{citation needed",
+			alias : "A citation is needed!",
+			description : "Please add a citation."
+		}, {
+			name : "{{citation needed span",
+			alias : "A citation is needed!",
+			description : "Please add a citation."
+		}, {
+			name : "{{citation needed (lead)",
+			alias : "A citation is needed!",
+			description : "Please add a citation."
+		}, {
+			name : "{{cleanup",
+			alias : "A cleanup is needed!",
+			description : "This article may require cleanup to meet Wikipedia's quality standards. No cleanup reason has been specified. Please help improve this article if you can; the talk page may contain suggestions."
+		}, {
+			name : "{{subscription required",
+			alias : "Subscription required!",
+			description : "Subscription required!"
 		}
 	]
 
@@ -167,28 +187,37 @@ var QualityFlawManager = function (vals) {
 		var cleanUpTagFound = [];
 		var htmlQF = "";
 		var colorCnt = 0;
-		for (var j = 0; j < 10; j++)
+		var wikiarticleTextLowerCase = wikiarticleText.toLowerCase();
 		for (var i = 0; i < cleanUpTags.length; i++) {
 			var cleanUpTag = cleanUpTags[i];
-			var index = wikiarticleText.indexOf(cleanUpTag.name);
-			if (index > -1) {
-				cleanUpTagFound.push({
-					name : cleanUpTag.name,
-					description : cleanUpTag.description
-				});
-				var sectionName = getSectionName(index, wikiarticleText);
-				if (sectionName == null)
-					alert("ERROR SECTION NAME IS NULL");
-				else {
+			var index = 0;
+			var indexSum = 0;
+			var articleHelper = wikiarticleTextLowerCase;
+			while (index > -1) {
+				if (index != 0)
+					articleHelper = articleHelper.substring((index + 2), articleHelper.length);
+				index = articleHelper.indexOf(cleanUpTag.name);
+				indexSum += index;
+				console.log("INDEX: " + indexSum);
+				if (index > -1) {
+					cleanUpTagFound.push({
+						name : cleanUpTag.name,
+						description : cleanUpTag.description
+					});
+					var sectionName = getSectionName(indexSum, wikiarticleText);
+					if (sectionName == null)
+						alert("ERROR SECTION NAME IS NULL");
+					else {
 
-					//sectionName = sectionName.replace(/[^\w\s]/gi, '');
-					//sectionName = sectionName.replace(/ /g, "_");
-					console.log("Sectionname: " + sectionName);
-					//htmlQF += "<tr><td style=\"background-color: #525252;\"title=\""+cleanUpTag.name +":"+ cleanUpTag.description+"\"> <img src=\"media/error.png\" />" + cleanUpTag.alias + "</td><tr>";
-					htmlQF += "<div id=\"notification-" + i + "\"class=\"notificationDiv\" title=\"" + cleanUpTag.name + ":" + cleanUpTag.description + "\" onclick=\"articleController.goToSection('" + sectionName + "')\"> <img style=\"display: inline-block; vertical-align: middle\" src=\"media/warning.png\" /> &nbsp;" + cleanUpTag.alias + " &nbsp;&nbsp;&nbsp;   <img style=\"display: inline-block; vertical-align: middle; \" src=\"media/discard-without-background-small.png\"  onclick=\"removeThisNotification(" + i + ")\"/></div>";
-					colorCnt++;
-					if (colorCnt == 9)
-						colorCnt = 0;
+						//sectionName = sectionName.replace(/[^\w\s]/gi, '');
+						//sectionName = sectionName.replace(/ /g, "_");
+						console.log("Sectionname: " + sectionName);
+						//htmlQF += "<tr><td style=\"background-color: #525252;\"title=\""+cleanUpTag.name +":"+ cleanUpTag.description+"\"> <img src=\"media/error.png\" />" + cleanUpTag.alias + "</td><tr>";
+						htmlQF += "<div id=\"notification-" + i + "\"class=\"notificationDiv\" title=\"" + cleanUpTag.name + ":" + cleanUpTag.description + "\" onclick=\"articleController.goToSection('" + sectionName + "', '"+cleanUpTag.name+"')\"> <img style=\"display: inline-block; vertical-align: middle\" src=\"media/warning.png\" /> &nbsp;" + cleanUpTag.alias + " &nbsp;&nbsp;&nbsp;   <img style=\"display: inline-block; vertical-align: middle; \" src=\"media/discard-without-background-small.png\"  onclick=\"removeThisNotification(" + i + ")\"/></div>";
+						colorCnt++;
+						if (colorCnt == 9)
+							colorCnt = 0;
+					}
 				}
 			}
 		}

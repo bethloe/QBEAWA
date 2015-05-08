@@ -261,9 +261,15 @@ var DataRetriever = function (vals) {
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
 		//console.log(extractPlainText);
 		if (extractPlainText != undefined) {
+			console.log("extractPlainText");
 			var stat = new textstatistics(extractPlainText);
-			var flesch = stat.fleschKincaidReadingEase();
-			var kincaid = stat.fleschKincaidGradeLevel();
+
+			var flesch = 0;
+			var kincaid = 0;
+			if (text != "" && text != undefined) {
+				flesch = stat.fleschKincaidReadingEase();
+				kincaid = stat.fleschKincaidGradeLevel();
+			}
 			//console.log(flesch);
 			//console.log(kincaid);
 			$("#Flesch").text(flesch);
