@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Notification center - Jquery</title>
+		<meta name="viewport" content="width=1200, initial-scale=0.5">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="description" content="Apple OS X Style Notification Center for website.  Written in jQuery.">
+		<meta name="keywords" content="Notification, Center, jQuery, OS X, Apple">
+		<meta name="author" content="Justin F. Hallett">
+
+		<link href="css/notifcenter.css" rel="stylesheet">
+		<link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
+		<style type="text/css">
+			body {
+				color: #000;
+				background: #fff;
+				font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				overflow: hidden;
+				padding: 0;
+				margin: 0;
+			}
+
+			footer {
+				position: absolute;
+				right: 0;
+				width: 100%;
+				font-weight: bold;
+				background: #ccc;
+				padding: 10px 0;
+				text-align: center;
+			}
+
+			blockquote {
+				font-style: italic;
+				color: #999;
+			}
+
+			pre {
+				display: block;
+				padding: 9.5px;
+				margin: 0 0 10px;
+				font-size: 13px;
+				line-height: 20px;
+				word-break: break-all;
+				word-wrap: break-word;
+				white-space: pre;
+				white-space: pre-wrap;
+				background-color: #f5f5f5;
+				border: 1px solid #ccc;
+				border: 1px solid rgba(0,0,0,0.15);
+				-webkit-border-radius: 4px;
+				-moz-border-radius: 4px;
+				border-radius: 4px;
+				font-family: Monaco,Menlo,Consolas,"Courier New",monospace;
+				color: #333;
+			}
+
+			.comment {
+				font-style: italic;
+				color: #666;
+			}
+
+			a {
+				text-decoration: none;
+				color: #08c;
+			}
+
+			a:hover {
+				color: #005580;
+			}
+
+			a.top {
+				font-size: 10px;
+				padding-left: 40px;
+			}
+
+			h1, h2, h3, h4, h5, h6 {
+				margin: 10px 0;
+				font-weight: bold;
+				line-height: 20px;
+				text-rendering: optimizelegibility;
+			}
+
+			h1, h2, h3 {
+				line-height:40px
+			}
+
+			h1 {
+				font-size: 60px;
+				line-height: 60px;
+				letter-spacing: -1px;
+				margin-bottom: 0;
+			}
+
+			h2 {
+				font-size:31.5px
+			}
+
+			h3 {
+				font-size:24.5px;
+			}
+
+			h4 {
+				font-size:17.5px
+			}
+
+			.navigation {
+				color: #fff;
+				font-size: 18px;
+				margin-bottom: 20px;
+				background: #34495e;
+				height: 60px;
+				overflow: hidden;
+			}
+
+			.navigation ul {
+				list-style-type: none;
+				padding: 0;
+				margin: 0;
+			}
+
+			.navigation ul,
+			.navigation ul li,
+			.navigation ul li a {
+				color: #fff;
+				display: inline;
+				padding: 0 10px;
+			}
+
+			.navigation li:hover,
+			.navigation li a:hover {
+				color: #1abc9c;
+			}
+
+			.navigation .right {
+				position: absolute;
+				top: 10px;
+				right: 20px;
+			}
+
+			.navigation .brand {
+				padding-left: 10px;
+				padding-top: 10px;
+			}
+
+			.navigation .brand a {
+				color: #1abc9c;
+			}
+
+			.navigation .brand a:hover {
+				color: #fff;
+			}
+
+			.content {
+				margin: auto auto;
+				width: 80%;
+			}
+
+			.banner {
+				background-color: #eee;
+				border-radius: 6px;
+				-moz-border-radius: 6px;
+				-webkit-border-radius: 6px;
+				font-weight: bold;
+				line-height: 30px;
+				margin-bottom: 30px;
+				padding: 60px;
+			}
+
+			.timer {
+				font-size: 200%;
+				font-weight: bold;
+				color: #1abc9c;
+			}
+
+			.cell {
+				display: table-cell;
+				min-width: 50%;
+				padding: 10px;
+				vertical-align: top;
+			}
+
+			table.arguments,
+			table.arguments th,
+			table.arguments td {
+				border-collapse: collapse;
+				border: 1px solid #ccc;
+			}
+
+			table.arguments th,
+			table.arguments td {
+				background: #fff;
+				padding: 10px;
+				vertical-align: top;
+			}
+
+			table.arguments tbody tr:nth-child(odd),
+			table.arguments tbody tr:nth-child(odd) td {
+				background: #eee;
+			}
+
+			#notificationcentericon {
+				cursor: pointer;
+				display: inline-block;
+			}
+
+			/* From Bootstrap for buttons only */
+			.btn {
+				display: inline-block;
+				*display: inline;
+				*zoom: 1;
+				padding: 4px 12px;
+				margin-bottom: 0;
+				font-size: 14px;
+				line-height: 20px;
+				text-align: center;
+				vertical-align: middle;
+				cursor: pointer;
+				color: #333;
+				text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+				background-color: #f5f5f5;
+				background-image: -moz-linear-gradient(top, #fff, #e6e6e6);
+				background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#e6e6e6));
+				background-image: -webkit-linear-gradient(top, #fff, #e6e6e6);
+				background-image: -o-linear-gradient(top, #fff, #e6e6e6);
+				background-image: linear-gradient(to bottom, #fff, #e6e6e6);
+				background-repeat: repeat-x;
+				filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
+				border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+				border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+				*background-color: #e6e6e6;
+				filter: progid: DXImageTransform.Microsoft.gradient(enabled = false);
+				border: 1px solid #ccc;
+				*border: 0;
+				border-bottom-color: #b3b3b3;
+				-webkit-border-radius: 4px;
+				-moz-border-radius: 4px;
+				border-radius: 4px;
+				*margin-left: .3em;
+				-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+				-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+				box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+			}
+
+			.btn:hover,
+			.btn:focus,
+			.btn:active,
+			.btn.active,
+			.btn.disabled,
+			.btn[disabled] {
+				color: #333;
+				background-color: #e6e6e6;
+				*background-color: #d9d9d9;
+			}
+
+			.btn:active,
+			.btn.active {
+				background-color: #ccc \9;
+			}
+
+			.btn:first-child {
+				*margin-left: 0;
+			}
+
+			.btn:hover,
+			.btn:focus {
+				color: #333;
+				text-decoration: none;
+				background-position: 0 -15px;
+				-webkit-transition: background-position .1s linear;
+				-moz-transition: background-position .1s linear;
+				-o-transition: background-position .1s linear;
+				transition: background-position .1s linear;
+			}
+
+			.btn:focus {
+				outline: thin dotted #333;
+				outline: 5px auto -webkit-focus-ring-color;
+				outline-offset: -2px;
+			}
+
+			.btn.active,
+			.btn:active {
+				background-image: none;
+				outline: 0;
+				-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05);
+				-moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05);
+				box-shadow: inset 0 2px 4px rgba(0, 0, 0, .15), 0 1px 2px rgba(0, 0, 0, .05);
+			}
+
+			.btn.disabled,
+			.btn[disabled] {
+				cursor: default;
+				background-image: none;
+				opacity: .65;
+				filter: alpha(opacity=65);
+				-webkit-box-shadow: none;
+				-moz-box-shadow: none;
+				box-shadow: none;
+			}
+
+			.btn-primary.active,
+			.btn-warning.active,
+			.btn-danger.active,
+			.btn-success.active,
+			.btn-info.active,
+			.btn-inverse.active {
+				color: rgba(255, 255, 255, 0.75);
+			}
+
+			.btn-primary {
+				color: #fff;
+				text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+				background-color: #006dcc;
+				background-image: -moz-linear-gradient(top, #08c, #04c);
+				background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#08c), to(#04c));
+				background-image: -webkit-linear-gradient(top, #08c, #04c);
+				background-image: -o-linear-gradient(top, #08c, #04c);
+				background-image: linear-gradient(to bottom, #08c, #04c);
+				background-repeat: repeat-x;
+				filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+				border-color: #04c #04c #002a80;
+				border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+				*background-color: #04c;
+				filter: progid: DXImageTransform.Microsoft.gradient(enabled = false);
+			}
+
+			.btn-primary:hover,
+			.btn-primary:focus,
+			.btn-primary:active,
+			.btn-primary.active,
+			.btn-primary.disabled,
+			.btn-primary[disabled] {
+				color: #fff;
+				background-color: #04c;
+				*background-color: #003bb3;
+			}
+
+			.btn-primary:active,
+			.btn-primary.active {
+				background-color: #039 \9;
+			}
+
+			.btn-success {
+				color: #fff;
+				text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+				background-color: #5bb75b;
+				background-image: -moz-linear-gradient(top, #62c462, #51a351);
+				background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+				background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+				background-image: -o-linear-gradient(top, #62c462, #51a351);
+				background-image: linear-gradient(to bottom, #62c462, #51a351);
+				background-repeat: repeat-x;
+				filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+				border-color: #51a351 #51a351 #387038;
+				border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+				*background-color: #51a351;
+				filter: progid: DXImageTransform.Microsoft.gradient(enabled = false);
+			}
+
+			.btn-success:hover,
+			.btn-success:focus,
+			.btn-success:active,
+			.btn-success.active,
+			.btn-success.disabled,
+			.btn-success[disabled] {
+				color: #fff;
+				background-color: #51a351;
+				*background-color: #499249;
+			}
+
+			.btn-success:active,
+			.btn-success.active {
+				background-color: #408140 \9;
+			}
+		</style>
+		<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
+		<script src="js/jquery.moment.js"></script>
+		<script src="js/jquery.livestamp.js"></script>
+		<script src="js/jquery.notificationcenter.js"></script>
+		<script src="js/jquery.timer.js"></script>
+		<!-- <script src="http://176.31.127.193:8000/faye/client.js"></script> -->
+		<script>
+			var client = null;
+			$(document).ready(function(){
+				if (typeof $.mobile === 'object') {
+					$.mobile.linkBindingEnabled = false;
+					$.mobile.ajaxEnabled = false;
+					$.mobile.hashListeningEnabled = false;
+				}
+				$('.collapsable').hide();
+				$('.permalink').bind('click', function() {
+					if ($(this).parents('td').length > 0) {
+						$(this).closest('tr').find('.collapsable').toggle();
+					} else {
+						$(this).closest('div').find('.collapsable').toggle();
+					}
+
+					return false;
+				});
+
+				var minutes = 5;
+				var seconds = minutes * 60;
+				var counter = setInterval(function() {
+					if (seconds > 0) {
+						seconds--;
+						var mins = Math.floor(seconds / 60);
+						var secs = seconds - (mins * 60);
+						if (mins < 10)
+							mins = '0' + mins;
+						if (secs < 10)
+							secs = '0' + secs;
+						$('.timer').html(mins + ':' + secs);
+					} else {
+						seconds = minutes * 60;
+						$.notificationcenter.newAlert('This alert has been pushed via ' + minutes + ' minute timer', 'invite');
+					}
+				}, 1000);
+
+				var date = new Date();
+				$('body').notificationcenter({
+					notification_offset: 50,
+					types:[
+						{
+							type: 'sticky',
+							img: 'fa fa-clock-o',
+							imgtype: 'class',
+							display_time: 0
+						},
+						{
+							type: 'fontawesome',
+							img: 'fa fa-bullseye',
+							imgtype: 'class',
+							type_max_display: 2,
+							alert_hidden_sound: 'sounds/Basso'
+						},
+						{
+							type: 'invite',
+							img: 'img/invite.png',
+							bgcolor: '#3366ff'
+						},
+						{
+							type: 'todo',
+							img: 'img/clipboard.png',
+							bgcolor: '#fff',
+							color: '#000'
+						},
+						{
+							type: 'gift',
+							img: 'img/gift.png',
+							bgcolor: '#eb5d49',
+							truncate_message: 50
+						},
+						{
+							type: 'calendar',
+							img: 'img/calendar.png',
+							bgcolor: '#2767a8'
+						},
+						{
+							type: 'system',
+							img: 'img/settings.png',
+							type_max_display: 10
+						}
+					],
+					default_notifs:[
+						{
+							type: 'system',
+							values:[{
+								text: {
+									text: 'This is an example, I have a callback click me to see it.',
+									title: 'Callback'
+								},
+								time: date.getTime()/1000,
+								callback: function(notif) {
+									$.notificationcenter.alert(notif.text, notif.type);
+								},
+								new: true
+							}]
+						}
+					],
+					alert_hidden_sound: 'sounds/Purr',
+					store_callback: function(notifs) {
+						console.log(JSON.stringify(notifs))
+					}
+				});
+
+				$('.slideit').on('click', function() {
+					$.notificationcenter.slide();
+				});
+
+				$('.notif').on('click', function() {
+					if ($(this).attr('data-type') == 'snooze')
+						$.notificationcenter.alert('New alert by button click, with a callback action.', 'sticky', function(notif) { setTimeout( function() { $.notificationcenter.alert(notif.text, notif.type, notif.callback, 'snooze'); }, 1 * 60 * 1000); }, 'snooze');
+					else
+						$.notificationcenter.newAlert({'text':'New alert by button click.', 'title':$(this).attr('data-type')}, $(this).attr('data-type'));
+				});
+
+				var ajax_options = 'examples/object.json';
+				var ajax_checkTime = 5 * 60 * 1000; // 5 minutes
+				$('.ajax').on('click', function() {
+					if (!$('.ajax').hasClass('disabled')) {
+						$.notificationcenter.ajax(ajax_options, ajax_checkTime);
+						$('.ajax').addClass('disabled');
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="noticationcentermain" style="background: #fff;">
+			<div id="top" class="navigation">
+				<div class="brand">
+					<a href="#"><i class="fa fa-flask"></i> jquery.notificationcenter.js</a>
+				</div>
+				<ul class="right">
+					<li><a href="#docs">Documentation</a></li>
+					<li><a href="#params">Parameters</a></li>
+					<li><a href="#meths">Methods</a></li>
+					<li><a href="#tips">Tips</a></li>
+					<li style="padding-left: 20px;"><span id="notificationcentericon"><i class="fa fa-bars fa-2x"></i></span></li>
+				</ul>
+			</div>
+
+			<div class="content">
+				<div class="banner">
+					<h1>Notification center for jQuery!</h1>
+					<p>Trying to implement a simple notification center like like Apple OS X.</p>
+					<h4>FEATURES</h4>
+					<ul>
+						<li>Document title modification to show alert count</li>
+						<li>Display only a certain amount of notifs at once</li>
+						<li>Sound notification if the user is on an other tab/page</li>
+						<li>Per type Sounds/Colors/alert timeout and notif count displayed</li>
+						<li>Pop up alerts that are not retained in the notif pane</li>
+						<li>Click overlay when the pane is open so any click closes the pane</li>
+						<li>Notif callbacks, including a redisplay notification option</li>
+						<li>Export callback so you can save the list of current notifs</li>
+						<li>Mobile compat, includes options for swipe delete on notifs</li>
+						<li>Mobile on notifications stay in viewport even with pinch zoom</li>
+						<li>CSS Styled allows lots of styling control to the site</li>
+						<li>Allow ajax and/or faye alerts on top of js calls to create alerts</li>
+						<li>Allow Sticky notifications, sticky notifications also have an optional settable action button</li>
+
+					</ul>
+					<p><a class="btn btn-primary btn-large" href="https://github.com/thesin-/notificationcenter/archive/master.zip"><i class="fa fa-cloud-download fa-lg"></i> Download</a>&nbsp;&nbsp;<a class="btn btn-success btn-large" href="https://github.com/thesin-/notificationcenter"><i class="fa fa-github-alt fa-lg"></i> GitHub</a></p>
+				</div>
+
+				<div style="text-align: center; font-weight: bold; width: 100%">
+					<p>New notification in <span class="timer"></span></p>
+				</div>
+
+				<div>
+					<div class="cell">
+						<h2>Panel Control</h2>
+						<div>
+							<div class="cell">
+								<p>It's really easy to show the center. The plugin create a panel on the right side of your website.</p>
+								<p><a class="btn slideit" href="#">Show/Hide panel</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="cell">
+						<h2>Notifications</h2>
+						<div>
+							<div class="cell">
+								<p>How to throw a notification with Javascript.</p>
+								<p><a class="btn notif" href="#" data-type="gift">Add a notification</a></p>
+								<p><a class="btn notif" href="#" data-type="calendar">Add an other type</a></p>
+								<p><a class="btn notif" href="#" data-type="fontawesome">Add a class type</a></p>
+								<p><a class="btn notif" href="#" data-type="sticky">Add a alert</a></p>
+								<p><a class="btn notif" href="#" data-type="snooze">Add a alert w/callback</a></p>
+							</div>
+						</div>
+					</div>
+					<div class="cell">
+						<h2>Ajax Notifications</h2>
+						<div>
+							<div class="cell">
+								<p>How to start an ajax check with Javascript. <span class="comment">Will take 5 minutes before you see the first notification.</span></p>
+								<p><a class="btn ajax" href="#">Start ajax</a></p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<hr>
+
+				<div>
+					<div class="cell">
+						<a href="http://faye.jcoglan.com"><img src="img/faye-logo.gif"></a>
+						<div class="cell">
+							<p>Why not adding a little bit of push in it?</p>
+							<blockquote>
+								<p>Faye is a publish-subscribe messaging system based on the <a href="http://svn.cometd.com/trunk/bayeux/bayeux.html" target="_blank">Bayeux</a> protocol. It provides message servers for <a href="http://nodejs.org/" target="_blank">Node.js</a> and <a href="http://www.ruby-lang.org/" target="_blank">Ruby</a>, and clients for use on the server and in all major web browsers.</p>
+							</blockquote>
+						</div>
+					</div>
+				</div>
+
+				<hr>
+
+			  	<div>
+			  		<div class="cell">
+			  			<h2 id="tips">Tips <a class="top" href="#top">back to top</a></h2>
+			  			<div class="cell">
+							<ul>
+				  				<li>
+									<p>Want to display the date for each notification?</p>
+		  							<p>Include <a href="http://momentjs.com/" target="_blank">Moment.js</a> and <a href="http://mattbradley.github.io/livestampjs/" target="_blank">Livestamp.js</a> and ENJOY :)</p>
+								</li>
+				  				<li>
+									<p>Want mobile support with swipe delete? <span class="comment">Try it on a mobile device, swipe left on a notif in the notification panel to delete it.</span></p>
+		  							<p>Include <a href="http://jquerymobile.com" target="_blank">jquery.mobile.js</a> and ENJOY :) <span class="comment">(jquery.mobile.css not required)</span></p>
+								</li>
+								<li>
+									<p>Add some color to the overlay when the panel is out?</p>
+
+									<pre>
+&lt;style&gt;
+	#notificationcenteroverlay {
+		background-color: #000;
+		opacity: 0.5;
+	}
+&lt;/style&gt;</pre>
+								</li>
+							</ul>
+	  					</div>
+	  				</div>
+	  			</div>
+
+				<hr>
+
+	  			<div>
+	  				<div class="cell">
+				  		<h2 id="docs">Documentation <a class="top" href="#top">back to top</a></h2>
+						<div>
+	  						<div class="cell">
+					  			<h3>HTML setup</h3>
+	  							<div class="cell">
+          								<pre>
+&lt;body&gt;
+	&lt;div id="noticationcentermain"&gt;
+		[...]all your html[...]
+	&lt;/div&gt;
+&lt;/body&gt;</pre>
+								</div>
+							</div>
+						</div>
+						<div>
+	  						<div class="cell">
+								<h3>Javascript setup</h3>
+	  							<div class="cell">
+          								<pre>
+&lt;script&gt;
+$('body').notificationcenter({
+	center_element: "#notificationcenterpanel",
+	body_element: "#noticationcentermain",
+	toggle_button: "#notificationcentericon",
+	add_panel: true,
+	notification_offset: 0,
+	display_time: 5000,
+	types: [],
+	type_max_display: 5,
+	truncate_message: 0,
+	header_output: '{icon} {type} {count}',
+	counter: true,
+	default_notifs: [],
+	faye: false,
+	ajax: false,
+	ajax_checkTime: 5000,
+	alert_hidden: true,
+	alert_hidden_sound: "sounds/Funk",
+	store_callback: false
+});
+&lt;/script&gt;</pre>
+								</div>
+							</div>
+						</div>
+						<div>
+	  						<div class="cell">
+								<h3 id="params">Parameters <a class="top" href="#top">back to top</a></h3>
+								<div class="cell">
+
+									<table class="arguments">
+										<thead>
+											<tr>
+												<th style="width: 100px;">Name</th>
+												<th style="width: 50px;">type</th>
+												<th style="width: 50px;">default</th>
+												<th>description</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>center_element</td>
+												<td>string</td>
+												<td>&quot;#notificationcenterpanel&quot;</td>
+												<td>Define the id of the element embedding your dom.</td>
+											</tr>
+											<tr>
+												<td>body_element</td>
+												<td>string</td>
+												<td>&quot;#noticationcentermain&quot;</td>
+												<td>Closes the modal when escape key is pressed</td>
+											</tr>
+											<tr>
+												<td>toggle_button</td>
+												<td>string</td>
+												<td>&quot;#notificationcentericon&quot;</td>
+												<td>Id of the button to toggle the panel.</td>
+											</tr>
+											<tr>
+												<td>add_panel</td>
+												<td>boolean</td>
+												<td>true</td>
+												<td>If you want the panel on the right.</td>
+											</tr>
+											<tr>
+												<td>notification_offset</td>
+												<td>int</td>
+												<td>0</td>
+												<td>If you want the notifications to start a little lower. Useful to not cover up the notificationcentericon.</td>
+											</tr>
+											<tr>
+												<td>display_time</td>
+												<td>int</td>
+												<td>5000</td>
+												<td>Display time for each notification in milliseconds. <span class="comment">0 means the notification is sticky and will not be added to the notif pane</span></td>
+											</tr>
+											<tr>
+												<td><a href="#" class="permalink">types</a></td>
+												<td>array</td>
+												<td>[]</td>
+												<td>Array of objects to define the types of each notifications.
+													<div class="collapsable">
+														<pre>
+$('body').notificationcenter({
+	types: [{
+		type: 'gift', // define the type
+		img: 'img/gift.png', // icon path
+		imgtype: 'image', // image or class, if class img is the classes
+		type_max_display: 5, // if not present the global is used
+		display_time: 5000, // if not present the global is used
+		alert_hidden: true, // if not present the global is used
+		alert_hidden_sound: 'sounds/Funk', // if not present the global is used
+		truncate_message: 0, // if not present the global is used
+		header_output: '{icon} {type} {count}', // if not present the global is used
+		bgcolor: '#EB5D49', // background color for the center header
+		color: '#FFFFFF' // text color for the center header
+	}, {
+		[...]
+	}]
+});</pre>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>type_max_display</td>
+												<td>int</td>
+												<td>5</td>
+												<td>The amount of notifications per type to display in the panel, the rest will get queued as some are removed others will show.  <span class="comment">0 = no limit</span></td>
+											</tr>
+											<tr>
+												<td>counter</td>
+												<td>boolean</td>
+												<td>true</td>
+												<td>Display a counter.</td>
+											</tr>
+											<tr>
+												<td>truncate_message</td>
+												<td>int</td>
+												<td>0</td>
+												<td>Display only one x characters of the notification/notif. <span class="comments">callback will always have the full message</span></td>
+											</tr>
+											<tr>
+												<td>header_output</td>
+												<td>string</td>
+												<td>&quot;{icon} {type} {count}&quot;</td>
+												<td>Template for the notif headers</td>
+											</tr>
+											<tr>
+												<td><a href="#" class="permalink">default_notifs</a></td>
+												<td>array</td>
+												<td>[]</td>
+												<td>Array of objects to define the default notifications. <span class="comments">callback is optional, text can be a string or an object like the example.</span>
+													<div class="collapsable">
+														<pre>
+$('body').notificationcenter({
+	default_notifs: [{
+		type: 'gift', // define the type
+		values: [{
+			text: {
+				text: 'This is an example',
+				title: 'This is a title'
+			},
+			time: date.getTime()/1000,
+			new: true,
+			callback: function(notif) {
+				$.notificationcenter.alert(notif.text, notif.type);
+			}
+		}]
+	}, {
+		[...]
+	}]
+});</pre>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td><a href="#" class="permalink">faye</a></td>
+												<td>object</td>
+												<td>false</td>
+												<td>Object to define the faye connection.
+													<div class="collapsable">
+														<pre>
+$('body').notificationcenter({
+	faye: {
+		server: 'http://yourserver:port'
+		chanel: 'your chanel'
+	}
+});</pre>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td><a href="#" class="permalink">ajax</a></td>
+												<td>object</td>
+												<td>false</td>
+												<td><a href="http://api.jquery.com/jQuery.ajax/">jQuery ajax Object</a> to define the ajax call.
+													<div class="collapsable">
+														<pre>
+$('body').notificationcenter({
+	ajax: {
+		type: 'POST',
+		url: 'some.php',
+		data: {
+			authkey: 'guess',
+			user: 'john'
+		}
+	}
+});</pre>
+														A JSON array is expected as a result of the query, each item can be as an array or an object.
+														<pre>
+[
+	[
+		"This is an alert",
+		"system"
+	 ],
+	 [ ... ]
+]</pre>
+														<pre>
+[
+	{
+		"text": "This is an alert",
+		"type": "system"
+	},
+	{
+		[ ... ]
+	}
+]</pre>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td>ajax_checkTime</td>
+												<td>int</td>
+												<td>5000</td>
+												<td>Time between ajax calls in milliseconds.</td>
+											</tr>
+											<tr>
+												<td>alert_hidden</td>
+												<td>bool</td>
+												<td>true</td>
+												<td>If you want to be alerted even if the page has not the focus.</td>
+											</tr>
+											<tr>
+												<td>alert_hidden_sound</td>
+												<td>string</td>
+												<td>''</td>
+												<td>Url of the audio file <strong>without the extension</strong> You must provide the file in both format MP3/OGG</td>
+											</tr>
+											<tr>
+												<td><a href="#" class="permalink">store_callback</a></td>
+												<td>function</td>
+												<td>false</td>
+												<td>Function to call to store the panel's contents, false = no storage.  <span class="comments">An object that holds the current panel info will be passed in as an arg. Check your console.</span>
+													<div class="collapsable">
+														<pre>
+$('body').notificationcenter({
+	store_callback: function(notifs) {
+		$.ajax({
+			type: 'POST',
+			url: 'some.php',
+			data: {
+				uid: 100,
+				notifications: notifs
+			}
+		}).done(function(data) {
+			console.log('storage updated')
+		});
+	}
+});</pre>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div>
+							<div class="cell">
+	  		 		 			<h3 id="meths">Methods <a class="top" href="#top">back to top</a></h3>
+								<div>
+									<div class="cell">
+	  				  					<h4><a href="#" class="permalink">$.notificationcenter.slide()</a></h4>
+										<div class="cell collapsable">
+			  		  						<pre>
+$.notificationcenter.slide();</pre>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div class="cell">
+		  					  			<h4><a href="#" class="permalink">$.notificationcenter.newAlert(text, [type], [display notification], [callback], [time], [new])</a></h4>
+										<div class="cell collapsable">
+	  						  				<pre>
+$.notificationcenter.newAlert('This is a new alert.', 'gift', true, function(notif) { $.notificationcenter.alert(notif.text, notif.type); }, 1406857387, true);</pre>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div class="cell">
+	  							  		<h4><a href="#" class="permalink">$.notificationcenter.faye(faye_object)</a></h4>
+										<div class="cell collapsable">
+	  							  			<pre>
+var faye = {
+	server: 'http://yourserver:port',
+	channel: 'your channel'
+};
+
+$.notificationcenter.faye(faye);</pre>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div class="cell">
+	  						  			<h4><a href="#" class="permalink">$.notificationcenter.ajax(options_object, checkTime)</a></h4>
+										<div class="cell collapsable">
+		  					  				<pre>
+var ajax_options = {
+	type: 'POST',
+	url: 'some.php',
+	data: {
+		userid: 99
+	}
+};
+
+$.notificationcenter.ajax(ajax_options, 5000);</pre>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div class="cell">
+	  						  			<h4><a href="#" class="permalink">$.notificationcenter.alert(text, [type], [callback], [action])</a></h4>
+										<div class="cell collapsable">
+											This is very useful for callbacks, you could setup a callback type even. <span type="comment">action defaults to banner, anything else gives you a action button on your callback and sets the notificaiton to sticky aka no timeout.</span>
+											<div class="cell">
+	  						  					<pre>
+$.notificationcenter.alert('This is just an alert, nothing in notificaiton center', 'system', function(notif) { $.notificationcenter.alert(notif.text, notif.type); });</pre>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<div class="cell">
+	  						  			<h4><a href="#" class="permalink">$.notificationcenter.captureTitle([title])</a></h4>
+										<div class="cell collapsable">
+											Set a page title. <span class="comments">title is optional, it'll use the current title otherwise</span>
+											<div class="cell">
+	  						  					<pre>
+$.notificationcenter.captureTitle('This is the new page title');</pre>
+											</div>
+											Use the current page title. <span class="comment">It will attempt to detect and remove any current notification counts</span>
+											<div class="cell">
+	 	 					  					<pre>
+$.notificationcenter.captureTitle();</pre>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+  		 			 	</div>
+					</div>
+				</div>
+			</div>
+			<footer>
+				&copy; jquery.notificationcenter.js
+			</footer>
+		</div>
+	</body>
+</html>

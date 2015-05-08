@@ -8,6 +8,9 @@ var GLOBAL_CrawledArticles = {};
 var GLOBAL_numElements = 17;
 var GLOBAL_interval;
 var GLOBAL_generatingDataCnt = 0;
+var visController;
+var GLOBLA_getFeaturedArticlesLink = "action=query&format=json&list=categorymembers&cmlimit=50&cmtitle=Category:Featured%20articles&continue"
+var GLOBLA_getFeaturedArticlesLinkContinue = "action=query&format=json&list=categorymembers&cmlimit=10&cmtitle=Category:Featured%20articles"
 
 var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
 	$.ajax({
@@ -19,13 +22,19 @@ var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
 	});
 }
 
-var searchArticle = function (keyword, maxNumSearch) {
+var getVisController = function () {
+	return visController;
+}
+
+var searchArticle = function (keyword, maxNumSearch, equationEditor) {
 	GLOBAL_keyWord = $("#article-name").val(); //keyword;
 	GLOBAL_maxNumSearch = parseInt($("#max-num").val()); //maxNumSearch;
 	GLOBAL_searchCount = 0;
 	GLOBAL_dataCollector = [];
 	GLOBAL_CrawledArticles = {};
 	retrieveData(GLOBAL_linkToAPI + "action=query&list=search&format=json&srsearch=" + GLOBAL_keyWord + "&srlimit=max&srprop=&continue", handleSearch);
+	//retrieveData(GLOBAL_linkToAPI + GLOBLA_getFeaturedArticlesLink, handleSearchFeaturedArticles);
+	
 	//showAllData();
 	/*window.setInterval(function () {
 	console.log("IN HERE");
@@ -33,9 +42,41 @@ var searchArticle = function (keyword, maxNumSearch) {
 	}, 2000);*/
 	GLOBAL_interval = setInterval(showAllDataAsList, 1000);
 
-	var visController = new VisController();
+	visController = new VisController();
 	visController.showPreparingMessage("Generating Data.");
+	equationEditor.setVisController(visController);
 	GLOBAL_generatingDataCnt += 1;
+}
+
+var handleSearchFeaturedArticles = function (JSONResponse) {
+	var articles = JSON.parse(JSON.stringify(JSONResponse));
+	var JSONArticleTitles = articles.query.categorymembers;
+
+	for (var i = 0; i < JSONArticleTitles.length; i++) {
+		if (GLOBAL_searchCount >= GLOBAL_maxNumSearch) {
+			return;
+		}
+		if (!GLOBAL_CrawledArticles.hasOwnProperty(JSONArticleTitles[i].title)) {
+			GLOBAL_CrawledArticles[JSONArticleTitles[i].title] = 1;
+			var dr = new DataRetriever({
+					title : JSONArticleTitles[i].title,
+					featured : true
+				});
+			GLOBAL_dataCollector.push(dr);
+			dr.getAllMeasures();
+			GLOBAL_searchCount += 1;
+		}
+	}
+	if (articles.hasOwnProperty("continue")) {
+		if (articles.continue.hasOwnProperty("cmcontinue")) {
+			//GET REST OF THE DATA:
+			//retrieveData(GLOBAL_linkToAPI + GLOBLA_getFeaturedArticlesLinkContinue  + "&cmcontinue="+articles.continue.cmcontinue+"&continue", //handleSearchFeaturedArticles);
+			
+			retrieveData(GLOBAL_linkToAPI + "action=query&list=search&format=json&srsearch=" + GLOBAL_keyWord + "&srlimit=10&srprop=&continue", handleSearch);
+		}
+	} else {
+		console.log("SEARCH IS DONE");
+	}
 }
 
 var handleSearch = function (JSONResponse) {
@@ -49,7 +90,8 @@ var handleSearch = function (JSONResponse) {
 		if (!GLOBAL_CrawledArticles.hasOwnProperty(JSONArticleTitles[i].title)) {
 			GLOBAL_CrawledArticles[JSONArticleTitles[i].title] = 1;
 			var dr = new DataRetriever({
-					title : JSONArticleTitles[i].title
+					title : JSONArticleTitles[i].title,
+					featured : false
 				});
 			GLOBAL_dataCollector.push(dr);
 			dr.getAllMeasures();
@@ -68,7 +110,6 @@ var handleSearch = function (JSONResponse) {
 var showAllDataAsList = function () {
 	//CHECK IF WE ARE DONE:
 	var done = true;
-	var visController = new VisController();
 
 	var crawledArticles = 0;
 	for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
@@ -102,7 +143,12 @@ var showAllDataAsList = function () {
 		var articles = {
 			data : []
 		};
-
+		/*var array = [];
+		for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
+			array.push(GLOBAL_dataCollector[i].getJSONString());
+		}
+		console.log("OUTPUT: " + JSON.stringify(array));*/
+		
 		for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
 			var jsonData = JSON.parse(GLOBAL_dataCollector[i].getJSONString());
 			//Calculation of the QMs.
@@ -154,18 +200,18 @@ var showAllDataAsTable = function () {
 		$('#output').empty();
 		var content = "<table border=\"1\">";
 		content += "<tr><th>Article Name</th><th>Total Number of Edits</th><th>Number of Registered User Edits</th><th>Number of Anonymous User Edits</th><th>Number of Admin Edits</th> \
-																																																																	<th>Admin Edit Share</th><th>Number of Unique Editors</th><th>Article length (in # of characters)</th><th>Currency (in days)</th><th>Num. of Internal Links (This value is wrong I guess)</th> \
-																																																																	<th>Num. of External Links</th><th>Num. of Pages which links to this page</th><th>Num. of Images</th><th>Article age (in days)</th><th>Diversity</th> \
-																																																																	<th>Flesch</th><th>Kincaid</th><th>Num. of Internal Broken Links</th><th>Number of Reverts (no permissions)</th><th>Article Median Revert Time (no permissions)</th><th>Article Connectivity (Have problems with that)</th> \
-																																																																	<th>Article Median Revert Time (no permissions)</th><th>Information noise(content) (Have to figure that out)</th>";
+																																																																			<th>Admin Edit Share</th><th>Number of Unique Editors</th><th>Article length (in # of characters)</th><th>Currency (in days)</th><th>Num. of Internal Links (This value is wrong I guess)</th> \
+																																																																			<th>Num. of External Links</th><th>Num. of Pages which links to this page</th><th>Num. of Images</th><th>Article age (in days)</th><th>Diversity</th> \
+																																																																			<th>Flesch</th><th>Kincaid</th><th>Num. of Internal Broken Links</th><th>Number of Reverts (no permissions)</th><th>Article Median Revert Time (no permissions)</th><th>Article Connectivity (Have problems with that)</th> \
+																																																																			<th>Article Median Revert Time (no permissions)</th><th>Information noise(content) (Have to figure that out)</th>";
 
 		for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
 			//console.log(GLOBAL_dataCollector[i].getJSONString());
 			var jsonData = JSON.parse(GLOBAL_dataCollector[i].getJSONString());
 			content += "<tr><td>" + jsonData.title + "</td><td>" + jsonData.numEdits + "</td><td>" + jsonData.numRegisteredUserEdits + "</td><td>" + jsonData.numAnonymousUserEdits + "</td><td>" + jsonData.numAdminUserEdits + "</td> \
-																																																																																																					<td>" + jsonData.adminEditShare + "</td><td>" + jsonData.numUniqueEditors + "</td><td>" + jsonData.articleLength + "</td><td>" + jsonData.currency + "</td><td>" + jsonData.internalLinks + "</td> \
-																																																																																																					<td>" + jsonData.externalLinks + "</td><td>" + jsonData.linksHere + "</td><td>" + jsonData.numImages + "</td><td>" + jsonData.articleAge + "</td><td>" + jsonData.diversity + "</td> \
-																																																																																																					<td>" + jsonData.flesch + "</td><td>" + jsonData.kincaid + "</td></tr>";
+																																																																																																								<td>" + jsonData.adminEditShare + "</td><td>" + jsonData.numUniqueEditors + "</td><td>" + jsonData.articleLength + "</td><td>" + jsonData.currency + "</td><td>" + jsonData.internalLinks + "</td> \
+																																																																																																								<td>" + jsonData.externalLinks + "</td><td>" + jsonData.linksHere + "</td><td>" + jsonData.numImages + "</td><td>" + jsonData.articleAge + "</td><td>" + jsonData.diversity + "</td> \
+																																																																																																								<td>" + jsonData.flesch + "</td><td>" + jsonData.kincaid + "</td></tr>";
 
 		}
 		content += "</table>";
@@ -173,3 +219,4 @@ var showAllDataAsTable = function () {
 		$('#output').append(content);
 	}
 }
+

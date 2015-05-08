@@ -288,8 +288,14 @@ p#p_question {
 
 
 #eexcess_header_control_section input[type="button"] {
-    align-self: center;
+    align-self: right;
     margin: 0em .3em;
+}
+
+#modeSelector {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	align: right; 
 }
 
 
@@ -353,6 +359,7 @@ p#p_question {
     display: flex;
     align-items: flex-end;
     width: 2em;
+	
 }
 
 /********************************************************************************************************************************************
@@ -388,9 +395,7 @@ p#p_question {
 
 */
 #eexcess_controls_left_panel {
-    float: left;
-    display: flex;
-    align-items: stretch;
+    //display: flex;
     width: 17%;
     height: calc(100% - 1em);
     padding: .5em;
@@ -399,11 +404,36 @@ p#p_question {
     box-shadow: inset .1em .1em .5em #aaa, inset -.1em -.1em .5em #aaa;
 }
 
+/* QM container */
+#eexcess_qm_container{
+    position:relative;
+    overflow-y: auto;
+    width: calc(100% - 0.5em);
+	height: 300px;
+   /* max-height: 50%;*/
+    padding: 8px 4px;
+    /*background: white;*/
+    background: -webkit-linear-gradient(top, rgba(30, 30, 30, 1), rgba(50, 50, 50, 0.5), rgba(30, 30, 30, 1));
+    box-shadow: inset .2em .2em .5em #ccc, inset -.2em -.2em .5em #ccc;
+}
+
+#eexcess_qm_container_rank_button{
+	/*position: absolute;
+    bottom: 00px;
+    right: 0px;*/
+	margin-top:0px;
+	height: 20px;
+	width: 100%;
+	background-color: #aaa; 
+}
+
 /*  Keyword cloud containing keywords in blue sclae  */
 
-#eexcess_keywords_container {
+#eexcess_measures_container {
+	cursor: pointer;
     overflow-y: auto;
-    width: 100%;
+    width: calc(100% - 0.5em);
+	height: calc(100% - 350px);
    /* max-height: 50%;*/
     padding: 8px 4px;
     /*background: white;*/
@@ -412,6 +442,7 @@ p#p_question {
 }
 
 /*  keywords in keyword container  */
+
 .eexcess_keyword_tag{
 	display: inline-block;
 	pointer-events: all;
@@ -426,7 +457,7 @@ p#p_question {
     color: white;
     text-shadow: -0.1em 0.1em 0.5em #eee;
 	opacity: 1.0;
-	cursor: move;
+	cursor: pointer;
 }
 
 .eexcess_keyword_tag:hover {
@@ -434,6 +465,27 @@ p#p_question {
     text-shadow: none;
 }
 
+.eexcess_measures_tag{
+	display: inline-block;
+	pointer-events: all;
+	margin: 0.2em;
+	padding: 3px 5px;
+	/*border: 0.1em #222 solid;*/
+	-webkit-border-radius: 7px;
+    border-radius: 7px;
+	-webkit-box-shadow: 0em 0.1em 0.3em #222;
+    /*box-shadow: 0em 0.1em 0.3em -0.1em #888;*/
+    box-shadow: 0em 0.1em 0.3em #222;
+    color: white;
+    text-shadow: -0.1em 0.1em 0.5em #eee;
+	opacity: 1.0;
+	cursor: pointer;
+}
+
+.eexcess_measures_tag:hover {
+	color: white;
+    text-shadow: none;
+}
 /*
     div on the upper side of #eexcess_controls_left_panel.
     Wraps #eexcess_controls_chart and #eexcess_controls_chart, which enclose pairs  of span-select DOM elements
@@ -532,6 +584,115 @@ VIS PANEL (center of screen)
 
 ********************************************************************************************************************************************/
 
+.eexcess_equation_ranking_operation{
+    width: 100%;
+    height: 4.5em;
+	line-height: 4em;
+	vertical-align: middle;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+	display: none;
+}
+
+
+#eexcess_equation_controls{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 4.5%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+#eexcess_equation_controls_normal_mode{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 4.5%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+.equationStackSmall{
+	cursor: pointer;
+	border: 1px solid black;
+}
+
+.icon{
+	cursor: pointer;
+	border: 1px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.icon:hover{
+	background: red;
+}
+
+#eexcess_equation_stack{
+    display: inline-flex;
+    width: 100%;
+    min-height: 4.5em;
+	background-color: white;
+}
+
+#eexcess_equation_composer{
+	float:left;
+    display: inline-flex;
+    width: 100%;
+   // height: 9%;
+    min-height: 4.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+#ranking_norm_selector{
+	float:left;
+    display: inline-flex;
+    width: 100%;
+   // height: 9%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+#eexcess_equation_composer_table{
+	float: left;
+}
+
+#eexcess_equation_composer_table td{
+	font-size: 40px;
+	border: 1px solid black;
+	cursor:pointer;
+}
+#eexcess_equation_composer_table td:hover{
+	background-color: red;
+	border: 1px solid black;
+	cursor:pointer;
+}
+
+#eexcess_equation_composer_table2{
+    display: none;
+	float: left;
+	
+}
+
+#eexcess_equation_composer_table2 td{
+	font-size: 20px;
+	padding: 0px;
+	margin: 0px;
+	border: 1px solid black;
+	cursor:pointer;
+}
+#eexcess_equation_composer_table2 td:hover{
+	background-color: red;
+	border: 1px solid black;
+	cursor:pointer;
+}
+
 
 #eexcess_vis_panel_controls {
     display: inline-flex;
@@ -552,7 +713,7 @@ VIS PANEL (center of screen)
 	display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 45%;
+    width: 100%;
     background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
 }
@@ -615,7 +776,6 @@ VIS PANEL (center of screen)
     box-shadow: 0em 7px 6px -6px #333;
     -webkit-text-shadow: -0.1em 0.1em 0.5em #eee;
     text-shadow: -0.1em 0.1em 0.5em #eee;
-
 }
 
 .eexcess_keyword_tag_in_box:hover {
@@ -691,7 +851,7 @@ VIS PANEL (center of screen)
 #eexcess_vis_panel_canvas {
     display: inline-block;
     width: 100%;
-    height: 90%;
+    height: 75%;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -744,7 +904,58 @@ VIS PANEL (center of screen)
 .eexcess_list a {
     color: #333;
 }
+/* RANK QMS: */
 
+#rank_QMs{
+	display: inline-block;
+    float: left;
+	vertical-align: top;
+    width: 45%;
+}
+
+
+
+/*
+    List body in "#eexcess_content"
+*/
+#rank_QMs ul{
+	clear:both;
+    width: 100%;
+    margin: 0;
+    margin-left: 1px;
+    padding: 0;
+    list-style: none;
+    display:block;
+    padding-bottom: 1px;
+
+}
+
+
+/*
+    <li> items in "#eexcess_content ul". Each <li> wraps 2 container <div>s: ".eexcess_item_ctl" and ".eexcess_ritem_container"
+*/
+.rank_QMs_list_li {
+list-style-type: none;
+    position: relative;
+    height: 26px;
+    vertical-align: top;
+    -webkit-transition: box-shadow 4s linear;
+}
+
+.rank_QMs_list_li a {
+    color: #333;
+}
+/***************	Encloses item title   **************/
+
+.rank_QMs_list_ritem_container {
+    display: inline-flex;
+    align-items: center;
+    width: calc(100% - 78px);
+    height: 100%;
+    /*margin-left: 2px;*/
+    vertical-align: top;
+    text-align: left;
+}
 
 /***************	<li> background style   **************/
 
@@ -881,6 +1092,12 @@ VIS PANEL (center of screen)
 	text-align: center;
 }
 
+#eexcess_canvas_rankQM {
+	display: inline-block;
+    width: 55%;
+    min-height: 99%;
+	text-align: center;
+}
 
 /*
     <div> appended to #eexcess_canvas when a message should be displayed. E.g. when a new search is triggered or no data are received.
@@ -969,6 +1186,15 @@ VIS PANEL (center of screen)
 }
 
 #eexcess_document_details div span {
+}
+#chart1 {
+ display: flex;
+    flex-wrap: wrap;
+	min-height: 18em;
+    text-align: left;
+    padding: .5em;
+    color: black;
+    text-shadow: 0em .1em #444
 }
 
 #eexcess_document_viewer {
@@ -1250,3 +1476,97 @@ VIS PANEL (center of screen)
     font-size: 1.1em; */
 }
 
+
+/* For equation */ 
+#equition_stack_main{
+	width: 100%;
+	float: left;
+	font-size: 40px;
+	padding: 2px;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+#equation_stack_text_of_QM{
+	position: relative;
+    display: inline-block;
+    width: 100%;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+	padding-bottom: 35px;
+}
+.eexcess_equation_text{
+	cursor: default;
+	float:left;
+	display: inline-block;
+	text-align: left;
+	line-height: 2em; 
+	vertical-align: middle;
+    height: 2em;
+	//margin: 0.8em .3em 0.2em 0.3em;
+    //padding: .2em;
+	background: none;
+}
+.eexcess_equation_empty_box{
+	cursor: default;
+	float:left;
+	display: inline-block;
+	text-align: left;
+	width: 4em;
+    height: 2em;
+	//margin: 0.8em .3em 0.2em 0.3em;
+    //padding: .2em;
+	//border-radius: 1em;
+	-webkit-border-radius: 0.3em;
+	-webkit-box-shadow: 0em 7px 6px -6px #333;
+    box-shadow: 0em 7px 6px -6px #333;
+    -webkit-text-shadow: -0.1em 0.1em 0.5em #eee;
+    text-shadow: -0.1em 0.1em 0.5em #eee;
+	border: 5px solid red;  
+	background: none;
+}
+
+.eexcess_equation_tag_in_box{
+	cursor: default;
+	display: inline-block;
+	text-align: left;
+	float:left;
+	font-size: 15px;
+	overflow:overlay;
+	width: 8em;
+    height: 4em;
+	//margin: 0.8em .3em 0.2em 0.3em;
+    //padding: .2em;
+	//border-radius: 0.3em;
+	-webkit-border-radius: 0.3em;
+	-webkit-box-shadow: 0em 7px 6px -6px #333;
+    box-shadow: 0em 7px 6px -6px #333;
+    -webkit-text-shadow: -0.1em 0.1em 0.5em #eee;
+    text-shadow: -0.1em 0.1em 0.5em #eee;
+}
+
+.eexcess_equation_tag_in_box:hover {
+    box-shadow: 2px 2px 5px #555, -2px -2px 5px #555;
+}
+
+
+.eexcess_equation_tag_in_box > text {
+	opacity: 0.5;
+}
+
+/* MATH THING: */
+
+.MathJax_Display: {
+    margin: 0px;
+},
+
+.MathJax .merror: {
+    padding: 0px;
+	margin: 0px;
+}
+
+.boxsizingBorder {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}

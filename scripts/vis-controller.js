@@ -23,8 +23,10 @@ var VisController = function () {
 
 	var mainPanel = "#eexcess_main_panel"; // Panel containing tag cloug, canvas (in #eexcess_vis) and content list
 	var inputCriteria = '.eexcess_vis_controls_input';
-	var tagContainer = "#eexcess_keywords_container"; // Selector for div wrapping keyword tags
+	var qmContainer = "#eexcess_qm_container";
+	var measuresContainer = "#eexcess_measures_container"; // Selector for div wrapping keyword tags
 	var tagClass = ".eexcess_keyword_tag"; // Selector for all keyword tags
+	var tagClassMeasures = ".eexcess_measures_tag"; // Selector for all measures tags
 	var tagId = "#tag-"; // Id selector for tags in tag container
 	var tagPos = "tag-pos-"; // attribute for keyword tags. value assigned = index
 	var tagBox = "#eexcess_keywords_box"; // Selector for div where tags are droppped
@@ -63,6 +65,7 @@ var VisController = function () {
 	var NO_IMG = "media/no-img.png";
 	var FAV_ICON_OFF = "media/favicon_off.png";
 	var FAV_ICON_ON = "media/favicon_on.png";
+	var EDIT_ICON = "media/edit_small.png";
 	var REMOVE_SMALL_ICON = "media/batchmaster/remove.png"
 		var ICON_EUROPEANA = "media/Europeana-favicon.ico";
 	var ICON_MENDELEY = "media/mendeley-favicon.ico";
@@ -83,24 +86,33 @@ var VisController = function () {
 	var dataset,
 	data, // contains the data to be visualized
 	keywords,
+	measures, // The measures from the wiki articles
 	query, // string representing the query that triggered the current recommendations
 	sampleText,
 	task,
-	questions;
+	questions,
+	equationEditor; //The equationEditor will be set after data are retrieved
 
 	//Connection to DB for QM Visualization
 	var databaseConnector;
 	var allVizs = [];
+	var allQMTexts = [];
 	// Ancillary variables
 	var dataRanking, // array that represents the current ranking. Each item is an object specifying "originalIndex, "overallScore", "rankingPos" and "positionsChanged"
 	selectedTags = [], // array of DOM elements contained in the tag box
 	rankingMode = RANKING_MODE.overall_score,
 	showRanking;
+	selectedTagsForEquationEditor = [];
 
 	// Ranking object
 	var rankingModel;
 	var rankingVis;
+	var rankingQMVis;
 
+	var dataForPieChart = [];
+
+	//timer
+	var timer;
 	// Color scales
 	var tagColorRange = colorbrewer.Blues[TAG_CATEGORIES + 1];
 	tagColorRange.splice(tagColorRange.indexOf("#08519c"), 1, "#2171b5");
@@ -155,6 +167,7 @@ var VisController = function () {
 		TAGCLOUD.clearTagbox();
 		TAGCLOUD.buildTagCloud();
 		LIST.resetContentList();
+		console.log("EVTHANDLER.btnResetClicked");
 		VISPANEL.resetRanking();
 		DOCPANEL.clear();
 	};
@@ -164,18 +177,18 @@ var VisController = function () {
 	EVTHANDLER.listItemClicked = function (d, i) {
 		LIST.selectListItem(i);
 	};
-	
+
 	////////	content list item dblclick	////////
-	EVTHANDLER.listItemDblclicked = function(d, i){
+	EVTHANDLER.listItemDblclicked = function (d, i) {
 		//TODO GO ON HERE
 		console.log("listItemDblclicked");
 		var actualIndex = rankingModel.getActualIndex(i);
 		var currentData = data[actualIndex];
 		qmEditorController.setValues(currentData);
 		qmEditorController.setShowValues(true);
-		
+
 		openQMEditor();
-		
+
 	};
 	////////	list item mouseover	////////
 	EVTHANDLER.listItemHovered = function (d, index) {
@@ -223,11 +236,11 @@ var VisController = function () {
 
 	EVTHANDLER.clickOnTag = function (tag) {
 		console.log("clickOnTag " + tag.text());
-		var qmName = tag.text();
+		/*var qmName = tag.text();
 		//databaseConnector.getAllQMVizs
 		qmEditorController.loadData(allVizs[qmName]);
 		qmEditorController.setShowValues(false);
-		openQMEditor();
+		openQMEditor();*/
 	};
 
 	////////	Draggable	////////
@@ -508,7 +521,7 @@ var VisController = function () {
 	 * */
 	TAGCLOUD.clearTagbox = function () {
 		$(tagBox).empty();
-		$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
+		//$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
 		selectedTags = [];
 		TAGCLOUD.updateTagColor();
 	};
@@ -517,39 +530,170 @@ var VisController = function () {
 	 * Append one tag per keyword and add drag & drop behavior
 	 *
 	 * */
+
+	// Array Remove - By John Resig (MIT Licensed)
+	Array.prototype.remove = function (from, to) {
+		var rest = this.slice((to || from) + 1 || this.length);
+		this.length = from < 0 ? this.length + from : from;
+		return this.push.apply(this, rest);
+	};
+
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
-		$(tagContainer).empty();
+		$(qmContainer).empty();
+
+		/*$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
+		<img align=\"right\" width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
+		</div>");*/
+		
+		var	qmRankingArrayHelper = [];
+		for (var i = 0; i < keywords.length; i++) {
+			var object = {};
+			object.name = keywords[i].term;
+			object.score = 0;
+			qmRankingArrayHelper.push(object);
+		}
+		generateQMRanking(qmRankingArrayHelper);
+		qmRankingArrayHelper.sort(SortByScore);
+		for(var i = 0; i< qmRankingArrayHelper.length; i++){
+			//console.log("
+		}
 		// Append one div per tag
-		d3.select(tagContainer).selectAll(tagClass)
-		.data(keywords)
+		d3.select(qmContainer).selectAll(tagClass)
+		.data(qmRankingArrayHelper)
 		.enter()
 		.append("div")
 		.attr("class", "eexcess_keyword_tag")
 		.attr("id", function (k, i) {
 			return "tag-" + i;
 		})
+		.attr('contenteditable', false)
 		.attr('tag-pos', function (k, i) {
 			return i;
 		})
 		.attr('is-selected', false)
-		.style("background", function (k) {
-			return getGradientString(tagColorScale(k.colorCategory + 1), [1, 0.7, 1]);
-		})
+		.attr('ImSelected', false)
+		.attr('unselectable', "on")
+		.attr('onselectstart', "return false")
+		.attr('onmousedown', "return false")
+		.style("background",function (k, i) {
+			return "#08519c";
+			}
+		)
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
 		.text(function (k) {
-			return k.term;
+			return k.name;
 		})
-		.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
-		.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
+		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
+		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted)
+		.on("click", function (data) {
+			if (equationEditor.isShiftPressed() == false) {
+				//	console.log("buildTagCloud ON CLICK " + data.name + " " + allVizs[data.name]);
+				equationEditor.loadMetric(data.name, allVizs[data.name], true);
+				$('#QM_Text').html(allQMTexts[data.name]);
+				//	if(equationEditor.getUserMode() == "normal"){
+				d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
+				d3.select(this).style("background", "#d95f02");
+				//}
+			} else {
+				//	console.log("HILF: " + d3.select(this).attr("ImSelected"));
+				if (d3.select(this).attr("ImSelected") == "true") {
+					console.log("IN HERE");
+					d3.select(this).attr("ImSelected", false);
+					d3.select(this).style("background", "#08519c");
+					var indexToDelete = -1;
+					for (var i = 0; i < selectedTagsForEquationEditor.length; i++) {
+						var tag = selectedTagsForEquationEditor[i];
+						if (tag.name == data.name) {
+							indexToDelete = i;
+						}
+					}
+					if (indexToDelete != -1) {
+						selectedTagsForEquationEditor.remove(indexToDelete);
+					}
+				} else {
+					d3.select(this).attr("ImSelected", true);
+					d3.select(this).style("background", "red");
+					var object = {
+						name : data.name,
+						viz : allVizs[data.name],
+						type : "metric"
+					};
+					selectedTagsForEquationEditor.push(object);
+				}
+			}
+		});
+
+		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
+																																										                        <ul class=\"rank_QMs_list\"></ul>\
+																																										                   </div>\
+																																														   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+
+		d3.select(measuresContainer).selectAll(tagClassMeasures)
+		.data(measures)
+		.enter()
+		.append("div")
+		.attr("class", "eexcess_measures_tag")
+		.attr("id", function (k, i) {
+			return "tag-" + i;
+		})
+		.attr('tag-pos', function (k, i) {
+			return i;
+		})
+		.attr('contenteditable', false)
+		.attr('is-selected', false)
+		.attr('ImSelected', false)
+		.attr('unselectable', "on")
+		.attr('onselectstart', "return false")
+		.attr('onmousedown', "return false")
+		.style("background", function (k) {
+			return '#21B571';
+		})
+		.style('border', function (k) {
+			return '1px solid #21B571';
+		})
+		.text(function (k) {
+			return k.name;
+		})
+		.on("click", function (data) {
+			if (equationEditor.isShiftPressed() == false) {
+				equationEditor.fillGap(data)
+			} else {
+				if (d3.select(this).attr("ImSelected") == "true") {
+					d3.select(this).attr("ImSelected", false);
+					d3.select(this).style("background", "#21B571");
+					var indexToDelete = -1;
+					for (var i = 0; i < selectedTagsForEquationEditor.length; i++) {
+						var tag = selectedTagsForEquationEditor[i];
+						if (tag.name == data.name) {
+							indexToDelete = i;
+						}
+					}
+					if (indexToDelete != -1) {
+						selectedTagsForEquationEditor.remove(indexToDelete);
+					}
+				} else {
+					d3.select(this).attr("ImSelected", true);
+					d3.select(this).style("background", "red");
+					var object = {
+						name : data.name,
+						viz : "",
+						type : "measure"
+					};
+					selectedTagsForEquationEditor.push(object);
+				}
+			}
+		});
+		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
+		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
 
 		// bind drag behavior to each tag
-		$(tagClass).draggable(BEHAVIOR.draggableOptions);
+		//$(tagClass).draggable(BEHAVIOR.draggableOptions);
 
 		// bind droppable behavior to tag box
-		$(tagBox).droppable(BEHAVIOR.droppableOptions);
+		//$(tagBox).droppable(BEHAVIOR.droppableOptions);
 	};
 
 	TAGCLOUD.dropTagInTagBox = function (tag) {
@@ -586,7 +730,6 @@ var VisController = function () {
 	}
 
 	TAGCLOUD.buildDroppedTag = function (tag) {
-
 		// Append dragged tag onto tag box
 		$(tagBox).append(tag);
 
@@ -667,8 +810,9 @@ var VisController = function () {
 		TAGCLOUD.updateTagColor();
 
 		if (selectedTags.length == 0) {
-			$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
+			//$('<p></p>').appendTo($(tagBox)).text(STR_DROP_TAGS_HERE);
 			LIST.resetContentList();
+			console.log("TAGCLOUD.deleteTagInBox");
 			VISPANEL.resetRanking();
 		} else {
 			LIST.rankRecommendations();
@@ -706,7 +850,7 @@ var VisController = function () {
 		// Re-append to tag container, in the corresponding postion
 		var tagIndex = parseInt($(tag).attr('tag-pos'));
 		var i = tagIndex - 1;
-		var firstTagIndex = $(tagContainer).find(tagClass + ':eq(0)').attr('tag-pos');
+		var firstTagIndex = $(qmContainer).find(tagClass + ':eq(0)').attr('tag-pos');
 		while (i >= firstTagIndex && $(tagId + '' + i).attr('is-selected').toBool())
 			--i;
 		// Remove from tag box
@@ -714,7 +858,7 @@ var VisController = function () {
 		if (i >= firstTagIndex) // The current tag should be inserted after another (tag-pos == i)
 			$(tagId + '' + i).after(tag);
 		else // The current tag is inserted in the first position of tag container
-			$(tagContainer).prepend(tag);
+			$(qmContainer).prepend(tag);
 	};
 
 	TAGCLOUD.updateTagColor = function () {
@@ -757,7 +901,6 @@ var VisController = function () {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	var LIST = {};
 
 	LIST.internal = {
@@ -839,8 +982,8 @@ var VisController = function () {
 		aListItem.append('div')
 		.attr('class', 'eexcess_favicon_section')
 		.append("img")
-		.attr('title', 'Mark as relevant')
-		.attr("src", FAV_ICON_OFF);
+		.attr('title', 'Edit the article')
+		.attr("src", EDIT_ICON);
 
 		LIST.updateItemsBackground();
 		LIST.bindEventHandlersToListItems();
@@ -853,12 +996,15 @@ var VisController = function () {
 		.on("click", function (d, i) {
 			EVTHANDLER.listItemClicked(d, i);
 		}).on("dblclick", function (d, i) {
-			EVTHANDLER.listItemDblclicked(d, i);
+			//EVTHANDLER.listItemDblclicked(d, i);
 		})
 		.on("mouseover", EVTHANDLER.listItemHovered)
 		.on("mouseout", EVTHANDLER.listItemUnhovered)
 		.select(favIconClass).select('img').on("click", function (d, i) {
-			EVTHANDLER.faviconClicked(d, i);
+			console.log(JSON.stringify(d));
+			var actualIndex = rankingModel.getActualIndex(i);
+			var currentData = data[actualIndex];
+			window.open('http://localhost/ArticleEditor/index2.php?title=' + currentData.title);
 		});
 	};
 
@@ -889,10 +1035,60 @@ var VisController = function () {
 			this.updateItemsBackground();
 		}
 		LIST.animateContentList(status);
+		$(".eexcess_list").css("height", 26 + "px");
 		DOCPANEL.clear();
 		VISPANEL.drawRanking();
 	};
 
+	LIST.rankRecommendationsWithEquation = function (name) {
+		//timer.start();
+		var tmp = [];
+		tmp.push({
+			'term' : 'tmp',
+			'stem' : 'tmp',
+			'weight' : 1
+		});
+
+		rankingModel.update(tmp, rankingMode);
+		this.highlightListItems();
+		var status = rankingModel.getStatus();
+		// Synchronizes rendering methods
+		if (status == RANKING_STATUS.new || status == RANKING_STATUS.update) {
+			this.colorKeywordsInTitles();
+			this.addRankingPositions();
+			this.hideUnrankedItems();
+			this.updateItemsBackground();
+		}
+		LIST.animateContentList(status);
+		$(".eexcess_list").css("height", 26 + "px");
+		DOCPANEL.clear();
+		VISPANEL.drawRanking();
+		//timer.stop();
+	};
+
+	LIST.rankRecommendationsWithEquationMulti = function (data, numElements) {
+
+		//timer.start();
+		rankingModel.update(data, rankingMode);
+		this.highlightListItems();
+		var status = rankingModel.getStatus();
+		// Synchronizes rendering methods
+		if (status == RANKING_STATUS.new || status == RANKING_STATUS.update) {
+			this.colorKeywordsInTitles();
+			this.addRankingPositions();
+			this.hideUnrankedItems();
+			this.updateItemsBackground();
+		}
+		LIST.animateContentList(status);
+		$(".eexcess_list").css("height", 26 * numElements + "px");
+		DOCPANEL.clear();
+		if (showRanking) {
+			rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
+			$(visPanelCanvas).scrollTo('top');
+		}
+		//VISPANEL.drawRanking();
+		//timer.stop();
+	};
 	/**
 	 * Appends a yellow circle indicating the ranking position and a colored legend stating #positionsChanged
 	 *
@@ -1256,6 +1452,7 @@ var VisController = function () {
 	};
 
 	VISPANEL.resetRanking = function () {
+		console.log("VISPANEL.resetRanking");
 		if (showRanking)
 			rankingVis.reset();
 	};
@@ -1332,19 +1529,55 @@ var VisController = function () {
 	};
 
 	DOCPANEL.showDocument = function (index) {
-		$(documentDetailsTitle).html(this.internal.highlightKeywordsInText(data[index].title, true));
-		$(documentDetailsYear).html(data[index].articleAge);
+		//$(documentDetailsTitle).html(this.internal.highlightKeywordsInText(data[index].title, true));
+		//$(documentDetailsYear).html(data[index].articleAge);
+		//	console.log(JSON.stringify(data));
 		//$(documentDetailsLanguage).html(data[index].facets.language);
 		//$(documentDetailsProvider).html(data[index].facets.provider);
-		var QMData = "Volatility: " + data[index].Volatility.round(3) + "<br />" +
-			"Authority: " + data[index].Authority.round(3) + "<br />" +
-			"Complexity: " + data[index].Complexity.round(3) + "<br />" +
-			"Informativeness: " + data[index].Informativeness.round(3) + "<br />" +
-			"Consistency: " + data[index].Consistency.round(3) + "<br />" +
-			"Currency: " + data[index].Currency.round(3) + "<br />" +
-			"Completeness: " + data[index].Completeness.round(3);
+		/*	var QMData = "Volatility: " + data[index].Volatility.round(3) + "<br />" +
+		"Authority: " + data[index].Authority.round(3) + "<br />" +
+		"Complexity: " + data[index].Complexity.round(3) + "<br />" +
+		"Informativeness: " + data[index].Informativeness.round(3) + "<br />" +
+		"Consistency: " + data[index].Consistency.round(3) + "<br />" +
+		"Currency: " + data[index].Currency.round(3) + "<br />" +
+		"Completeness: " + data[index].Completeness.round(3);*/
+		var currentTitle = data[index].title;
 
-		$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
+		var pieData = [];
+		console.log("DATAFORPIECHART LENGTH:" + dataForPieChart.length);
+		for (var i = 0; i < dataForPieChart.length; i++) {
+			var currentPieChartData = dataForPieChart[i];
+			if (currentPieChartData.title == currentTitle) {
+				console.log("in here " + currentPieChartData.name + " " + currentPieChartData.value);
+				var pieDataInner = [currentPieChartData.name, currentPieChartData.value];
+				pieData.push(pieDataInner);
+			}
+		}
+		console.log("pieDatat length: " + pieData.length);
+		$("#chart1").html("");
+		if (pieData.length > 0) {
+			$("#chart1").css("display", "inline");
+			$("#equation_stack_text_of_QM").css("display", "none");
+			var plot1 = jQuery.jqplot('chart1', [pieData], {
+					seriesDefaults : {
+						// Make this a pie chart.
+						renderer : jQuery.jqplot.PieRenderer,
+						rendererOptions : {
+							// Put data labels on the pie slices.
+							// By default, labels show the percentage of the slice.
+							showDataLabels : true,
+							textColor : "black"
+						}
+					},
+					legend : {
+						show : true,
+						location : 'e',
+						textColor : "black"
+					}
+				});
+		}
+		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"http://en.wikipedia.org/wiki/" + currentTitle + "\" seamless></iframe>");
+		//$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
 		$(documentViewer + ' p').hide();
 		$(documentViewer + ' p').fadeIn('slow');
 		$(documentViewer).scrollTo('top');
@@ -1355,8 +1588,11 @@ var VisController = function () {
 		$(documentDetailsYear).empty();
 		$(documentDetailsLanguage).empty();
 		$(documentDetailsProvider).empty();
-		//$(documentViewer).empty();
-		$(documentViewer + ' p').fadeOut('slow');
+		$(documentViewer).empty();
+		$("#chart1").empty();
+		$("#chart1").css("display", "none");
+		$("#equation_stack_text_of_QM").css("display", "inline-flex");
+		//$(documentViewer + ' p').fadeOut('slow');
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1408,6 +1644,7 @@ var VisController = function () {
 		//if (dataset["tool-aided"] === 'yes') {
 		TAGCLOUD.clearTagbox();
 		TAGCLOUD.buildTagCloud();
+		console.log("initializeNextQuestion");
 		VISPANEL.resetRanking();
 		//}
 		LIST.buildContentList();
@@ -1435,6 +1672,7 @@ var VisController = function () {
 	 * */
 
 	var visController = {};
+
 	visController.updateHeaderInfoSection = function (text) {
 		$(headerInfoSection).html(text);
 	}
@@ -1457,12 +1695,334 @@ var VisController = function () {
 		$('#task_question_message').undim();
 	}
 
+	//FROM EQUATION COMPOSER
+	visController.newQMFromEquationComposer = function (name, equation, vizData) {
+		var test = '{"stem":"' + name + '","term":"' + name + '","repeated":2,"variations":{"worker":9}}';
+		var alreadyInKeywords = false;
+		keywords.forEach(function (k) {
+			if (k.term == name)
+				alreadyInKeywords = true;
+		});
+		if (!alreadyInKeywords)
+			keywords.push(JSON.parse(test));
+		allQMTexts[name] = $('#QM_Text').html();
+		databaseConnector.storeEquation(name, equation, allQMTexts[name]);
+		databaseConnector.storeEquationViz(name, vizData);
+		allVizs[name] = vizData;
+
+		rankingModel.newQMFromEquationComposer(name, equation);
+		EVTHANDLER.btnResetClicked();
+		equationEditor.rerankPublic();
+	}
+
+	visController.tmpStoreEquationComposer = function (vizData) {
+		allVizs["temp"] = vizData;
+	}
+
+	visController.rankWithEquation = function (equation) {
+		//EVTHANDLER.btnResetClicked();
+		rankingModel.setTempEquation(equation);
+		LIST.rankRecommendationsWithEquation();
+	}
+
+	visController.rankWithEquationMulti = function (data, numElements) {
+		//EVTHANDLER.btnResetClicked();
+		rankingModel.setTempEquation("");
+		LIST.rankRecommendationsWithEquationMulti(data, numElements);
+	}
+
+	visController.loadTheSelectedCombinationOfMetrics = function () {
+		console.log("loadTheSelectedCombinationOfMetrics");
+		equationEditor.loadACombination(selectedTagsForEquationEditor);
+	}
+
+	visController.clearSelectedTagsForEquationEditorArray = function () {
+		selectedTagsForEquationEditor.splice(0, selectedTagsForEquationEditor.length);
+	}
+	visController.setTimer = function (timerPar) {
+		timer = timerPar;
+		//timer.start();
+	}
+	visController.highlightElements = function (allElementsArray) {
+		d3.select(qmContainer).selectAll(tagClass).each(function () {
+			for (var i = 0; i < allElementsArray.length; i++) {
+				var element = allElementsArray[i];
+				if (d3.select(this).text() == element) {
+					d3.select(this).style('border', function (k) {
+						return '3px solid red';
+					});
+				}
+
+			}
+		});
+
+		d3.select(measuresContainer).selectAll(tagClassMeasures).each(function () {
+			for (var i = 0; i < allElementsArray.length; i++) {
+				var element = allElementsArray[i];
+				if (d3.select(this).text() == element) {
+					d3.select(this).style('border', function (k) {
+						return '3px solid red';
+					});
+				}
+
+			}
+		});
+	}
+
+	visController.resetHighlighting = function () {
+		d3.select(qmContainer).selectAll(tagClass).style('border', function (k) {
+			return '1px solid #08519c';
+		});
+		d3.select(measuresContainer).selectAll(tagClassMeasures).style('border', function (k) {
+			return '1px solid #21B571';
+		});
+	}
+
+	visController.setNormMethod = function (normMethod, p) {
+		rankingModel.setNormMethod(normMethod, p);
+	}
+	visController.setNormMethodRank = function (normMethod, p) {
+		rankingModel.setNormMethodRank(normMethod, p);
+	}
+	visController.deleteWholeQM = function (nameOfQM) {
+		//Delete from keywords
+		var indexToDelete = -1;
+		for (var i = 0; i < keywords.length; i++) {
+			if (keywords[i].term == nameOfQM) {
+				indexToDelete = i;
+			}
+		}
+		if (indexToDelete != -1)
+			keywords.remove(indexToDelete);
+
+		//Delete from allVizs
+		indexToDelete = -1;
+		for (var i = 0; i < allVizs.length; i++) {
+			if (allVizs[i].name == nameOfQM) {
+				indexToDelete = i;
+			}
+		}
+		if (indexToDelete != -1)
+			allVizs.remove(indexToDelete);
+
+		//Delete from Database
+		databaseConnector.delteEquationInclViz(nameOfQM);
+
+		EVTHANDLER.btnResetClicked();
+	}
+
+	visController.getKeywords = function () {
+		return keywords;
+	}
+
+	var calculateEuclidenNormForMeasure = function (_data, measure) {
+		console.log("calculateEuclidenNormForMeasure");
+		var eNorm = 0;
+
+		for (var r = 0; r < _data.length; r++) { //Iteration over all articles
+			var currentData = JSON.parse(_data[r]);
+			eNorm += Math.sqrt(currentData[measure] * currentData[measure]) * Math.sqrt(currentData[measure] * currentData[measure]);
+		}
+		eNorm = Math.sqrt(eNorm);
+		return eNorm;
+	};
+	function SortByScore(a, b) {
+		var aScore = a.score;
+		var bScore = b.score;
+		return ((aScore > bScore) ? -1 : ((aScore < bScore) ? 1 : 0));
+	}
+
+	var generateQMRanking = function (qmRankingArray) {
+		var allEquations = rankingModel.getEquations();
+		//dataForQMRanking /*see rankingQMsData.js*/
+		/*for (var r = 0; r < dataForQMRanking.length; r++) {
+		console.log("DATA:" + dataForQMRanking[r]);
+
+		}*/
+		var allRanks = [];
+		var toCheckLength = dataForQMRankingAlreadyEuclideanNormed.length / 2;
+		var arrayHelp = [];
+		for (var i = 0; i < qmRankingArray.length; i++) {
+			var qmRankingArrayInclScores = [];
+			var object = {};
+			object.QMName = qmRankingArray[i].name;
+			console.log("dataForQMRankingAlreadyEuclideanNormed.length: " + dataForQMRankingAlreadyEuclideanNormed.length);
+			console.log("dataForQMRanking.length: " + dataForQMRanking.length);
+			for (var r = 0; r < dataForQMRankingAlreadyEuclideanNormed.length; r++) {
+				var currentData = JSON.parse(dataForQMRankingAlreadyEuclideanNormed[r]);
+				var equation = "";
+				for (var j = 0; j < allEquations.length; j++) {
+					if (allEquations[j].name == qmRankingArray[i].name) {
+						equation = allEquations[j].equation;
+						break;
+					}
+				}
+
+				//console.log("THE EQUATION BEFORE: " + equation);
+				if (equation != "") {
+					var currentTitle = currentData.title;
+					for (var key in currentData) {
+						if (currentData.hasOwnProperty(key)) {
+							//	console.log(key + " -> " + currentData[key]);
+
+							var re = new RegExp(key, "g");
+							//Normalize values first
+							//var help = currentData[key] / calculateEuclidenNormForMeasure(dataForQMRankingAlreadyEuclideanNormed, key);
+							equation = equation.replace(re, currentData[key]);
+							//if (key != "title" && key != "featured")
+							//	currentData[key] = help;
+						}
+					}
+
+					//console.log("THE EQUATION AFTER: " + equation);
+					var result = math.eval(equation);
+					var nObject = {};
+					nObject.name = currentData.title;
+					nObject.score = result;
+					nObject.featured = currentData.featured;
+					qmRankingArrayInclScores.push(nObject);
+
+					//arrayHelp.push(JSON.stringify(currentData));
+
+				}
+			}
+			qmRankingArrayInclScores.sort(SortByScore);
+			var rightCounter = 0;
+
+			console.log("qmRankingArrayInclScores.length: " + qmRankingArrayInclScores.length);
+			for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
+				//console.log("HERE: " +  qmRankingArray[i].name + " "  +  qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score+  " "+qmRankingArrayInclScores[j].name );
+				if (j < toCheckLength - 1) {
+					if (qmRankingArrayInclScores[j].featured) {
+						rightCounter++;
+					}
+				}
+			}
+			rightCounter *= 2;
+			//object.data = qmRankingArrayInclScores;
+			//allRanks.push(object);
+			qmRankingArray[i].score = rightCounter;
+			console.log("DONE: " + qmRankingArray[i].name + " Score " + qmRankingArray[i].score);
+		}
+		//console.log("OUTPUT: " + JSON.stringify(arrayHelp));
+	}
+
+	var qmRankingArray = [];
+	visController.rankQMs = function () {
+		console.log("rankQMs VIS CONTROLLER");
+		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
+		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
+																		<div id=\"rank_QMs\" style=\"display:none\">\
+																																											                        <ul class=\"rank_QMs_list\"></ul>\
+																																											                </div>\
+																																															<div id=\"eexcess_canvas_rankQM\"></div> \
+																																															 \
+																																															  </div>");
+
+		var allEquations = rankingModel.getEquations();
+		qmRankingArray = [];
+		for (var i = 0; i < keywords.length; i++) {
+			var object = {};
+			object.name = keywords[i].term;
+			object.score = 0;
+			qmRankingArray.push(object);
+		}
+		generateQMRanking(qmRankingArray);
+		qmRankingArray.sort(SortByScore);
+		for (var i = 0; i < qmRankingArray.length; i++) {
+			console.log("qmRankingArray: " + qmRankingArray[i].name + " " + qmRankingArray[i].score);
+		}
+		var content = d3.select("#rank_QMs .rank_QMs_list").selectAll("li").data(qmRankingArray);
+
+		var aListItem = content.enter()
+			.append("li")
+			.attr("class", "rank_QMs_list_li")
+			.attr("id", function (d, i) {
+				return "data-rank-pos-" + i;
+			})
+			.attr("pos", function (d, i) {
+				return i;
+			})
+			.style("opacity", 1);
+
+		// div 2 wraps the recommendation title (as a link), a short description and a large description (not used yet)
+		var contentDiv = aListItem.append("div")
+			.attr("class", "rank_QMs_list_ritem_container")
+			.on("click", function (d, i) {
+				equationEditor.loadMetric(d.name, allVizs[d.name], true);
+				$('#QM_Text').html(allQMTexts[data.name]);
+			});
+
+		contentDiv.append("h3")
+		.append("a")
+		.attr("class", "rank_QMs_list_ritem_container")
+		.attr('id', function (d, i) {
+			return 'item-rank-title-' + i;
+		})
+		.attr("href", "#")
+		//  .on("click", function(d){ window.open(d.uri, '_blank'); })
+		.html(function (d) {
+			return LIST.internal.getFormattedTitle(d.name);
+		});
+
+		$("#rank_QMs").scrollTo("top");
+
+		$("#rank_QMs").css("display", "inline-block");
+		qmRankingArray.forEach(function (d, i) {
+			console.log("IN HERE " + i);
+			if (i % 2 == 0)
+				$("#data-rank-pos-" + i)
+				.addClass('light_background');
+			else
+				$("#data-rank-pos-" + i).addClass('dark_background');
+
+		});
+
+		rankingQMVis.draw(qmRankingArray, $("#rank_QMs").height(), weightColorScale, allEquations, dataForQMRanking);
+	}
+
+	visController.reloadQMs = function () {
+		EVTHANDLER.btnResetClicked();
+	}
+
+	visController.resetColorOfQMMetrics = function () {
+		d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
+	}
+	
+	visController.resetColorOfQMMetricsButNotSelected = function () {
+		d3.select(qmContainer).selectAll(tagClass).filter(function (d, i) {
+			console.log("HERE: " + d3.select(this).style("background-color"));
+			if (d3.select(this).style("background-color") != "rgb(217, 95, 2)") {
+				d3.select(this).style("background", "#08519c");
+			}
+		});
+	}
+
+	visController.setColorOfQMMetrics = function (name) {
+		d3.select(qmContainer).selectAll(tagClass).filter(function (d, i) {
+			if (d3.select(this).text() == name) {
+				d3.select(this).style("background", "#d95f02");
+			}
+		});
+	}
+
+	visController.drawCombinationStacked = function () {
+
+		$(".eexcess_list").css("height", 26 + "px");
+		rankingVis.redrawStacked(rankingModel, $(contentPanel).height(), weightColorScale);
+	}
+
+	visController.drawCombinationSplitted = function (numElements) {
+		$(".eexcess_list").css("height", (26 * numElements) + "px");
+		rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
+	}
+	//-------------------------------------------------------------------------
+
 	visController.newQM = function (formulas, JSONFormatOfVis) {
 		//console.log("newQM: " + JSONFormatOfVis);
 		for (var i = 0; i < formulas.length; i++) {
 			//console.log("FORMULAS: " + formulas[i]);
-			//CREATE NEW QM
-			//TODO GO ON HERE
+
 			var newTag = formulas[i].split("=")[0];
 			var test = '{"stem":"' + newTag + '","term":"' + newTag + '","repeated":2,"variations":{"worker":9}}';
 			var alreadyInKeywords = false;
@@ -1481,7 +2041,7 @@ var VisController = function () {
 			rankingModel.newQM(formulas[i]);
 
 		}
-		EVTHANDLER.btnResetClicked();
+		//EVTHANDLER.btnResetClicked();
 	}
 
 	function loadQMformulas(formulas) {
@@ -1500,7 +2060,7 @@ var VisController = function () {
 			rankingModel.newQM(formulas[i]);
 
 		}
-		EVTHANDLER.btnResetClicked();
+		//EVTHANDLER.btnResetClicked();
 	}
 	function retrieveAllFormulas(formulas) {
 		if (formulas != "no results") {
@@ -1523,13 +2083,100 @@ var VisController = function () {
 		}
 	}
 
+	function loadEquations(equations) {
+		for (var i = 0; i < equations.length; i++) {
+			//CREATE NEW QM
+			var newTag = formulas[i].split("=")[0];
+			var test = '{"stem":"' + newTag + '","term":"' + newTag + '","repeated":2,"variations":{"worker":9}}';
+			var alreadyInKeywords = false;
+			keywords.forEach(function (k) {
+				if (k.term == newTag)
+					alreadyInKeywords = true;
+			});
+			if (!alreadyInKeywords)
+				keywords.push(JSON.parse(test));
+
+			rankingModel.newQMFromEquationComposer(equations[i]);
+
+		}
+		EVTHANDLER.btnResetClicked();
+	}
+
+	function retrieveAllEquations(JSONequationsString) {
+		/*if (equations != "no results") {
+		var hequations = JSON.parse(equations);
+		var test = hequations.equations;
+
+		if (test.length > 0)
+		loadEquations(test);
+		}*/
+		//console.log("retrieveAllEquations");
+		if (JSONequationsString != "no results") {
+			//console.log("retrieveAllEquations2");
+			var equations = JSON.parse(JSONequationsString);
+			var allEquations = equations.equations;
+
+			for (var key in allEquations) {
+				//console.log(key + " : " + allEquations[key]);
+				var test = '{"stem":"' + key + '","term":"' + key + '","repeated":2,"variations":{"worker":9}}';
+				var alreadyInKeywords = false;
+				keywords.forEach(function (k) {
+					if (k.term == key)
+						alreadyInKeywords = true;
+				});
+				if (!alreadyInKeywords) {
+					//	console.log("ADD TO KEYWORDS");
+					keywords.push(JSON.parse(test));
+				}
+
+				rankingModel.newQMFromEquationComposer(key, allEquations[key]);
+			}
+		}
+		EVTHANDLER.btnResetClicked();
+
+		//console.log("KEYWORDS: " + JSON.stringify(keywords));
+	}
+
+	function retrieveAllEquationizs(JSONvisualizationsString) {
+		if (JSONvisualizationsString != "no results") {
+			var visualizations = JSON.parse(JSONvisualizationsString);
+			var allQMVizs = visualizations.qmvizs;
+
+			for (var key in allQMVizs) {
+				allVizs[key] = allQMVizs[key];
+			}
+		}
+	}
+
+	function retrieveAllEquationTexts(JSONTexts) {
+		console.log("retrieveAllEquationTexts " + JSONTexts);
+		if (JSONTexts != "no results") {
+			var texts = JSON.parse(JSONTexts);
+			var allQMTextsHelp = texts.equationTexts;
+
+			for (var key in allQMTextsHelp) {
+				allQMTexts[key] = allQMTextsHelp[key];
+				console.log("KEY: " + key + " TEXT: " + allQMTexts[key]);
+			}
+		}
+	}
+
+	visController.getAllVizs = function () {
+		return allVizs;
+	}
+
+	visController.setDataForPieChart = function (dataForPieChartPar) {
+		dataForPieChart = dataForPieChartPar;
+	}
+
 	visController.init = function (articles) {
 		//dataset = JSON.parse($("#dataset").text());
 		//console.log(JSON.stringify(dataset));
 
 		databaseConnector = new DatabaseConnector();
-		databaseConnector.getAllFormulas(retrieveAllFormulas);
-		databaseConnector.getAllQMVizs(retrieveAllQMVizs);
+		//databaseConnector.getAllFormulas(retrieveAllFormulas); TODO
+		//databaseConnector.getAllQMVizs(retrieveAllQMVizs);
+
 
 		data = articles['data']; // contains the data to be visualized
 		// query = dataset['query'];				// string representing the query that triggered the current recommendations
@@ -1543,15 +2190,19 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																														{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \
-																																														{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \
-																																														{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																				{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
+		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
 		//console.log("IQMetrics: " + JSON.stringify(keywords));
 		//PREPROCESSING.extendKeywordsWithColorCategory();
 
-		rankingModel = new RankingModel(data);
+		databaseConnector.getAllEquations(retrieveAllEquations);
+		databaseConnector.getAllEquationTexts(retrieveAllEquationTexts);
+		databaseConnector.getEquationViz(retrieveAllEquationizs);
+		rankingModel = new RankingModel(data, self);
 		rankingVis = new RankingVis(root, self);
+		rankingQMVis = new RankingQMVis("#eexcess_canvas_rankQM", self);
 
 		// only for evaluation
 		//sampleText = dataset['text'];
@@ -1587,6 +2238,9 @@ var VisController = function () {
 		$('#eexcess_topic_text_section').css('boxShadow', '.5em .5em 1em #aaa, -.5em .5em 1em #aaa, .5em .5em 1em #aaa');
 		showRanking = false;
 		}*/
+
+		equationEditor.dataAvailable();
+		$("#eexcess_main_panel").css("display", "inline-flex");
 	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1606,6 +2260,11 @@ var VisController = function () {
 	this.ListItemUnhovered = function (index) {
 		LIST.unhoverListItem(index, true);
 	};
+
+	visController.setEquationEditor = function (eE) {
+		console.log("equationEditor is set");
+		equationEditor = eE;
+	}
 
 	return visController;
 }
