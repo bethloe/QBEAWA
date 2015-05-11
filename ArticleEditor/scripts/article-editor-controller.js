@@ -84,12 +84,13 @@ var ArticleController = function (vals) {
 		hover : true
 	};
 
-	
 	//-------------------- User Input -------------------
 	articleController.retrieveData = function () {
 		console.log("articleController.retrieveData");
 		var articleName = $("#articleName").val();
-		sensiumRequester = new SensiumRequester({controller : articleController});
+		sensiumRequester = new SensiumRequester({
+				controller : articleController
+			});
 		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/wiki/" + articleName);
 		var articleRenderer = new ArticleRenderer({
 				network : network,
@@ -127,8 +128,8 @@ var ArticleController = function (vals) {
 				articleRenderers[i].fillDataNew();
 		}
 	}
-		
-	articleController.getSensiumRequester = function(){
+
+	articleController.getSensiumRequester = function () {
 		return sensiumRequester;
 	}
 
@@ -347,6 +348,15 @@ var ArticleController = function (vals) {
 			alert("U r not logged in!!!");
 	}
 
+	articleController.uploadWholeArticle = function (url, params) {
+		if (isLoggedIn) {
+
+			$("#dialogEditInProgres").dialog("open");
+			phpConnector.updateWholeArticle(url, params, articleController.reload);
+		} else
+			alert("U r not logged in!!!");
+	}
+
 	articleController.updateSection = function (id) {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].updateSection(id);
@@ -399,6 +409,7 @@ var ArticleController = function (vals) {
 	articleController.closeEditDialog = function () {
 		dataManipulator.closeEditDialog();
 		articleController.showTheWholeArticleInMainView();
+		//$("#dialogEditInProgres").dialog("close");
 	}
 
 	articleController.goToSection = function (sectionName, tag) {
@@ -410,12 +421,22 @@ var ArticleController = function (vals) {
 		}
 
 	}
-	
-	articleController.setSentimentScoreOfSection = function(sentimentScore, sectionName){
-	//	console.log("setSentimentScoreOfSection " + sectionName + " score " + sentimentScore);
+
+	articleController.setSentimentScoreOfSection = function (sentimentScore, sectionName) {
+		//	console.log("setSentimentScoreOfSection " + sectionName + " score " + sentimentScore);
 		for (var i = 0; i < articleRenderers.length; i++) {
-			articleRenderers[0].setSentimentScoreOfSection(sectionName, sentimentScore);
+			articleRenderers[i].setSentimentScoreOfSection(sectionName, sentimentScore);
 		}
+	}
+
+	articleController.saveWholeArticle = function () {
+		console.log("saveWholeArticle");
+
+		//First send changes to wiki
+		//for (var i = 0; i < articleRenderers.length; i++) {
+		articleRenderers[0].saveWholeArticle();
+		//}
+
 	}
 	//-------------------- EVENTS ----------------------
 

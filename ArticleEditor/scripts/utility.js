@@ -33,6 +33,21 @@ String.prototype.replaceAtHelp = function (index, character) {
 	return this.substr(0, index) + character + this.substr(index - 1 + character.length);
 }
 
+String.prototype.replaceHtmlEntites = function () {
+	var s = this;
+	var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+	var translate = {
+		"nbsp" : " ",
+		"amp" : "&",
+		"quot" : "\"",
+		"lt" : "<",
+		"gt" : ">"
+	};
+	return (s.replace(translate_re, function (match, entity) {
+			return translate[entity];
+		}));
+};
+
 function replaceCharacterWithAnother(str, find, replace, n) {
 	var cnt = 0;
 	for (var i = 0; i < str.length; i++) {
@@ -105,14 +120,14 @@ function copyAllNodesInRange(source, dest, minID, maxID) {
 }
 
 jQuery.fn.highlight = function (str, className) {
-    var regex = new RegExp(str, "gi");
-    return this.each(function () {
-        $(this).contents().filter(function() {
-            return this.nodeType == 3 && regex.test(this.nodeValue);
-        }).replaceWith(function() {
-            return (this.nodeValue || "").replace(regex, function(match) {
-                return "<span class=\"" + className + "\">" + match + "</span>";
-            });
-        });
-    });
+	var regex = new RegExp(str, "gi");
+	return this.each(function () {
+		$(this).contents().filter(function () {
+			return this.nodeType == 3 && regex.test(this.nodeValue);
+		}).replaceWith(function () {
+			return (this.nodeValue || "").replace(regex, function (match) {
+				return "<span class=\"" + className + "\">" + match + "</span>";
+			});
+		});
+	});
 };

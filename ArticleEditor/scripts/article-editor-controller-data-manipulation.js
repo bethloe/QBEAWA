@@ -97,6 +97,7 @@ var DataManipulator = function (vals) {
 		//I NEED THE DATA RETRIEVER
 
 		var sectionContentDataArray = dataRetriever.getAllSectionContentData();
+		var sectionInfos = dataRetriever.getSectionInfos();
 		var intro = dataRetriever.getIntro();
 		var textOfSection = "";
 
@@ -120,36 +121,44 @@ var DataManipulator = function (vals) {
 			backgroundColor = "#00EE00";
 		}
 		var htmlForDialog = ("<div id=\"Introduction\" contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + "Introduction" + "')\">" + textOfSection + "</div>");
+		var sectionCnt = 1;
+		for (var j = 0; j < sectionInfos.length; j++) {
+			if (sectionInfos[j].index == sectionCnt) {
+				for (var i = 0; i < sectionContentDataArray.length; i++) {
+					var sectionData = sectionContentDataArray[i];
+					if (sectionInfos[j].line == sectionData.sections[0].line) {
 
-		for (var i = 0; i < sectionContentDataArray.length; i++) {
-			var sectionData = sectionContentDataArray[i];
-			var textOfSection = "";
+						var textOfSection = "";
 
-			if (sectionData.sections.length > 1) {
-				textOfSection = sectionData.wikitext['*'];
-				textOfSection = trimToOneParagraph(textOfSection, sectionData.sections[0].line);
-			} else {
-				textOfSection = sectionData.wikitext['*'];
+						if (sectionData.sections.length > 1) {
+							textOfSection = sectionData.wikitext['*'];
+							textOfSection = trimToOneParagraph(textOfSection, sectionData.sections[0].line);
+						} else {
+							textOfSection = sectionData.wikitext['*'];
+						}
+						var quality = qualityManager.calculateQuality(getTextOfSection(sectionData.sections[0].line, dataRetriever), sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
+						var backgroundColor = "";
+						if (quality.score == 0) {
+							backgroundColor = "#FF0000";
+						} else if (quality.score > 0 && quality.score <= 0.4) {
+							backgroundColor = "#FF4500";
+						} else if (quality.score > 0.4 && quality.score <= 0.6) {
+							backgroundColor = "#FFA500";
+						} else if (quality.score > 0.6 && quality.score <= 0.9) {
+							backgroundColor = "#00FF00";
+						} else if (quality.score > 0.9) {
+							backgroundColor = "#00EE00";
+						}
+						//var help = sectionData.sections[0].line;
+						//help = help.replace(/"/g, "\"");
+						console.log("HERE: " + sectionData.sections[0].line);
+						var desired = sectionData.sections[0].line.replace(/[^\w\s]/gi, '');
+						var idStr = desired.replace(/ /g, "_");
+						htmlForDialog += ("<div id=\"" + idStr + "\"contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
+					}
+				}
+				sectionCnt++;
 			}
-			var quality = qualityManager.calculateQuality(getTextOfSection(sectionData.sections[0].line,dataRetriever), sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
-			var backgroundColor = "";
-			if (quality.score == 0) {
-				backgroundColor = "#FF0000";
-			} else if (quality.score > 0 && quality.score <= 0.4) {
-				backgroundColor = "#FF4500";
-			} else if (quality.score > 0.4 && quality.score <= 0.6) {
-				backgroundColor = "#FFA500";
-			} else if (quality.score > 0.6 && quality.score <= 0.9) {
-				backgroundColor = "#00FF00";
-			} else if (quality.score > 0.9) {
-				backgroundColor = "#00EE00";
-			}
-			//var help = sectionData.sections[0].line;
-			//help = help.replace(/"/g, "\"");
-			console.log("HERE: " + sectionData.sections[0].line);
-			var desired = sectionData.sections[0].line.replace(/[^\w\s]/gi, '');
-			var idStr = desired.replace(/ /g, "_");
-			htmlForDialog += ("<div id=\"" + idStr + "\"contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
 		}
 		//console.log("HTML : " + htmlForDialog);
 		$("#wikiTextInner").children().remove();
@@ -357,20 +366,6 @@ var DataManipulator = function (vals) {
 		return rawText;
 	}
 
-	String.prototype.replaceHtmlEntites = function () {
-		var s = this;
-		var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
-		var translate = {
-			"nbsp" : " ",
-			"amp" : "&",
-			"quot" : "\"",
-			"lt" : "<",
-			"gt" : ">"
-		};
-		return (s.replace(translate_re, function (match, entity) {
-				return translate[entity];
-			}));
-	};
 	var addRestOfTheSectionForCreate = function (sectionName, id, text) {
 		var dataRetriever = GLOBAL_controller.getDataRetrieverById(id);
 		var sectionData = dataRetriever.getSectionContentData(sectionName);

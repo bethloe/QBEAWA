@@ -2084,6 +2084,24 @@ var ArticleRenderer = function (vals) {
 			}
 		}
 	}
+	
+	articleRenderer.saveWholeArticle = function(){
+		var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
+		var text = "";
+		$('#wikiTextInner').children().each(function() {
+			text += ("\n" + $(this).html());
+		});
+			
+		text = text.replaceHtmlEntites();
+		console.log("TEXT: " + text);
+		text = text.replace(/&/g, "and");
+		//alert("INDEX: " + sectionItem.index);
+		console.log("EDIT TOKEN: " + articleController.getEditToken());
+		var params = "action=edit&title=" + GLOBAL_articleName + "&token=" + articleController.getEditToken() + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+		//UPDATING TEXT TO WIKIPEDIA!
+		GLOBAL_controller.uploadWholeArticle(url, params);
+		//Second reload article happens in callback method
+	}
 
 	/*articleRenderer.showTheWholeArticle = function(){
 

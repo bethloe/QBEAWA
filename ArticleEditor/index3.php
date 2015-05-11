@@ -419,7 +419,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 </div>
 <div id="dialogSettings" title="Settings">
 <table>
-<tr><td>Strictness of the assessment (only changes the color)</td><td> <input id="sliderStrictness" type="range"  min="0" max="100" value="50"/></td></tr>
+<!-- <tr><td>Strictness of the assessment (only changes the color)</td><td> <input id="sliderStrictness" type="range"  min="0" max="100" value="50"/></td></tr> -->
 <tr><td align="center"><b>Names</b></td><td align="center"><b>Weights</b></td></tr>
 <tr><td>Flesch score</td><td> <input id="sliderFlesch" type="range"  min="0" max="100" /></td></tr>
 <tr><td>Kincaid score</td><td> <input id="sliderKincaid" type="range"  min="0" max="100" /></td></tr>
@@ -441,9 +441,9 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <div id="wikiText" >
 		      <div id="eexcess_equation_controls">
 					
-					<div class="icon" onclick="equationEditor.createNewQM()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
-					<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.clearEquationComposer()"/></div>
-					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
+					<div class="icon" onclick="articleController.saveWholeArticle()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
+				<!--	<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.clearEquationComposer()"/></div>
+					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>-->
 					<div id="editor_section_name"> </div>
 					<div id="rank_quality_metrics_text" style="position: absolute; float:left; right: 60px;  top: 10px;" title=""> Show Wikipage: </div>
 					<div id="mytoggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px; line-height: 2.5em; vertical-align: middle; top: 10px;" > </div>
@@ -815,6 +815,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 		if (e.stopPropagation)
 			e.stopPropagation();
 		console.log("REMOVE: " + notificationID);
+		$(".highlight").contents().unwrap();
 		$('#notification-' + notificationID).remove();
 
 	}

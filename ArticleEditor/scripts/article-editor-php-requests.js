@@ -31,7 +31,6 @@ var PhpConnector = function (vals) {
 	}
 	
 	phpConnector.editRequest = function (url, params, id, callbackFunction) {
-
 		$.post("editRequests.php", {
 			operation : "edit",
 			url : url,
@@ -41,6 +40,20 @@ var PhpConnector = function (vals) {
 			console.log("SOMETHING HAPPEND (EDIT REQUEST)");
 			console.log("DATA: " + data);
 			callbackFunction(id);
+			//GLOBAL_controller.setEditToken(data);
+		});
+	}	
+	
+	phpConnector.updateWholeArticle = function (url, params, callbackFunction) {
+		$.post("editRequests.php", {
+			operation : "edit",
+			url : url,
+			params : params
+		})
+		.done(function (data) {
+			console.log("SOMETHING HAPPEND (EDIT REQUEST)");
+			console.log("DATA: " + data);
+			callbackFunction();
 			//GLOBAL_controller.setEditToken(data);
 		});
 	}
