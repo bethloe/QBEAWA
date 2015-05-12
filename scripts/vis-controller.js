@@ -538,6 +538,10 @@ var VisController = function () {
 		return this.push.apply(this, rest);
 	};
 
+	TAGCLOUD.resetBackgroundOfTagCloud = function () {
+		d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
+	}
+
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
 		$(qmContainer).empty();
@@ -545,8 +549,8 @@ var VisController = function () {
 		/*$("#eexcess_qm_container").append("<div id=\"eexcess_qm_container_rank_button\">\
 		<img align=\"right\" width=\"50\" style=\"cursor: pointer\" title=\"rank\" src=\"media/ranking.png\" onclick=\"equationEditor.rankQMs()\" />\
 		</div>");*/
-		
-		var	qmRankingArrayHelper = [];
+
+		var qmRankingArrayHelper = [];
 		for (var i = 0; i < keywords.length; i++) {
 			var object = {};
 			object.name = keywords[i].term;
@@ -555,7 +559,7 @@ var VisController = function () {
 		}
 		generateQMRanking(qmRankingArrayHelper);
 		qmRankingArrayHelper.sort(SortByScore);
-		for(var i = 0; i< qmRankingArrayHelper.length; i++){
+		for (var i = 0; i < qmRankingArrayHelper.length; i++) {
 			//console.log("
 		}
 		// Append one div per tag
@@ -576,10 +580,9 @@ var VisController = function () {
 		.attr('unselectable', "on")
 		.attr('onselectstart', "return false")
 		.attr('onmousedown', "return false")
-		.style("background",function (k, i) {
+		.style("background", function (k, i) {
 			return "#08519c";
-			}
-		)
+		})
 		.style('border', function (k) {
 			return '1px solid ' + tagColorScale(k.colorCategory + 1);
 		})
@@ -627,9 +630,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																										                        <ul class=\"rank_QMs_list\"></ul>\
-																																										                   </div>\
-																																														   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																                        <ul class=\"rank_QMs_list\"></ul>\
+																																																                   </div>\
+																																																				   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -1004,7 +1007,7 @@ var VisController = function () {
 			console.log(JSON.stringify(d));
 			var actualIndex = rankingModel.getActualIndex(i);
 			var currentData = data[actualIndex];
-			window.open('http://localhost/ArticleEditor/index2.php?title=' + currentData.title);
+			window.open('http://localhost/ArticleEditor/index3.php?title=' + currentData.title);
 		});
 	};
 
@@ -1912,12 +1915,12 @@ var VisController = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																		<div id=\"rank_QMs\" style=\"display:none\">\
-																																											                        <ul class=\"rank_QMs_list\"></ul>\
-																																											                </div>\
-																																															<div id=\"eexcess_canvas_rankQM\"></div> \
-																																															 \
-																																															  </div>");
+																								<div id=\"rank_QMs\" style=\"display:none\">\
+																																																	                        <ul class=\"rank_QMs_list\"></ul>\
+																																																	                </div>\
+																																																					<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																					 \
+																																																					  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -1985,10 +1988,13 @@ var VisController = function () {
 		EVTHANDLER.btnResetClicked();
 	}
 
+	visController.resetBackgroundOfTagCloud = function () {
+		TAGCLOUD.resetBackgroundOfTagCloud();
+	}
 	visController.resetColorOfQMMetrics = function () {
 		d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
 	}
-	
+
 	visController.resetColorOfQMMetricsButNotSelected = function () {
 		d3.select(qmContainer).selectAll(tagClass).filter(function (d, i) {
 			console.log("HERE: " + d3.select(this).style("background-color"));
@@ -2190,7 +2196,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																				{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																											{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

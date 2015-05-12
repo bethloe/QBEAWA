@@ -190,7 +190,7 @@ and open the template in the editor.
 					<!--<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>-->
 					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
 					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
-					<div class="icon" ><img src="media/editing-done.png" title="editing done" height="30" onclick="equationEditor.setUserMode('advanced')"/></div>
+					<!-- <div class="icon" ><img src="media/editing-done.png" title="editing done" height="30" onclick="equationEditor.setUserMode('advanced')"/></div> -->
 					
 					<!--<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
 					<div id="stopwatchViz" class="icon"></div>

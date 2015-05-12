@@ -107,7 +107,7 @@ function RankingVis(domRoot, visControllerInterface) {
 	 *
 	 * ***************************************************************************************************************/
 	RANKING.Render.drawStackedBars = function () {
-		console.log("data: " + JSON.stringify(data));
+		//console.log("data: " + JSON.stringify(data));
 		svg.selectAll(".stackedbar").data([]).exit();
 		svg.selectAll(".stackedbar").remove();
 		svg.selectAll(".stackedbar").data(data).enter();

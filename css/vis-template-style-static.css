@@ -1480,11 +1480,17 @@ list-style-type: none;
 /* For equation */ 
 #equition_stack_main{
 	width: 100%;
-	float: left;
+	height: 100px;
+	/*float: left;*/
 	font-size: 40px;
 	padding: 2px;
     background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
     box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+	overflow-x: auto;
+    white-space:nowrap;
+	overflow-y: hidden;
+	text-align: left;
+	-ms-overflow-y: hidden;
 }
 #equation_stack_text_of_QM{
 	position: relative;
@@ -1496,27 +1502,22 @@ list-style-type: none;
 	padding-bottom: 35px;
 }
 .eexcess_equation_text{
-	cursor: default;
-	float:left;
 	display: inline-block;
+	cursor: default;
 	text-align: left;
-	line-height: 2em; 
-	vertical-align: middle;
-    height: 2em;
-	//margin: 0.8em .3em 0.2em 0.3em;
-    //padding: .2em;
 	background: none;
+	vertical-align: top;
+	margin: 0px;
+	padding: 0px;
+	font-size: 40px;
+	width: auto;
 }
 .eexcess_equation_empty_box{
+    display: inline-block;
 	cursor: default;
-	float:left;
-	display: inline-block;
 	text-align: left;
 	width: 4em;
-    height: 2em;
-	//margin: 0.8em .3em 0.2em 0.3em;
-    //padding: .2em;
-	//border-radius: 1em;
+    height: 1.5em;
 	-webkit-border-radius: 0.3em;
 	-webkit-box-shadow: 0em 7px 6px -6px #333;
     box-shadow: 0em 7px 6px -6px #333;
@@ -1524,25 +1525,25 @@ list-style-type: none;
     text-shadow: -0.1em 0.1em 0.5em #eee;
 	border: 5px solid red;  
 	background: none;
+	margin: 0px;
+	padding: 0px;
 }
 
 .eexcess_equation_tag_in_box{
 	cursor: default;
 	display: inline-block;
 	text-align: left;
-	float:left;
-	font-size: 15px;
+	font-size: 16px;
 	overflow:overlay;
-	width: 8em;
+	width: 10em;
     height: 4em;
-	//margin: 0.8em .3em 0.2em 0.3em;
-    //padding: .2em;
-	//border-radius: 0.3em;
 	-webkit-border-radius: 0.3em;
 	-webkit-box-shadow: 0em 7px 6px -6px #333;
     box-shadow: 0em 7px 6px -6px #333;
     -webkit-text-shadow: -0.1em 0.1em 0.5em #eee;
     text-shadow: -0.1em 0.1em 0.5em #eee;
+	padding: 0px;
+	margin: 0px;
 }
 
 .eexcess_equation_tag_in_box:hover {
