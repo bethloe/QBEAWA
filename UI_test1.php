@@ -71,7 +71,6 @@ and open the template in the editor.
         <link rel="stylesheet" type="text/css" href="css/general-style.css" />
         <link rel="stylesheet" type="text/css" href="css/popup.css" />
         <link rel="stylesheet" type="text/css" href="css/vis-template-style-static.css" />
-<!--        <link rel="stylesheet" type="text/css" href="css/vis-template-style-alternative-3-test.css" /> -->
 
         <link rel="stylesheet" type="text/css" href="css/vis-template-chart-style.css" />
     </head>
@@ -94,12 +93,7 @@ and open the template in the editor.
 				Keyword: <input type="text" id="article-name" value="Visualization" /> 
 				 Max. number of results: <input type="number" id="max-num" value="5"/>
 				 <button onclick="searchArticle('visualization',50,equationEditor)"> retrieve data </button> 
-				 	
-				 <!-- <button class="popup_oeffnen"> show quality metric editor </button> -->
-				<!-- <button class="open_popup_article_editor"> show article editor </button> -->
-				 <!--<button onclick="showAllDataTest()"> show data </button> </div>
-                <p id="p_task"></p>
-                <p id="p_question"></p> -->
+		
 	  		</section>
 	  		<section id="eexcess_header_control_section">
                  <input type="button" id="eexcess_list_button" value="Show List" style="display:none"/>
@@ -129,15 +123,10 @@ and open the template in the editor.
 					<div id="rank_metrics_toggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
 				
 				</div>
-	               <!--  <img align="right" width="50" style="cursor: pointer" title="rank" src="media/ranking.png" onclick="equationEditor.rankQMs()" />-->
+	              
 				</div>
-              <!--  <div id="rank_QMs" style="display:none">
-                        <ul class="rank_QMs_list"></ul>
-                </div>-->
                 <div id="eexcess_qm_container">
-                    <!--<div id="eexcess_qm_container_rank_button">
-                        <button onclick="equationEditor.rankQMs()"> rank </button>
-                    </div>-->
+                   
                 </div>
 				<hr />
 				<div id="heading_Quality_Measure" style="  color: white; padding: 3px; margin: 10px; font-size: 14px;" title="Quality Measures are for todo...">
@@ -158,43 +147,19 @@ and open the template in the editor.
 
             <div id="eexcess_vis_panel" >
 
-             <!--   <div class="eexcess_equation_ranking_operation">
-					<div class="icon" > Parameter normalization method: </div> 
-					<div id="default" class="icon" style="background-color: red;" onclick="equationEditor.setNormMethod('default')" title="default"> taxicab norm </div> 
-					<div id="euclidean"  class="icon" onclick="equationEditor.setNormMethod('euclidean')" title="euclidean norm"> euclidean norm </div> 
-					<div id="pnorm" class="icon" onclick="equationEditor.setNormMethod('pNorm')" title="p-norm"> p-nrom </div> 
-					<div id="maxnorm" class="icon" onclick="equationEditor.setNormMethod('maxNorm')" title="Maximum norm"> maximum norm </div> 
-						<div id="nonorm" class="icon" onclick="equationEditor.setNormMethod('noNorm')" title="No norm"> no normalization</div> 
-				</div> -->
-				
-				<!-- <div class="eexcess_equation_ranking_operation">
-						
-						<div class="icon" > Quality metric normalization method for ranking: </div> 
-					<div id="defaultRank" class="icon"  onclick="equationEditor.setNormMethodRank('default')" title="default"> taxicab norm </div> 
-					<div id="euclideanRank"  class="icon" style="background-color: red;" onclick="equationEditor.setNormMethodRank('euclidean')" title="euclidean norm"> euclidean norm  </div> 
-					<div id="pnormRank" class="icon" onclick="equationEditor.setNormMethodRank('pNorm')" title="p-norm"> p-nrom </div> 
-					<div id="maxnormRank" class="icon" onclick="equationEditor.setNormMethodRank('maxNorm')" title="Maximum norm"> maximum norm</div> 
-						
-				</div> -->
+          
                 <div id="eexcess_equation_controls">
 					
 					<div class="icon" onclick="equationEditor.createNewQM()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
 					<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.clearEquationComposer()"/></div>
 					
-					<!-- <div class="icon" > <img src="media/undo.png" height="30"/ title="undo" onclick="equationEditor.undo()"> </div> 
-					<div class="icon" ><img src="media/redo.png" title="redo" height="30"  onclick="equationEditor.redo()" /></div> -->
+					
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>
 					<div class="icon" id="divAddBeforeSelected" onclick="equationEditor.addBeforeSelected()" ><img src="media/add.png" title="insert before" height="30" /> before</div>
 					<div class="icon" id="divAddAfterSelected"  onclick="equationEditor.addAfterSlected()" ><img src="media/add.png" title="insert after" height="30"/> after</div>
-					<!--<div class="icon"  onclick="equationEditor.showNormPanels()" ><img src="media/settings.png" title="show norm panel" height="30"/> </div>-->
-					<!--<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of QM" height="30"/> </div>-->
-					<!-- <div class="icon" ><img src="media/zoomIn.png" title="zoom in" height="30" onclick="equationEditor.showMetric()"/></div> -->
+				
 					<div class="icon" ><img src="media/zoomOut.png" title="zoom out" height="30" onclick="equationEditor.showMore()"/></div>
-					<!-- <div class="icon" ><img src="media/editing-done.png" title="editing done" height="30" onclick="equationEditor.setUserMode('advanced')"/></div> -->
 					
-					<!--<div class="icon" ><img src="media/show-all.png" title="show the whole equation" height="30" onclick="equationEditor.showWholeEquation()"/></div>
-					<div id="stopwatchViz" class="icon"></div>
-					<div id="stopwatchCalc"  class="icon"></div>-->
 					<div class="equationStackSmall"> </div>				
 					<div id="show_equaiton_composer_div" style="position: absolute; top: 5px; right: 10px;"> <div style="float:left;"> Equation Composer: </div> 	<div id="show_equation_composer_toggle1" class="toggle toggle-light" style="float:left;" > </div></div>
 			
@@ -205,7 +170,7 @@ and open the template in the editor.
 				<div id="eexcess_equation_controls_normal_mode">
 					
 					<div id="showMoreIcon" class="icon" onclick="equationEditor.setUserMode('advanced')" > <img src="media/show-all.png" height="30"/ title="show detail view of Quality Metric" > </div> 
-					<!--<div class="icon"  onclick="equationEditor.showTextOfQM()" ><img src="media/showText.png" title="show text of Quality Metric" height="30"/> </div> -->
+					
 					<div class="icon" id="switch_to_expert_mode" ><img src="media/edit.png" title="edit Quality Metric" height="30" onclick="equationEditor.setUserMode('expert')"/></div>
 					
 					<div id="show_equaiton_composer_div" style="position: absolute; top: 5px; right: 10px;"> <div style="float:left;"> Equation Composer: </div> 	<div id="show_equation_composer_toggle2" class="toggle toggle-light" style="float:left;" > </div></div>
@@ -215,44 +180,35 @@ and open the template in the editor.
 					
 				</div> 
 				
-				<!--<div id="equation_stack_text_of_QM" style="display: none" > 
-					<div id="QM_Text" > </div>
-					<div id="edit_Icon_QM_Text" style="position: absolute; bottom: 0px; right: 0px;"><img src="media/edit.png" title="edit text" height="30" onclick="equationEditor.editQMText()"/></div>	
-				</div>-->
+		
                 <div id="eexcess_equation_stack">
-					<!-- VERSION 1 -->
-					 <!--<table style="display: inline-block; font-size: 40px;  border-collapse: collapse;"> -->
-					<!-- <tr style="height: 1em; "><td  style=" border: 0px;"></td><td style=" border: 0px; border-bottom: 5px solid black; height: 1em"></td> <td style="border: 0px; border-bottom: 5px solid black; height: 1em"></td><td style="border: 0px; border-bottom: 5px solid black; height: 1em"></td><td style="border: 0px; border-bottom: 5px solid black; height: 1em"></td><td style="border: 0px; border-bottom: 5px solid black; height: 1em"></td></tr> -->
-					<!-- <tr style="height: 4em"> <td style="border: 0px "> <sup>2</sup>&radic;</td> <td style="border: 0px ">(</td><td style="border: 4px solid red; width: 4em; height: 4em"></td> <td style="border: 0px ">&minus; </td>  <td style="border: 4px solid red; width: 4em; height: 4em"></td><td style="border: 0px; ">)</td></tr></table>-->
+
 					
-					<!-- Version 2 -->
-					
-					<div id="equition_stack_main_hidden" style="display: none" > </div>
-					<div id="equition_stack_main" onclick="equationEditor.clickOnEquationStackMain()"><!-- <div style="border: 2px solid blue;"> <div class="eexcess_equation_empty_box"> </div> <div class="eexcess_equation_text"> &minus; </div> <div class="eexcess_equation_empty_box"> </div></div><div class="eexcess_equation_text">&minus; </div> <div class="eexcess_equation_empty_box"> </div> --></div>
+					<!--<div id="equition_stack_main_hidden" style="display: none" > </div>-->
+					<div id="equition_stack_main" onclick="equationEditor.clickOnEquationStackMain()"></div>
 					
 					
-					<!-- <div class="eexcess_equation_empty_box" id="tag-0" tag-pos="0" is-selected="true" > </div> -->
 					
-					<!-- Authority
-					<img class="eexcess_tag_img" src="media/fancybox_sprite_close.png">
-					<div class="div-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false">
-					<div class="ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min" style="width: 100%;">
-					</div>
-					<a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 100%;"></a></div></div> -->
+
 					
-				</div> 
-				<div id="eexcess_equation_composer">
+				</div> 								
+<div id="eexcess_equation_composer">
 					<div style="float:left; font-size: 25px; border:0px;"><b> <button style="height: 2em; border:0px;" onclick="equationEditor.hideMenuEquationEditor()"> math </button> </b></div>
 				<table id="eexcess_equation_composer_table">
 					<tr><td onclick="equationEditor.simpleSymbol('+')">+</td><td onclick="equationEditor.simpleSymbol('-')"> &minus;</td><td onclick="equationEditor.simpleSymbol('*')">&times; </td><td onclick="equationEditor.simpleSymbol('/')">&divide;</td><td onclick="equationEditor.bricks()">()</td></tr>
 					<tr><td onclick="equationEditor.radical()"><sup>n</sup>&radic;</td><td onclick="equationEditor.exponentiate()"> x<sup>n</sup></td><td onclick="equationEditor.logarithm()">log<sub>n</sub></td><td></td><td></td></tr>
-					<!--<tr><td onclick="equationEditor.sum()">&sum;</td><td onclick="equationEditor.prod()">&prod;</td><td></td><td ></td><td></td></tr> -->
+	
 					</table>
 					
-				<table id="eexcess_equation_composer_table2">
-					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><!--<td onclick="equationEditor.euclidean()">$$\sqrt(\sum_{i=1}^N(v_i^2))$$</td><td onclick="equationEditor.showWholeEquation()">show everything</td> <td></td><td></td> --></tr>
-					</table>
+			
 				</div> 
+				<div id="equition_stack_main_combination" onclick="equationEditor.clickOnEquationStackMain()" style="display: none" >
+				</div>
+				<div id="eexcess_equation_composer_math_table2">
+								<table id="eexcess_equation_composer_table2">
+					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td></tr>
+					</table>
+					</div>
 				<div id="ranking_norm_selector" style="position: relative;">
 					<table align="center" ><tr><td> Norm: </td><td>  <select id="normRankingSelector">
 					<option value="default"  id="defaultRank" title="taxicab nrom">taxicab norm</option>
@@ -261,27 +217,10 @@ and open the template in the editor.
 					<option value="maxNorm" id="maxnormRank"  title="Maximum norm">maximum norm</option>
 					 </select>
 					 </td></tr></table>
-					 <div id="draw_stacked_div" style="display: inline; position: relative;"> <div style="position: absolute; float:left; right: 60px; color: black; width: 60px;"> Draw stacked:</div> 	<div id="draw_stacked_toggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
+					 <div id="draw_stacked_div" style="display: inline; position: relative;"> <div style="position: absolute; float:left; right: 60px; color: black; width: 60px;"> Draw split:</div> 	<div id="draw_stacked_toggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px;" > </div>
 					 </div>
 				 </div>
-                 <!--<div id="eexcess_vis_panel_controls">
-                   <div id="eexcess_ranking_controls">
-                        <!-- <button id="eexcess_btnreset">
-                            <img src="media/batchmaster/refresh.png" title="Reset" />
-                        </button>
-                        <button id="eexcess_btn_sort_by_overall_score" title="Sort by overall score" sort-by="overallScore">
-                            <img src="media//sort-down.png" />
-                        </button>
-                        <button id="eexcess_btn_sort_by_max_score" title="Sort by maximum score" sort-by="maxScore">
-                            <img src="media/sort-down.png" />
-                        </button> 
-				
-                    </div>
-
-                    <!-- <div id="eexcess_keywords_box">
-                       <p>Drop tags here!</p> 
-                    </div>-->
-             <!--   </div>-->
+                 
 
                 <div id="eexcess_vis_panel_canvas">
 					<div id="output"> </div>
@@ -302,23 +241,7 @@ and open the template in the editor.
 				</div>
 						<div id="chart1" style="display: none"> 
                     <p> </p></div>
-               <!-- <div id="eexcess_document_details">-->
-                    <!--<div>
-                        <label>Score: </label>
-                        <h3 id="eexcess_document_details_title"></h3>
-                    </div>-->
-                    
-                    <!--
-                    <div>
-                        <label>Language: </label>
-                        <span id="eexcess_document_details_language"></span>
-                    </div>
-                    <div>
-                        <label>Provider: </label>
-                        <span id="eexcess_document_details_provider"></span>
-                    </div>
-                    -->
-                <!--</div>-->
+             
                 <div id="eexcess_document_viewer">
                     <p> </p>
                 </div>
@@ -343,7 +266,6 @@ and open the template in the editor.
 		</div>
  
     </div>
-	<!--<div id="help1" > $$\frac{m_i}{\sqrt(\sum_{i=1}^N(|a(m_i)_i|^2))}$$ </div>-->
         <div id="task_question_message"></div>
         <script type="text/javascript" src="scripts/vis-controller.js" charset="utf-8"></script>
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
@@ -367,34 +289,7 @@ and open the template in the editor.
 				equationEditor.shiftPressed(false);
 		}
 		
-		//var timerStopwatchViz = new Stopwatch(document.getElementById("stopwatchViz"));
-		//var timerStopwatchCalc = new Stopwatch(document.getElementById("stopwatchCalc"));
-		//equationEditor.setTimers(timerStopwatchViz, timerStopwatchCalc);
-		//timerStopwatchViz.start();
-		//timerStopwatchCalc.start();
-	/*	$(document).ready(function () {
-			console.log("DOCUMENT IS READY");
-			var data = [
-				['Heavy Industry', 0.3], ['Retail', 0.61], ['Light Industry', 0.75],
-				['Out of home', 0.8], ['Commuting', 0.1], ['Orientation', 0.4]
-			];
-			var plot1 = jQuery.jqplot('chart1', [data], {
-					seriesDefaults : {
-						// Make this a pie chart.
-						renderer : jQuery.jqplot.PieRenderer,
-						rendererOptions : {
-							// Put data labels on the pie slices.
-							// By default, labels show the percentage of the slice.
-							showDataLabels : true
-						}
-					},
-					legend : {
-						show : true,
-						location : 'e'
-					}
-				});
-
-		});*/
+	
 		$(document).ready(function () {
 			$('#show_equation_composer_toggle2').toggles({
 				clicker : $('.clickme')
@@ -427,10 +322,9 @@ and open the template in the editor.
 			$('#draw_stacked_toggle').on('toggle', function (e, active) {
 				if (active) {
 					console.log("toggle on");
-					equationEditor.drawCombinationStacked();
-
-				} else {
 					equationEditor.drawCombinationSplitted();
+				} else {
+					equationEditor.drawCombinationStacked();
 					console.log("toggle off");
 				}
 			});

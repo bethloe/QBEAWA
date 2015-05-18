@@ -105,6 +105,7 @@ var VisController = function () {
 	rankingMode = RANKING_MODE.overall_score,
 	showRanking;
 	selectedTagsForEquationEditor = [];
+	selectedTagsForEquationEditorWithPlus = [];
 
 	// Ranking object
 	var rankingModel;
@@ -597,6 +598,9 @@ var VisController = function () {
 		.on("click", function (data) {
 			if (equationEditor.isShiftPressed() == false) {
 				//	console.log("buildTagCloud ON CLICK " + data.name + " " + allVizs[data.name]);
+				
+				visController.clearSelectedTagsForEquationEditorArray();
+				equationEditor.setMode("single");
 				equationEditor.loadMetric(data.name, allVizs[data.name], true);
 				$('#QM_Text').html(allQMTexts[data.name]);
 				//	if(equationEditor.getUserMode() == "normal"){
@@ -630,12 +634,32 @@ var VisController = function () {
 					selectedTagsForEquationEditor.push(object);
 				}
 			}
+		}).
+		append("img")
+		.attr("class", "eexcess_tag_img")
+		.attr("src", PLUS_ICON)
+		.on("click", function (data) {
+			if (!e)
+				var e = window.event;
+			e.cancelBubble = true;
+			if (e.stopPropagation)
+				e.stopPropagation();
+			console.log("CLICKED!");
+
+			var object = {
+				name : data.name,
+				viz : allVizs[data.name],
+				type : "metric"
+			};
+			selectedTagsForEquationEditorWithPlus.push(object);
+			TAGCLOUD.resetBackgroundOfTagCloud();
+			equationEditor.loadACombination(selectedTagsForEquationEditorWithPlus);
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																				                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																				                   </div>\
-																																																																																								   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																																																							                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																							                   </div>\
+																																																																																											   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -691,6 +715,26 @@ var VisController = function () {
 					selectedTagsForEquationEditor.push(object);
 				}
 			}
+		}).
+		append("img")
+		.attr("class", "eexcess_tag_img")
+		.attr("src", PLUS_ICON)
+		.on("click", function (data) {
+			if (!e)
+				var e = window.event;
+			e.cancelBubble = true;
+			if (e.stopPropagation)
+				e.stopPropagation();
+			console.log("CLICKED!");
+
+			var object = {
+				name : data.name,
+				viz : "",
+				type : "measure"
+			};
+			selectedTagsForEquationEditorWithPlus.push(object);
+			TAGCLOUD.resetBackgroundOfTagCloud();
+			equationEditor.loadACombination(selectedTagsForEquationEditorWithPlus);
 		});
 		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted);
@@ -1077,7 +1121,7 @@ var VisController = function () {
 			LIST.paintPlusMinus();
 		});
 		d3.selectAll(allListItems).select(favIconClass).select('.minus_icon').on("click", function (d, i) {
-			
+
 			if (!e)
 				var e = window.event;
 			e.cancelBubble = true;
@@ -1188,7 +1232,10 @@ var VisController = function () {
 		$(".eexcess_list").css("height", 26 * numElements + "px");
 		DOCPANEL.clear();
 		if (showRanking) {
-			rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
+			//rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
+			
+			$(".eexcess_list").css("height", 26 + "px");
+			rankingVis.redrawStacked(rankingModel, $(contentPanel).height(), weightColorScale);
 			$(visPanelCanvas).scrollTo('top');
 		}
 		//VISPANEL.drawRanking();
@@ -1843,6 +1890,7 @@ var VisController = function () {
 
 	visController.clearSelectedTagsForEquationEditorArray = function () {
 		selectedTagsForEquationEditor.splice(0, selectedTagsForEquationEditor.length);
+		selectedTagsForEquationEditorWithPlus.splice(0, selectedTagsForEquationEditorWithPlus.length);
 	}
 	visController.setTimer = function (timerPar) {
 		timer = timerPar;
@@ -2017,12 +2065,12 @@ var VisController = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																																																												<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																					                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																					                </div>\
-																																																																																									<div id=\"eexcess_canvas_rankQM\"></div> \
-																																																																																									 \
-																																																																																									  </div>");
+																																																															<div id=\"rank_QMs\" style=\"display:none\">\
+																																																																																								                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																								                </div>\
+																																																																																												<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																																																												 \
+																																																																																												  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -2298,7 +2346,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																																																																											{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																																																																															{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

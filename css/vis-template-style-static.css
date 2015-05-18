@@ -635,13 +635,23 @@ VIS PANEL (center of screen)
 #eexcess_equation_stack{
     display: inline-flex;
     width: 100%;
-    min-height: 4.5em;
+    /*min-height: 4.5em;*/
 	background-color: white;
 }
 
 #eexcess_equation_composer{
 	float:left;
     display: inline-flex;
+    width: 100%;
+   // height: 9%;
+    min-height: 4.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+#eexcess_equation_composer_math_table2{
+	float:left;
+    display: none;
     width: 100%;
    // height: 9%;
     min-height: 4.5em;
@@ -675,7 +685,7 @@ VIS PANEL (center of screen)
 }
 
 #eexcess_equation_composer_table2{
-    display: none;
+    display: inline;
 	float: left;
 	
 }
@@ -831,11 +841,11 @@ VIS PANEL (center of screen)
 .eexcess_tag_img {
 	position: relative;
 	float: right;
-	right: -1.3em;
-	top: -1.1em;
+	right: -0.6em;
+	top: -0.4em;
 	z-index: 8040;
-	width: 1.7em;
-	height: 1.4em;
+	width: 0.8em;
+	height: 0.8em;
 	cursor: pointer;
 }
 
@@ -1479,6 +1489,20 @@ list-style-type: none;
 
 /* For equation */ 
 #equition_stack_main{
+	width: 100%;
+	height: 100px;
+	/*float: left;*/
+	font-size: 40px;
+	padding: 2px;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(230, 230, 230, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+	overflow-x: auto;
+    white-space:nowrap;
+	overflow-y: hidden;
+	text-align: left;
+	-ms-overflow-y: hidden;
+}
+#equition_stack_main_combination{
 	width: 100%;
 	height: 100px;
 	/*float: left;*/

@@ -3,6 +3,7 @@ var EquationEditor = function (vals) {
 	var equationEditor = {};
 	var idCnt = 0;
 	var equationStack = "#equition_stack_main";
+	var equationStackCombination = "#equition_stack_main_combination";
 	var equationStackHidden = "#equition_stack_main_hidden";
 	var progressArray = [];
 	var progressArrayPosition = -1;
@@ -126,7 +127,8 @@ var EquationEditor = function (vals) {
 			return;
 		alpha = false;
 		equationEditor.resetData();
-		mode = "multi";
+		equationEditor.setMode("single"); //mode = "multi";
+		equationEditor.setInterfaceToMode();
 		//console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
 		for (var i = 0; i < currentDataArray.length; i++) {
 			var data = currentDataArray[i];
@@ -160,7 +162,7 @@ var EquationEditor = function (vals) {
 		}
 
 		$("#eexcess_equation_composer_table").css("display", "inline");
-		$("#eexcess_equation_composer_table2").css("display", "none");
+		//$("#eexcess_equation_composer_table2").css("display", "none");
 		checkProgressArray();
 		rerank();
 		shrinkElementsIfNecessary(1);
@@ -181,7 +183,9 @@ var EquationEditor = function (vals) {
 			return;
 		alpha = false;
 		equationEditor.resetData();
-		mode = "multi";
+		equationEditor.setMode("single"); //mode = "multi";
+		
+		equationEditor.setInterfaceToMode();
 		//console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
 		for (var i = 0; i < currentDataArray.length; i++) {
 			var data = currentDataArray[i];
@@ -215,7 +219,7 @@ var EquationEditor = function (vals) {
 		}
 		console.log("HERE prodMulti");
 		$("#eexcess_equation_composer_table").css("display", "inline");
-		$("#eexcess_equation_composer_table2").css("display", "none");
+		//$("#eexcess_equation_composer_table2").css("display", "none");
 		checkProgressArray();
 		rerank();
 		shrinkElementsIfNecessary(1);
@@ -255,7 +259,7 @@ var EquationEditor = function (vals) {
 		equationEditor.resetData();
 	}
 	equationEditor.resetData = function () {
-		mode = "single";
+		//mode = "single";
 		shrinkLevel = 1;
 		nameOfLoadedMetric = "";
 		progressArrayPosition = -1;
@@ -268,7 +272,11 @@ var EquationEditor = function (vals) {
 		isAddAfterSelected = false;
 		$(equationStack).html("");
 		$("#eexcess_equation_composer_table").css("display", "inline");
-		$("#eexcess_equation_composer_table2").css("display", "none");
+		//$("#eexcess_equation_composer_table2").css("display", "none");
+	}
+
+	equationEditor.resetEquationStackCombined = function () {
+		$(equationStackCombination).html("");
 	}
 
 	var checkProgressArray = function () {
@@ -613,7 +621,11 @@ var EquationEditor = function (vals) {
 		showGuidedIcon = showGuided;
 	}
 	equationEditor.loadMetric = function (name, htmlValue, eraseZoomArray) {
-		$("#draw_stacked_div").css("display", "none");
+		equationEditor.setInterfaceToMode();
+		//$("#equition_stack_main").css("display", "inline-flex");
+		//$("#eexcess_equation_composer").css("display", "inline-flex");
+		if (mode == "single")
+			$("#draw_stacked_div").css("display", "none");
 		if (showGuidedIcon)
 			$("#showMoreIcon").css("display", "inline-flex");
 		if (eraseZoomArray) {
@@ -726,32 +738,34 @@ var EquationEditor = function (vals) {
 		$(".equationStackSmall").html("");
 		var allVizs = visController.getAllVizs();
 		equationEditor.resetData();
+		$(equationStackCombination).html("");
 		currentDataArray = dataArray.slice();
 		alpha = true;
 		//console.log("currentDataArray: " + currentDataArray.length);
-		mode = "multi";
-		$(equationStack).append("<div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\"> <font face=\"Symbol\">a</font> </div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">{</div></div>");
+		equationEditor.setMode("multi");
+		var helpIdCnt = 60000;
+		$(equationStackCombination).append("<div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\"> <font face=\"Symbol\">a</font> </div></div><div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">{</div></div>");
 
-		adjustNewElementsToShrinkLevel(idCnt - 2);
-		adjustNewElementsToShrinkLevel(idCnt - 1);
+		adjustNewElementsToShrinkLevel(helpIdCnt - 2);
+		adjustNewElementsToShrinkLevel(helpIdCnt - 1);
 		for (var i = 0; i < dataArray.length; i++) {
 			var data = dataArray[i];
 			var color = colorsForRanking[colorSetting][i]; //data.type == "metric" ? "#08519c" : "#21B571";
 			if (i + 1 < dataArray.length) {
-				$(equationStack).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
+				$(equationStackCombination).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + helpIdCnt + "\" onclick=\"equationEditor.showMetricCombination(" + (helpIdCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
 
-				adjustNewElementsToShrinkLevel(idCnt - 2);
-				adjustNewElementsToShrinkLevel(idCnt - 1);
+				adjustNewElementsToShrinkLevel(helpIdCnt - 2);
+				adjustNewElementsToShrinkLevel(helpIdCnt - 1);
 			} else {
-				$(equationStack).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + idCnt + "\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
-				adjustNewElementsToShrinkLevel(idCnt - 1);
+				$(equationStackCombination).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + helpIdCnt + "\" onclick=\"equationEditor.showMetricCombination(" + (helpIdCnt++) + ")\"class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+				adjustNewElementsToShrinkLevel(helpIdCnt - 1);
 			}
 		}
-		$(equationStack).append("<div  type=\"symbol\" id=\"equation" + (idCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">}</div></div>");
+		$(equationStackCombination).append("<div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">}</div></div>");
 
-		adjustNewElementsToShrinkLevel(idCnt - 1);
+		adjustNewElementsToShrinkLevel(helpIdCnt - 1);
 		$("#eexcess_equation_composer_table").css("display", "none");
-		$("#eexcess_equation_composer_table2").css("display", "inline");
+		//$("#eexcess_equation_composer_table2").css("display", "inline");
 		rerank();
 		shrinkElementsIfNecessary(1);
 	}
@@ -1195,7 +1209,25 @@ var EquationEditor = function (vals) {
 		}
 		printZoomArray();
 	}
-
+	equationEditor.showMetricCombination = function (id) {
+		var name = getNameOfId(id);
+		if (name != "") {
+			console.log("NAME: " + name);
+			var help = nameOfLoadedMetric;
+			var allVizs = visController.getAllVizs();
+			if (allVizs[name]) {
+				visController.resetBackgroundOfTagCloud();
+				equationEditor.loadMetric(name, allVizs[name], true);
+				//rerank();
+			} else {
+				alert("ERROR showMetric SHOULD NEVER HAPPEN");
+			}
+		} else {
+			notPossible();
+			//alert("ERROR showMetric SHOULD NEVER HAPPEN2");
+		}
+		printZoomArray();
+	}
 	equationEditor.showMore = function () {
 		if (zoomArray.length > 0) {
 			equationEditor.resetData();
@@ -1423,6 +1455,11 @@ var EquationEditor = function (vals) {
 			$("#edit_Icon_QM_Text").css("display", "inline-flex");
 			$("#quality_measrues_norm_selector").css("display", "inline");
 			$("#ranking_norm_selector").css("display", "inline-flex");
+			$("#eexcess_equation_stack").css("display", "inline-flex");
+			$("#eexcess_equation_composer").css("display", "inline-flex");
+			$("#eexcess_equation_controls").css("display", "inline-flex");
+			if (mode == "multi")
+				$("#eexcess_equation_composer_math_table2").css("display", "inline-flex");
 
 			$("#showMoreIcon").css("display", "none");
 			$("#switch_to_expert_mode").css("display", "none");
@@ -1445,5 +1482,21 @@ var EquationEditor = function (vals) {
 		visController.drawCombinationSplitted(currentDataArray.length);
 	}
 
+	equationEditor.setMode = function (modePar) {
+		mode = modePar;
+		if (mode == "single") {
+			$("#equition_stack_main_combination").css("display", "none");
+			$("#eexcess_equation_composer_math_table2").css("display", "none");
+			
+		} else if (mode == "multi") {
+			$("#equition_stack_main_combination").css("display", "inline-flex");
+			if (userMode == "expert")
+				$("#eexcess_equation_composer_math_table2").css("display", "inline-flex");
+			$("#eexcess_equation_stack").css("display", "none");
+			$("#eexcess_equation_composer").css("display", "none");
+			$("#eexcess_equation_controls").css("display", "none");
+
+		}
+	}
 	return equationEditor;
 }
