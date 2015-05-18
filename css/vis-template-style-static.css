@@ -1049,7 +1049,7 @@ list-style-type: none;
 .eexcess_ritem_container {
     display: inline-flex;
     align-items: center;
-    width: calc(100% - 78px);
+    width: calc(100% - 120px);
     height: 100%;
     margin-left: 2px;
     vertical-align: top;
@@ -1062,7 +1062,7 @@ list-style-type: none;
 .eexcess_favicon_section {
     display: inline-flex;
     float: right;
-    width: 16px;
+    width: 60px;
     margin-right: 2px;
     vertical-align: top;
 }

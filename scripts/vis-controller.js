@@ -66,6 +66,8 @@ var VisController = function () {
 	var FAV_ICON_OFF = "media/favicon_off.png";
 	var FAV_ICON_ON = "media/favicon_on.png";
 	var EDIT_ICON = "media/edit_small.png";
+	var PLUS_ICON = "media/plus_small.png";
+	var MINUS_ICON = "media/minus_small.png";
 	var REMOVE_SMALL_ICON = "media/batchmaster/remove.png"
 		var ICON_EUROPEANA = "media/Europeana-favicon.ico";
 	var ICON_MENDELEY = "media/mendeley-favicon.ico";
@@ -108,6 +110,7 @@ var VisController = function () {
 	var rankingModel;
 	var rankingVis;
 	var rankingQMVis;
+	var plusMinusArray = []; //{itemId: itemNumber, color: color }
 
 	var dataForPieChart = [];
 
@@ -630,9 +633,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																																                        <ul class=\"rank_QMs_list\"></ul>\
-																																																                   </div>\
-																																																				   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																																																				                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																				                   </div>\
+																																																																																								   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -982,16 +985,41 @@ var VisController = function () {
 		});
 
 		// fav icon section on the right
+
 		aListItem.append('div')
 		.attr('class', 'eexcess_favicon_section')
 		.append("img")
+		.attr('title', 'Mark as featured article')
+		.attr("src", PLUS_ICON)
+		.attr("class", "plus_icon");
+		aListItem.select(".eexcess_favicon_section")
+		.append("img")
+		.attr('title', 'Mark as not featured article')
+		.attr("src", MINUS_ICON)
+		.attr("class", "minus_icon")
+		.style("margin-left", "4px");
+		aListItem.select(".eexcess_favicon_section")
+		.append("img")
 		.attr('title', 'Edit the article')
-		.attr("src", EDIT_ICON);
+		.attr("src", EDIT_ICON)
+		.attr("class", "edit_icon")
+		.style("margin-left", "4px");
 
 		LIST.updateItemsBackground();
 		LIST.bindEventHandlersToListItems();
 		$(contentPanel).scrollTo("top");
+		LIST.paintPlusMinus();
 	};
+	LIST.paintPlusMinus = function () {
+		for (var i = 0; i < plusMinusArray.length; i++) {
+			console.log("ITEM ID: " + plusMinusArray[i].itemID);
+			console.log("NODES TO COLOR: " + d3.select(d3.select(d3.select(d3.select("#" + plusMinusArray[i].itemID).node().parentNode).node().parentNode).node().parentNode).style("background", plusMinusArray[i].color));
+		}
+	}
+
+	LIST.removePlusMinusColor = function (itemID) {
+		d3.select(d3.select(d3.select(d3.select("#" + itemID).node().parentNode).node().parentNode).node().parentNode).style("background", null)
+	}
 
 	LIST.bindEventHandlersToListItems = function () {
 		// Event for item clicked
@@ -1003,11 +1031,85 @@ var VisController = function () {
 		})
 		.on("mouseover", EVTHANDLER.listItemHovered)
 		.on("mouseout", EVTHANDLER.listItemUnhovered)
-		.select(favIconClass).select('img').on("click", function (d, i) {
+		.select(favIconClass).select('.edit_icon').on("click", function (d, i) {
 			console.log(JSON.stringify(d));
 			var actualIndex = rankingModel.getActualIndex(i);
 			var currentData = data[actualIndex];
 			window.open('http://localhost/ArticleEditor/index3.php?title=' + currentData.title);
+		});
+		d3.selectAll(allListItems).select(favIconClass).select('.plus_icon').on("click", function (d, i) {
+
+			if (!e)
+				var e = window.event;
+			e.cancelBubble = true;
+			if (e.stopPropagation)
+				e.stopPropagation();
+			console.log("PLUS_ICON");
+			//console.log(d3.select(this).node().parentNode);
+			//console.log(d3.select(d3.select(this).node().parentNode).node().parentNode);
+			//console.log(d3.select(d3.select(d3.select(this).node().parentNode).node().parentNode).select(".eexcess_ritem_title").attr("id"));
+			var itemID = d3.select(d3.select(d3.select(this).node().parentNode).node().parentNode).select(".eexcess_ritem_title").attr("id");
+
+			var indexToDelete = -1;
+			for (var i = 0; i < plusMinusArray.length; i++)
+				if (plusMinusArray[i].itemID == itemID)
+					indexToDelete = i;
+			var object;
+			if (indexToDelete != -1) {
+				if (plusMinusArray[indexToDelete].color != "#b3de69") {
+					object = {
+						itemID : itemID,
+						color : "#b3de69"
+					}
+					plusMinusArray.push(object);
+				}
+				LIST.removePlusMinusColor(plusMinusArray[indexToDelete].itemID);
+				plusMinusArray.remove(indexToDelete);
+				console.log("DELETED LENGTH NOW: " + plusMinusArray.length);
+			} else {
+				object = {
+					itemID : itemID,
+					color : "#b3de69"
+				}
+				plusMinusArray.push(object);
+			}
+
+			LIST.paintPlusMinus();
+		});
+		d3.selectAll(allListItems).select(favIconClass).select('.minus_icon').on("click", function (d, i) {
+			
+			if (!e)
+				var e = window.event;
+			e.cancelBubble = true;
+			if (e.stopPropagation)
+				e.stopPropagation();
+			console.log("MINUS_ICON");
+			var itemID = d3.select(d3.select(d3.select(this).node().parentNode).node().parentNode).select(".eexcess_ritem_title").attr("id");
+
+			var indexToDelete = -1;
+			for (var i = 0; i < plusMinusArray.length; i++)
+				if (plusMinusArray[i].itemID == itemID)
+					indexToDelete = i;
+			var object;
+			if (indexToDelete != -1) {
+				if (plusMinusArray[indexToDelete].color != "#fb8072") {
+					object = {
+						itemID : itemID,
+						color : "#fb8072"
+					}
+					plusMinusArray.push(object);
+				}
+				LIST.removePlusMinusColor(plusMinusArray[indexToDelete].itemID);
+				plusMinusArray.remove(indexToDelete);
+			} else {
+				object = {
+					itemID : itemID,
+					color : "#fb8072"
+				}
+				plusMinusArray.push(object);
+			}
+
+			LIST.paintPlusMinus();
 		});
 	};
 
@@ -1579,7 +1681,7 @@ var VisController = function () {
 					}
 				});
 		}
-		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"http://en.wikipedia.org/wiki/" + currentTitle + "\" seamless></iframe>");
+		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"http://en.m.wikipedia.org/wiki/" + currentTitle + "\" seamless></iframe>");
 		//$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
 		$(documentViewer + ' p').hide();
 		$(documentViewer + ' p').fadeIn('slow');
@@ -1915,12 +2017,12 @@ var VisController = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																								<div id=\"rank_QMs\" style=\"display:none\">\
-																																																	                        <ul class=\"rank_QMs_list\"></ul>\
-																																																	                </div>\
-																																																					<div id=\"eexcess_canvas_rankQM\"></div> \
-																																																					 \
-																																																					  </div>");
+																																																												<div id=\"rank_QMs\" style=\"display:none\">\
+																																																																																					                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																					                </div>\
+																																																																																									<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																																																									 \
+																																																																																									  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -2196,7 +2298,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																											{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																																																																											{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
