@@ -206,7 +206,7 @@ and open the template in the editor.
 				</div>
 				<div id="eexcess_equation_composer_math_table2">
 								<table id="eexcess_equation_composer_table2">
-					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td></tr>
+					<tr><td onclick="equationEditor.sumMulti()">$$\sum$$</td><td onclick="equationEditor.prodMulti()">$$\prod$$</td><td onclick="equationEditor.clearSelectedTagsForEquationEditorArray()">clear</td></tr>
 					</table>
 					</div>
 				<div id="ranking_norm_selector" style="position: relative;">

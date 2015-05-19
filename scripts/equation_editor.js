@@ -184,7 +184,7 @@ var EquationEditor = function (vals) {
 		alpha = false;
 		equationEditor.resetData();
 		equationEditor.setMode("single"); //mode = "multi";
-		
+
 		equationEditor.setInterfaceToMode();
 		//console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
 		for (var i = 0; i < currentDataArray.length; i++) {
@@ -255,7 +255,7 @@ var EquationEditor = function (vals) {
 		$("#draw_stacked_div").css("display", "none");
 		visController.resetColorOfQMMetrics();
 		visController.resetHighlighting();
-		$(".equationStackSmall").html("New Equation");
+		$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #d95f02\">" + "New Equation" + "</div>");
 		equationEditor.resetData();
 	}
 	equationEditor.resetData = function () {
@@ -620,7 +620,9 @@ var EquationEditor = function (vals) {
 	equationEditor.setShowGuided = function (showGuided) {
 		showGuidedIcon = showGuided;
 	}
-	equationEditor.loadMetric = function (name, htmlValue, eraseZoomArray) {
+	equationEditor.loadMetric = function (name, htmlValue, eraseZoomArray, color) {
+		color = color != undefined ? color : "#d95f02";
+		console.log("LOAD METRIC: " + color);
 		equationEditor.setInterfaceToMode();
 		//$("#equition_stack_main").css("display", "inline-flex");
 		//$("#eexcess_equation_composer").css("display", "inline-flex");
@@ -629,7 +631,7 @@ var EquationEditor = function (vals) {
 		if (showGuidedIcon)
 			$("#showMoreIcon").css("display", "inline-flex");
 		if (eraseZoomArray) {
-			$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #d95f02\">" + name + "</div>");
+			$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: " + color + "\">" + name + "</div>");
 			zoomArray.splice(0, zoomArray.length);
 		}
 		equationEditor.resetData();
@@ -752,12 +754,12 @@ var EquationEditor = function (vals) {
 			var data = dataArray[i];
 			var color = colorsForRanking[colorSetting][i]; //data.type == "metric" ? "#08519c" : "#21B571";
 			if (i + 1 < dataArray.length) {
-				$(equationStackCombination).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + helpIdCnt + "\" onclick=\"equationEditor.showMetricCombination(" + (helpIdCnt++) + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
+				$(equationStackCombination).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + helpIdCnt + "\" onclick=\"equationEditor.showMetricCombination(" + (helpIdCnt++) + ", '" + color + "')\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div><div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">,</div></div>");
 
 				adjustNewElementsToShrinkLevel(helpIdCnt - 2);
 				adjustNewElementsToShrinkLevel(helpIdCnt - 1);
 			} else {
-				$(equationStackCombination).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + helpIdCnt + "\" onclick=\"equationEditor.showMetricCombination(" + (helpIdCnt++) + ")\"class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
+				$(equationStackCombination).append("<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" innerType=\"" + data.type + "\" type=\"filledBox\" id=\"equation" + helpIdCnt + "\" onclick=\"equationEditor.showMetricCombination(" + (helpIdCnt++) + ", '" + color + "')\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid " + color + "; display: inline-block; background: " + color + ";\"><div id=\"neededText\">" + data.name + "</div></div>");
 				adjustNewElementsToShrinkLevel(helpIdCnt - 1);
 			}
 		}
@@ -1209,15 +1211,15 @@ var EquationEditor = function (vals) {
 		}
 		printZoomArray();
 	}
-	equationEditor.showMetricCombination = function (id) {
+	equationEditor.showMetricCombination = function (id, color) {
 		var name = getNameOfId(id);
 		if (name != "") {
-			console.log("NAME: " + name);
+			console.log("NAME: " + name + " " + color);
 			var help = nameOfLoadedMetric;
 			var allVizs = visController.getAllVizs();
 			if (allVizs[name]) {
 				visController.resetBackgroundOfTagCloud();
-				equationEditor.loadMetric(name, allVizs[name], true);
+				equationEditor.loadMetric(name, allVizs[name], true, color);
 				//rerank();
 			} else {
 				alert("ERROR showMetric SHOULD NEVER HAPPEN");
@@ -1248,6 +1250,11 @@ var EquationEditor = function (vals) {
 			rerank();
 		}
 		printZoomArray();
+	}
+	equationEditor.clearSelectedTagsForEquationEditorArray = function () {
+		visController.clearSelectedTagsForEquationEditorArray();
+		equationEditor.setMode("single");
+		equationEditor.setInterfaceToMode();
 	}
 
 	equationEditor.shiftPressed = function (isShiftPressedPar) {
@@ -1487,7 +1494,7 @@ var EquationEditor = function (vals) {
 		if (mode == "single") {
 			$("#equition_stack_main_combination").css("display", "none");
 			$("#eexcess_equation_composer_math_table2").css("display", "none");
-			
+
 		} else if (mode == "multi") {
 			$("#equition_stack_main_combination").css("display", "inline-flex");
 			if (userMode == "expert")
