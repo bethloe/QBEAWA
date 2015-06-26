@@ -244,6 +244,9 @@ var ArticleController = function (vals) {
 		$('#progressBarOverallScore').attr("value", "0");
 		$('#progressBarSensiumOverallScoreController').css("right", 200 - 0 * 200);
 		$('#qualityFlawViewText').html("");
+		$('#ediotr_section_selector')
+		.find('option')
+		.remove();
 	}
 	articleController.showTheWholeArticle = function () {
 		//TODO: Do a refactoring so that it work for more than one article at the end

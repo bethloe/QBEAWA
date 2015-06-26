@@ -212,6 +212,25 @@
 	vertical-align: middle;
 }
 
+#editor_section_combobox{
+	font-family: "arial";
+    font-weight: bold;
+	line-height:  2.5em;
+	vertical-align: middle;
+}
+
+#editor_section_combobox select {
+
+ border: 1px solid #000; 
+ font-size: 14px;
+ color: #000;
+ background: #ccc; 
+ padding: 2px; 
+
+
+   }
+
+
 
 
 .notificationDiv{
@@ -444,13 +463,18 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 					<div class="icon" onclick="articleController.saveWholeArticle()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
 				<!--	<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.clearEquationComposer()"/></div>
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>-->
-					<div id="editor_section_name"> </div>
-					<div id="rank_quality_metrics_text" style="position: absolute; float:left; right: 60px;  top: 10px;" title=""> Show Wikipage: </div>
+					<div id="editor_section_name" style="display:none"> </div>
+					<div id="editor_section_combobox"> 
+  <select id="ediotr_section_selector" >
+  </select> </div>
+  
+				<div id="rank_quality_metrics_text" style="position: absolute; float:left; right: 60px;  top: 10px;" title=""> Show Wikipage: </div>
 					<div id="mytoggle" class="toggle toggle-light" style="position: absolute; float:left; right: 0px; line-height: 2.5em; vertical-align: middle; top: 10px;" > </div>
 				</div> 
 				<div id="wikiTextInner" >
 				
 				</div>
+				
 </div>
 
 <td  rowspan="2">
@@ -819,6 +843,23 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 		$('#notification-' + notificationID).remove();
 
 	}
+	
+		
+	$("#ediotr_section_selector").change(function () {
+		console.log("Section changed: " + this.value);
+		articleController.highlightSectionInTree(this.value);
+		var item = this.value;
+		$('#editor_section_name').html(item);
+		$('#wikiTextInner').scrollTop(0);
+
+		var desired = item.replace(/[^\w\s]/gi, '');
+		var idStr = desired.replace(/ /g, "_");
+		var help = "#" + idStr;
+		$('#wikiTextInner').animate({
+			scrollTop : $(help).offset().top - 300
+		},
+			'slow');
+	});
 </script>
 
   <script type="text/javascript" src="scripts/article-editor-settings.js"></script>
