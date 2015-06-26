@@ -653,6 +653,7 @@ var ArticleRenderer = function (vals) {
 					masterId : from, //if from == -1 the no master
 					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
 					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
+					
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
