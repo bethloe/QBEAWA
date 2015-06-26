@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Network | Static smooth curves</title>
+  <title>The article editor :-)</title>
 	<!-- THE MENU -->
 		
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
@@ -460,7 +460,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 <hr/>
 <div > 
  <p id="overallScore" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
-  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
+  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="40" high="80" optimum="100" value="0"></meter>
         <!-- <progress id="progressBarOverallScore" max="100" value="100" class="html5">
             <div class="progress-bar">
                 <span style="width: 80%">80%</span>
@@ -774,7 +774,7 @@ Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
 	$('#mytoggle').on('toggle', function (e, active) {
 		if (active) {
 			$("#wikiTextInner").children().remove();
-			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/wiki/User:Dst2015/sandbox\" style=\"width: 100%; height: 100%\"></iframe>");
+			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/wiki/"+$("#articleName").val()+"\" style=\"width: 100%; height: 100%\"></iframe>");
 			console.log("toggle on");
 		} else {
 			articleController.showTheWholeArticleInMainView();

@@ -1,21 +1,21 @@
 * Hostname was found in DNS cache
 *   Trying 46.4.96.215...
-* Connected to api.sensium.io (46.4.96.215) port 80 (#3196)
+* Connected to api.sensium.io (46.4.96.215) port 80 (#963)
 > POST /v1/extract HTTP/1.1
 User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.9) Gecko/20071025 Firefox/2.0.0.9
 Host: api.sensium.io
 Accept: */*
 Accept-Encoding: UTF-8
 Content-Type: application/json
-Content-Length: 926
+Content-Length: 885
 
-* upload completely sent off: 926 out of 926 bytes
+* upload completely sent off: 885 out of 885 bytes
 < HTTP/1.1 200 OK
 * Server nginx/1.2.1 is not blacklisted
 < Server: nginx/1.2.1
-< Date: Mon, 11 May 2015 14:43:56 GMT
+< Date: Fri, 26 Jun 2015 11:57:42 GMT
 < Content-Type: application/json; charset=utf-8
 < Transfer-Encoding: chunked
 < Connection: keep-alive
 < 
-* Connection #3196 to host api.sensium.io left intact
+* Connection #963 to host api.sensium.io left intact
