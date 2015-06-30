@@ -107,6 +107,67 @@ function drawUpArrow(ctx, fromx, fromy, size) {
 	ctx.stroke();
 }
 
+var drawPrecisionRecall = function (canvasName, posX, posY, lengthX, lengthY, colorFN, colorTN, colorTP, colorFP, alphaFN, alphaTN, alphaTP, alphaFP, FN, TN, TP, FP) {
+	var canvas = document.getElementById(canvasName);
+	var context = canvas.getContext('2d');
+
+	context.globalAlpha = alphaFN;
+	context.beginPath();
+	context.rect(posX, posY, lengthX / 2, lengthY);
+	context.fillStyle = colorFN;
+	context.fill();
+	context.lineWidth = 3;
+	context.strokeStyle = 'black';
+	context.stroke();
+
+	context.globalAlpha = 1;
+	context.fillStyle = "black";
+
+	context.globalAlpha = alphaTN;
+	context.beginPath();
+	context.rect(posX + lengthX / 2, posY, lengthX / 2, lengthY);
+	context.fillStyle = colorTN;
+	context.fill();
+	context.lineWidth = 3;
+	context.strokeStyle = 'black';
+	context.stroke();
+
+	context.globalAlpha = 1;
+
+	context.fillStyle = "black";
+
+	context.globalAlpha = alphaTP;
+	context.beginPath();
+	context.arc(posX + lengthX / 2, posY + lengthY / 2, lengthY / 2 - lengthY / 10, Math.PI * 0.5, 1.5 * Math.PI, false);
+	context.closePath();
+	context.lineWidth = 3;
+	context.fillStyle = colorTP;
+	context.fill();
+	context.strokeStyle = '#550000';
+	context.stroke();
+
+	context.globalAlpha = 1;
+	context.fillStyle = "black";
+
+	context.globalAlpha = alphaFP;
+	context.beginPath();
+	context.arc(posX + lengthX / 2, posY + lengthY / 2, lengthY / 2 - lengthY / 10, Math.PI * 0.5, 1.5 * Math.PI, true);
+	context.closePath();
+	context.lineWidth = 3;
+	context.fillStyle = colorFP;
+	context.fill();
+	context.strokeStyle = '#550000';
+	context.stroke();
+
+	context.globalAlpha = 1;
+	context.font = 'italic 12pt Calibri';
+	context.fillStyle = "black";
+	context.fillText('FN: ' + FN, posX + 20, posY + 20);
+	context.fillText('TN: ' + TN, posX + lengthX - 80 + 20, posY + 20);
+	context.fillText('TP: ' + TP, posX + lengthX / 4 + 10, posY + lengthY / 2);
+	context.fillText('FP: ' + FP, posX + lengthX / 2 + 20, posY + lengthY / 2);
+}
+
 //COLORS:
 function Interpolate(start, end, steps, count) {
 	var s = start,

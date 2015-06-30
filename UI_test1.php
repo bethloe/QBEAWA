@@ -11,7 +11,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>uRank</title>
+        <title>The ranking tool :-)</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
 
@@ -58,6 +58,8 @@ and open the template in the editor.
         <script type="text/javascript" src="scripts/taskStorage.js" charset="utf-8"></script>
 		<script type="text/javascript" src="scripts/retrieve-data.js" charset="utf-8"> </script>
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/retrieve-data-revisions.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/search-revisions-for-article.js" charset="utf-8"> </script>
 		
 		<script type="text/javascript" src="scripts/popup.js"></script>
 		<script type="text/javascript" src="scripts/utility.js"></script>
@@ -231,6 +233,54 @@ and open the template in the editor.
                     <div id="eexcess_canvas"></div>
                 </div>
 
+				
+                <div id="eexcess_vis_panel_canvas_stat">
+				
+                    <div id="divstat1" class="eexcess_canvas" style="border-right: 
+	 1px dashed black; border-bottom: 
+	 1px dashed black;">
+						<h1 id="h1stat1">  </h1>
+						<div id="stat1" style="float:left;">
+						</div>
+						
+						<div id="metersstat1" style="float:left;">
+						</div>
+					</div>
+					
+                    <div id="divstat2" class="eexcess_canvas" style="border-left: 
+	 1px dashed black; border-bottom: 
+	 1px dashed black;">
+						<h1 id="h1stat2">  </h1>
+						<div id="stat2" style="float:left;">
+						</div>
+						
+						<div id="metersstat2" style="float:left;">
+						</div>
+					
+					</div>
+					
+                    <div id="divstat3" class="eexcess_canvas" style="border-right: 
+	 1px dashed black; border-top: 
+	 1px dashed black;">
+						<h1 id="h1stat3">  </h1>
+						<div id="stat3" style="float:left;">
+						</div>
+						
+						<div id="metersstat3" style="float:left;">
+						</div>
+					</div>
+					
+                    <div id="divstat4" class="eexcess_canvas" style="border-left: 
+	1px dashed black; border-top: 
+	1px dashed black;">
+						<h1 id="h1stat4">  </h1>
+						<div id="stat4" style="float:left;" >
+						</div>
+						
+						<div id="metersstat4" style="float:left;" >
+						</div>
+					</div>
+                </div>
             </div>
 
             <div id="eexcess_document_panel">

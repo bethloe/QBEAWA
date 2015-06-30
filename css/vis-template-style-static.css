@@ -849,6 +849,16 @@ VIS PANEL (center of screen)
 	cursor: pointer;
 }
 
+.eexcess_tag_img_stat {
+	position: relative;
+	right: -1.2em;
+	top: 0.5em;
+	z-index: 8040;
+	width: 0.8em;
+	height: 0.8em;
+	cursor: pointer;
+}
+
 
 
 
@@ -864,6 +874,15 @@ VIS PANEL (center of screen)
     height: 75%;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+#eexcess_vis_panel_canvas_stat {
+    display: inline-block;
+    width: 100%;
+    height: 75%;
+    overflow-y: auto;
+    overflow-x: hidden;
+	display: none;
 }
 
 /********************************************************************************************************************************************
@@ -1100,6 +1119,21 @@ list-style-type: none;
     width: 55%;
     min-height: 99%;
 	text-align: center;
+}
+
+.eexcess_canvas {
+	display: inline-block;
+    width: 49%;
+    min-height: 45%;
+	float: left;
+	padding: 5px;
+}
+
+.eexcess_canvas_inner{
+    width: 50%;
+	height: 100%;
+    min-height: 99%;
+	float: left;
 }
 
 #eexcess_canvas_rankQM {

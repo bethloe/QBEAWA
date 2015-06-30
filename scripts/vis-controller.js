@@ -67,6 +67,8 @@ var VisController = function () {
 	var FAV_ICON_ON = "media/favicon_on.png";
 	var EDIT_ICON = "media/edit_small.png";
 	var PLUS_ICON = "media/plus_small.png";
+	var SHOW_ALL_ICON = "media/show-all_small.png";
+	var STAT_ICON = "media/stat_small.png";
 	var MINUS_ICON = "media/minus_small.png";
 	var REMOVE_SMALL_ICON = "media/batchmaster/remove.png"
 		var ICON_EUROPEANA = "media/Europeana-favicon.ico";
@@ -148,6 +150,9 @@ var VisController = function () {
 
 	/////////////////////
 	var qmEditorController = null;
+
+	var statCounter = 0;
+	var statActivated = false;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -546,6 +551,83 @@ var VisController = function () {
 		d3.select(qmContainer).selectAll(tagClass).style("background", "#08519c");
 	}
 
+	var generateQMRankingForOneMetric = function (qmName) {
+		var allEquations = rankingModel.getEquations();
+		var allRanks = [];
+		var toCheckLength = dataForQMRankingAlreadyEuclideanNormed.length / 2;
+		var arrayHelp = [];
+		var qmRankingArrayInclScores = [];
+		for (var r = 0; r < dataForQMRankingAlreadyEuclideanNormed.length; r++) {
+			var currentData = JSON.parse(dataForQMRankingAlreadyEuclideanNormed[r]);
+			var equation = "";
+			for (var j = 0; j < allEquations.length; j++) {
+				if (allEquations[j].name == qmName) {
+					equation = allEquations[j].equation;
+					break;
+				}
+			}
+			if (equation != "") {
+				var currentTitle = currentData.title;
+				for (var key in currentData) {
+					if (currentData.hasOwnProperty(key)) {
+						var re = new RegExp(key, "g");
+						equation = equation.replace(re, currentData[key]);
+					}
+				}
+
+				var result = math.eval(equation);
+				var nObject = {};
+				nObject.name = currentData.title;
+				nObject.score = result;
+				nObject.featured = currentData.featured;
+				qmRankingArrayInclScores.push(nObject);
+
+			} else {
+				return false;
+			}
+		}
+		qmRankingArrayInclScores.sort(SortByScore);
+		var TP = 0;
+		var TN = 0;
+		var FP = 0;
+		var FN = 0;
+
+		console.log("qmRankingArrayInclScores.length: " + qmRankingArrayInclScores.length);
+		for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
+			//console.log("HERE: " +  qmRankingArray[i].name + " "  +  qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score+  " "+qmRankingArrayInclScores[j].name );
+			if (j < toCheckLength) {
+				if (qmRankingArrayInclScores[j].featured) {
+					TP++;
+				} else
+					FP++;
+
+			}
+			if (j >= toCheckLength) {
+				if (!qmRankingArrayInclScores[j].featured) {
+					TN++;
+				} else
+					FN++;
+			}
+		}
+
+		var retArray = [];
+		retArray.push(TP);
+		retArray.push(TN);
+		retArray.push(FP);
+		retArray.push(FN);
+		return retArray;
+
+	}
+	var statDefaultHeight = 0;
+	var statDefaultWidth = 0;
+	var clearStat = function () {
+		for (var i = 1; i <= 4; i++) {
+			$("#stat" + i).empty();
+			$("#metersstat" + i).empty();
+		}
+		statCounter = 0;
+	}
+
 	TAGCLOUD.buildTagCloud = function () {
 		// Empty tag container
 		$(qmContainer).empty();
@@ -596,9 +678,13 @@ var VisController = function () {
 		//.on("mouseover", EVTHANDLER.tagInBoxMouseOvered)
 		//.on("mouseout", EVTHANDLER.tagInBoxMouseOuted)
 		.on("click", function (data) {
+
+			$(visPanelCanvas).css('display', 'inline-block');
+			$("#eexcess_vis_panel_canvas_stat").css('display', 'none');
+			clearStat();
 			if (equationEditor.isShiftPressed() == false) {
 				//	console.log("buildTagCloud ON CLICK " + data.name + " " + allVizs[data.name]);
-				
+
 				visController.clearSelectedTagsForEquationEditorArray();
 				equationEditor.setMode("single");
 				equationEditor.loadMetric(data.name, allVizs[data.name], true);
@@ -646,6 +732,9 @@ var VisController = function () {
 				e.stopPropagation();
 			console.log("CLICKED!");
 
+			$(visPanelCanvas).css('display', 'inline-block');
+			$("#eexcess_vis_panel_canvas_stat").css('display', 'none');
+			clearStat();
 			var object = {
 				name : data.name,
 				viz : allVizs[data.name],
@@ -657,9 +746,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																							                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																							                   </div>\
-																																																																																											   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																																																																																											                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																											                   </div>\
+																																																																																																																															   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -1048,6 +1137,13 @@ var VisController = function () {
 		.attr("src", EDIT_ICON)
 		.attr("class", "edit_icon")
 		.style("margin-left", "4px");
+		/*aListItem.select(".eexcess_favicon_section")
+		.append("img")
+		.attr('title', 'Show the revision history')
+		.attr("src", SHOW_ALL_ICON)
+		.attr("class", "show_all_icon")
+		.style("margin-left", "4px");*/
+		
 
 		LIST.updateItemsBackground();
 		LIST.bindEventHandlersToListItems();
@@ -1081,6 +1177,19 @@ var VisController = function () {
 			var currentData = data[actualIndex];
 			window.open('http://localhost/ArticleEditor/index3.php?title=' + currentData.title);
 		});
+		
+		/*d3.selectAll(allListItems).select(favIconClass).select('.show_all_icon').on("click", function(d, i){
+			
+			if (!e)
+				var e = window.event;
+			e.cancelBubble = true;
+			if (e.stopPropagation)
+				e.stopPropagation();
+			console.log("SHOW_ALL_ICON");
+			console.log("CLICK ON REVISION");
+			searchRevision(668918558, 3, equationEditor, visController);
+			
+		});*/
 		d3.selectAll(allListItems).select(favIconClass).select('.plus_icon').on("click", function (d, i) {
 
 			if (!e)
@@ -1233,7 +1342,7 @@ var VisController = function () {
 		DOCPANEL.clear();
 		if (showRanking) {
 			//rankingVis.drawCombination(rankingModel, $(contentPanel).height(), weightColorScale);
-			
+
 			$(".eexcess_list").css("height", 26 + "px");
 			rankingVis.redrawStacked(rankingModel, $(contentPanel).height(), weightColorScale);
 			$(visPanelCanvas).scrollTo('top');
@@ -1825,6 +1934,81 @@ var VisController = function () {
 
 	var visController = {};
 
+	visController.enableStat = function () {
+		if (!statActivated) {
+			statActivated = true;
+			d3.select(qmContainer).selectAll(tagClass).
+			append("img")
+			.attr("class", "eexcess_tag_img_stat")
+			.attr("src", STAT_ICON)
+			.on("click", function (data) {
+				if (!e)
+					var e = window.event;
+				e.cancelBubble = true;
+				if (e.stopPropagation)
+					e.stopPropagation();
+				console.log("CLICKED!");
+				$(visPanelCanvas).css('display', 'none');
+				$("#eexcess_vis_panel_canvas_stat").css('display', 'inline-block');
+				if (statCounter < 4)
+					statCounter++;
+				else
+					statCounter = 1;
+				$("#h1stat" + statCounter).empty();
+				$("#h1stat" + statCounter).html(data.name);
+				//Calculate Precision, Recall and F1:
+				var recall = 0;
+				var precision = 0;
+				var F = 0;
+
+				var TP = 0;
+				var TN = 0;
+				var FP = 0;
+				var FN = 0;
+				var TPTNFPFN = generateQMRankingForOneMetric(data.name);
+				if (TPTNFPFN != false) {
+					TP = TPTNFPFN[0];
+					TN = TPTNFPFN[1];
+					FP = TPTNFPFN[2];
+					FN = TPTNFPFN[3];
+					var recall = parseFloat(TP / (TP + FN)).toFixed(2);
+					var precison = parseFloat(TP / (TP + FP)).toFixed(2);
+					var F = parseFloat((2 * recall * precison) / (precision + recall)).toFixed(2);
+					console.log("TP: +" + TP + " TN: " + TN + " FP: " + FP + " FN: " + FN);
+
+				} else
+					alert("ERROR SHOULD NEVER HAPPEN!");
+				$("#stat" + statCounter).empty();
+				if (statDefaultHeight == 0) {
+					statDefaultHeight = $("#divstat" + statCounter).height();
+					statDefaultWidth = $("#divstat" + statCounter).width();
+				}
+				$("#stat" + statCounter).css('height', statDefaultHeight - 40);
+				$("#stat" + statCounter).css('width', statDefaultWidth / 2);
+				$("#metersstat" + statCounter).empty();
+				$("#metersstat" + statCounter).css('height', statDefaultHeight - 40);
+				//$("#metersstat" + statCounter).css('line-height', (statDefaultHeight - 40)+'px');
+				$("#metersstat" + statCounter).css('width', statDefaultWidth / 2 - 20);
+				$("#metersstat" + statCounter).append('<table  ><tr><td>Recall</td><td>  <meter id="recall' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + recall + '"></meter></td><td>' + recall + '</td></tr><tr><td>Precision </td><td><meter id="percision' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + precison + '"></meter></td><td>' + precison + '</td></tr><tr><td>F1-score</td><td><meter id="f1' + statCounter + '" style="width:100px" min="0" max="2" low="0.8" high="1.6" optimum="2" value="' + F + '"></td><td>' + F + '</td></tr></table>');
+				$("#stat" + statCounter).append('<canvas id="canvasstat' + statCounter + '" width=' + $("#stat1").width() + ' height=' + $("#stat1").height() + '></canvas>');
+				//	var colors = ['rgb(165,0,38)', 'rgb(215,48,39)', 'rgb(244,109,67)', 'rgb(253,174,97)', 'rgb(254,224,139)', 'rgb(255,255,191)', 'rgb(217,239,139)', 'rgb(166,217,106)', 'rgb(102,189,99)', 'rgb(26,152,80)', 'rgb(0,104,55)'];
+				drawPrecisionRecall("canvasstat" + statCounter, 0, 0, $("#canvasstat" + statCounter).width(), $("#canvasstat" + statCounter).height(), "rgb(209,219,201)", "rgb(241,241,241)", "rgb(201,246,171)", "rgb(255,178,172)", parseFloat(FN / 100).toFixed(2), parseFloat(TN / 100).toFixed(2), parseFloat(TP / 100).toFixed(2), parseFloat(FP / 100).toFixed(2), FN, TN, TP, FP);
+				/*$("#eexcess_vis_panel_canvas_stat").append('<div id="stat1_div" style="	display: inline-block; width: 55%;   min-height: 99%;">  <canvas id="stat1" style="display: inline-block; width: 100%;   min-height: 99%;"></canvas> </div>');
+
+				console.log($("#stat1").width());
+				console.log($("#stat1").height());
+				drawPrecisionRecall("stat1",0, 0, $("#stat1").width() - 200, $("#stat1").height() - 200, colors[9], colors[3], colors[5], colors[7], 0.2,0.3,0.9,0.4);*/
+			});
+		}
+	}
+	
+	visController.disableStat = function () {
+		if (statActivated) {
+			statActivated = false;
+			d3.select(qmContainer).selectAll(tagClass).selectAll(".eexcess_tag_img_stat").remove();
+		}
+	}
+
 	visController.updateHeaderInfoSection = function (text) {
 		$(headerInfoSection).html(text);
 	}
@@ -2045,7 +2229,7 @@ var VisController = function () {
 			console.log("qmRankingArrayInclScores.length: " + qmRankingArrayInclScores.length);
 			for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
 				//console.log("HERE: " +  qmRankingArray[i].name + " "  +  qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score+  " "+qmRankingArrayInclScores[j].name );
-				if (j < toCheckLength - 1) {
+				if (j < toCheckLength) {
 					if (qmRankingArrayInclScores[j].featured) {
 						rightCounter++;
 					}
@@ -2065,12 +2249,12 @@ var VisController = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																																																															<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																								                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																								                </div>\
-																																																																																												<div id=\"eexcess_canvas_rankQM\"></div> \
-																																																																																												 \
-																																																																																												  </div>");
+																																																																																																			<div id=\"rank_QMs\" style=\"display:none\">\
+																																																																																																																												                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																												                </div>\
+																																																																																																																																<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																																																																																																 \
+																																																																																																																																  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -2346,7 +2530,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																																																																															{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																																																																																																																															{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

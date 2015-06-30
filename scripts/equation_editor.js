@@ -1434,7 +1434,8 @@ var EquationEditor = function (vals) {
 
 			$("#equation_stack_text_of_QM").css("display", "inline-flex");
 			$("#eexcess_equation_controls_normal_mode").css("display", "inline-flex");
-
+			if (visController != null)
+				visController.disableStat();
 		} else if (userMode == "advanced") {
 			$("#eexcess_equation_controls").css("display", "none");
 			$("#eexcess_equation_composer").css("display", "none");
@@ -1472,6 +1473,7 @@ var EquationEditor = function (vals) {
 			$("#switch_to_expert_mode").css("display", "none");
 			$("#edit_Icon_QM_Text_Return").css("display", "none");
 			$("#eexcess_equation_controls_normal_mode").css("display", "none");
+			visController.enableStat();
 		}
 	}
 
