@@ -4,15 +4,6 @@ var QualityManager = function (vals) {
 
 	var qualityManager = {};
 
-	//Good values
-	var good_flesch = 36;
-	var good_fleschWordCount = 20000;
-	var good_kinkaid = 12;
-	var good_extLinks = 5;
-	var good_iwlinks = 5;
-	var good_numPics = 4;
-	var good_allLinks = 30;
-
 	var adaptValue = function (value) {
 		value = parseFloat(value);
 		if (value > 1)

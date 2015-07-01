@@ -163,6 +163,11 @@ var ArticleController = function (vals) {
 			$('#showReferences a div h2').attr("class", "ca-main");
 			$('#showReferences').css("background-color", "grey");
 		}
+		if($('#showAllRefsTd').attr("class") == "menuHelper2"){
+			$('#showAllRefsTd').attr("class", "menuHelper3");
+		}else{
+			$('#showAllRefsTd').attr("class", "menuHelper2");
+		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showReferences();
 		}
@@ -191,6 +196,11 @@ var ArticleController = function (vals) {
 			$('#showImages a div h2').attr("class", "ca-main");
 			$('#showImages').css("background-color", "grey");
 		}
+		if($('#showAllImagesTd').attr("class") == "menuHelper2"){
+			$('#showAllImagesTd').attr("class", "menuHelper3");
+		}else{
+			$('#showAllImagesTd').attr("class", "menuHelper2");
+		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showImages();
 		}
@@ -216,6 +226,11 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.semanticZooming = function () {
+		if($('#semTd').attr("class") == "menuHelper2"){
+			$('#semTd').attr("class", "menuHelper3");
+		}else{
+			$('#semTd').attr("class", "menuHelper2");
+		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].semanticZooming();
 		}

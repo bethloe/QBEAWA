@@ -209,7 +209,7 @@ var ArticleRenderer = function (vals) {
 					id : GLOBAL_idCounter,
 					x : x,
 					y : y,
-					title : image,
+					title : "<img width='200' src='" + image + "'>",
 					label : image,
 					image : image,
 					imageInfos : images[i],
@@ -653,7 +653,7 @@ var ArticleRenderer = function (vals) {
 					masterId : from, //if from == -1 the no master
 					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
 					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
-					
+
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
@@ -1607,7 +1607,36 @@ var ArticleRenderer = function (vals) {
 		}
 		selectHelper = false;
 	}
-
+	var getAliasToQualityName = function (realName){
+		if(realName == "qualityFleschWordCount")
+			return "Readability score incl. Word Count";
+		else if(realName == "qualityKincaid")
+			return "2. Readability score ";
+		else if(realName == "qualityImages")
+			return "Enough Images";
+		else if(realName == "qualityExternalRefs")
+			return "Enough External References";
+		else if(realName == "qualityAllLinks")
+			return "Enough Links";
+		else if(realName == "score")
+			return "Score of the section";
+		
+	}
+	var getTooltipToQualityName = function(realName){
+		if(realName == "qualityFleschWordCount")
+			return "This measure combines the Flesch readability score with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
+		else if(realName == "qualityKincaid")
+			return "The Kincaid readability score. Should help to check the readability of the section. ";
+		else if(realName == "qualityImages")
+			return "Are there enough images referenced in the section. By default 4 is set to be the optimal value. ";
+		else if(realName == "qualityExternalRefs")
+			return "Are there enough external references in the section. By default 5 is set to be the optimal value. ";
+		else if(realName == "qualityAllLinks")
+			return "Are there enough links in the section. By default 30 is set to be the optimal value. ";
+		else if(realName == "score")
+			return "The overall score of the section!";
+	
+	}
 	articleRenderer.highlightSectionInTree = function (sectionName, isScroll) {
 		isScroll = typeof isScroll !== 'undefined' ? isScroll : false;
 		console.log("highlightSectionInTree: " + sectionName);
@@ -1701,15 +1730,92 @@ var ArticleRenderer = function (vals) {
 					},
 						'slow');
 				}
-				GLOBAL_data.nodes.update({
-					id : item.id,
-					//title : item.quality,
-					color : {
-						background : "white",
-						border : 'blue',
-						borderWidth : 10
+
+				var items = GLOBAL_data.nodes.get();
+
+				for (var i = 0; i < items.length; i++) {
+					var innerItem = items[i];
+
+					if (innerItem.type == "text" && idInRange(innerItem.id)) {
+						var result = hexToRgb(innerItem.color.background);
+						if (result != null) {
+							GLOBAL_data.nodes.update({
+								id : innerItem.id,
+								//title : item.quality,
+								color : {
+									background : "rgba(" + result.r + ", " + result.g + ", " + result.b + ", 1)"
+								}
+							});
+						}
+						//		console.log("INNERITEM: " + innerItem.color.background);
 					}
-				});
+
+				}
+				var items = GLOBAL_data.nodes.get();
+
+				for (var i = 0; i < items.length; i++) {
+					var innerItem = items[i];
+
+					if (innerItem.type == "text" && idInRange(innerItem.id) && innerItem.id != item.id) {
+						var oldBgColor = innerItem.color.background;
+						var result = hexToRgb(oldBgColor);
+						if (result != null) {
+							GLOBAL_data.nodes.update({
+								id : innerItem.id,
+								//title : item.quality,
+								color : {
+									background : "rgba(" + result.r + ", " + result.g + ", " + result.b + ", 0.5)"
+								}
+							});
+						} else {
+							var obgcarray = oldBgColor.split(",");
+							GLOBAL_data.nodes.update({
+								id : innerItem.id,
+								//title : item.quality,
+								color : {
+									background : obgcarray[0] + "," + obgcarray[1] + "," + obgcarray[2]+", 0.5"
+								}
+							});
+						}
+						//		console.log("INNERITEM: " + innerItem.color.background);
+					}
+					if (innerItem.type == "text" && idInRange(innerItem.id) && innerItem.id == item.id) {
+						var oldBgColor = innerItem.color.background;
+						var result = hexToRgb(oldBgColor);
+						if (result != null) {
+							GLOBAL_data.nodes.update({
+								id : innerItem.id,
+								//title : item.quality,
+								color : {
+									background : "rgba(" + result.r + ", " + result.g + ", " + result.b + ", 1)",
+									border: 'blue'
+									
+								}
+							});
+						} else {
+							var obgcarray = oldBgColor.split(",");
+							GLOBAL_data.nodes.update({
+								id : innerItem.id,
+								//title : item.quality,
+								color : {
+									background : obgcarray[0] + "," + obgcarray[1] + "," + obgcarray[2]+", 1",
+									border: 'blue'
+								}
+							});
+						}
+						//		console.log("INNERITEM: " + innerItem.color.background);
+					}
+
+				}
+				/*GLOBAL_data.nodes.update({
+				id : item.id,
+				//title : item.quality,
+				color : {
+				background : "rgba(200, 54, 54, 0.5)",
+				border : 'blue',
+				borderWidth : 10
+				}
+				});*/
 				currentSelectedSectionIndex = item.index;
 				currentSelectedSectionId = item.id;
 				//	console.log("CID2: " + currentSelectedSectionId);
@@ -1719,15 +1825,15 @@ var ArticleRenderer = function (vals) {
 				if (showQualityFlag) {
 					var masterItem = articleRenderer.getItem(item.masterId);
 					var allKeys = Object.keys(item.allQulityParameters);
-					var qmStr = "<table border='1' width='400' style=' position: relative; max-width: 400px' >";
-					qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
+					var qmStr = "<h2 ><b>"+ masterItem.label + "</b></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
+					//qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
 					for (var i = 0; i < allKeys.length; i++) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
-						qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + allKeys[i] + "</td><td> \
-																																																																																																																																																																																																																																								  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
-																																																																																																																																																																																																																																								  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																																																																																																																								  </td><td>" + status + "</td></tr>");
+						qmStr += ("<tr title=\""+getTooltipToQualityName(allKeys[i])+"\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
+																																																																																																																																																																																																																																																																				  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
+																																																																																																																																																																																																																																																																				  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																																																																																																				  </td><td>" + status + "</td></tr>");
 					}
 					console.log("has sentiment score: " + item.sentimentScore);
 					if (item.sentimentScore != undefined) {
@@ -1739,14 +1845,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																																																																																															$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																																																																																																if (!$(this).is(':checked')) { \
-																																																																																																																																																																																																																	articleController.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																																																																																																} \
-																																																																																																																																																																																																																else{\
-																																																																																																																																																																																																																	articleController.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																																																																																																} \
-																																																																																																																																																																																																															}); </script>";
+																																																																																																																																																																																																																																			$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																																																																																				if (!$(this).is(':checked')) { \
+																																																																																																																																																																																																																																					articleController.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																																																																				} \
+																																																																																																																																																																																																																																				else{\
+																																																																																																																																																																																																																																					articleController.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																																																																				} \
+																																																																																																																																																																																																																																			}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {
@@ -1762,7 +1868,7 @@ var ArticleRenderer = function (vals) {
 				var bgColor = item.quality < 0.5 ? "red" : "white";
 				var status = item.quality < 0.5 ? "improve" : "OK";
 
-				qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + "Section score: " + "</td><td>" + item.quality + "</td><td>" + status + "</td></tr>");
+				qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + "Section score: " + "</td><td>" + parseFloat(item.quality).toFixed(2) + "</td><td>" + status + "</td></tr>");
 				qmStr += "</table>";
 				$("#qualityParameters").html(qmStr);
 			}
@@ -1932,6 +2038,14 @@ var ArticleRenderer = function (vals) {
 	}
 	articleRenderer.semanticZooming = function () {
 		semanticZooming = !semanticZooming;
+		if (semanticZooming) {
+			var object = {};
+			object.scale = 0.02;
+			articleRenderer.onZoom(object);
+		} else {
+			articleRendererSemanticZooming.reloadData();
+			articleRenderer.showOverview();
+		}
 	}
 	function generateRawText(text, title) {
 		var rawText = "";

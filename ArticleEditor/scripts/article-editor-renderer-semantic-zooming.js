@@ -312,10 +312,12 @@ var ArticleRendererSemanticZooming = function (vals) {
 
 	}
 
-	function func_hideParagraphMode() {
-		if (GLOBAL_network.getScale() < hideTextAt && !hideSectionText) {
+	function func_test() {
+		if (!hideSectionText) {
 			hideSectionText = true;
-
+			var object = {};
+			object.scale = 0.12;
+			GLOBAL_network.moveTo(object);
 			centerAfterScaling = true;
 			var items = GLOBAL_data.nodes.get();
 
@@ -326,35 +328,99 @@ var ArticleRendererSemanticZooming = function (vals) {
 				if (item.type == 'text' && idInRange(item.id)) {
 					textNodes.add(item);
 				}
-				if (item.type == 'section' && idInRange(item.id)) {
-					console.log("IN HERE " + item.id + " " + xCnt + " " + (item.x + xCnt) + " " + (item.y + yCnt) + " " + yCnt);
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						//x : (item.x + xCnt),
-						//y : (item.y + yCnt),
-						title : item.x + xCnt + " " + item.y + yCnt,
-						/*fontSize : 1000 / GLOBAL_network.getScale(),
-						fontSizeMin : 1000 / GLOBAL_network.getScale(),
-						fontSizeMax : 1000 / GLOBAL_network.getScale()*/
-						fontSize : 2000,
-						fontSizeMin : 2000,
-						fontSizeMax : 2100
-
-					});
-					xCnt += 10000;
-					yCnt += 10000;
-				}
 
 			}
 			GLOBAL_network.redraw();
-
+			GLOBAL_network
 			items = textNodes.get();
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
 				GLOBAL_data.nodes.remove(item.id);
 			}
 
+			/*items = GLOBAL_data.nodes.get();
+			for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.type == 'section' && idInRange(item.id)) {
+			GLOBAL_data.nodes.update({
+			id : item.id,
+			fontSize : parseFloat(10.4 / (GLOBAL_network.getScale() + 0.15)),
+			fontSizeMin : parseFloat(10.4 / (GLOBAL_network.getScale() + 0.15)),
+			fontSizeMax : parseFloat(10.4 / (GLOBAL_network.getScale() + 0.15)) + 10
+			});
+			}
+
+			}
+			GLOBAL_network.redraw();
+			GLOBAL_renderer.redraw();
+			if (centerAfterScaling) {
+			GLOBAL_renderer.centerWithoutScaling();
+			}*/
 		}
+		console.log("GLOBAL_network.getScale() : " + GLOBAL_network.getScale());
+		items = GLOBAL_data.nodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.type == 'section' && idInRange(item.id)) {
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					fontSize : parseFloat(10.4 / (GLOBAL_network.getScale())),
+					fontSizeMin : parseFloat(10.4 / (GLOBAL_network.getScale())),
+					fontSizeMax : parseFloat(10.4 / (GLOBAL_network.getScale())) + 10
+				});
+			}
+
+		}
+		GLOBAL_network.redraw();
+		GLOBAL_renderer.redraw();
+		if (centerAfterScaling) {
+			GLOBAL_renderer.centerWithoutScaling();
+		}
+
+	}
+	function func_hideParagraphMode() {
+		//	if (GLOBAL_network.getScale() < hideTextAt && !hideSectionText) {
+		hideSectionText = true;
+
+		centerAfterScaling = true;
+		var items = GLOBAL_data.nodes.get();
+
+		var xCnt = 0;
+		var yCnt = 0;
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			if (item.type == 'text' && idInRange(item.id)) {
+				textNodes.add(item);
+			}
+			if (item.type == 'section' && idInRange(item.id)) {
+				console.log("IN HERE " + item.id + " " + xCnt + " " + (item.x + xCnt) + " " + (item.y + yCnt) + " " + yCnt);
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					//x : (item.x + xCnt),
+					//y : (item.y + yCnt),
+					title : item.x + xCnt + " " + item.y + yCnt,
+					/*fontSize : 1000 / GLOBAL_network.getScale(),
+					fontSizeMin : 1000 / GLOBAL_network.getScale(),
+					fontSizeMax : 1000 / GLOBAL_network.getScale()*/
+					fontSize : 2000,
+					fontSizeMin : 2000,
+					fontSizeMax : 2100
+
+				});
+				xCnt += 10000;
+				yCnt += 10000;
+			}
+
+		}
+		GLOBAL_network.redraw();
+
+		items = textNodes.get();
+		for (var i = 0; i < items.length; i++) {
+			var item = items[i];
+			GLOBAL_data.nodes.remove(item.id);
+		}
+
+		//	}
 
 		if (GLOBAL_network.getScale() < hideTextAt) {
 			redrawSections();
@@ -369,7 +435,34 @@ var ArticleRendererSemanticZooming = function (vals) {
 			centerAfterScaling = true;
 			hideSectionText = false;
 			console.log("IN HERE");
-			var items = textNodes.get();
+
+			GLOBAL_network.redraw();
+		}
+		if (GLOBAL_network.getScale() >= hideTextAt) {
+			items = GLOBAL_data.nodes.get();
+			for (var i = 0; i < items.length; i++) {
+				var item = items[i];
+				if (item.type == 'section' && idInRange(item.id)) {
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						fontSize : parseFloat(10.4 / GLOBAL_network.getScale()),
+						fontSizeMin : parseFloat(10.4 / GLOBAL_network.getScale()),
+						fontSizeMax : parseFloat(10.4 / GLOBAL_network.getScale()) + 10
+					});
+				}
+
+			}
+			GLOBAL_network.redraw();
+			GLOBAL_renderer.redraw();
+			if (centerAfterScaling) {
+				GLOBAL_renderer.centerWithoutScaling();
+			}
+		}
+	}
+	articleRendererSemanticZooming.reloadData = function () {
+		hideSectionText = false;
+		var items = textNodes.get();
+		if (items.length > 0) {
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
 				GLOBAL_data.nodes.add(item);
@@ -387,41 +480,19 @@ var ArticleRendererSemanticZooming = function (vals) {
 				}
 			}
 			textNodes.clear();
-			GLOBAL_network.redraw();
-			//GLOBAL_renderer.redraw();
-			//GLOBAL_renderer.centerWithScaleFactor(1);
 		}
-		if (GLOBAL_network.getScale() >= hideTextAt) {
-			items = GLOBAL_data.nodes.get();
-			//console.log("TEXT SIZE: " + parseFloat(10.4 / GLOBAL_network.getScale()));
-			for (var i = 0; i < items.length; i++) {
-				var item = items[i];
-				/*if (item.type == 'text' && idInRange(item.id)) {
-				GLOBAL_data.nodes.update({
-				id : item.id,
-				fontSize : parseFloat(1.4 / GLOBAL_network.getScale()),
-				fontSizeMin : parseFloat(1.4 / GLOBAL_network.getScale()),
-				fontSizeMax : parseFloat(1.4 / GLOBAL_network.getScale()) + 10
-				});
-				}*/
-				if (item.type == 'section' && idInRange(item.id)) {
-					//console.log("SECTION!!!!!!!!!!!!!!!!!");
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						fontSize : parseFloat(10.4 / GLOBAL_network.getScale()),
-						fontSizeMin : parseFloat(10.4 / GLOBAL_network.getScale()),
-						fontSizeMax : parseFloat(10.4 / GLOBAL_network.getScale()) + 10
-					});
-				}
+		var items = nodesHideAndSeek.get();
+		if (items.length > 0) {
+			intoOverviewMode = false;
+			GLOBAL_renderer.cleanUp();
+			var items = nodesHideAndSeek.get();
 
+			for (var i = 0; i < items.length; i++) {
+				GLOBAL_data.nodes.add(items[i]);
 			}
-			GLOBAL_network.redraw();
-			GLOBAL_renderer.redraw();
-			if (centerAfterScaling) {
-				//centerAfterScaling = false;
-				GLOBAL_renderer.centerWithoutScaling();
-			}
+			nodesHideAndSeek.clear();
 		}
+
 	}
 	articleRendererSemanticZooming.doZooming = function (properties) {
 
@@ -432,58 +503,59 @@ var ArticleRendererSemanticZooming = function (vals) {
 		// HIDE PARAGRAPHS MODE
 		//console.log("SCALE: " + GLOBAL_network.getScale());
 		if (hideParagraphMode) {
-			func_hideParagraphMode();
+			//func_hideParagraphMode();
+			func_test();
 		}
 
 		//---------------------------------------------------------
 		// OVERVIEW MODE
-		if (overviewMode) {
-			articleRendererSemanticZooming.func_overviewMode();
-		}
+		//if (overviewMode) {
+		//	articleRendererSemanticZooming.func_overviewMode();
+		//}
 		//----------------------------------------------------------------
-		if (imageSwitcher) {
-			if (GLOBAL_network.getScale() < 1 && levelOfSemanticZooming < 1) {
-				//console.log("GLOBAL_network.getSCALE < 1!!!");
-				levelOfSemanticZooming = 1;
-				var items = GLOBAL_data.nodes.get();
+		/*if (imageSwitcher) {
+		if (GLOBAL_network.getScale() < 1 && levelOfSemanticZooming < 1) {
+		//console.log("GLOBAL_network.getSCALE < 1!!!");
+		levelOfSemanticZooming = 1;
+		var items = GLOBAL_data.nodes.get();
 
-				for (var i = 0; i < items.length; i++) {
-					if (items[i].hasOwnProperty('image') && idInRange(items[i].id)) {
-						var help = items[i].image;
+		for (var i = 0; i < items.length; i++) {
+		if (items[i].hasOwnProperty('image') && idInRange(items[i].id)) {
+		var help = items[i].image;
 
-						GLOBAL_data.nodes.update({
-							id : items[i].id,
-							label : 'test' + i,
-							image : items[i].dataToChange,
-							dataToChange : help
-						});
-					}
-
-				}
-			}
-
-			if (GLOBAL_network.getScale() >= 1 && levelOfSemanticZooming >= 1) {
-				levelOfSemanticZooming = 0;
-
-				var items = GLOBAL_data.nodes.get();
-
-				for (var i = 0; i < items.length; i++) {
-					if (items[i].hasOwnProperty('image') && idInRange(items[i].id)) {
-						//console.log("images: " + items[i].id);
-						//GLOBAL_data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
-						var help = items[i].image;
-
-						GLOBAL_data.nodes.update({
-							id : items[i].id,
-							label : 'test' + i,
-							image : items[i].dataToChange,
-							dataToChange : help
-						});
-					}
-
-				}
-			}
+		GLOBAL_data.nodes.update({
+		id : items[i].id,
+		label : 'test' + i,
+		image : items[i].dataToChange,
+		dataToChange : help
+		});
 		}
+
+		}
+		}
+
+		if (GLOBAL_network.getScale() >= 1 && levelOfSemanticZooming >= 1) {
+		levelOfSemanticZooming = 0;
+
+		var items = GLOBAL_data.nodes.get();
+
+		for (var i = 0; i < items.length; i++) {
+		if (items[i].hasOwnProperty('image') && idInRange(items[i].id)) {
+		//console.log("images: " + items[i].id);
+		//GLOBAL_data.update({id: 1, text: 'item 1 (updated)'}); // triggers an 'update' event
+		var help = items[i].image;
+
+		GLOBAL_data.nodes.update({
+		id : items[i].id,
+		label : 'test' + i,
+		image : items[i].dataToChange,
+		dataToChange : help
+		});
+		}
+
+		}
+		}
+		}*/
 	}
 
 	//---------------------------------- Helpers -------------------------------

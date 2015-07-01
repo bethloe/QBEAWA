@@ -29,6 +29,29 @@ $("#sliderAllLinks").change(function (e) {
 	//console.log("sliderAllLinks: " + weightAllLinks);
 	articleController.showQuality();
 });
+
+//------------------------------------------------------------------------
+$("#numberFlesch").change(function (e) {
+	good_fleschWordCount = $(this).val();
+	articleController.showQuality();
+});
+$("#numberKincaid").change(function (e) {	
+good_kinkaid = $(this).val();
+	articleController.showQuality();
+});
+$("#numberImageQuality").change(function (e) {
+good_numPics = $(this).val();
+	articleController.showQuality();
+});
+$("#numberExternalRefs").change(function (e) {
+good_extLinks = $(this).val();
+	articleController.showQuality();
+});
+$("#numberAllLinks").change(function (e) {
+good_allLinks = $(this).val();
+	articleController.showQuality();
+});
+
 //Influences: -----------------------------------------------------------------
 var defaultValue = parseFloat((100 / numberOfMetrics));
 $("#sliderFleschInfluence").val(defaultValue);
@@ -210,6 +233,17 @@ var resetToDefaultSettings = function () {
 	$("#sliderImageQuality").val(50);
 	$("#sliderExternalRefs").val(50);
 	$("#sliderAllLinks").val(50);
+	//------------------------------------------------------------------
+	good_fleschWordCount = default_good_fleschWordCount;
+	good_kinkaid = default_good_kinkaid;
+	good_numPics = default_good_numPics;
+	good_extLinks = default_good_extLinks;
+	good_allLinks = default_good_allLinks;
+	$("#numberFlesch").val(default_good_fleschWordCount);
+	$("#numberKincaid").val(default_good_kinkaid);
+	$("#numberImageQuality").val(default_good_numPics);
+	$("#numberExternalRefs").val(default_good_extLinks);
+	$("#numberAllLinks").val(default_good_allLinks);
 	//------------------------------------------------------------------
 	influenceFlesch = parseFloat((100 / numberOfMetrics) / 100);
 	influenceKincaid = parseFloat((100 / numberOfMetrics) / 100);

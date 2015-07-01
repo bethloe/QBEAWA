@@ -149,9 +149,6 @@ var DataManipulator = function (vals) {
 						} else if (quality.score > 0.9) {
 							backgroundColor = "#00EE00";
 						}
-						//var help = sectionData.sections[0].line;
-						//help = help.replace(/"/g, "\"");
-						console.log("HERE: " + sectionData.sections[0].line);
 						var desired = sectionData.sections[0].line.replace(/[^\w\s]/gi, '');
 						var idStr = desired.replace(/ /g, "_");
 						htmlForDialog += ("<div id=\"" + idStr + "\"contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
