@@ -72,7 +72,7 @@
 	  float: left;
 	  background-color:white;
     }   
-	
+
 	
 	
   .ui-resizable-helper { border: 2px dotted #00F; }
@@ -319,7 +319,7 @@ font-family: 'WebSymbolsRegular', cursive;
 	
 	<!-- END ------->
 	
-<script>  var articleController = new ArticleController(); </script>
+<script>  var articleController = new ArticleController();</script>
 <!-- Smooth curve type:
 <select id="dropdownID">
     <option value="continuous" selected="selected">continuous</option>
@@ -355,11 +355,17 @@ S
 </tr>
 </table>
 </div>-->
+
+<!-- 
+Testdata:
+Peter_Parker:_Spider-Man&oldid=443358314 
+Nuclear_option&oldid=454325470
+City and Industrial Development Corporation&oldid=408274214-->
 <div id="menu" style="padding-left:10px; width:950px; overflow-x: auto;">
   <ul class="ca-menu">
 				<li>
                         <a onclick="articleController.retrieveData()">
-                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" style="width:140px"  value="Peter_Parker:_Spider-Man&oldid=443358314"> </span>
+                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" style="width:140px"  value="Nuclear_option&oldid=454325470"> </span>
                             <div class="ca-content">
                                 <h2 class="ca-main">retrieve data <p id="workingAnimation"></p></h2></h2>
                             </div>
@@ -583,6 +589,9 @@ S
 
 </div>
 </div>
+<div id="mynetwork2" >
+
+</div>
 <div id="wikiText" >
 		      <div id="eexcess_equation_controls">
 					<div class="icon" onclick="articleController.saveWholeArticle()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
@@ -609,7 +618,7 @@ S
 <hr/>
 <div > 
  <p id="overallScore" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
-  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="40" high="80" optimum="100" value="0"></meter>
+  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
         <!-- <progress id="progressBarOverallScore" max="100" value="100" class="html5">
             <div class="progress-bar">
                 <span style="width: 80%">80%</span>
@@ -651,7 +660,7 @@ S
 </div>
 
 <script>
-			articleController.init();
+			articleController.init("mynetwork");
 </script>
 <script>
   $(function () {
