@@ -109,16 +109,12 @@ var DataManipulator = function (vals) {
 		}
 		var quality = qualityManager.calculateQuality(getIntroOfArticle(dataRetriever), intro, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
 		var backgroundColor = "";
-		if (quality.score == 0) {
-			backgroundColor = "#FF0000";
-		} else if (quality.score > 0 && quality.score <= 0.4) {
+		if (quality.score >= 0 && quality.score <= 0.5) {
 			backgroundColor = "#FF4500";
-		} else if (quality.score > 0.4 && quality.score <= 0.6) {
+		} else if (quality.score > 0.5 && quality.score <= 0.8) {
 			backgroundColor = "#FFA500";
-		} else if (quality.score > 0.6 && quality.score <= 0.9) {
+		} else if (quality.score > 0.8) {
 			backgroundColor = "#00FF00";
-		} else if (quality.score > 0.9) {
-			backgroundColor = "#00EE00";
 		}
 		var htmlForDialog = ("<div id=\"Introduction\" contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + "Introduction" + "')\">" + textOfSection + "</div>");
 		var sectionCnt = 1;
@@ -138,16 +134,12 @@ var DataManipulator = function (vals) {
 						}
 						var quality = qualityManager.calculateQuality(getTextOfSection(sectionData.sections[0].line, dataRetriever), sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
 						var backgroundColor = "";
-						if (quality.score == 0) {
-							backgroundColor = "#FF0000";
-						} else if (quality.score > 0 && quality.score <= 0.4) {
+						if (quality.score >= 0 && quality.score <= 0.5) {
 							backgroundColor = "#FF4500";
-						} else if (quality.score > 0.4 && quality.score <= 0.6) {
+						} else if (quality.score > 0.5 && quality.score <= 0.8) {
 							backgroundColor = "#FFA500";
-						} else if (quality.score > 0.6 && quality.score <= 0.9) {
+						} else if (quality.score > 0.8) {
 							backgroundColor = "#00FF00";
-						} else if (quality.score > 0.9) {
-							backgroundColor = "#00EE00";
 						}
 						var desired = sectionData.sections[0].line.replace(/[^\w\s]/gi, '');
 						var idStr = desired.replace(/ /g, "_");
@@ -176,16 +168,12 @@ var DataManipulator = function (vals) {
 		}
 		var quality = qualityManager.calculateQuality(textOfSection, intro, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
 		var backgroundColor = "";
-		if (quality.score == 0) {
-			backgroundColor = "#FF0000";
-		} else if (quality.score > 0 && quality.score <= 0.4) {
+		if (quality.score >= 0 && quality.score <= 0.5) {
 			backgroundColor = "#FF4500";
-		} else if (quality.score > 0.4 && quality.score <= 0.6) {
+		} else if (quality.score > 0.5 && quality.score <= 0.8) {
 			backgroundColor = "#FFA500";
-		} else if (quality.score > 0.6 && quality.score <= 0.9) {
+		} else if (quality.score > 0.8) {
 			backgroundColor = "#00FF00";
-		} else if (quality.score > 0.9) {
-			backgroundColor = "#00EE00";
 		}
 		var htmlForDialog = ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + "Introduction" + "')\">" + textOfSection + "</div>");
 
@@ -201,16 +189,12 @@ var DataManipulator = function (vals) {
 			}
 			var quality = qualityManager.calculateQuality(textOfSection, sectionData, textOfSection.length > 50 ? textOfSection.substring(0, 50) + "..." : textOfSection.substring(0, 10) + "...");
 			var backgroundColor = "";
-			if (quality.score == 0) {
-				backgroundColor = "#FF0000";
-			} else if (quality.score > 0 && quality.score <= 0.4) {
+			if (quality.score >= 0 && quality.score <= 0.5) {
 				backgroundColor = "#FF4500";
-			} else if (quality.score > 0.4 && quality.score <= 0.6) {
+			} else if (quality.score > 0.5 && quality.score <= 0.8) {
 				backgroundColor = "#FFA500";
-			} else if (quality.score > 0.6 && quality.score <= 0.9) {
+			} else if (quality.score > 0.8) {
 				backgroundColor = "#00FF00";
-			} else if (quality.score > 0.9) {
-				backgroundColor = "#00EE00";
 			}
 			htmlForDialog += ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
 		}
