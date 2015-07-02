@@ -2122,7 +2122,7 @@ var ArticleRenderer = function (vals) {
 					numTextElements : 0
 				};
 				var sectionData = calculateScoreForSection(item.id, object);
-				console.log("sectionName: " + item.title + " score: " + sectionData.score + " numTextElements " + sectionData.numTextElements);
+			//	console.log("sectionName: " + item.title + " score: " + sectionData.score + " numTextElements " + sectionData.numTextElements);
 				var calcultedQuality = 0;
 				if (sectionData.numTextElements != 0)
 					calcultedQuality = parseFloat(sectionData.score / sectionData.numTextElements).toFixed(2);

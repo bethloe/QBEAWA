@@ -140,7 +140,7 @@ var getNodeToSectionName = function (sectionName) {
 		if (item.type == "section") {
 			console.log("|" + item.label + "| |" + sectionName + "|");
 			if (item.label == sectionName) {
-				console.log("sectionName: " + sectionName + " == " + item.label);
+			//console.log("sectionName: " + sectionName + " == " + item.label);
 				return item;
 			}
 		}
@@ -270,7 +270,7 @@ var showReferences = function () {
 		try {
 			if (rawTextWithData.search(refs[i]) > -1) {
 				var sectionName = getSectionToRef(rawTextWithData, refs[i]);
-				console.log("SECTIONNAME: " + sectionName);
+				//console.log("SECTIONNAME: " + sectionName);
 				if (sectionName != undefined) { //WE HAVE SOME UNDEFINED SECTION NAMES BECAUSE OF THE INTRO!!
 					//console.log("REF: " + refs[i]);
 					var item = getNodeToSectionName(sectionName);

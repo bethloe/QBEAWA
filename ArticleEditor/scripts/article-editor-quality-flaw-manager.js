@@ -20,11 +20,12 @@ var QualityFlawManager = function (vals) {
 			name : "{{refimprove",
 			alias : "Additional citations for verification is needed!",
 			description : "This article needs additional citations for verification. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
-		},/* {
-			name : "{{refimprove section",
-			alias : "A section needs additional citations!",
-			description : "This section needs additional citations for verification. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
-		},*/{
+		}, /* {
+		name : "{{refimprove section",
+		alias : "A section needs additional citations!",
+		description : "This section needs additional citations for verification. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
+		},*/
+		{
 			name : "{{refimprove science",
 			alias : "The article need additional citations!",
 			description : "This article needs additional citations to secondary or tertiary sources such as review articles, monographs, or textbooks. Please add references to provide context and establish notability for any primary research articles cited."
@@ -199,6 +200,8 @@ var QualityFlawManager = function (vals) {
 				index = articleHelper.indexOf(cleanUpTag.name);
 				indexSum += index;
 				console.log("INDEX: " + indexSum);
+				if (index == 0)
+					index++;
 				if (index > -1) {
 					cleanUpTagFound.push({
 						name : cleanUpTag.name,
@@ -206,14 +209,13 @@ var QualityFlawManager = function (vals) {
 					});
 					var sectionName = getSectionName(indexSum, wikiarticleText);
 					if (sectionName == null)
-						alert("ERROR SECTION NAME IS NULL "+ indexSum );
+						alert("ERROR SECTION NAME IS NULL " + indexSum);
 					else {
 
 						//sectionName = sectionName.replace(/[^\w\s]/gi, '');
 						//sectionName = sectionName.replace(/ /g, "_");
-						console.log("Sectionname: " + sectionName);
 						//htmlQF += "<tr><td style=\"background-color: #525252;\"title=\""+cleanUpTag.name +":"+ cleanUpTag.description+"\"> <img src=\"media/error.png\" />" + cleanUpTag.alias + "</td><tr>";
-						htmlQF += "<div id=\"notification-" + i + "\"class=\"notificationDiv\" title=\"" + cleanUpTag.name + ":" + cleanUpTag.description + "\" onclick=\"articleController.goToSection('" + sectionName + "', '"+cleanUpTag.name+"')\"> <img style=\"display: inline-block; vertical-align: middle\" src=\"media/warning.png\" /> &nbsp;" + cleanUpTag.alias + " &nbsp;&nbsp;&nbsp;   <img style=\"display: inline-block; vertical-align: middle; \" src=\"media/discard-without-background-small.png\"  onclick=\"removeThisNotification(" + i + ")\"/></div>";
+						htmlQF += "<div id=\"notification-" + i + "\"class=\"notificationDiv\" title=\"" + cleanUpTag.name + ":" + cleanUpTag.description + "\" onclick=\"articleController.goToSection('" + sectionName + "', '" + cleanUpTag.name + "')\"> <img style=\"display: inline-block; vertical-align: middle\" src=\"media/warning.png\" /> &nbsp;" + cleanUpTag.alias + " &nbsp;&nbsp;&nbsp;   <img style=\"display: inline-block; vertical-align: middle; \" src=\"media/discard-without-background-small.png\"  onclick=\"removeThisNotification(" + i + ")\"/></div>";
 						colorCnt++;
 						if (colorCnt == 9)
 							colorCnt = 0;

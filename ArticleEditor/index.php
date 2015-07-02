@@ -72,7 +72,7 @@
 	  float: left;
 	  background-color:white;
     }   
-	
+
 	
 	
   .ui-resizable-helper { border: 2px dotted #00F; }
@@ -319,7 +319,7 @@ font-family: 'WebSymbolsRegular', cursive;
 	
 	<!-- END ------->
 	
-<script>  var articleController = new ArticleController(); </script>
+<script>  var articleController = new ArticleController();</script>
 <!-- Smooth curve type:
 <select id="dropdownID">
     <option value="continuous" selected="selected">continuous</option>
@@ -587,6 +587,9 @@ Peter_Parker:_Spider-Man&oldid=443358314 -->
 
 </div>
 </div>
+<div id="mynetwork2" >
+
+</div>
 <div id="wikiText" >
 		      <div id="eexcess_equation_controls">
 					<div class="icon" onclick="articleController.saveWholeArticle()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
@@ -613,7 +616,7 @@ Peter_Parker:_Spider-Man&oldid=443358314 -->
 <hr/>
 <div > 
  <p id="overallScore" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
-  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="40" high="80" optimum="100" value="0"></meter>
+  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
         <!-- <progress id="progressBarOverallScore" max="100" value="100" class="html5">
             <div class="progress-bar">
                 <span style="width: 80%">80%</span>
@@ -655,7 +658,7 @@ Peter_Parker:_Spider-Man&oldid=443358314 -->
 </div>
 
 <script>
-			articleController.init();
+			articleController.init("mynetwork");
 </script>
 <script>
   $(function () {

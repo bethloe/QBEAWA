@@ -21,6 +21,7 @@ var ArticleController = function (vals) {
 	var editToken = "";
 	var userToken = "";
 	var GLOBAL_loginName = "";
+	var GLOBAL_divContainer = "";
 
 	var articleController = {};
 	var dataManipulator;
@@ -87,6 +88,7 @@ var ArticleController = function (vals) {
 	//-------------------- User Input -------------------
 	articleController.retrieveData = function () {
 		console.log("articleController.retrieveData");
+		articleController.reset();
 		var articleName = $("#articleName").val();
 		sensiumRequester = new SensiumRequester({
 				controller : articleController
@@ -251,7 +253,7 @@ var ArticleController = function (vals) {
 		articleRenderers.splice(0, articleRenderers.length);
 		//We destroy the network
 		network.destroy();
-		articleController.init();
+		articleController.init(GLOBAL_divContainer);
 		$('#qualityParameters').html("");
 		$('#overallScore').html("<b>Quality score of the article:</b>");
 		$("#sensiumOverallScore").html("<b>Sensium score:</b>");
@@ -554,9 +556,9 @@ var ArticleController = function (vals) {
 		}
 	}
 
-	articleController.init = function () {
-
-		container = document.getElementById('mynetwork');
+	articleController.init = function (divContainer) {
+		GLOBAL_divContainer = divContainer;
+		container = document.getElementById(GLOBAL_divContainer);
 		containerDetailView = document.getElementById('mynetworkDetailView');
 		nodes = new vis.DataSet();
 		edges = new vis.DataSet();
