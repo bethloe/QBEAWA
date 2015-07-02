@@ -87,13 +87,12 @@ var ArticleController = function (vals) {
 
 	//-------------------- User Input -------------------
 	articleController.retrieveData = function () {
-		console.log("articleController.retrieveData");
 		articleController.reset();
 		var articleName = $("#articleName").val();
 		sensiumRequester = new SensiumRequester({
 				controller : articleController
 			});
-		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/wiki/" + articleName);
+		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/w/index.php?title=" + articleName);
 		var articleRenderer = new ArticleRenderer({
 				network : network,
 				minID : minID,

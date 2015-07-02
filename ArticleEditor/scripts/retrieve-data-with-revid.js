@@ -59,8 +59,6 @@ var DataRetrieverRevision = function (vals) {
 		var help = title.split("&oldid=");
 		GLOBAL_title = title;
 		GLOBAL_rev = help[1];
-		console.log("GLOBAL TITLE: " + GLOBAL_title);
-		console.log("GLOBAL REV: " + GLOBAL_rev);
 	}
 
 	dataRetriever.getJSONString = function () {
@@ -93,8 +91,7 @@ var DataRetrieverRevision = function (vals) {
 	}
 	var GLOBAL_retrieveCnt = 0;
 	function checkIfAllDataRetrieved() {
-		console.log(allDataRetrieved + " == " + allDataRetrievedCheck);
-
+		
 		if (allDataRetrieved == allDataRetrievedCheck && allDataRetrieved != 0 && allDataRetrievedCheck != 0) {
 			clearInterval(GLOBAL_interval);
 			allDataRetrievedFlag = true;
@@ -131,7 +128,6 @@ var DataRetrieverRevision = function (vals) {
 	}
 
 	dataRetriever.getIntro = function () {
-		console.log("INTO GET INTRO: " + GLOBAL_intro);
 		return GLOBAL_intro;
 	}
 	dataRetriever.getAllSectionContentData = function () {
@@ -208,14 +204,12 @@ var DataRetrieverRevision = function (vals) {
 
 	var handleSectionContentData = function (JSONResponse) {
 		var object = JSON.parse(JSON.stringify(JSONResponse));
-		console.log("object : " + JSON.stringify(object.parse.sections[0]));
 		GLOBAL_sectionContentData.push(object.parse);
 		allDataRetrieved++;
 	}
 
 	var handleSectionTitles = function (JSONResponse) {
 		var sectionTitles = JSON.parse(JSON.stringify(JSONResponse));
-		console.log("handlesectiontitles: " + JSON.stringify(JSONResponse));
 		GLOBAL_sectionInfos = sectionTitles.parse.sections;
 		if (GLOBAL_sectionInfos.length > 0) {
 			allDataRetrievedCheck = GLOBAL_sectionInfos.length;
@@ -227,10 +221,8 @@ var DataRetrieverRevision = function (vals) {
 	}
 
 	var handleRawTextWithData = function (JSONResponse) {
-		console.log("HANDLE RAW TEXT WITH DATA");
 		var text = JSON.parse(JSON.stringify(JSONResponse));
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].revisions[0]['*'];
-		console.log("PLAIN TEXT: " + extractPlainText);
 		if (extractPlainText != undefined) {
 			GLOBAL_rawTextWithData = extractPlainText;
 		} else {
@@ -254,7 +246,6 @@ var DataRetrieverRevision = function (vals) {
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
 		//console.log(extractPlainText);
 		if (extractPlainText != undefined) {
-			console.log("extractPlainText");
 			var stat = new textstatistics(extractPlainText);
 
 			var flesch = 0;
@@ -293,7 +284,6 @@ var DataRetrieverRevision = function (vals) {
 
 	var handleImageInfos = function (JSONResponse) {
 		var imageInfo = JSON.parse(JSON.stringify(JSONResponse));
-		console.log("HANDLIMAGEINFO : " + JSON.stringify(JSONResponse));
 		var url = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].thumburl;
 		var imageTitle = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].title;
 		var size = imageInfo.query.pages[Object.keys(imageInfo.query.pages)[0]].imageinfo[0].size;
@@ -316,7 +306,6 @@ var DataRetrieverRevision = function (vals) {
 
 	var handleImages = function (JSONResponse) {
 		var imageCount = JSON.parse(JSON.stringify(JSONResponse));
-		console.log("handleImages: " + JSON.stringify(JSONResponse));
 		var JSONimages = imageCount.query.pages[Object.keys(imageCount.query.pages)[0]].images;
 		if (JSONimages != undefined) {
 			GLOBAL_imageCount += JSONimages.length;

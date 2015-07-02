@@ -4,7 +4,6 @@ var SensiumRequester = function (vals) {
 	var sensiumRequester = {};
 
 	sensiumRequester.sensium = function () {
-		console.log("IN HERE");
 		$.post("sensiumRequester.php", {
 			operation : "sensium",
 
@@ -17,7 +16,6 @@ var SensiumRequester = function (vals) {
 	}
 
 	sensiumRequester.sensiumURLRequest = function (url) {
-		console.log("sensiumURLRequest");
 		$.post("sensiumRequester.php", {
 			operation : "sensiumURLRequest",
 			url : url
@@ -35,34 +33,6 @@ var SensiumRequester = function (vals) {
 	}
 
 	sensiumRequester.sensiumTextRequest = function (text, sectionName) {
-	//	console.log("sensiumTextRequest");
-		
-		//		console.log("UP:|"+sectionName+"|");
-		/*jQuery.ajax({
-		url : "sensiumRequester.php",
-		type : "POST",
-		data : {
-		operation : "sensiumTextRequest",
-		text : text
-		},
-		success : function (data) {
-		//console.log("data: " + data);
-		if (data != "") {
-		var help = JSON.parse(data);
-		if (help != undefined)
-		if (help.polarity != undefined)
-		if (help.polarity.score != undefined)
-		console.log("TEXT score: " + help.polarity.score);
-		else
-		console.log("TEXT score: 0");
-		else
-		console.log("TEXT score: 0");
-		else
-		console.log("TEXT score: 0");
-
-		}
-		}
-		});*/
 		$.post("sensiumRequester.php", {
 			operation : "sensiumTextRequest",
 			sectionName: sectionName,

@@ -205,11 +205,9 @@ var QualityFlawManager = function (vals) {
 					articleHelper = articleHelper.substring((index + 2), articleHelper.length);
 				index = articleHelper.indexOf(cleanUpTag.name);
 				indexSum += index;
-				console.log("INDEX: " + indexSum);
 				if (index == 0)
 					index++;
 				if (index > -1) {
-					console.log("CLEANUPTAG NAME: " + cleanUpTag.name );
 					cleanUpTagFound.push({
 						name : cleanUpTag.name,
 						description : cleanUpTag.description

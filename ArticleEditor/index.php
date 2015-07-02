@@ -984,7 +984,6 @@ City and Industrial Development Corporation&oldid=408274214-->
 	
 	var browserWindowWidth = $(window).width();
 	var documentHeight = $(window).height();
-	console.log("documentHeight: " + documentHeight);
 	var elementHeight = documentHeight - 150;
 	var restWidth = browserWindowWidth - $("#optionPanel").width() - 30;
 	$("#mynetworkouter").css("width", restWidth / 2);
