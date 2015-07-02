@@ -53,10 +53,17 @@ var ArticleRenderer = function (vals) {
 		});
 
 	//create new DataRetriever
-	var dataRetriever = new DataRetriever({
-			articleRenderer : articleRenderer
-		});
+	var dataRetriever = null;
 
+	if (GLOBAL_articleName.split("oldid=").length > 1) {
+		dataRetriever = new DataRetrieverRevision({
+				articleRenderer : articleRenderer
+			});
+	} else {
+		dataRetriever = new DataRetriever({
+				articleRenderer : articleRenderer
+			});
+	}
 	articleRenderer.getDataRetriever = function () {
 		return dataRetriever;
 	}
@@ -1607,35 +1614,35 @@ var ArticleRenderer = function (vals) {
 		}
 		selectHelper = false;
 	}
-	var getAliasToQualityName = function (realName){
-		if(realName == "qualityFleschWordCount")
+	var getAliasToQualityName = function (realName) {
+		if (realName == "qualityFleschWordCount")
 			return "Readability score incl. Word Count";
-		else if(realName == "qualityKincaid")
+		else if (realName == "qualityKincaid")
 			return "2. Readability score ";
-		else if(realName == "qualityImages")
+		else if (realName == "qualityImages")
 			return "Enough Images";
-		else if(realName == "qualityExternalRefs")
+		else if (realName == "qualityExternalRefs")
 			return "Enough External References";
-		else if(realName == "qualityAllLinks")
+		else if (realName == "qualityAllLinks")
 			return "Enough Links";
-		else if(realName == "score")
+		else if (realName == "score")
 			return "Score of the section";
-		
+
 	}
-	var getTooltipToQualityName = function(realName){
-		if(realName == "qualityFleschWordCount")
+	var getTooltipToQualityName = function (realName) {
+		if (realName == "qualityFleschWordCount")
 			return "This measure combines the Flesch readability score with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
-		else if(realName == "qualityKincaid")
+		else if (realName == "qualityKincaid")
 			return "The Kincaid readability score. Should help to check the readability of the section. ";
-		else if(realName == "qualityImages")
+		else if (realName == "qualityImages")
 			return "Are there enough images referenced in the section. By default 4 is set to be the optimal value. ";
-		else if(realName == "qualityExternalRefs")
+		else if (realName == "qualityExternalRefs")
 			return "Are there enough external references in the section. By default 5 is set to be the optimal value. ";
-		else if(realName == "qualityAllLinks")
+		else if (realName == "qualityAllLinks")
 			return "Are there enough links in the section. By default 30 is set to be the optimal value. ";
-		else if(realName == "score")
+		else if (realName == "score")
 			return "The overall score of the section!";
-	
+
 	}
 	articleRenderer.highlightSectionInTree = function (sectionName, isScroll) {
 		isScroll = typeof isScroll !== 'undefined' ? isScroll : false;
@@ -1773,7 +1780,7 @@ var ArticleRenderer = function (vals) {
 								id : innerItem.id,
 								//title : item.quality,
 								color : {
-									background : obgcarray[0] + "," + obgcarray[1] + "," + obgcarray[2]+", 0.5"
+									background : obgcarray[0] + "," + obgcarray[1] + "," + obgcarray[2] + ", 0.5"
 								}
 							});
 						}
@@ -1788,8 +1795,8 @@ var ArticleRenderer = function (vals) {
 								//title : item.quality,
 								color : {
 									background : "rgba(" + result.r + ", " + result.g + ", " + result.b + ", 1)",
-									border: 'blue'
-									
+									border : 'blue'
+
 								}
 							});
 						} else {
@@ -1798,8 +1805,8 @@ var ArticleRenderer = function (vals) {
 								id : innerItem.id,
 								//title : item.quality,
 								color : {
-									background : obgcarray[0] + "," + obgcarray[1] + "," + obgcarray[2]+", 1",
-									border: 'blue'
+									background : obgcarray[0] + "," + obgcarray[1] + "," + obgcarray[2] + ", 1",
+									border : 'blue'
 								}
 							});
 						}
@@ -1825,15 +1832,15 @@ var ArticleRenderer = function (vals) {
 				if (showQualityFlag) {
 					var masterItem = articleRenderer.getItem(item.masterId);
 					var allKeys = Object.keys(item.allQulityParameters);
-					var qmStr = "<h2 ><b>"+ masterItem.label + "</b></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
+					var qmStr = "<h2 ><b>" + masterItem.label + "</b></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
 					//qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
 					for (var i = 0; i < allKeys.length; i++) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
-						qmStr += ("<tr title=\""+getTooltipToQualityName(allKeys[i])+"\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
-																																																																																																																																																																																																																																																																				  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
-																																																																																																																																																																																																																																																																				  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																																																																																																																																																				  </td><td>" + status + "</td></tr>");
+						qmStr += ("<tr title=\"" + getTooltipToQualityName(allKeys[i]) + "\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
+																																																																																																																																																																																																																																																																																		  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
+																																																																																																																																																																																																																																																																																		  high=\"80\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																																																																																																																		  </td><td>" + status + "</td></tr>");
 					}
 					console.log("has sentiment score: " + item.sentimentScore);
 					if (item.sentimentScore != undefined) {
@@ -1845,14 +1852,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																																																																																																																			$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																																																																																																																				if (!$(this).is(':checked')) { \
-																																																																																																																																																																																																																																					articleController.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																																																																																																																				} \
-																																																																																																																																																																																																																																				else{\
-																																																																																																																																																																																																																																					articleController.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																																																																																																																				} \
-																																																																																																																																																																																																																																			}); </script>";
+																																																																																																																																																																																																																																													$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																																																																																														if (!$(this).is(':checked')) { \
+																																																																																																																																																																																																																																															articleController.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																																																																														} \
+																																																																																																																																																																																																																																														else{\
+																																																																																																																																																																																																																																															articleController.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																																																																														} \
+																																																																																																																																																																																																																																													}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {
@@ -2119,6 +2126,12 @@ var ArticleRenderer = function (vals) {
 					id : item.id,
 					quality : (sectionData.score / sectionData.numTextElements)
 				});
+				console.log("item.title: " + item.title);
+				if (item.title == GLOBAL_articleName) {
+
+					$('#progressBarOverallScore').val(parseFloat((sectionData.score / sectionData.numTextElements) * 100).toFixed(2));
+					$('#overallScore').html("<b>Quality score of this article:</b> " + parseFloat((sectionData.score / sectionData.numTextElements)).toFixed(2));
+				}
 			}
 		}
 		colorTextBasedOnTheQulityValue();
@@ -2126,14 +2139,17 @@ var ArticleRenderer = function (vals) {
 	var calculateScoreForSection = function (id, object) {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
-			var item = items[i];
-
-			if (item.masterId == id && idInRange(item.id)) {
-				if (item.type == "text") {
-					object.score += item.quality;
-					object.numTextElements++;
+			
+				var item = items[i];
+	if (item.useForQualityCalculation) {
+		
+				if (item.masterId == id && idInRange(item.id)) {
+					if (item.type == "text") {
+						object.score += item.quality;
+						object.numTextElements++;
+					}
+					object = calculateScoreForSection(item.id, object);
 				}
-				object = calculateScoreForSection(item.id, object);
 			}
 		}
 		return object;
@@ -2144,20 +2160,21 @@ var ArticleRenderer = function (vals) {
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			if (idInRange(item.id)) {
-				if (item.quality == 0) {
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						//title : item.quality,
-						color : {
-							background : "#FF0000",
-							border : '#2B7CE9',
-							highlight : {
-								background : '#D2E5FF',
-								border : '#2B7CE9'
-							}
-						}
-					});
-				} else if (item.quality > 0 && item.quality <= 0.4 - overallScoreInterval) {
+				/*if (item.quality == 0) {
+				GLOBAL_data.nodes.update({
+				id : item.id,
+				//title : item.quality,
+				color : {
+				background : "#FF0000",
+				border : '#2B7CE9',
+				highlight : {
+				background : '#D2E5FF',
+				border : '#2B7CE9'
+				}
+				}
+				});
+				} else */
+				if (item.quality >= 0 && item.quality <= 0.5 - overallScoreInterval) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
 						//title : item.quality,
@@ -2170,7 +2187,7 @@ var ArticleRenderer = function (vals) {
 							}
 						}
 					});
-				} else if (item.quality > 0.4 - overallScoreInterval && item.quality <= 0.6 - overallScoreInterval) {
+				} else if (item.quality > 0.5 - overallScoreInterval && item.quality <= 0.8 - overallScoreInterval) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
 						//title : item.quality,
@@ -2183,7 +2200,7 @@ var ArticleRenderer = function (vals) {
 							}
 						}
 					});
-				} else if (item.quality > 0.6 - overallScoreInterval && item.quality <= 0.9 - overallScoreInterval) {
+				} else if (item.quality > 0.8 - overallScoreInterval) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
 						//title : item.quality,
@@ -2196,20 +2213,21 @@ var ArticleRenderer = function (vals) {
 							}
 						}
 					});
-				} else if (item.quality > 0.9 - overallScoreInterval) {
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						//title : item.quality,
-						color : {
-							background : "#00EE00",
-							border : '#2B7CE9',
-							highlight : {
-								background : '#D2E5FF',
-								border : '#2B7CE9'
-							}
-						}
-					});
 				}
+				/*else if (item.quality > 0.9 - overallScoreInterval) {
+				GLOBAL_data.nodes.update({
+				id : item.id,
+				//title : item.quality,
+				color : {
+				background : "#00EE00",
+				border : '#2B7CE9',
+				highlight : {
+				background : '#D2E5FF',
+				border : '#2B7CE9'
+				}
+				}
+				});
+				}*/
 			}
 		}
 	}

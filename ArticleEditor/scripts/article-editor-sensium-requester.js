@@ -23,7 +23,7 @@ var SensiumRequester = function (vals) {
 			url : url
 		})
 		.done(function (data) {
-			console.log("data: " + data);
+			//console.log("data: " + data);
 			//console.log("DATA END");
 			var help = JSON.parse(data);
 			//console.log("score: " + help.polarity.score);

@@ -179,7 +179,7 @@ var QualityFlawManager = function (vals) {
 				}
 			}
 		}
-		return null;
+		return "Introduction";
 
 	}
 
@@ -206,7 +206,7 @@ var QualityFlawManager = function (vals) {
 					});
 					var sectionName = getSectionName(indexSum, wikiarticleText);
 					if (sectionName == null)
-						alert("ERROR SECTION NAME IS NULL");
+						alert("ERROR SECTION NAME IS NULL "+ indexSum );
 					else {
 
 						//sectionName = sectionName.replace(/[^\w\s]/gi, '');

@@ -38,6 +38,7 @@
   <script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
   <script type="text/javascript" src="libs/TextStatistics.js" charset="utf-8"> </script>
   <script type="text/javascript" src="scripts/retrieve-data.js"></script>
+  <script type="text/javascript" src="scripts/retrieve-data-with-revid.js"></script>
   <script type="text/javascript" src="scripts/article-editor-controller-data-manipulation.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer-quality-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer-semantic-zooming.js"></script>
@@ -358,7 +359,7 @@ S
   <ul class="ca-menu">
 				<li>
                         <a onclick="articleController.retrieveData()">
-                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" value="User:Dst2015/sandbox"> </span>
+                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" style="width:140px"  value="Peter_Parker:_Spider-Man&oldid=443358314"> </span>
                             <div class="ca-content">
                                 <h2 class="ca-main">retrieve data <p id="workingAnimation"></p></h2></h2>
                             </div>
