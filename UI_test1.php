@@ -212,6 +212,7 @@ and open the template in the editor.
 					</table>
 					</div>
 				<div id="ranking_norm_selector" style="position: relative;">
+					<div id="backButton"  style="cursor: pointer; display: none; position: relative; text-align: left; padding-top: 5px; padding-left:10px;" onclick="setDataToVisController()"> <img src="media/arrow_left.png" width="20px" /> </div>
 					<table align="center" ><tr><td> Norm: </td><td>  <select id="normRankingSelector">
 					<option value="default"  id="defaultRank" title="taxicab nrom">taxicab norm</option>
 					<option value="euclidean" selected="selected" id="euclideanRank" title="euclidean norm">euclidean norm</option>

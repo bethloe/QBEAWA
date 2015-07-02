@@ -1,5 +1,8 @@
 var DataRetrieverRevisions = function (vals) {
 	var GLOBAL_title = vals.title;
+	var GLOBAL_numberRev = vals.numberRev;
+	var GLOBAL_original_title = vals.title.split("&oldid=")[0]
+		var GLOBAL_rev = vals.title.split("&oldid=")[1];
 	var GLOBAL_featured = vals.featured;
 	var GLOBAL_linkToAPI = "http://en.wikipedia.org/w/api.php?";
 	var GLOBAL_cntEdits = 0;
@@ -39,23 +42,21 @@ var DataRetrieverRevisions = function (vals) {
 	}
 
 	dataRetriver.getAllMeasures = function () {
-		//GLOBAL_title = "Albert Einstein"; //$("#article-name").val();
-		//Calculate Edits:
-		//handleEditDataSync(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&revids=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue");
+		console.log("RETRIEVE DATAA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		GLOBAL_JSON.title = GLOBAL_title;
 		GLOBAL_JSON.featured = GLOBAL_featured;
-		//retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&revids=" + GLOBAL_title + "&rvlimit=max&rvprop=user&continue", handleEditData);
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_original_title + "&rvlimit=max&rvprop=user|ids&continue", handleEditData);
 		console.log("GLOBAL_TITLE: " + GLOBAL_title);
-		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=info&revids=" + GLOBAL_title + "&continue", handleArticleLength);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&revids=" + GLOBAL_title + "&rvprop=user|timestamp&rvdir=older&continue", handleCurrency);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&revids=" + GLOBAL_title + "&continue", handleInternalLinks);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&revids=" + GLOBAL_title + "&continue", handleExternalLinks);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&revids=" + GLOBAL_title + "&lhlimit=max&continue", handleIncomingLinks);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&revids=" + GLOBAL_title + "&continue", handleImages);
-		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&revids=" + GLOBAL_title + "&rvprop=user|timestamp&continue", handleArticleAge);
-		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=true&revids=" + GLOBAL_title + "&continue", handleFlesch);
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=info&revids=" + GLOBAL_rev + "&continue", handleArticleLength);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&revids=" + GLOBAL_rev + "&rvprop=user|timestamp&rvdir=older&continue", handleCurrency);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&revids=" + GLOBAL_rev + "&continue", handleInternalLinks);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&revids=" + GLOBAL_rev + "&continue", handleExternalLinks);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&revids=" + GLOBAL_rev + "&lhlimit=max&continue", handleIncomingLinks);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&revids=" + GLOBAL_rev + "&continue", handleImages);
+		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&revids=" + GLOBAL_rev + "&rvprop=user|timestamp&continue", handleArticleAge);
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=true&revids=" + GLOBAL_rev + "&continue", handleFlesch);
 	}
-	
+
 	var retrieveData = function (urlInclAllOptions, functionOnSuccess) {
 		$.ajax({
 			url : urlInclAllOptions,
@@ -113,7 +114,7 @@ var DataRetrieverRevisions = function (vals) {
 			if (imageCount.hasOwnProperty("continue")) {
 				if (imageCount.continue.hasOwnProperty("imcontinue")) {
 					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&revids=" + GLOBAL_title + "&imcontinue=" + imageCount.continue.imcontinue + "&continue", handleImages);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=images&format=json&imlimit=max&revids=" + GLOBAL_rev + "&imcontinue=" + imageCount.continue.imcontinue + "&continue", handleImages);
 				} else {}
 			} else {
 				//DONE
@@ -137,7 +138,7 @@ var DataRetrieverRevisions = function (vals) {
 			if (incomingLinks.hasOwnProperty("continue")) {
 				if (incomingLinks.continue.hasOwnProperty("lhcontinue")) {
 					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&lhlimit=max&revids=" + GLOBAL_title + "&lhcontinue=" + incomingLinks.continue.lhcontinue + "&continue", handleIncomingLinks);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=linkshere&format=json&lhlimit=max&revids=" + GLOBAL_rev + "&lhcontinue=" + incomingLinks.continue.lhcontinue + "&continue", handleIncomingLinks);
 				} else {}
 			} else {
 				//DONE
@@ -160,7 +161,7 @@ var DataRetrieverRevisions = function (vals) {
 			if (externalLinks.hasOwnProperty("continue")) {
 				if (externalLinks.continue.hasOwnProperty("eloffset")) {
 					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&revids=" + GLOBAL_title + "&eloffset=" + externalLinks.continue.eloffset + "&continue", handleExternalLinks);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&revids=" + GLOBAL_rev + "&eloffset=" + externalLinks.continue.eloffset + "&continue", handleExternalLinks);
 				} else {}
 			} else {
 				//DONE
@@ -184,7 +185,7 @@ var DataRetrieverRevisions = function (vals) {
 				if (internalLinks.continue.hasOwnProperty("iwcontinue")) {
 					//GET REST OF THE DATA:
 					//console.log("IW CONTINUE: " + internalLinks.continue.iwcontinue);
-					retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&revids=" + GLOBAL_title + "&iwcontinue=" + internalLinks.continue.iwcontinue + "&continue", handleInternalLinks);
+					retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&revids=" + GLOBAL_rev + "&iwcontinue=" + internalLinks.continue.iwcontinue + "&continue", handleInternalLinks);
 				} else {}
 			} else {
 				//DONE
@@ -221,12 +222,12 @@ var DataRetrieverRevisions = function (vals) {
 		var articleData = JSON.parse(JSON.stringify(JSONResponse));
 		console.log("-------------->HEERE: " + JSON.stringify(JSONResponse));
 		var articleLength = articleData.query.pages[Object.keys(articleData.query.pages)[0]].length;
-		if(articleLength != undefined){
-		$("#ArticleLength").text(articleLength);
-		GLOBAL_JSON.articleLength = articleLength;
-		}else{
-		$("#ArticleLength").text("0");
-		GLOBAL_JSON.articleLength = 0;
+		if (articleLength != undefined) {
+			$("#ArticleLength").text(articleLength);
+			GLOBAL_JSON.articleLength = articleLength;
+		} else {
+			$("#ArticleLength").text("0");
+			GLOBAL_JSON.articleLength = 0;
 		}
 	}
 
@@ -277,7 +278,6 @@ var DataRetrieverRevisions = function (vals) {
 				GLOBAL_mapUsernames[userData.query.users[0].name] = [VAL_ANONYMOUS, 1]
 			}
 		}
-		//TODO: GO ON HERE
 	}
 
 	var handleEditData = function (JSONResponse) {
@@ -293,29 +293,33 @@ var DataRetrieverRevisions = function (vals) {
 
 			for (var i = 0; i < JSONrevisions.length; i++) {
 				//get username:
-				var username = JSON.stringify(JSONrevisions[0].user);
-				username = username.substring(1, username.length - 1);
-				if (GLOBAL_mapUsernames.hasOwnProperty(username)) {
-					GLOBAL_mapUsernames[username][1] += 1;
-					GLOBAL_cntEditsHELP += 1;
-				} else {
-					//console.log("user " + username + "is not in list");
-					//Get all userdata (admin, registered or anonymous)
-					GLOBAL_mapUsernames[username] = ['', 0]; // Asynchronous that's why I do it!
-					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&list=users&ususers=" + username + "&usprop=groups&continue", handleUserData);
-					GLOBAL_uniqueEditors += 1;
+				//console.log("-----------------> " + JSONrevisions.revid +" <= "+ parseInt(GLOBAL_rev));
+				if (JSONrevisions[i].revid <= parseInt(GLOBAL_rev)) {
+					var username = JSON.stringify(JSONrevisions[i].user);
+					username = username.substring(1, username.length - 1);
+					if (GLOBAL_mapUsernames.hasOwnProperty(username)) {
+						GLOBAL_mapUsernames[username][1] += 1;
+						GLOBAL_cntEditsHELP += 1;
+					} else {
+						//console.log("user " + username + "is not in list");
+						//Get all userdata (admin, registered or anonymous)
+						GLOBAL_mapUsernames[username] = ['', 0]; // Asynchronous that's why I do it!
+						retrieveData(GLOBAL_linkToAPI + "action=query&format=json&list=users&ususers=" + username + "&usprop=groups&continue", handleUserData);
+						GLOBAL_uniqueEditors += 1;
+					}
 				}
 			}
 			if (revisions.hasOwnProperty("continue")) {
 				if (revisions.continue.hasOwnProperty("rvcontinue")) {
 					//GET REST OF THE DATA:
-					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&revids=" + GLOBAL_title + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user&continue", handleEditData);
+					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_original_title + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user|ids&continue", handleEditData);
 				}
 			} else {
 				console.log("WE ARE AT THE END2");
-				
+
 				$("#totalNumEdits").text(GLOBAL_cntEdits);
 
+				GLOBAL_cntEdits -= GLOBAL_numberRev;
 				GLOBAL_JSON.numEdits = GLOBAL_cntEdits;
 				for (var key in GLOBAL_mapUsernames) {
 					if (GLOBAL_mapUsernames[key][0] == VAL_ANONYMOUS) {
@@ -326,7 +330,7 @@ var DataRetrieverRevisions = function (vals) {
 					} else if (GLOBAL_mapUsernames[key][0] == VAL_ADMIN) {
 						GLOBAL_adminEditCount += GLOBAL_mapUsernames[key][1];
 					} else {
-						//WTF :-0 TODO 
+						//WTF :-0 TODO
 						if (checkIsIPV4(key)) {
 							GLOBAL_anonymousEditCount += GLOBAL_mapUsernames[key][1];
 						} else {
@@ -334,7 +338,10 @@ var DataRetrieverRevisions = function (vals) {
 						}
 					}
 				}
-
+			/*	GLOBAL_anonymousEditCount -= GLOBAL_numberRev;
+				GLOBAL_registeredEditCount -= GLOBAL_numberRev;
+				GLOBAL_adminEditCount -= GLOBAL_numberRev;
+				GLOBAL_uniqueEditors -= GLOBAL_numberRev;*/
 				$("#NumOfAnonymousUserEdits").text(GLOBAL_anonymousEditCount);
 				$("#NumOfRegisteredUserEdits").text(GLOBAL_registeredEditCount);
 				$("#NumOfAdminEdits").text(GLOBAL_adminEditCount);

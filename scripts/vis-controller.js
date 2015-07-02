@@ -746,9 +746,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																											                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																											                   </div>\
-																																																																																																																															   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																																																																																														                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																														                   </div>\
+																																																																																																																																		   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -1137,13 +1137,13 @@ var VisController = function () {
 		.attr("src", EDIT_ICON)
 		.attr("class", "edit_icon")
 		.style("margin-left", "4px");
-		/*aListItem.select(".eexcess_favicon_section")
+		if(!GLOBAL_showRevisions){
+		aListItem.select(".eexcess_favicon_section")
 		.append("img")
 		.attr('title', 'Show the revision history')
 		.attr("src", SHOW_ALL_ICON)
 		.attr("class", "show_all_icon")
-		.style("margin-left", "4px");*/
-		
+		.style("margin-left", "4px");}
 
 		LIST.updateItemsBackground();
 		LIST.bindEventHandlersToListItems();
@@ -1177,9 +1177,9 @@ var VisController = function () {
 			var currentData = data[actualIndex];
 			window.open('http://localhost/ArticleEditor/index3.php?title=' + currentData.title);
 		});
-		
-		/*d3.selectAll(allListItems).select(favIconClass).select('.show_all_icon').on("click", function(d, i){
-			
+
+		d3.selectAll(allListItems).select(favIconClass).select('.show_all_icon').on("click", function (d, i) {
+
 			if (!e)
 				var e = window.event;
 			e.cancelBubble = true;
@@ -1187,9 +1187,14 @@ var VisController = function () {
 				e.stopPropagation();
 			console.log("SHOW_ALL_ICON");
 			console.log("CLICK ON REVISION");
-			searchRevision(668918558, 3, equationEditor, visController);
-			
-		});*/
+			var actualIndex = rankingModel.getActualIndex(i);
+			var currentData = data[actualIndex];
+			var order = prompt("How many revisions do you want to retrieve?", "2");
+			if (order != null) {
+				searchRevision(currentData.title, 0, order, equationEditor, visController);
+				$("#backButton").css("display", "inline");
+			}
+		});
 		d3.selectAll(allListItems).select(favIconClass).select('.plus_icon').on("click", function (d, i) {
 
 			if (!e)
@@ -1837,7 +1842,7 @@ var VisController = function () {
 					}
 				});
 		}
-		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"http://en.m.wikipedia.org/wiki/" + currentTitle + "\" seamless></iframe>");
+		$(documentViewer).html("<iframe height=\"" + ($("#eexcess_document_viewer").height() - 10) + "px\" width=\"" + ($("#eexcess_document_viewer").width() - 15) + "px\"src=\"https://en.m.wikipedia.org/w/index.php?title=" + currentTitle + "\" seamless></iframe>");
 		//$(documentViewer).html(this.internal.highlightKeywordsInText(QMData));
 		$(documentViewer + ' p').hide();
 		$(documentViewer + ' p').fadeIn('slow');
@@ -2001,7 +2006,7 @@ var VisController = function () {
 			});
 		}
 	}
-	
+
 	visController.disableStat = function () {
 		if (statActivated) {
 			statActivated = false;
@@ -2249,12 +2254,12 @@ var VisController = function () {
 		console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																																																																																																			<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																												                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																												                </div>\
-																																																																																																																																<div id=\"eexcess_canvas_rankQM\"></div> \
-																																																																																																																																 \
-																																																																																																																																  </div>");
+																																																																																																						<div id=\"rank_QMs\" style=\"display:none\">\
+																																																																																																																															                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																															                </div>\
+																																																																																																																																			<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																																																																																																			 \
+																																																																																																																																			  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -2530,7 +2535,7 @@ var VisController = function () {
 		}
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																																																																																																																															{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																																																																																																																																			{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

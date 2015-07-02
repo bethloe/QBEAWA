@@ -1651,7 +1651,7 @@ var ArticleRenderer = function (vals) {
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 
-			if (item.type == "text" && idInRange(item.id) && item.title == sectionName) {
+			if (item.type == "text" && idInRange(item.id) && item.title.replace(/["']/g, "") == sectionName) {
 				var properties = {};
 				var nodes = [];
 				nodes.push(item.id);

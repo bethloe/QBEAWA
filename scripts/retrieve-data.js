@@ -291,7 +291,7 @@ var DataRetriever = function (vals) {
 
 			for (var i = 0; i < JSONrevisions.length; i++) {
 				//get username:
-				var username = JSON.stringify(JSONrevisions[0].user);
+				var username = JSON.stringify(JSONrevisions[i].user);
 				username = username.substring(1, username.length - 1);
 				if (GLOBAL_mapUsernames.hasOwnProperty(username)) {
 					GLOBAL_mapUsernames[username][1] += 1;

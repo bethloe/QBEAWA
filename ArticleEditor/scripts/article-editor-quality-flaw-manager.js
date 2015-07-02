@@ -9,6 +9,10 @@ var QualityFlawManager = function (vals) {
 			alias : "The article does not contain any references or sources!",
 			description : "This article does not cite any references or sources. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
 		}, {
+			name : "{{citations missing",
+			alias : "This article is missing citations and/or footnotes!",
+			description : "This article is missing citations and/or footnotes."
+		},{
 			name : "{{unreferenced section",
 			alias : "Section without references!",
 			description : "This section does not cite any references or sources. Please help improve this section by adding citations to reliable sources. Unsourced material may be challenged and removed."
@@ -176,6 +180,8 @@ var QualityFlawManager = function (vals) {
 						sectionName = sectionName.substring(0, sectionName.length - 1);
 					if (sectionName[0] == " ")
 						sectionName = sectionName.substring(1, sectionName.length);
+						
+					sectionName = sectionName.replace(/["']/g, "");
 					return sectionName;
 				}
 			}
@@ -203,6 +209,7 @@ var QualityFlawManager = function (vals) {
 				if (index == 0)
 					index++;
 				if (index > -1) {
+					console.log("CLEANUPTAG NAME: " + cleanUpTag.name );
 					cleanUpTagFound.push({
 						name : cleanUpTag.name,
 						description : cleanUpTag.description

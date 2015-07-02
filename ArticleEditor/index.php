@@ -358,12 +358,14 @@ S
 
 <!-- 
 Testdata:
-Peter_Parker:_Spider-Man&oldid=443358314 -->
+Peter_Parker:_Spider-Man&oldid=443358314 
+Nuclear_option&oldid=454325470
+City and Industrial Development Corporation&oldid=408274214-->
 <div id="menu" style="padding-left:10px; width:950px; overflow-x: auto;">
   <ul class="ca-menu">
 				<li>
                         <a onclick="articleController.retrieveData()">
-                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" style="width:140px"  value="Albert Einstein"> </span>
+                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" style="width:140px"  value="Nuclear_option&oldid=454325470"> </span>
                             <div class="ca-content">
                                 <h2 class="ca-main">retrieve data <p id="workingAnimation"></p></h2></h2>
                             </div>

@@ -1,3 +1,4 @@
+var GLOBAL_showRevisions = false;
 
 var RANKING_STATUS = {
     new : 'new',
