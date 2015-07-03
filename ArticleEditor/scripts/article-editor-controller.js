@@ -1,5 +1,4 @@
 var ArticleController = function (vals) {
-
 	var networkDetailView = null;
 	var network = null;
 	var container = null;
@@ -21,7 +20,8 @@ var ArticleController = function (vals) {
 	var editToken = "";
 	var userToken = "";
 	var GLOBAL_loginName = "";
-	var GLOBAL_divContainer = "";
+	var GLOBAL_divContainer = vals.networkTag;
+	var GLOBAL_forComparing = vals.forComparing;
 
 	var articleController = {};
 	var dataManipulator;
@@ -31,10 +31,67 @@ var ArticleController = function (vals) {
 	function update() {
 		var type = "continuous";
 		var roundness = 0.5;
-		var options = {
+		var options;
+
+		if (!GLOBAL_forComparing) {
+			options = {
+				dataManipulation : {
+					enabled : true,
+					initiallyVisible : true
+				},
+				smoothCurves : {
+					type : 'continuous',
+					roundness : 1,
+					dynamic : false,
+					type : '1'
+				},
+				hover : true
+			}
+		} else {
+			options = {
+				dataManipulation : {
+					enabled : false,
+					initiallyVisible : false
+				},
+				smoothCurves : {
+					type : 'continuous',
+					roundness : 1,
+					dynamic : false,
+					type : '1'
+				},
+				hover : true
+			}
+		}
+
+		network.setOptions(options);
+	}
+	var opt;
+	if (!GLOBAL_forComparing) {
+		opt = {
 			dataManipulation : {
 				enabled : true,
 				initiallyVisible : true
+			},
+			onConnect : function (data, callback) {
+				dataManipulator.connectNodes(data, callback);
+			},
+			onEdit : function (data, callback) {
+				dataManipulator.editNodes(data, callback);
+			},
+			onAdd : function (data, callback) {
+				console.log("IN HERE");
+				dataManipulator.addNode(data);
+			},
+			physics : {
+				barnesHut : {
+					gravitationalConstant : 0,
+					springConstant : 0,
+					centralGravity : 0
+				}
+			},
+			nodes : {
+				widthMin : 1000,
+				widthMax : 50000,
 			},
 			smoothCurves : {
 				type : 'continuous',
@@ -42,53 +99,58 @@ var ArticleController = function (vals) {
 				dynamic : false,
 				type : '1'
 			},
+			/*clustering : {
+			enabled : true
+			},*/
 			hover : true
-		}
-
-		network.setOptions(options);
+		};
+	} else {
+		opt = {
+			dataManipulation : {
+				enabled : false,
+				initiallyVisible : false
+			},
+			onConnect : function (data, callback) {
+				dataManipulator.connectNodes(data, callback);
+			},
+			onEdit : function (data, callback) {
+				dataManipulator.editNodes(data, callback);
+			},
+			onAdd : function (data, callback) {
+				console.log("IN HERE");
+				dataManipulator.addNode(data);
+			},
+			physics : {
+				barnesHut : {
+					gravitationalConstant : 0,
+					springConstant : 0,
+					centralGravity : 0
+				}
+			},
+			nodes : {
+				widthMin : 1000,
+				widthMax : 50000,
+			},
+			smoothCurves : {
+				type : 'continuous',
+				roundness : 1,
+				dynamic : false,
+				type : '1'
+			},
+			/*clustering : {
+			enabled : true
+			},*/
+			hover : true
+		};
 	}
-	var opt = {
-		dataManipulation : {
-			enabled : true,
-			initiallyVisible : true
-		},
-		onConnect : function (data, callback) {
-			dataManipulator.connectNodes(data, callback);
-		},
-		onEdit : function (data, callback) {
-			dataManipulator.editNodes(data, callback);
-		},
-		onAdd : function (data, callback) {
-			console.log("IN HERE");
-			dataManipulator.addNode(data);
-		},
-		physics : {
-			barnesHut : {
-				gravitationalConstant : 0,
-				springConstant : 0,
-				centralGravity : 0
-			}
-		},
-		nodes : {
-			widthMin : 1000,
-			widthMax : 50000,
-		},
-		smoothCurves : {
-			type : 'continuous',
-			roundness : 1,
-			dynamic : false,
-			type : '1'
-		},
-		/*clustering : {
-		enabled : true
-		},*/
-		hover : true
-	};
 
 	//-------------------- User Input -------------------
 	articleController.retrieveData = function () {
 		articleController.reset();
-		var articleName = $("#articleName").val();
+		var articleName = null;
+		//if (!GLOBAL_forComparing) {
+		articleName = $("#articleName").val();
+		//}
 		sensiumRequester = new SensiumRequester({
 				controller : articleController
 			});
@@ -131,6 +193,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.getSensiumRequester = function () {
+		console.log("ArticleController.GETSENSIUMREQUESTER " + GLOBAL_forComparing + " " + JSON.stringify(sensiumRequester));
 		return sensiumRequester;
 	}
 
@@ -164,10 +227,18 @@ var ArticleController = function (vals) {
 			$('#showReferences a div h2').attr("class", "ca-main");
 			$('#showReferences').css("background-color", "grey");
 		}
-		if($('#showAllRefsTd').attr("class") == "menuHelper2"){
+		if(!GLOBAL_forComparing){
+		if ($('#showAllRefsTd').attr("class") == "menuHelper2") {
 			$('#showAllRefsTd').attr("class", "menuHelper3");
-		}else{
+		} else {
 			$('#showAllRefsTd').attr("class", "menuHelper2");
+		}
+		}else{
+		if ($('#showAllRefsTdRev').attr("class") == "menuHelper2") {
+			$('#showAllRefsTdRev').attr("class", "menuHelper3");
+		} else {
+			$('#showAllRefsTdRev').attr("class", "menuHelper2");
+		}	
 		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showReferences();
@@ -197,10 +268,18 @@ var ArticleController = function (vals) {
 			$('#showImages a div h2').attr("class", "ca-main");
 			$('#showImages').css("background-color", "grey");
 		}
-		if($('#showAllImagesTd').attr("class") == "menuHelper2"){
+		if(!GLOBAL_forComparing){
+		if ($('#showAllImagesTd').attr("class") == "menuHelper2") {
 			$('#showAllImagesTd').attr("class", "menuHelper3");
-		}else{
+		} else {
 			$('#showAllImagesTd').attr("class", "menuHelper2");
+		}
+		}else{
+		if ($('#showAllImagesTdRev').attr("class") == "menuHelper2") {
+			$('#showAllImagesTdRev').attr("class", "menuHelper3");
+		} else {
+			$('#showAllImagesTdRev').attr("class", "menuHelper2");
+		}
 		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showImages();
@@ -227,10 +306,18 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.semanticZooming = function () {
-		if($('#semTd').attr("class") == "menuHelper2"){
+		if(!GLOBAL_forComparing){
+		if ($('#semTd').attr("class") == "menuHelper2") {
 			$('#semTd').attr("class", "menuHelper3");
-		}else{
+		} else {
 			$('#semTd').attr("class", "menuHelper2");
+		}
+		}else{
+		if ($('#semTdRev').attr("class") == "menuHelper2") {
+			$('#semTdRev').attr("class", "menuHelper3");
+		} else {
+			$('#semTdRev').attr("class", "menuHelper2");
+		}
 		}
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].semanticZooming();
@@ -263,6 +350,19 @@ var ArticleController = function (vals) {
 		$('#ediotr_section_selector')
 		.find('option')
 		.remove();
+	}
+
+	articleController.resetRevision = function () {
+		//Actually we just have to remove the articleRenderers
+		articleRenderers.splice(0, articleRenderers.length);
+		//We destroy the network
+		network.destroy();
+		articleController.init(GLOBAL_divContainer);
+		$('#qualityParametersRev').html("");
+		$('#overallScoreRev').html("<b>Quality score of the article:</b>");
+		$("#sensiumOverallScoreRev").html("<b>Sensium score:</b>");
+		$('#progressBarOverallScoreRev').attr("value", "0");
+		$('#progressBarSensiumOverallScoreControllerRev').css("right", 200 - 0 * 200);
 	}
 	articleController.showTheWholeArticle = function () {
 		//TODO: Do a refactoring so that it work for more than one article at the end
@@ -457,6 +557,103 @@ var ArticleController = function (vals) {
 		//}
 
 	}
+
+	var GLOBAL_articleName = "";
+	articleController.compareRevisions = function () {
+		if ($('#compareRevisions a span').attr("class") == "ca-icon") {
+			$('#compareRevisions a span').attr("class", "ca-icon-selected");
+			$('#compareRevisions a div h2').attr("class", "ca-main-selected");
+			$('#compareRevisions').css("background-color", "#000");
+			upperPartHelper = 2;
+			resizeWindow();
+			$("#mynetworkLowerPart").css("display", "inline-block");
+			var articleName = $("#articleName").val();
+			if (articleName.split("&oldid=").length > 1) {
+				articleName = articleName.split("&oldid=")[0];
+			}
+			GLOBAL_articleName = articleName;
+			//$("#dialogCompare").dialog("open");
+			articleController.resetRevision();
+
+			dataRetriever = new DataRetrieverRevision({
+					articleRenderer : articleController
+				});
+
+			dataRetriever.loadArticleRevIDs(articleName);
+		} else {
+			$('#compareRevisions a span').attr("class", "ca-icon");
+			$('#compareRevisions a div h2').attr("class", "ca-main");
+			$('#compareRevisions').css("background-color", "grey");
+			upperPartHelper = 1;
+			resizeWindow();
+			$("#mynetworkLowerPart").css("display", "none");
+		}
+
+	}
+
+	articleController.setRevisions = function (revisionIDArray) {
+		console.log("IN setRevisions: " + revisionIDArray.length);
+
+		$('#compare_Selector').empty();
+		for (var i = 0; i < revisionIDArray.length; i++) {
+			$('#compare_Selector').append($('<option>', {
+					value : GLOBAL_articleName + "&oldid=" + revisionIDArray[i],
+					text : GLOBAL_articleName + "&oldid=" + revisionIDArray[i]
+				}));
+		}
+	}
+
+	articleController.addOneRevision = function (revisionID) {
+
+		$('#compare_Selector').append($('<option>', {
+				value : GLOBAL_articleName + "&oldid=" + revisionID,
+				text : GLOBAL_articleName + "&oldid=" + revisionID
+			}));
+
+	}
+
+	articleController.retrieveRevision = function () {
+		articleController.resetRevision();
+		var articleName = null;
+		articleName = $("#compare_Selector").val();
+
+		sensiumRequester = new SensiumRequesterRevision({
+				controller : articleController
+			});
+		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/w/index.php?title=" + articleName);
+		console.log("ArticleController.retrieveRevision " + GLOBAL_forComparing + " " + sensiumRequester);
+		var articleRenderer = new ArticleRendererRevision({
+				network : network,
+				minID : minID,
+				maxID : maxID,
+				minX : minX,
+				maxX : maxX,
+				minY : minY,
+				maxY : maxY,
+				data : data,
+				articleName : articleName,
+				controller : articleController
+			});
+		dataManipulator = new DataManipulatorRevision({
+				network : network,
+				data : data,
+				articleName : articleName,
+				controller : articleController
+			});
+		minID += 1000;
+		maxID += 1000;
+		minX += 5000;
+		maxX += 5000;
+		minY += 5000;
+		maxY += 5000;
+
+		articleRenderers.push(articleRenderer);
+		articleRenderer.retrieveData();
+	}
+
+	articleController.torf = function () {
+		return GLOBAL_forComparing;
+	}
 	//-------------------- EVENTS ----------------------
 
 
@@ -586,7 +783,11 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.sensium = function () {
-		var sensiumRequester = new SensiumRequester();
+		var sensiumRequester;
+		if (!GLOBAL_forComparing)
+			sensiumRequester = new SensiumRequester();
+		else
+			sensiumRequester = new SensiumRequesterRevision();
 		sensiumRequester.sensium();
 	}
 

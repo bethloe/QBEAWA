@@ -1,4 +1,4 @@
-var ArticleRenderer = function (vals) {
+var ArticleRendererRevision = function (vals) {
 	var GLOBAL_network = vals.network;
 	var GLOBAL_minID = vals.minID;
 	var GLOBAL_maxID = vals.maxID;
@@ -32,7 +32,6 @@ var ArticleRenderer = function (vals) {
 	var GLOBAL_startID = GLOBAL_minID;
 
 	var articleRenderer = {};
-
 	var articleRendererSemanticZooming = new ArticleRendererSemanticZooming({
 			network : GLOBAL_network,
 			minID : GLOBAL_minID,
@@ -512,7 +511,7 @@ var ArticleRenderer = function (vals) {
 	}
 
 	articleRenderer.fillDataNew = function () {
-		qualityFlawManager.getQualityFlaws(dataRetriever.getRawTextWithData());
+		//qualityFlawManager.getQualityFlaws(dataRetriever.getRawTextWithData());
 		articleRenderer.cleanUp();
 		var intro = dataRetriever.getIntro();
 		var title = dataRetriever.getTitle();
@@ -526,19 +525,7 @@ var ArticleRenderer = function (vals) {
 		var topIds = [];
 		var sameSectionPosition = [];
 
-		$('#ediotr_section_selector')
-		.find('option')
-		.remove();
-		$('#ediotr_section_selector').append($('<option>', {
-				value : 'Introduction',
-				text : 'Introduction'
-			}));
-		for (var i = 0; i < sectionInfos.length; i++) {
-			$('#ediotr_section_selector').append($('<option>', {
-					value : sectionInfos[i].line,
-					text : sectionInfos[i].line
-				}));
-		}
+		
 		for (var i = 0; i < sectionInfos.length; i++) {
 
 			currentLevel = parseInt(sectionInfos[i].level);
@@ -1561,11 +1548,11 @@ var ArticleRenderer = function (vals) {
 	}
 	articleRenderer.retrievingDataAnimation = function (text) {
 		//$("#overallScore").html("<b>" + text + "</b>");
-		$("#workingAnimation").html(text);
+		$("#workingAnimationCompare").html(text);
 	}
 
 	articleRenderer.retrievingDataDone = function (text) {
-		$("#workingAnimation").html("<b>" + text + "</b>");
+		$("#workingAnimationCompare").html("<b>" + text + "</b>");
 		GLOBAL_controller.closeEditDialog();
 		articleRenderer.showQuality();
 	}
@@ -1727,17 +1714,11 @@ var ArticleRenderer = function (vals) {
 			}
 			if (item.type == "text") {
 				if (isScroll) {
-					$('#editor_section_name').html(item.title);
-					$('#wikiTextInner').scrollTop(0);
-					$("#ediotr_section_selector").val(item.title)
+				
 
 					var desired = item.title.replace(/[^\w\s]/gi, '');
 					var idStr = desired.replace(/ /g, "_");
 					var help = "#" + idStr;
-					$('#wikiTextInner').animate({
-						scrollTop : $(help).offset().top - 300
-					},
-						'slow');
 				}
 
 				var items = GLOBAL_data.nodes.get();
@@ -1829,12 +1810,11 @@ var ArticleRenderer = function (vals) {
 				currentSelectedSectionId = item.id;
 				//	console.log("CID2: " + currentSelectedSectionId);
 				var text = item.label;
-				$("#editor").html(text);
 
 				if (showQualityFlag) {
 					var masterItem = articleRenderer.getItem(item.masterId);
 					var allKeys = Object.keys(item.allQulityParameters);
-					var qmStr = "<h2 ><b>" + masterItem.label + "</b></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
+					var qmStr = "<h2 ><b>" + masterItem.label + "</b></h2><table border='1' width='360' style=' position: relative; max-width: 360px' >";
 					//qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
 					for (var i = 0; i < allKeys.length; i++) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
@@ -1862,24 +1842,24 @@ var ArticleRenderer = function (vals) {
 																																																																																																																																																																																																																																																																			articleController.changeValueOfCheckbox($(this).val(), false); \
 																																																																																																																																																																																																																																																																		} \
 																																																																																																																																																																																																																																																																	}); </script>";
-					$("#qualityParameters").html(qmStr);
+					$("#qualityParametersRev").html(qmStr);
 				}
 			} else if (item.type == "img") {
 				var allKeys = Object.keys(item.imageInfos);
-				var qmStr = "<table border='1' width='400' style=' width:400px; max-width: 400px' >";
+				var qmStr = "<table border='1' width='360' style=' width:360px; max-width: 360px' >";
 				for (var i = 0; i < allKeys.length; i++) {
 					qmStr += ("<tr bgcolor=\"" + "white" + "\"><td>" + allKeys[i] + "</td><td>" + item.imageInfos[allKeys[i]] + "</td><td>" + "OK" + "</td></tr>");
 				}
 				qmStr += "</table>";
-				$("#qualityParameters").html(qmStr);
+				$("#qualityParametersRev").html(qmStr);
 			} else if (item.type == "section") {
-				var qmStr = "<table border='1' width='400' style=' width:400px; max-width: 400px' >";
+				var qmStr = "<table border='1' width='360' style=' width:360px; max-width: 360px' >";
 				var bgColor = item.quality < 0.5 ? "red" : "white";
 				var status = item.quality < 0.5 ? "improve" : "OK";
 
 				qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + "Section score: " + "</td><td>" + parseFloat(item.quality).toFixed(2) + "</td><td>" + status + "</td></tr>");
 				qmStr += "</table>";
-				$("#qualityParameters").html(qmStr);
+				$("#qualityParametersRev").html(qmStr);
 			}
 		}
 	}
@@ -2112,8 +2092,8 @@ var ArticleRenderer = function (vals) {
 		}
 		sum = parseFloat(sum / cnt);
 		sum = sum.toFixed(2);
-		$('#progressBarOverallScore').val(sum * 100);
-		$('#overallScore').html("<b>Quality score of this article:</b> " + sum);
+		$('#progressBarOverallScoreRev').val(sum * 100);
+		$('#overallScoreRev').html("<b>Quality score of this article:</b> " + sum);
 		//alert("THE OVERALL QUALITY: " + sum);
 		//AND NOW THE SCORE FOR THE SECTIONS
 		for (var i = 0; i < items.length; i++) {
@@ -2135,8 +2115,8 @@ var ArticleRenderer = function (vals) {
 				//console.log("item.title: " + item.title);
 				if (item.title == GLOBAL_articleName) {
 
-					$('#progressBarOverallScore').val(parseFloat((sectionData.score / sectionData.numTextElements) * 100).toFixed(2));
-					$('#overallScore').html("<b>Quality score of this article:</b> " + parseFloat((sectionData.score / sectionData.numTextElements)).toFixed(2));
+					$('#progressBarOverallScoreRev').val(parseFloat((sectionData.score / sectionData.numTextElements) * 100).toFixed(2));
+					$('#overallScoreRev').html("<b>Quality score of this article:</b> " + parseFloat((sectionData.score / sectionData.numTextElements)).toFixed(2));
 				}
 			}
 		}
@@ -2241,11 +2221,9 @@ var ArticleRenderer = function (vals) {
 	}
 
 	articleRenderer.saveWholeArticle = function () {
-		var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
+		/*var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
 		var text = "";
-		$('#wikiTextInner').children().each(function () {
-			text += ("\n" + $(this).html());
-		});
+	
 
 		text = text.replaceHtmlEntites();
 		console.log("TEXT: " + text);
@@ -2254,7 +2232,7 @@ var ArticleRenderer = function (vals) {
 		console.log("EDIT TOKEN: " + articleController.getEditToken());
 		var params = "action=edit&title=" + GLOBAL_articleName + "&token=" + articleController.getEditToken() + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
 		//UPDATING TEXT TO WIKIPEDIA!
-		GLOBAL_controller.uploadWholeArticle(url, params);
+		GLOBAL_controller.uploadWholeArticle(url, params);*/
 		//Second reload article happens in callback method
 	}
 

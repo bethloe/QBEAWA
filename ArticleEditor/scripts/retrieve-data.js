@@ -30,7 +30,7 @@ var DataRetriever = function (vals) {
 	var GLOBAL_interval;
 	var dataRetriever = {};
 	var allDataRetrieved = 0;
-	var allDataRetrievedCheck = 0;
+	var allDataRetrievedCheck = 0; 
 	var allDataRetrievedFlag = false;
 
 	var resetData = function () {

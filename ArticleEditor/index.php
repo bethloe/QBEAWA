@@ -14,6 +14,7 @@
   <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
   <script type="text/javascript" src="scripts/article-editor-quality-flaw-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-sensium-requester.js"></script>
+  <script type="text/javascript" src="scripts/article-editor-sensium-requester-revision.js"></script>
   <script src="libs/JavaScript-Load-Image-master/js/load-image.all.min.js"></script>
    
 
@@ -40,9 +41,11 @@
   <script type="text/javascript" src="scripts/retrieve-data.js"></script>
   <script type="text/javascript" src="scripts/retrieve-data-with-revid.js"></script>
   <script type="text/javascript" src="scripts/article-editor-controller-data-manipulation.js"></script>
+  <script type="text/javascript" src="scripts/article-editor-controller-data-manipulation-revision.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer-quality-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer-semantic-zooming.js"></script>
   <script type="text/javascript" src="scripts/article-editor-renderer.js"></script>
+  <script type="text/javascript" src="scripts/article-editor-renderer-revision.js"></script>
   <script type="text/javascript" src="scripts/article-editor-controller.js"></script>
   <link rel="stylesheet" type="text/css" href="menu/css/demo.css" />
   <link rel="stylesheet" type="text/css" href="menu/css/style8.css" />
@@ -67,12 +70,17 @@
 	position:absolute;
 	  top: 40px;
       width: 700px;
-      height: 640px;
+      height: 320px;
       border: 1px solid lightgray;
 	  float: left;
 	  background-color:white;
     }   
 
+	#mynetworkCompare{
+      width: 360px;
+      height: 320px;
+	  background-color:white;
+    }   
 	
 	
   .ui-resizable-helper { border: 2px dotted #00F; }
@@ -114,6 +122,14 @@
     background: -moz-linear-gradient(#f0f0f0, #636363); /* For Firefox 3.6 to 15 */
     background: linear-gradient(#f0f0f0, #636363); /* Standard syntax (must be last) */
 	 }
+	 #optionPanelRev {
+	float: left; 
+	width:360px;
+	   background: -webkit-linear-gradient(#f0f0f0, #636363); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f0f0f0, #636363); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f0f0f0, #636363); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f0f0f0, #636363); /* Standard syntax (must be last) */
+	 }
    #mynetworkDetailView {
 	  position: absolute;
 	  top: 30px;
@@ -126,6 +142,12 @@
 	#qualityParameters{
 	position:relative;
 	height: 200px;
+	overflow-x: auto; 
+	overflow-y: auto;
+	}
+ #qualityParametersRev{
+	position:relative;
+	height: 400px;
 	overflow-x: auto; 
 	overflow-y: auto;
 	}
@@ -197,6 +219,16 @@
 }
 
 	#eexcess_equation_controls2{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 40px;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+	#eexcess_equation_controls3{
 	position: relative;
     display: inline-flex;
     width: 100%;
@@ -311,6 +343,13 @@ font-family: 'WebSymbolsRegular', cursive;
 .menuHelper:hover{
 	background-color: white;
 }
+
+#workingAnimationCompare{
+	
+ font-family: 'WebSymbolsRegular', cursive;
+    font-size: 40px;
+	cursor: pointer;
+}
   </style>
 </head>
 
@@ -319,60 +358,57 @@ font-family: 'WebSymbolsRegular', cursive;
 	
 	<!-- END ------->
 	
-<script>  var articleController = new ArticleController();</script>
-<!-- Smooth curve type:
-<select id="dropdownID">
-    <option value="continuous" selected="selected">continuous</option>
-    <option value="discrete">discrete</option>
-    <option value="diagonalCross">diagonalCross</option>
-    <option value="straightCross">straightCross</option>
-    <option value="horizontal">horizontal</option>
-    <option value="vertical">vertical</option>
-    <option value="curvedCW">curvedCW</option>
-    <option value="curvedCCW">curvedCCW</option>
-</select><br/>-->
-<!--<div > 
-<table style="border: 0px"> <tr> <td>
-Article name: <input id="articleName" type="text" value="User:Dst2015/sandbox"> 
-</td><td class="menuHelper"  onclick="articleController.retrieveData()" title="retrieve data"><img src="media/retrievedata.png" height="40" style="vertical-align: middle"  > </td><td>
-<p id="workingAnimation"></p>
-</td>
-<td class="menuHelper" title="reload the article" onclick="articleController.reload()">
-*
-</td>
-<td class="menuHelper" title="unlock/lock layout" onclick="changeLayout()">
-<img  id="lockUnockImage" src="media/lock_closed.png" height="40" style="vertical-align: middle" />
-</td>
-<td  class="menuHelper" title="reset" onclick="articleController.reset()">
-J
-</td>
-<td  class="menuHelper" title="login" onclick="articleController.login()">
-U
-</td>
-<td  class="menuHelper" title="Settings" onclick="articleController.showSettings()">
-S
-</td>
-</tr>
-</table>
-</div>-->
+<script> 
+	
+	var upperPartHelper = 1;
+		var browserWindowWidth = $(window).width();
+	var documentHeight = $(window).height();
+	var elementHeight = documentHeight - 150;
+	var restWidth = browserWindowWidth - $("#optionPanel").width() - 30;
+	var resizeWindow = function(){
+		$("#mynetworkouter").css("width", restWidth / 2);
 
-<!-- 
-Testdata:
-Peter_Parker:_Spider-Man&oldid=443358314 
-Nuclear_option&oldid=454325470
-City and Industrial Development Corporation&oldid=408274214-->
-<div id="menu" style="padding-left:10px; width:950px; overflow-x: auto;">
+		$("#mynetwork").css("width", restWidth / 2);
+
+		$("#wikiText").css("width", restWidth / 2);
+
+		$("#wikiText").css("left", restWidth / 2);
+
+		$("#optionPanel").css("left", restWidth + 10);
+
+		$("#mynetworkouter").css("height", elementHeight-10);
+		$("#mynetworkUpperPart").css("height", elementHeight/upperPartHelper +40);
+		$("#mynetwork").css("height", elementHeight/upperPartHelper );
+		$("#wikiText").css("height", elementHeight-10);
+		$("#optionPanel").css("height", elementHeight-10);
+		$("#mainContent").css("height", elementHeight);
+		$("#wikiTextInner").css("height", elementHeight-50);
+		
+		$("#openPanelSeconPart").css("height", elementHeight-420);
+			$("#mynetworkCompareDiv").css("width", (restWidth / 2 - 360)); 
+	
+	}
+ var articleControllerMain = new ArticleController({
+				networkTag : "mynetwork",
+				forComparing : false
+			});
+		  var articleControllerCompare = new ArticleController({
+				networkTag : "mynetworkCompare",
+				forComparing : true
+			});</script>
+		<!--Nuclear_option&oldid=454325470-->	
+<div id="menu" style="padding-left:10px; overflow-x: auto;">
   <ul class="ca-menu">
 				<li>
-                        <a onclick="articleController.retrieveData()">
-                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" style="width:140px"  value="Nuclear_option&oldid=454325470"> </span>
+                        <a onclick="articleControllerMain.retrieveData()">
+                            <span class="ca-icon"><input onclick="clickstophelper()" id="articleName" type="text" style="width:140px"  value="Nikola Tesla"> </span>
                             <div class="ca-content">
                                 <h2 class="ca-main">retrieve data <p id="workingAnimation"></p></h2></h2>
                             </div>
                         </a>
                     </li> 
                     <li>
-                        <a onclick="articleController.reload()">
+                        <a onclick="articleControllerMain.reload()">
                             <span class="ca-icon">*</span>
                             <div class="ca-content">
                                 <h2 class="ca-main">reload the article</h2>
@@ -388,7 +424,7 @@ City and Industrial Development Corporation&oldid=408274214-->
                         </a>
                     </li> 
                      <li>
-                        <a onclick="articleController.reset()">
+                        <a onclick="articleControllerMain.reset()">
                             <span class="ca-icon">J</span>
                             <div class="ca-content">
                                 <h2 class="ca-main">reset</h2>
@@ -396,7 +432,7 @@ City and Industrial Development Corporation&oldid=408274214-->
                         </a>
                     </li> 
                     <li id="liLogin">
-                        <a onclick="articleController.login()">
+                        <a onclick="articleControllerMain.login()">
                             <span class="ca-icon">U</span>
                             <div class="ca-content">
                                 <h2 class="ca-main">login</h2>
@@ -405,121 +441,72 @@ City and Industrial Development Corporation&oldid=408274214-->
                         </a>
                     </li>
                     <li id="showSettings">
-                        <a onclick="articleController.showSettings()">
+                        <a onclick="articleControllerMain.showSettings()">
                             <span class="ca-icon">S</span>
                             <div class="ca-content">
                                 <h2 class="ca-main">settings</h2>
                             </div>
                         </a>
                     </li> 
-                </ul>
-</div>
- <!--
-<br/>
-<div id="menu" >
-  <ul class="ca-menu">
-                    <li>
-                        <a onclick="articleController.reload()">
-                            <span class="ca-icon">*</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">reload the article</h2>
-                            </div>
-                        </a>
-                    </li> 
-                    <li>
-                        <a onclick="articleController.showAllItems()">
-                            <span class="ca-icon">p</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">show all items</h2>
-                            </div>
-                        </a>
-                    </li>-->
-                    <!-- <li id="changeLayout">
-                        <a onclick="changeLayout()">
+                    <li id="compareRevisions">
+                        <a onclick="articleControllerCompare.compareRevisions()">
                             <span class="ca-icon">H</span>
                             <div class="ca-content">
-                                <h2 class="ca-main">change layout</h2>
-                            </div>
-                        </a>
-                    </li> 
-                    <li id="showReferences">
-                        <a onclick="articleController.showReferences()">
-                            <span class="ca-icon" >,</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">show external references</h2>
-                            </div>
-                        </a>
-                    </li>
-                    <li id="showImages">
-                        <a onclick="articleController.showImages()">
-                            <span class="ca-icon">I</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">show images</h2>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="articleController.doRedraw()">
-                            <span class="ca-icon">J</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">redraw</h2>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="articleController.semanticZooming()">
-                            <span class="ca-icon">%</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">semantic zooming</h2>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a onclick="articleController.showOverview()">
-                            <span class="ca-icon">L</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">show overview</h2>
-                            </div>
-                        </a>
-                    </li>
-                    <!-- <li>
-                        <a onclick="articleController.reset()">
-                            <span class="ca-icon">J</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">reset</h2>
-                            </div>
-                        </a>
-                    </li> -->
-                    <!-- <li>
-                        <a onclick="articleController.showTheWholeArticle()">
-                            <span class="ca-icon">a</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">show article as text</h2>
-                            </div>
-                        </a>
-                    </li> -->
-                    <!-- <li id="liLogin">
-                        <a onclick="articleController.login()">
-                            <span class="ca-icon">U</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">login</h2>
-                                <h3 class="ca-sub" id="loginSUB">not logged in</h3>
-                            </div>
-                        </a>
-                    </li>
-                    <li id="showSettings">
-                        <a onclick="articleController.showSettings()">
-                            <span class="ca-icon">S</span>
-                            <div class="ca-content">
-                                <h2 class="ca-main">settings</h2>
+                                <h2 class="ca-main">compareRevisions</h2>
                             </div>
                         </a>
                     </li> 
                 </ul>
 </div>
-<br/>-->
 <div id="dialog" title="Dialog Title">
 	<textarea id="node-label" rows="30" cols="100" ></textarea>
+</div>
+
+<!-- --------------------------------  -->
+<div id="dialogCompare" title="You can load an old revision here!">
+<!--
+<div style="float:left; width:500px;">
+<table><tr><td>
+	  <select id="compare_Selector" >
+  </select></td><td>
+  <button onclick="articleControllerCompare.retrieveRevision()"> retrieve revision </button></td> <td><p id="workingAnimationCompare"></p></td></tr></table>
+      <div id="eexcess_equation_controls3">
+					<table><tr> <td class="menuHelper2" onclick="articleControllerCompare.showAllItems()" title="show all elements">p</td><td class="menuHelper2" id="showAllRefsTd" onclick="articleControllerCompare.showReferences()" title="show all external references">,</td><td id="showAllImagesTd" class="menuHelper2" onclick="articleControllerCompare.showImages()" title="show all images">I</td><td  onclick="articleControllerCompare.doRedraw()" class="menuHelper2" title="redraw tree"><img src="media/redraw_small.png" height="30" style="vertical-align: middle" /></td><td id="semTd" onclick="articleControllerCompare.semanticZooming()" class="menuHelper2" title="just show section headlines">%</td><td class="menuHelper2" onclick="articleControllerCompare.showOverview()" title="rebuild the tree and go back to the default perspective">L</td></tr></table>
+					
+				
+				</div> 
+	<div id="mynetworkCompare"> </div>
+</div>
+<div style="float: left; "  >
+
+<div  id="optionPanelRev" >
+<div style=" height: 380px; width:400px;  border-bottom: 2px solid black;">
+<span> <b> Article information </b> </span>
+<hr/>
+<div > 
+ <p id="overallScoreRev" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
+  <meter id="progressBarOverallScoreRev" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
+  
+</div> 
+
+<hr/>
+<div style="position: relative" > 
+ <p id="sensiumOverallScoreRev" style="width:80%" data-value="80"><b>Sensium score: </b></p>
+ <br /> 
+  <img id="progressBarSensiumOverallScoreRev" src="media/sensium.png" title="Sentiment detection allows you to decide of a given text talks positively or negatively about a subject. Sentiment detection is a common building block of online reputation management services for companies. Such a service scans social media, blogs and editorials, figuring out the general publics mood towards a company." style="width: 99%"/>
+  <img id="progressBarSensiumOverallScoreControllerRev" src="media/sensium_controller.png" style="position: absolute; top: 30px; right: 200px; height: 40px; "/>
+  
+</div> 
+<hr />
+
+<div id="qualityParametersRev"> 
+</div>
+
+
+</div>
+
+</div>
+</div>-->
 </div>
 <div id="dialogCreateNewNode" title="Create new node">
 	<h1> What would you like to add? </h1>
@@ -562,11 +549,11 @@ City and Industrial Development Corporation&oldid=408274214-->
 <tr><td>Quality of external refs</td><td> <input id="sliderExternalRefs" type="range"  min="0" max="100" /></td></tr>
 <tr><td>Quality of all links</td><td> <input id="sliderAllLinks" type="range"  min="0" max="100" /></td></tr>-->
 <tr><td align="center"><b>Names</b></td><td align="center"><b>Optimum</b></td></tr>
-<tr><td>Flesch score</td><td> <input id="numberFlesch" type="number"  value="20000" /></td></tr>
-<tr><td>Kincaid score</td><td> <input id="numberKincaid" type="number"  value="12" /></td></tr>
-<tr><td>Image quality</td><td> <input id="numberImageQuality" type="number"  value="5" /></td></tr>
-<tr><td>Quality of external refs</td><td> <input id="numberExternalRefs" type="number"  value="4" /></td></tr>
-<tr><td>Quality of all links</td><td> <input id="numberAllLinks" type="number"  value="30" /></td></tr>
+<tr><td>Flesch score</td><td> <input id="numberFlesch" type="number"  value="10000" /></td></tr>
+<tr><td>Kincaid score</td><td> <input id="numberKincaid" type="number"  value="6" /></td></tr>
+<tr><td>Image quality</td><td> <input id="numberImageQuality" type="number"  value="2" /></td></tr>
+<tr><td>Quality of external refs</td><td> <input id="numberExternalRefs" type="number"  value="2" /></td></tr>
+<tr><td>Quality of all links</td><td> <input id="numberAllLinks" type="number"  value="10" /></td></tr>
 <tr><td align="center"><b>Names</b></td><td align="center"><b>Influence</b></td></tr>
 <tr><td>Flesch score</td><td> <input id="sliderFleschInfluence" type="range"  min="0" max="100" /></td></tr>
 <tr><td>Kincaid score</td><td> <input id="sliderKincaidInfluence" type="range"  min="0" max="100" /></td></tr>
@@ -579,9 +566,9 @@ City and Industrial Development Corporation&oldid=408274214-->
 
 <div id="mainContent" style="">
 <div id="mynetworkouter" style="position:absolute; top: 0px; width: 700px; height: 680px; border: 1px solid lightgray; float: left; background-color:white;">
-
+<div id="mynetworkUpperPart"  style="height:340px">
 		      <div id="eexcess_equation_controls2">
-					<table><tr> <td class="menuHelper2" onclick="articleController.showAllItems()" title="show all elements">p</td><td class="menuHelper2" id="showAllRefsTd" onclick="articleController.showReferences()" title="show all external references">,</td><td id="showAllImagesTd" class="menuHelper2" onclick="articleController.showImages()" title="show all images">I</td><td  onclick="articleController.doRedraw()" class="menuHelper2" title="redraw tree"><img src="media/redraw_small.png" height="30" style="vertical-align: middle" /></td><td id="semTd" onclick="articleController.semanticZooming()" class="menuHelper2" title="just show section headlines">%</td><td class="menuHelper2" onclick="articleController.showOverview()" title="rebuild the tree and go back to the default perspective">L</td></tr></table>
+					<table><tr> <td class="menuHelper2" onclick="articleControllerMain.showAllItems()" title="show all elements">p</td><td class="menuHelper2" id="showAllRefsTd" onclick="articleControllerMain.showReferences()" title="show all external references">,</td><td id="showAllImagesTd" class="menuHelper2" onclick="articleControllerMain.showImages()" title="show all images">I</td><td  onclick="articleControllerMain.doRedraw()" class="menuHelper2" title="redraw tree"><img src="media/redraw_small.png" height="30" style="vertical-align: middle" /></td><td id="semTd" onclick="articleControllerMain.semanticZooming()" class="menuHelper2" title="just show section headlines">%</td><td class="menuHelper2" onclick="articleControllerMain.showOverview()" title="rebuild the tree and go back to the default perspective">L</td></tr></table>
 					
 				
 				</div> 
@@ -589,12 +576,61 @@ City and Industrial Development Corporation&oldid=408274214-->
 
 </div>
 </div>
+<div id="mynetworkLowerPart" style="height:340px; display:none;">
+<div id="mynetworkCompareDiv" style="float:left; width:360px;">
+<table><tr><td>
+	  <select id="compare_Selector" >
+  </select></td><td>
+  <button onclick="articleControllerCompare.retrieveRevision()"> retrieve revision </button></td> <td><p id="workingAnimationCompare"></p></td></tr></table>
+      <div id="eexcess_equation_controls3">
+					<table><tr> <td class="menuHelper2" onclick="articleControllerCompare.showAllItems()" title="show all elements">p</td><td class="menuHelper2" id="showAllRefsTdRev" onclick="articleControllerCompare.showReferences()" title="show all external references">,</td><td id="showAllImagesTdRev" class="menuHelper2" onclick="articleControllerCompare.showImages()" title="show all images">I</td><td  onclick="articleControllerCompare.doRedraw()" class="menuHelper2" title="redraw tree"><img src="media/redraw_small.png" height="30" style="vertical-align: middle" /></td><td id="semTdRev" onclick="articleControllerCompare.semanticZooming()" class="menuHelper2" title="just show section headlines">%</td><td class="menuHelper2" onclick="articleControllerCompare.showOverview()" title="rebuild the tree and go back to the default perspective">L</td></tr></table>
+					
+				
+				</div> 
+	<div id="mynetworkCompare"> </div>
+</div>
+<div style="float: left; "  >
+
+<div  id="optionPanelRev" >
+<div style=" height: 340px; width:360px;  border-bottom: 2px solid black;">
+<span> <b> Article information </b> </span>
+<hr/>
+<div > 
+ <p id="overallScoreRev" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
+  <meter id="progressBarOverallScoreRev" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
+        <!-- <progress id="progressBarOverallScore" max="100" value="100" class="html5">
+            <div class="progress-bar">
+                <span style="width: 80%">80%</span>
+            </div>
+        </progress> -->
+</div> 
+
+<hr/>
+<div style="position: relative" > 
+ <p id="sensiumOverallScoreRev" style="width:80%" data-value="80"><b>Sensium score: </b></p>
+ <br /> 
+  <img id="progressBarSensiumOverallScoreRev" src="media/sensium.png" title="Sentiment detection allows you to decide of a given text talks positively or negatively about a subject. Sentiment detection is a common building block of online reputation management services for companies. Such a service scans social media, blogs and editorials, figuring out the general publics mood towards a company." style="width: 99%"/>
+  <img id="progressBarSensiumOverallScoreControllerRev" src="media/sensium_controller.png" style="position: absolute; top: 30px; right: 200px; height: 40px; "/>
+  
+</div> 
+<hr />
+
+<div id="qualityParametersRev"> 
+</div>
+
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
 <div id="mynetwork2" >
 
 </div>
 <div id="wikiText" >
 		      <div id="eexcess_equation_controls">
-					<div class="icon" onclick="articleController.saveWholeArticle()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
+					<div class="icon" onclick="articleControllerMain.saveWholeArticle()" > <img src="media/saveBlack.png" height="30"/ title="save" > </div> 
 				<!--	<div class="icon" ><img src="media/new.png" title="new element" height="30" onclick="equationEditor.clearEquationComposer()"/></div>
 					<div class="icon" ><img src="media/delete.png" title="delete element" height="30" onclick="equationEditor.deleteSelectedElement()"/></div>-->
 					<div id="editor_section_name" style="display:none"> </div>
@@ -612,6 +648,9 @@ City and Industrial Development Corporation&oldid=408274214-->
 </div>
 
 <td  rowspan="2">
+
+
+
 <div  id="optionPanel" style="" >
 <div style=" height: 380px; width:400px;  border-bottom: 2px solid black;">
 <span> <b> Article information </b> </span>
@@ -658,9 +697,11 @@ City and Industrial Development Corporation&oldid=408274214-->
 </div>
 </div>
 </div>
+</div>
 
 <script>
-			articleController.init("mynetwork");
+			articleControllerMain.init("mynetwork");
+		articleControllerCompare.init("mynetworkCompare");
 </script>
 <script>
   $(function () {
@@ -675,6 +716,13 @@ City and Industrial Development Corporation&oldid=408274214-->
   	autoOpen : false,
   	width : 1000,
   	modal : true
+  });
+  
+    $("#dialogCompare").dialog({
+  	autoOpen : false,
+  	width : 940,
+  	height : 800,
+	resizable: false
   });
 
   $("#articleViewer").dialog({
@@ -830,6 +878,9 @@ City and Industrial Development Corporation&oldid=408274214-->
 			stop : function (event, ui) {
 				console.log("HALLO " + $("#mynetworkouter").width());
 				$("#mynetwork").css("width", $("#mynetworkouter").width());
+				$("#mynetworkCompareDiv").css("width", $("#mynetworkouter").width() - 360);
+				$("#mynetworkCompare").css("width", $("#mynetworkouter").width() - 360);
+				
 			}
 		});
 		$('#wikiText').resizable({
@@ -952,7 +1003,7 @@ City and Industrial Development Corporation&oldid=408274214-->
   			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/wiki/" + $("#articleName").val() + "\" style=\"width: 100%; height: 100%\"></iframe>");
   			console.log("toggle on");
   		} else {
-  			articleController.showTheWholeArticleInMainView();
+  			articleControllerMain.showTheWholeArticleInMainView();
   			console.log("toggle off");
   		}
   	});
@@ -982,30 +1033,11 @@ City and Industrial Development Corporation&oldid=408274214-->
   		}
   	});
 	
-	var browserWindowWidth = $(window).width();
-	var documentHeight = $(window).height();
-	var elementHeight = documentHeight - 150;
-	var restWidth = browserWindowWidth - $("#optionPanel").width() - 30;
-	$("#mynetworkouter").css("width", restWidth / 2);
-
-	$("#mynetwork").css("width", restWidth / 2);
-
-	$("#wikiText").css("width", restWidth / 2);
-
-	$("#wikiText").css("left", restWidth / 2);
-
-	$("#optionPanel").css("left", restWidth + 10);
-
-	$("#mynetworkouter").css("height", elementHeight-10);
-	$("#mynetwork").css("height", elementHeight - 50);
-	$("#wikiText").css("height", elementHeight-10);
-	$("#optionPanel").css("height", elementHeight-10);
-	$("#mainContent").css("height", elementHeight);
-	$("#wikiTextInner").css("height", elementHeight-50);
-	
-	$("#openPanelSeconPart").css("height", elementHeight-420);
-	
-
+browserWindowWidth = $(window).width();
+	 documentHeight = $(window).height();
+	 elementHeight = documentHeight - 150;
+	 restWidth = browserWindowWidth - $("#optionPanel").width() - 30;
+	resizeWindow();
 	
 	var oldWindowWidth = $(window).width();
 	var oldWindowHeight = $(window).height()
@@ -1023,12 +1055,15 @@ City and Industrial Development Corporation&oldid=408274214-->
 			$("#wikiText").css("width", restWidth / 2);
 
 			$("#wikiText").css("left", restWidth / 2);
+			$("#mynetworkCompareDiv").css("width", (restWidth / 2 - 360)); 
 
 			$("#optionPanel").css("left", restWidth + 10);
 			var documentHeight = $(window).height();
 			var elementHeight = documentHeight - 150;
 			$("#mynetworkouter").css("height", elementHeight - 10);
-			$("#mynetwork").css("height", elementHeight - 50);
+			
+			$("#mynetworkUpperPart").css("height", elementHeight/upperPartHelper -10);
+			$("#mynetwork").css("height", elementHeight/upperPartHelper - 50);
 			$("#wikiText").css("height", elementHeight - 10);
 			$("#optionPanel").css("height", elementHeight - 10);
 			$("#mainContent").css("height", elementHeight);
@@ -1055,7 +1090,7 @@ City and Industrial Development Corporation&oldid=408274214-->
 		
 	$("#ediotr_section_selector").change(function () {
 		console.log("Section changed: " + this.value);
-		articleController.highlightSectionInTree(this.value);
+		articleControllerMain.highlightSectionInTree(this.value);
 		var item = this.value;
 		$('#editor_section_name').html(item);
 		$('#wikiTextInner').scrollTop(0);

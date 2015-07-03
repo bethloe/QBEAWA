@@ -55,7 +55,7 @@ var DataRetrieverRevision = function (vals) {
 	}
 
 	dataRetriever.setTitle = function (title) {
-	
+
 		var help = title.split("&oldid=");
 		GLOBAL_title = title;
 		GLOBAL_rev = help[1];
@@ -65,6 +65,45 @@ var DataRetrieverRevision = function (vals) {
 		return JSON.stringify(GLOBAL_JSON);
 	}
 
+	var GLOBAL_revisionIDs = [];
+	var GLOBAL_maxRevision = 2000;
+	var GLOBAL_articleName = "";
+	dataRetriever.loadArticleRevIDs = function (articleName) {
+		GLOBAL_revisionIDs = []
+		GLOBAL_articleName = articleName;
+		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + articleName + "&rvlimit=max&rvprop=ids|user&continue", handleSearchRevision);
+
+	}
+
+	var handleSearchRevision = function (JSONResponse) {
+		if (GLOBAL_revisionIDs.length >= GLOBAL_maxRevision) {
+
+			GLOBAL_articleRenderer.setRevisions(GLOBAL_revisionIDs);
+			return;
+		}
+		var articles = JSON.parse(JSON.stringify(JSONResponse));
+	//	console.log("-------------> " + JSON.stringify(JSONResponse));
+		var JSONArticleTitles2 = articles.query.pages[Object.keys(articles.query.pages)[0]].revisions;
+		for (var i = 0; i < JSONArticleTitles2.length; i++) {
+			if (GLOBAL_revisionIDs.length >= GLOBAL_maxRevision) {
+				GLOBAL_articleRenderer.setRevisions(GLOBAL_revisionIDs);
+				return;
+			}
+			GLOBAL_revisionIDs.push(JSONArticleTitles2[i].revid);
+			
+		//	GLOBAL_articleRenderer.addOneRevision(JSONArticleTitles2[i].revid);
+		}
+
+		if (articles.hasOwnProperty("continue")) {
+			if (articles.continue.hasOwnProperty("rvcontinue")) {
+				console.log("INTO CONTINUE");
+				retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_articleName + "&rvlimit=max&rvcontinue=" + articles.continue.rvcontinue + "&rvprop=ids|user&continue", handleSearchRevision);
+			}
+		}
+		else{
+			GLOBAL_articleRenderer.setRevisions(GLOBAL_revisionIDs);
+		}
+	}
 	dataRetriever.getAllMeasures = function () {
 
 		//GET ALL SECTIONS TITLES:
@@ -75,7 +114,6 @@ var DataRetrieverRevision = function (vals) {
 
 		//GET RAW TEXT:
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=extracts&explaintext=&revids=" + GLOBAL_rev + "&continue", handleRawText);
-
 
 		//GET ALL REFERENCES (EXTERNAL LINKS right now that's the only way I know :-( ):
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=extlinks&format=json&ellimit=max&revids=" + GLOBAL_rev + "&continue", handleExternalLinks);
@@ -91,7 +129,8 @@ var DataRetrieverRevision = function (vals) {
 	}
 	var GLOBAL_retrieveCnt = 0;
 	function checkIfAllDataRetrieved() {
-		
+
+		console.log(allDataRetrieved + " == " + allDataRetrievedCheck);
 		if (allDataRetrieved == allDataRetrievedCheck && allDataRetrieved != 0 && allDataRetrievedCheck != 0) {
 			clearInterval(GLOBAL_interval);
 			allDataRetrievedFlag = true;
