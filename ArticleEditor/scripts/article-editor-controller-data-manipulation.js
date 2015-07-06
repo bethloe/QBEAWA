@@ -116,7 +116,7 @@ var DataManipulator = function (vals) {
 		} else if (quality.score > 0.8) {
 			backgroundColor = "#00FF00";
 		}
-		var htmlForDialog = ("<div id=\"Introduction\" contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + "Introduction" + "')\">" + textOfSection + "</div>");
+		var htmlForDialog = ("<div id=\"Introduction\" contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleControllerMain.highlightSectionInTree('" + "Introduction" + "')\">" + textOfSection + "</div>");
 		var sectionCnt = 1;
 		for (var j = 0; j < sectionInfos.length; j++) {
 			if (sectionInfos[j].index == sectionCnt) {
@@ -143,7 +143,7 @@ var DataManipulator = function (vals) {
 						}
 						var desired = sectionData.sections[0].line.replace(/[^\w\s]/gi, '');
 						var idStr = desired.replace(/ /g, "_");
-						htmlForDialog += ("<div id=\"" + idStr + "\"contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.highlightSectionInTree('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
+						htmlForDialog += ("<div id=\"" + idStr + "\"contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleControllerMain.highlightSectionInTree('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
 					}
 				}
 				sectionCnt++;
@@ -175,7 +175,7 @@ var DataManipulator = function (vals) {
 		} else if (quality.score > 0.8) {
 			backgroundColor = "#00FF00";
 		}
-		var htmlForDialog = ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + "Introduction" + "')\">" + textOfSection + "</div>");
+		var htmlForDialog = ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleControllerMain.showQualityTable('" + "Introduction" + "')\">" + textOfSection + "</div>");
 
 		for (var i = 0; i < sectionContentDataArray.length; i++) {
 			var sectionData = sectionContentDataArray[i];
@@ -196,7 +196,7 @@ var DataManipulator = function (vals) {
 			} else if (quality.score > 0.8) {
 				backgroundColor = "#00FF00";
 			}
-			htmlForDialog += ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleController.showQualityTable('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
+			htmlForDialog += ("<div contenteditable=\"true\" style=\"background-color: " + backgroundColor + "; border: 2px solid black\" onclick=\"articleControllerMain.showQualityTable('" + sectionData.sections[0].line + "')\">" + textOfSection + "</div>");
 		}
 		//console.log("HTML : " + htmlForDialog);
 		$("#articleViewerDiv").html(htmlForDialog);
@@ -303,7 +303,7 @@ var DataManipulator = function (vals) {
 							}
 							console.log("PARAMS: " + params);
 							//UPDATING TEXT TO WIKIPEDIA!
-							articleController.newSection(url, params);
+							articleControllerMain.newSection(url, params);
 
 							$(this).dialog("close");
 							$("#dialogEditInProgres").dialog("open");
@@ -315,7 +315,7 @@ var DataManipulator = function (vals) {
 							var url = "http://en.wikipedia.org/w/api.php?action=upload&format=xml";
 							var params = "api.php?action=upload&filename=Test.jpg&file=" + currentImageSrc + "&token=" + editToken;
 
-							articleController.newImage(url, params);
+							articleControllerMain.newImage(url, params);
 						}
 					}
 				}, {
@@ -428,7 +428,7 @@ var DataManipulator = function (vals) {
 							//alert("INDEX: " + sectionItem.index);
 							var params = "action=edit&title=" + GLOBAL_articleName + "&section=" + sectionItem.index + "&token=" + editToken + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
 							//UPDATING TEXT TO WIKIPEDIA!
-							articleController.editRequest(url, params, item.id);
+							articleControllerMain.editRequest(url, params, item.id);
 							//GET THE NEW VERSION FROM WIKIPEDIA (rawtext, images which are maybe added to this section, etc)
 							//MAKE A REQUEST TO THE WIKIPAGE!!! (WITH THE SANDBOX WE CAN DO THIS :-) )
 							/*var rawText = textarea.val();

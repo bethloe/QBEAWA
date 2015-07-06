@@ -550,7 +550,7 @@ font-family: 'WebSymbolsRegular', cursive;
 <tr><td>Quality of all links</td><td> <input id="sliderAllLinks" type="range"  min="0" max="100" /></td></tr>-->
 <tr><td align="center"><b>Names</b></td><td align="center"><b>Optimum</b></td></tr>
 <tr><td>Flesch score</td><td> <input id="numberFlesch" type="number"  value="10000" /></td></tr>
-<tr><td>Kincaid score</td><td> <input id="numberKincaid" type="number"  value="6" /></td></tr>
+<tr><td>Kincaid score</td><td> <input id="numberKincaid" type="number"  value="14" /></td></tr>
 <tr><td>Image quality</td><td> <input id="numberImageQuality" type="number"  value="2" /></td></tr>
 <tr><td>Quality of external refs</td><td> <input id="numberExternalRefs" type="number"  value="2" /></td></tr>
 <tr><td>Quality of all links</td><td> <input id="numberAllLinks" type="number"  value="10" /></td></tr>

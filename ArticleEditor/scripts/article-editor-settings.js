@@ -2,54 +2,65 @@
 $("#sliderStrictness").change(function (e) {
 	overallScoreInterval = ((($(this).val() / 100) - 0.5) * 0.4).toFixed(2);
 	//console.log("sliderStrictness: " + overallScoreInterval);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderFlesch").change(function (e) {
 	weightFlesch = (($(this).val() / 100) + 0.5).toFixed(2);
 	//console.log("sliderFlesch: " + weightFlesch);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderKincaid").change(function (e) {
 	weightKincaid = (($(this).val() / 100) + 0.5).toFixed(2);
 	//console.log("sliderKincaid: " + weightKincaid);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderImageQuality").change(function (e) {
 	weightImageQuality = (($(this).val() / 100) + 0.5).toFixed(2);
 	//console.log("sliderImageQuality: " + weightImageQuality);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderExternalRefs").change(function (e) {
 	weightExternalRefs = (($(this).val() / 100) + 0.5).toFixed(2);
 	//console.log("sliderExternalRefs: " + weightExternalRefs);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderAllLinks").change(function (e) {
 	weightAllLinks = (($(this).val() / 100) + 0.5).toFixed(2);
 	//console.log("sliderAllLinks: " + weightAllLinks);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 
 //------------------------------------------------------------------------
 $("#numberFlesch").change(function (e) {
 	good_fleschWordCount = $(this).val();
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#numberKincaid").change(function (e) {	
 good_kinkaid = $(this).val();
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#numberImageQuality").change(function (e) {
 good_numPics = $(this).val();
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#numberExternalRefs").change(function (e) {
 good_extLinks = $(this).val();
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#numberAllLinks").change(function (e) {
 good_allLinks = $(this).val();
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 
 //Influences: -----------------------------------------------------------------
@@ -90,7 +101,8 @@ $("#sliderFleschInfluence").change(function (e) {
 
 //	console.log("sliderFleschInfluence: " + influenceFlesch + " rest: " + rest);
 
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderKincaidInfluence").change(function (e) {
 	influenceKincaid = (($(this).val() / 100)).toFixed(2);
@@ -121,7 +133,8 @@ $("#sliderKincaidInfluence").change(function (e) {
 	$("#sliderAllLinksInfluence").val(((($("#sliderAllLinksInfluence").val() / 100) / sum) * rest) * 100);
 
 	//console.log("sliderKincaidInfluence: " + influenceKincaid + " rest: " + rest);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderImageQualityInfluence").change(function (e) {
 	influenceImageQuality = (($(this).val() / 100)).toFixed(2);
@@ -155,7 +168,8 @@ $("#sliderImageQualityInfluence").change(function (e) {
 	$("#sliderAllLinksInfluence").val(((($("#sliderAllLinksInfluence").val() / 100) / sum) * rest) * 100);
 
 	
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderExternalRefsInfluence").change(function (e) {
 	influenceExternalRefs = (($(this).val() / 100)).toFixed(2);
@@ -186,7 +200,8 @@ $("#sliderExternalRefsInfluence").change(function (e) {
 	$("#sliderAllLinksInfluence").val(((($("#sliderAllLinksInfluence").val() / 100) / sum) * rest) * 100);
 
 	//console.log("sliderExternalRefsInfluence: " + influenceExternalRefs + " rest: " + rest);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 $("#sliderAllLinksInfluence").change(function (e) {
 	influenceAllLinks = (($(this).val() / 100)).toFixed(2);
@@ -217,7 +232,8 @@ $("#sliderAllLinksInfluence").change(function (e) {
 	$("#sliderFleschInfluence").val(((($("#sliderFleschInfluence").val() / 100) / sum) * rest) * 100);
 
 	//console.log("sliderAllLinksInfluence: " + influenceAllLinks + " rest: " + rest);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 });
 
 var resetToDefaultSettings = function () {
@@ -255,5 +271,6 @@ var resetToDefaultSettings = function () {
 	$("#sliderImageQualityInfluence").val(influenceImageQuality * 100);
 	$("#sliderExternalRefsInfluence").val(influenceExternalRefs * 100);
 	$("#sliderAllLinksInfluence").val(influenceAllLinks * 100);
-	articleController.showQuality();
+	articleControllerMain.showQuality();
+	articleControllerCompare.showQuality();
 }

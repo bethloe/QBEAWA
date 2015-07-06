@@ -59,7 +59,7 @@ var QualityManager = function (vals) {
 
 			var score = help;
 			//console.log(tooltip + "SCORE: " + score + " " + numImages + " / " + good_numPics + " = " + qualityImages);
-
+			//parameters.fleschReadingEase = parseFloat(qualityFlesch);
 			parameters.qualityFleschWordCount = qualityFleschWordCount; //parseFloat(adaptValue(parseFloat(qualityFleschWordCount) * parseFloat(weightFlesch)));
 			parameters.qualityKincaid = qualityKincaid; //parseFloat(adaptValue(parseFloat(qualityKincaid) * parseFloat(weightKincaid)));
 			parameters.qualityImages = qualityImages; //parseFloat(adaptValue(parseFloat(qualityImages) * parseFloat(weightImageQuality)));

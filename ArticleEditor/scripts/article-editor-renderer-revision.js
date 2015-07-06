@@ -1605,9 +1605,9 @@ var ArticleRendererRevision = function (vals) {
 	}
 	var getAliasToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "Readability score incl. Word Count";
+			return "Flesch-Reading-Ease * Word Count";
 		else if (realName == "qualityKincaid")
-			return "2. Readability score ";
+			return "Flesch-Kincaid-Grade-Level";
 		else if (realName == "qualityImages")
 			return "Enough Images";
 		else if (realName == "qualityExternalRefs")
@@ -1620,9 +1620,9 @@ var ArticleRendererRevision = function (vals) {
 	}
 	var getTooltipToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "This measure combines the Flesch readability score with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
+			return "This measure combines the Flesch-Reading-Ease with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
 		else if (realName == "qualityKincaid")
-			return "The Kincaid readability score. Should help to check the readability of the section. ";
+			return "The Flesch-Kincaid-Grade-Level should help to check the readability of the section. The default value is 14. So a 14 year old person should have no problem to read this section! ";
 		else if (realName == "qualityImages")
 			return "Are there enough images referenced in the section. By default 4 is set to be the optimal value. ";
 		else if (realName == "qualityExternalRefs")

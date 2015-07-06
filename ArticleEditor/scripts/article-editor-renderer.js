@@ -1618,9 +1618,9 @@ var ArticleRenderer = function (vals) {
 	}
 	var getAliasToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "Readability score incl. Word Count";
+			return "Flesch-Reading-Ease * Word Count";
 		else if (realName == "qualityKincaid")
-			return "2. Readability score ";
+			return "Flesch-Kincaid-Grade-Level";
 		else if (realName == "qualityImages")
 			return "Enough Images";
 		else if (realName == "qualityExternalRefs")
@@ -1629,13 +1629,15 @@ var ArticleRenderer = function (vals) {
 			return "Enough Links";
 		else if (realName == "score")
 			return "Score of the section";
+			else 
+			return "";
 
 	}
 	var getTooltipToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "This measure combines the Flesch readability score with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
+			return "This measure combines the Flesch-Reading-Ease with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
 		else if (realName == "qualityKincaid")
-			return "The Kincaid readability score. Should help to check the readability of the section. ";
+			return "The Flesch-Kincaid-Grade-Level should help to check the readability of the section. The default value is 14. So a 14 year old person should have no problem to read this section! ";
 		else if (realName == "qualityImages")
 			return "Are there enough images referenced in the section. By default 4 is set to be the optimal value. ";
 		else if (realName == "qualityExternalRefs")
@@ -1837,6 +1839,7 @@ var ArticleRenderer = function (vals) {
 					var qmStr = "<h2 ><b>" + masterItem.label + "</b></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
 					//qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
 					for (var i = 0; i < allKeys.length; i++) {
+						console.log("allkeys: " + JSON.stringify(item.allQulityParameters));
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr title=\"" + getTooltipToQualityName(allKeys[i]) + "\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
@@ -2251,8 +2254,8 @@ var ArticleRenderer = function (vals) {
 		console.log("TEXT: " + text);
 		text = text.replace(/&/g, "and");
 		//alert("INDEX: " + sectionItem.index);
-		console.log("EDIT TOKEN: " + articleController.getEditToken());
-		var params = "action=edit&title=" + GLOBAL_articleName + "&token=" + articleController.getEditToken() + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+		console.log("EDIT TOKEN: " + articleControllerMain.getEditToken());
+		var params = "action=edit&title=" + GLOBAL_articleName + "&token=" + articleControllerMain.getEditToken() + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
 		//UPDATING TEXT TO WIKIPEDIA!
 		GLOBAL_controller.uploadWholeArticle(url, params);
 		//Second reload article happens in callback method

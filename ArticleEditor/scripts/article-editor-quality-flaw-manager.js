@@ -220,7 +220,7 @@ var QualityFlawManager = function (vals) {
 						//sectionName = sectionName.replace(/[^\w\s]/gi, '');
 						//sectionName = sectionName.replace(/ /g, "_");
 						//htmlQF += "<tr><td style=\"background-color: #525252;\"title=\""+cleanUpTag.name +":"+ cleanUpTag.description+"\"> <img src=\"media/error.png\" />" + cleanUpTag.alias + "</td><tr>";
-						htmlQF += "<div id=\"notification-" + i + "\"class=\"notificationDiv\" title=\"" + cleanUpTag.name + ":" + cleanUpTag.description + "\" onclick=\"articleController.goToSection('" + sectionName + "', '" + cleanUpTag.name + "')\"> <img style=\"display: inline-block; vertical-align: middle\" src=\"media/warning.png\" /> &nbsp;" + cleanUpTag.alias + " &nbsp;&nbsp;&nbsp;   <img style=\"display: inline-block; vertical-align: middle; \" src=\"media/discard-without-background-small.png\"  onclick=\"removeThisNotification(" + i + ")\"/></div>";
+						htmlQF += "<div id=\"notification-" + i + "\"class=\"notificationDiv\" title=\"" + cleanUpTag.name + ":" + cleanUpTag.description + "\" onclick=\"articleControllerMain.goToSection('" + sectionName + "', '" + cleanUpTag.name + "')\"> <img style=\"display: inline-block; vertical-align: middle\" src=\"media/warning.png\" /> &nbsp;" + cleanUpTag.alias + " &nbsp;&nbsp;&nbsp;   <img style=\"display: inline-block; vertical-align: middle; \" src=\"media/discard-without-background-small.png\"  onclick=\"removeThisNotification(" + i + ")\"/></div>";
 						colorCnt++;
 						if (colorCnt == 9)
 							colorCnt = 0;
