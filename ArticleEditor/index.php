@@ -452,7 +452,7 @@ font-family: 'WebSymbolsRegular', cursive;
                         <a onclick="articleControllerCompare.compareRevisions()">
                             <span class="ca-icon">H</span>
                             <div class="ca-content">
-                                <h2 class="ca-main">compareRevisions</h2>
+                                <h2 class="ca-main">compare revisions</h2>
                             </div>
                         </a>
                     </li> 
