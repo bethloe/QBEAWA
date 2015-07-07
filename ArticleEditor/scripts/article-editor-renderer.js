@@ -505,7 +505,7 @@ var ArticleRenderer = function (vals) {
 	}
 
 	var defaultQualityScoreItems = function (sectionName) {
-		if (sectionName == 'References' || sectionName == 'See also' || sectionName == 'Notes' || sectionName == 'Sources' || sectionName == 'Further reading' || sectionName == 'External links') {
+		if (sectionName == 'References' || sectionName == 'See also' || sectionName == 'Notes' || sectionName == 'Sources' || sectionName == 'Further reading' || sectionName == 'External links'|| sectionName == 'Footnotes') {
 			return false;
 		}
 		return true;
@@ -1843,7 +1843,7 @@ var ArticleRenderer = function (vals) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr title=\"" + getTooltipToQualityName(allKeys[i]) + "\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
-																																																																																																																																																																																																																																																																																																														  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50\" \
+																																																																																																																																																																																																																																																																																																														  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50.1\" \
 																																																																																																																																																																																																																																																																																																														  high=\"80.1\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
 																																																																																																																																																																																																																																																																																																														  </td><td>" + status + "</td></tr>");
 					}
@@ -1859,10 +1859,10 @@ var ArticleRenderer = function (vals) {
 					qmStr += "<script> 	\
 																																																																																																																																																																																																																																																																	$('#checkboxTextQualityTable').mousedown(function () { \
 																																																																																																																																																																																																																																																																		if (!$(this).is(':checked')) { \
-																																																																																																																																																																																																																																																																			articleController.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																																																																																																			articleControllerMain.changeValueOfCheckbox($(this).val(), true); \
 																																																																																																																																																																																																																																																																		} \
 																																																																																																																																																																																																																																																																		else{\
-																																																																																																																																																																																																																																																																			articleController.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																																																																																																			articleControllerMain.changeValueOfCheckbox($(this).val(), false); \
 																																																																																																																																																																																																																																																																		} \
 																																																																																																																																																																																																																																																																	}); </script>";
 					$("#qualityParameters").html(qmStr);

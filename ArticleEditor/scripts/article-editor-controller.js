@@ -767,9 +767,9 @@ var ArticleController = function (vals) {
 		networkDetailView = new vis.Network(containerDetailView, data, opt);
 		network.on('zoom', this.onZoom);
 
-		network.on('select', this.onSelect);
-
 		network.on('doubleClick', this.onDoubleClick);
+
+		network.on('select', this.onSelect);
 
 		network.on('click', this.onClick);
 

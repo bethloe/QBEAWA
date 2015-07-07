@@ -597,7 +597,7 @@ font-family: 'WebSymbolsRegular', cursive;
 <hr/>
 <div > 
  <p id="overallScoreRev" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
-  <meter id="progressBarOverallScoreRev" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
+  <meter id="progressBarOverallScoreRev" style="width:99%" min="0" max="100" low="50.1" high="80.1" optimum="100" value="0"></meter>
         <!-- <progress id="progressBarOverallScore" max="100" value="100" class="html5">
             <div class="progress-bar">
                 <span style="width: 80%">80%</span>
@@ -657,7 +657,7 @@ font-family: 'WebSymbolsRegular', cursive;
 <hr/>
 <div > 
  <p id="overallScore" style="width:80%" data-value="80"><b>Quality score of the article: </b></p>
-  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="50" high="80" optimum="100" value="0"></meter>
+  <meter id="progressBarOverallScore" style="width:99%" min="0" max="100" low="50.1" high="80.1" optimum="100" value="0"></meter>
         <!-- <progress id="progressBarOverallScore" max="100" value="100" class="html5">
             <div class="progress-bar">
                 <span style="width: 80%">80%</span>
