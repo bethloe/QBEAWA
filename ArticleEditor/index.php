@@ -552,7 +552,7 @@ font-family: 'WebSymbolsRegular', cursive;
 <tr><td>Flesch score</td><td> <input id="numberFlesch" type="number"  value="10000" /></td></tr>
 <tr><td>Kincaid score</td><td> <input id="numberKincaid" type="number"  value="14" /></td></tr>
 <tr><td>Image quality</td><td> <input id="numberImageQuality" type="number"  value="2" /></td></tr>
-<tr><td>Quality of external refs</td><td> <input id="numberExternalRefs" type="number"  value="2" /></td></tr>
+<tr><td>Quality of external refs</td><td> <input id="numberExternalRefs" type="number"  value="10" /></td></tr>
 <tr><td>Quality of all links</td><td> <input id="numberAllLinks" type="number"  value="10" /></td></tr>
 <tr><td align="center"><b>Names</b></td><td align="center"><b>Influence</b></td></tr>
 <tr><td>Flesch score</td><td> <input id="sliderFleschInfluence" type="range"  min="0" max="100" /></td></tr>
@@ -568,7 +568,7 @@ font-family: 'WebSymbolsRegular', cursive;
 <div id="mynetworkouter" style="position:absolute; top: 0px; width: 700px; height: 680px; border: 1px solid lightgray; float: left; background-color:white;">
 <div id="mynetworkUpperPart"  style="height:340px">
 		      <div id="eexcess_equation_controls2">
-					<table><tr> <td class="menuHelper2" onclick="articleControllerMain.showAllItems()" title="show all elements">p</td><td class="menuHelper2" id="showAllRefsTd" onclick="articleControllerMain.showReferences()" title="show all external references">,</td><td id="showAllImagesTd" class="menuHelper2" onclick="articleControllerMain.showImages()" title="show all images">I</td><td  onclick="articleControllerMain.doRedraw()" class="menuHelper2" title="redraw tree"><img src="media/redraw_small.png" height="30" style="vertical-align: middle" /></td><td id="semTd" onclick="articleControllerMain.semanticZooming()" class="menuHelper2" title="just show section headlines">%</td><td class="menuHelper2" onclick="articleControllerMain.showOverview()" title="rebuild the tree and go back to the default perspective">L</td></tr></table>
+					<table><tr> <td class="menuHelper2" onclick="articleControllerMain.showAllItems()" title="show all elements">p</td><td class="menuHelper2" id="showAllRefsTd" onclick="articleControllerMain.showReferences()" title="show all external URLs">,</td><td id="showAllImagesTd" class="menuHelper2" onclick="articleControllerMain.showImages()" title="show all images">I</td><td  onclick="articleControllerMain.doRedraw()" class="menuHelper2" title="redraw tree"><img src="media/redraw_small.png" height="30" style="vertical-align: middle" /></td><td id="semTd" onclick="articleControllerMain.semanticZooming()" class="menuHelper2" title="just show section headlines">%</td><td class="menuHelper2" onclick="articleControllerMain.showOverview()" title="rebuild the tree and go back to the default perspective">L</td></tr></table>
 					
 				
 				</div> 

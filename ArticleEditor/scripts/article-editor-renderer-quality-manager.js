@@ -14,7 +14,53 @@ var QualityManager = function (vals) {
 	}
 	qualityManager.reset = function () {}
 
-	qualityManager.calculateQuality = function (text, properties, tooltip) {
+	qualityManager.countRefsOfSection = function (text) {
+		text += "";
+		subString = "<ref";
+		subString += "";
+		if (subString.length <= 0)
+			return text.length + 1;
+
+		var n = 0,
+		pos = 0;
+		var step = subString.length;
+		while (true) {
+			pos = text.indexOf(subString, pos);
+			if (pos >= 0) {
+				n++;
+				pos += step;
+			} else
+				break;
+		}
+		return n;
+	}
+	function trimToOneParagraph(textOfSection, sectionName) {
+		var hIndex = textOfSection.indexOf(sectionName);
+		var hi = 0;
+
+		if (hIndex > -1) {
+			while (textOfSection[hIndex + hi] != "=") {
+				hi++;
+			}
+			while (textOfSection[hIndex + hi] == "=") {
+				hi++;
+			}
+			var help = textOfSection.substr(hIndex + hi).indexOf("==");
+			/*while (textOfSection[hIndex + hi] != "=") {
+			hi++;
+			}*/
+			return textOfSection.substr(0, hIndex + hi + help);
+		} else {
+			/*console.log("-----------------------------------------------------");
+			console.log("SECTIONNAME: " + sectionName);
+			console.log("TEXTOFSECTION: " + textOfSection);
+			console.log("-----------------------------------------------------");*/
+		}
+		return textOfSection;
+	}
+
+	qualityManager.calculateQuality = function (text, properties, tooltip, wikiText) {
+
 		//console.log("calculateQuality: " + JSON.stringify(properties));
 		var parameters = {};
 		//console.log("HERE TEXT: " + text);
@@ -28,7 +74,7 @@ var QualityManager = function (vals) {
 		var stat = new textstatistics(text);
 		var flesch = 0;
 		var kincaid = 0;
-		if (text != "" && text != undefined) { 
+		if (text != "" && text != undefined) {
 			flesch = stat.fleschKincaidReadingEase();
 			kincaid = stat.fleschKincaidGradeLevel();
 		}
@@ -36,10 +82,22 @@ var QualityManager = function (vals) {
 		var qualityFleschWordCount = adaptValue(fleschWordCount / good_fleschWordCount);
 		var qualityFlesch = adaptValue(flesch / good_flesch);
 		var qualityKincaid = adaptValue(kincaid / good_kinkaid);
+
+		var textOfSection = "";
+
+		if (properties.sections.length > 1) {
+			textOfSection = properties.wikitext['*'];
+			textOfSection = trimToOneParagraph(textOfSection, properties.sections[0].line);
+		} else {
+			textOfSection = properties.wikitext['*'];
+		}
+		var refsInSection = qualityManager.countRefsOfSection(textOfSection);
+	//	console.log(refsInSection +" refsInSection = " + text);
+	//	console.log("refsInSection2 = " + textOfSection);
 		if (properties != undefined) {
 
 			var numImages = properties.images.length;
-			var externalRefs = properties.externallinks.length;
+			var externalRefs = properties.externallinks.length + refsInSection;
 			//var internalLinks = properties.iwlinks.length;
 			var allLinks = properties.links.length;
 			var qualityImages = adaptValue(numImages / good_numPics);
