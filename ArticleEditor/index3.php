@@ -1000,7 +1000,7 @@ font-family: 'WebSymbolsRegular', cursive;
   	$('#mytoggle').on('toggle', function (e, active) {
   		if (active) {
   			$("#wikiTextInner").children().remove();
-  			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/wiki/" + $("#articleName").val() + "\" style=\"width: 100%; height: 100%\"></iframe>");
+  			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "\" style=\"width: 100%; height: 100%\"></iframe>");
   			console.log("toggle on");
   		} else {
   			articleControllerMain.showTheWholeArticleInMainView();
