@@ -31,6 +31,9 @@ This repo includes two tools:
 3. Copy the ArticleEditor folder to ../htdocs
 4. Open chrome and go to localhost/ArticleEditor/index.php
 
+##See also
+http://bethloe.github.io/QBEAWA
+
 ## License
 
 The MIT License (MIT)
