@@ -12,9 +12,24 @@ This repo includes two tools:
 
 ![](https://github.com/bethloe/QBEAWA/blob/master/screenshot.PNG)
 
+### Install
+
+1. Clone it https://github.com/bethloe/RankingViz.git
+2. Install xampp and start Apache + MySQL
+3. Copy everything from the master branch unless the ArticleEditor folder to ../htdocs/<New Folder>
+4. Open chrome and go to localhost/phpmyadmin and import the database from ../htdocs/<New Folder>/wikidata.sql 
+5. Open chrome and go to localhost/<New Folder>/UI_test1.php
+
+
 ## The Quality Assisted Editor
 ![](https://github.com/bethloe/QBEAWA/blob/master/ArticleEditor/screenshot.PNG)
 
+### Install
+
+1. Clone it https://github.com/bethloe/RankingViz.git
+2. Install xampp and start Apache 
+3. Copy the ArticleEditor folder to ../htdocs
+4. Open chrome and go to localhost/ArticleEditor/index.php
 
 ## License
 
