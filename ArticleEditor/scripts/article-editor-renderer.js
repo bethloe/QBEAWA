@@ -505,7 +505,7 @@ var ArticleRenderer = function (vals) {
 	}
 
 	var defaultQualityScoreItems = function (sectionName) {
-		if (sectionName == 'References' || sectionName == 'See also' || sectionName == 'Notes' || sectionName == 'Sources' || sectionName == 'Further reading' || sectionName == 'External links'|| sectionName == 'Footnotes') {
+		if (sectionName == 'References' || sectionName == 'See also' || sectionName == 'Notes' || sectionName == 'Sources' || sectionName == 'Further reading' || sectionName == 'External links'|| sectionName == 'Footnotes'  || sectionName == 'Secondary sources') {
 			return false;
 		}
 		return true;

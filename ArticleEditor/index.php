@@ -742,7 +742,7 @@ font-family: 'WebSymbolsRegular', cursive;
   $("#dialogSettings").dialog({
   	autoOpen : false,
   	width : 400,
-  	height : 650,
+  	height : 580,
   	modal : false,
 	close : function(){
 			if ($('#showSettings a span').attr("class") == "ca-icon") {
