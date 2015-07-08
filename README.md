@@ -10,6 +10,9 @@ This repo includes two tools:
 
 # The Ranking Tool
 
+![](https://github.com/bethloe/QBEAWA/blob/master/screenshot.PNG)
 
 
 # The Quality Assisted Editor
+
+![](https://github.com/bethloe/QBEAWA/blob/master/ArticleEditor/screenshot.PNG)
