@@ -92,6 +92,7 @@ var QualityManager = function (vals) {
 			textOfSection = properties.wikitext['*'];
 		}
 		var refsInSection = qualityManager.countRefsOfSection(textOfSection);
+		console.log(sectionName + ": " + refsInSection);
 	//	console.log(refsInSection +" refsInSection = " + text);
 	//	console.log("refsInSection2 = " + textOfSection);
 		if (properties != undefined) {
