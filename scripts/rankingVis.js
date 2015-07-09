@@ -107,7 +107,7 @@ function RankingVis(domRoot, visControllerInterface) {
 	 *
 	 * ***************************************************************************************************************/
 	RANKING.Render.drawStackedBars = function () {
-		//console.log("data: " + JSON.stringify(data));
+		////console.log("data: " + JSON.stringify(data));
 		svg.selectAll(".stackedbar").data([]).exit();
 		svg.selectAll(".stackedbar").remove();
 		svg.selectAll(".stackedbar").data(data).enter();
@@ -666,7 +666,7 @@ function RankingVis(domRoot, visControllerInterface) {
 						return x(data[j].weightedKeywords[i].x1) - x(data[j].weightedKeywords[i].x0);
 					})
 					.style("fill", function (d) {
-						console.log("FILL: " + colorsForRanking[colorSetting][j]);
+						//console.log("FILL: " + colorsForRanking[colorSetting][j]);
 						return colorsForRanking[colorSetting][i]; /*data[j].weightedKeywords[i].stem*/
 					;
 					});
@@ -688,7 +688,7 @@ function RankingVis(domRoot, visControllerInterface) {
 	 * ***************************************************************************************************************/
 	RANKING.Render.drawStackedBarsCombinationStacked = function () {
 
-		console.log("data: " + JSON.stringify(data));
+		//console.log("data: " + JSON.stringify(data));
 		svg.selectAll(".stackedbar").data([]).exit();
 		svg.selectAll(".stackedbar").remove();
 		svg.selectAll(".stackedbar").data(data).enter();
@@ -804,7 +804,7 @@ function RankingVis(domRoot, visControllerInterface) {
 		/*        svg.selectAll('.x.axis text')
 		.text(function(text){
 		//if(parseFloat(text) == 0.0) return ""; return text;
-		console.log((parseFloat(text) * 100) + '%');
+		//console.log((parseFloat(text) * 100) + '%');
 		this.parentNode.appendChild(this);
 		return (parseFloat(text) * 100) + '%';
 		});*/

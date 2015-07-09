@@ -91,10 +91,10 @@ var Controller = function (vals) {
 	});
 	var onMouseWheel = function (e) {
 		/*var wheel = e.wheelDelta / 120; //n or -n
-		console.log("WHEEL: " + wheel);
+		//console.log("WHEEL: " + wheel);
 		if (wheel == 1) {
 		scale += 0.2;
-		console.log(scale);
+		//console.log(scale);
 		ctx.scale(scale, scale);
 		} else if (wheel == -1) {
 		scale -= 0.2;

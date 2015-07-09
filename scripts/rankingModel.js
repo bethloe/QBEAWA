@@ -23,7 +23,7 @@ var RankingModel = (function () {
 	 * */
 	var calculateNormRank = function (_data, query, _normMethod, _p) {
 		var norms;
-		////console.log("calculateNormRank: " + _normMethod);
+		//////console.log("calculateNormRank: " + _normMethod);
 		if (_normMethod == "default")
 			norms = calculateDefaultNormForEachQM(_data, query);
 		else if (_normMethod == "euclidean")
@@ -36,13 +36,13 @@ var RankingModel = (function () {
 	}
 
 	var computeScores = function (_data, query, _normMethodRank, _pRank) {
-		//console.log("computeScores");
+		////console.log("computeScores");
 		var ranking = new RankingArray();
 		var norms = calculateNormRank(_data, query, _normMethodRank, _pRank);
 		//var norms = calculateEuclidenNormForEachQM(_data, query);
 		//var norms = calculateDefaultNormForEachQM(_data, query);
 
-		////console.log("NORMS: " + JSON.stringify(norms));
+		//////console.log("NORMS: " + JSON.stringify(norms));
 		_data.forEach(function (d, i) { //Iteration over all articles
 			ranking.addEmptyElement();
 			//var docNorm = getEuclidenNorm(d.keywords);
@@ -55,12 +55,12 @@ var RankingModel = (function () {
 
 				// if item doesn't contain query term => maxScore and overallScore are not changed
 				//ranking[i].overallScore += termScore;
-				//console.log("Q.weight: " + parseFloat(q.weight) + " q.term: " + d[q.term]);
+				////console.log("Q.weight: " + parseFloat(q.weight) + " q.term: " + d[q.term]);
 				var QMscore = (parseFloat(d[q.term] / norms[q.term]) * unitQueryVectorDot).round(3);
 				if (parseFloat(d[q.term]) == 0)
 					QMscore = 0;
 				//var QMscore = (parseFloat(d[q.term] / norms[q.term]) * parseFloat(q.weight) * unitQueryVectorDot).round(3);
-				//console.log("name: " + q.term + " score: " + QMscore);
+				////console.log("name: " + q.term + " score: " + QMscore);
 				if (QMscore < 0)
 					QMscore = 0;
 				ranking[i].overallScore += QMscore;
@@ -76,7 +76,7 @@ var RankingModel = (function () {
 		return ranking;
 	};
 	var calculateDefaultNormForEachQM = function (_data, query) {
-		//console.log("calculateDefaultNormForEachQM");
+		////console.log("calculateDefaultNormForEachQM");
 		var acumSquares = {};
 		_data.forEach(function (d, i) { //Iteration over all articles
 			query.forEach(function (q) { //Iteration over each QM
@@ -88,12 +88,12 @@ var RankingModel = (function () {
 			});
 		});
 
-		////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
+		//////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
 		return acumSquares;
 	};
 
 	var calculateEuclidenNormForEachQM = function (_data, query) {
-		//console.log("calculateEuclidenNormForEachQM");
+		////console.log("calculateEuclidenNormForEachQM");
 		var acumSquares = {};
 		_data.forEach(function (d, i) { //Iteration over all articles
 			query.forEach(function (q) { //Iteration over each QM
@@ -108,12 +108,12 @@ var RankingModel = (function () {
 		query.forEach(function (q) {
 			acumSquares[q.term] = Math.sqrt(acumSquares[q.term]);
 		});
-		////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
+		//////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
 		return acumSquares;
 	};
 
 	var calculatePNormForEachQM = function (_data, query, _p) {
-		//console.log("calculatePNormForEachQM");
+		////console.log("calculatePNormForEachQM");
 		var acumSquares = {};
 		_data.forEach(function (d, i) { //Iteration over all articles
 			query.forEach(function (q) { //Iteration over each QM
@@ -128,12 +128,12 @@ var RankingModel = (function () {
 		query.forEach(function (q) {
 			acumSquares[q.term] = Math.pow(acumSquares[q.term], 1 / _p);
 		});
-		////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
+		//////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
 		return acumSquares;
 	};
 
 	var calculateMaxNormForEachQM = function (_data, query) {
-		//console.log("calculateMaxNormForEachQM");
+		////console.log("calculateMaxNormForEachQM");
 		var acumSquares = {};
 		_data.forEach(function (d, i) { //Iteration over all articles
 			query.forEach(function (q) { //Iteration over each QM
@@ -145,7 +145,7 @@ var RankingModel = (function () {
 				}
 			});
 		});
-		////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
+		//////console.log("ACUMSQUARES: " + JSON.stringify(acumSquares));
 		return acumSquares;
 	};
 
@@ -194,7 +194,7 @@ var RankingModel = (function () {
 					var weight = parseFloat(wholeItem[1]);
 					var parameterName = wholeItem[2];
 					if (parameterName != undefined) {
-						////console.log("PARAMETERNAME: " + parameterName + " VALUE: " + d[parameterName]);
+						//////console.log("PARAMETERNAME: " + parameterName + " VALUE: " + d[parameterName]);
 						if (operation == '+')
 							result += (weight * d[parameterName]);
 						else if (operation == '-')
@@ -206,12 +206,12 @@ var RankingModel = (function () {
 					}
 				}
 				d[QMName] = result;
-				////console.log("ONE SET: " + JSON.stringify(d));
+				//////console.log("ONE SET: " + JSON.stringify(d));
 			});
 		}
 	};
 	var calculateDefaultNormForMeasure = function (_data, measure) {
-		//console.log("calculateDefaultNormForMeasure");
+		////console.log("calculateDefaultNormForMeasure");
 		var norm = 0;
 		_data.forEach(function (d, i) { //Iteration over all articles
 			norm += Math.sqrt(d[measure] * d[measure]);
@@ -220,7 +220,7 @@ var RankingModel = (function () {
 	};
 
 	var calculateEuclidenNormForMeasure = function (_data, measure) {
-		//console.log("calculateEuclidenNormForMeasure");
+		////console.log("calculateEuclidenNormForMeasure");
 		var eNorm = 0;
 		_data.forEach(function (d, i) { //Iteration over all articles
 			eNorm += Math.sqrt(d[measure] * d[measure]) * Math.sqrt(d[measure] * d[measure]);
@@ -230,7 +230,7 @@ var RankingModel = (function () {
 	};
 
 	var calculatePNormForMeasure = function (_data, measure, p) {
-		//console.log("calculatePNormForMeasure");
+		////console.log("calculatePNormForMeasure");
 		var pNorm = 0;
 		_data.forEach(function (d, i) { //Iteration over all articles
 			pNorm += Math.pow(Math.sqrt(d[measure] * d[measure]), p);
@@ -240,7 +240,7 @@ var RankingModel = (function () {
 	};
 
 	var calculateMaxNormForMeasure = function (_data, measure) {
-		//console.log("calculateMaxNormForMeasure");
+		////console.log("calculateMaxNormForMeasure");
 		var mNorm = 0;
 		_data.forEach(function (d, i) { //Iteration over all articles
 			var help = Math.sqrt(d[measure] * d[measure]);
@@ -269,7 +269,7 @@ var RankingModel = (function () {
 		var dataForPieChart = [];
 		if (_tmpEquation == "") {
 			for (var j = 0; j < _equations.length; j++) {
-				////console.log("DATA: " + JSON.stringify(_data));
+				//////console.log("DATA: " + JSON.stringify(_data));
 
 				_data.forEach(function (d, i) {
 					//var innerDataForPieChart = [];
@@ -289,9 +289,9 @@ var RankingModel = (function () {
 						}
 					}
 					var result = math.eval(equation);
-					////console.log("EQUATION: " + equation + " RESULT: " + result);
+					//////console.log("EQUATION: " + equation + " RESULT: " + result);
 					d[name] = result;
-					////console.log("ONE SET: " + JSON.stringify(d));
+					//////console.log("ONE SET: " + JSON.stringify(d));
 				}
 
 					//dataForPieChart.push(innerDataForPieChart);
@@ -323,9 +323,9 @@ var RankingModel = (function () {
 					}
 				}
 				var result = math.eval(equation);
-				////console.log("TMP EQUATION: " + equation + " RESULT: " + result);
+				//////console.log("TMP EQUATION: " + equation + " RESULT: " + result);
 				d[name] = result;
-				////console.log("TMP ONE SET: " + JSON.stringify(d));
+				//////console.log("TMP ONE SET: " + JSON.stringify(d));
 			});
 		}
 		visController.setDataForPieChart(dataForPieChart);
@@ -351,8 +351,8 @@ var RankingModel = (function () {
 			calculateQMsWithEquations(this.data, this.equations, this.tmpEquation, this.normMethod, this.p);
 			this.ranking = computeScores(this.data, keywords, this.normMethodRank, this.pRank).sortBy(this.mode).addPositionsChanged(this.previousRanking);
 			this.status = updateStatus(this.ranking, this.previousRanking);
-			/*//console.log('RANKING');
-			//console.log(this.ranking);*/
+			/*////console.log('RANKING');
+			////console.log(this.ranking);*/
 			return this.ranking;
 		},
 
@@ -400,7 +400,7 @@ var RankingModel = (function () {
 				}
 			}
 			if (indexToDelete != -1) {
-				////console.log("WE HAVE TO DELETE: " + indexToDelete);
+				//////console.log("WE HAVE TO DELETE: " + indexToDelete);
 				this.equations.remove(indexToDelete);
 			}
 			this.equations.push(object);

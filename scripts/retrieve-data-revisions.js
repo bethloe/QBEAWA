@@ -42,11 +42,11 @@ var DataRetrieverRevisions = function (vals) {
 	}
 
 	dataRetriver.getAllMeasures = function () {
-		console.log("RETRIEVE DATAA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		//console.log("RETRIEVE DATAA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		GLOBAL_JSON.title = GLOBAL_title;
 		GLOBAL_JSON.featured = GLOBAL_featured;
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_original_title + "&rvlimit=max&rvprop=user|ids&continue", handleEditData);
-		console.log("GLOBAL_TITLE: " + GLOBAL_title);
+		//console.log("GLOBAL_TITLE: " + GLOBAL_title);
 		retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=info&revids=" + GLOBAL_rev + "&continue", handleArticleLength);
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=revisions&format=json&revids=" + GLOBAL_rev + "&rvprop=user|timestamp&rvdir=older&continue", handleCurrency);
 		retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&revids=" + GLOBAL_rev + "&continue", handleInternalLinks);
@@ -70,13 +70,13 @@ var DataRetrieverRevisions = function (vals) {
 	var handleFlesch = function (JSONResponse) {
 		var text = JSON.parse(JSON.stringify(JSONResponse));
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
-		//console.log(extractPlainText);
+		////console.log(extractPlainText);
 		if (extractPlainText != undefined) {
 			var stat = new textstatistics(extractPlainText);
 			var flesch = stat.fleschKincaidReadingEase();
 			var kincaid = stat.fleschKincaidGradeLevel();
-			//console.log(flesch);
-			//console.log(kincaid);
+			////console.log(flesch);
+			////console.log(kincaid);
 			$("#Flesch").text(flesch);
 			$("#Kincaid").text(kincaid);
 			GLOBAL_JSON.flesch = flesch;
@@ -91,7 +91,7 @@ var DataRetrieverRevisions = function (vals) {
 
 	var handleArticleAge = function (JSONResponse) {
 		var firstRevision = JSON.parse(JSON.stringify(JSONResponse));
-		console.log(",,,,,,,,,,,,,,,,,,,>" + JSON.stringify(JSONResponse));
+		//console.log(",,,,,,,,,,,,,,,,,,,>" + JSON.stringify(JSONResponse));
 		if (firstRevision.query.pages[Object.keys(firstRevision.query.pages)[0]].hasOwnProperty("revisions")) {
 			var firstRevisionTimeStamp = firstRevision.query.pages[Object.keys(firstRevision.query.pages)[0]].revisions[0].timestamp;
 			var firstRevisionTimeStampCutted = firstRevisionTimeStamp.substring(0, 10);
@@ -184,7 +184,7 @@ var DataRetrieverRevisions = function (vals) {
 			if (internalLinks.hasOwnProperty("continue")) {
 				if (internalLinks.continue.hasOwnProperty("iwcontinue")) {
 					//GET REST OF THE DATA:
-					//console.log("IW CONTINUE: " + internalLinks.continue.iwcontinue);
+					////console.log("IW CONTINUE: " + internalLinks.continue.iwcontinue);
 					retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&revids=" + GLOBAL_rev + "&iwcontinue=" + internalLinks.continue.iwcontinue + "&continue", handleInternalLinks);
 				} else {}
 			} else {
@@ -218,9 +218,9 @@ var DataRetrieverRevisions = function (vals) {
 	}
 
 	var handleArticleLength = function (JSONResponse) {
-		//console.log(JSON.stringify(JSONResponse));
+		////console.log(JSON.stringify(JSONResponse));
 		var articleData = JSON.parse(JSON.stringify(JSONResponse));
-		console.log("-------------->HEERE: " + JSON.stringify(JSONResponse));
+		//console.log("-------------->HEERE: " + JSON.stringify(JSONResponse));
 		var articleLength = articleData.query.pages[Object.keys(articleData.query.pages)[0]].length;
 		if (articleLength != undefined) {
 			$("#ArticleLength").text(articleLength);
@@ -233,9 +233,9 @@ var DataRetrieverRevisions = function (vals) {
 
 	var handleUserData = function (JSONResponse) {
 		var userData = JSON.parse(JSON.stringify(JSONResponse));
-		//console.log(JSON.stringify(userData.query.users[0]));
+		////console.log(JSON.stringify(userData.query.users[0]));
 		if (userData.query.users[0].hasOwnProperty("groups")) {
-			//console.log("REGISTERED USER " + userData.query.users[0].name);
+			////console.log("REGISTERED USER " + userData.query.users[0].name);
 			var groups = userData.query.users[0].groups;
 			var admin = false;
 			for (var i = 0; i < groups.length; i++) {
@@ -270,11 +270,11 @@ var DataRetrieverRevisions = function (vals) {
 			GLOBAL_cntEditsHELP += 1;
 			if (GLOBAL_mapUsernames.hasOwnProperty(userData.query.users[0].name)) {
 
-				//console.log("ANONYMOUS USER1: " + userData.query.users[0].name);
+				////console.log("ANONYMOUS USER1: " + userData.query.users[0].name);
 				GLOBAL_mapUsernames[userData.query.users[0].name][1] += 1;
 				GLOBAL_mapUsernames[userData.query.users[0].name][0] = VAL_ANONYMOUS;
 			} else {
-				//console.log("ANONYMOUS USER: " + userData.query.users[0].name);
+				////console.log("ANONYMOUS USER: " + userData.query.users[0].name);
 				GLOBAL_mapUsernames[userData.query.users[0].name] = [VAL_ANONYMOUS, 1]
 			}
 		}
@@ -293,7 +293,7 @@ var DataRetrieverRevisions = function (vals) {
 
 			for (var i = 0; i < JSONrevisions.length; i++) {
 				//get username:
-				//console.log("-----------------> " + JSONrevisions.revid +" <= "+ parseInt(GLOBAL_rev));
+				////console.log("-----------------> " + JSONrevisions.revid +" <= "+ parseInt(GLOBAL_rev));
 				if (JSONrevisions[i].revid <= parseInt(GLOBAL_rev)) {
 					var username = JSON.stringify(JSONrevisions[i].user);
 					username = username.substring(1, username.length - 1);
@@ -301,7 +301,7 @@ var DataRetrieverRevisions = function (vals) {
 						GLOBAL_mapUsernames[username][1] += 1;
 						GLOBAL_cntEditsHELP += 1;
 					} else {
-						//console.log("user " + username + "is not in list");
+						////console.log("user " + username + "is not in list");
 						//Get all userdata (admin, registered or anonymous)
 						GLOBAL_mapUsernames[username] = ['', 0]; // Asynchronous that's why I do it!
 						retrieveData(GLOBAL_linkToAPI + "action=query&format=json&list=users&ususers=" + username + "&usprop=groups&continue", handleUserData);
@@ -315,7 +315,7 @@ var DataRetrieverRevisions = function (vals) {
 					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_original_title + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user|ids&continue", handleEditData);
 				}
 			} else {
-				console.log("WE ARE AT THE END2");
+				//console.log("WE ARE AT THE END2");
 
 				$("#totalNumEdits").text(GLOBAL_cntEdits);
 
@@ -406,18 +406,18 @@ var DataRetrieverRevisions = function (vals) {
 	return dataRetriver;
 };
 //test:
-/*console.log("STARTING FIRST");
+/*//console.log("STARTING FIRST");
 var dr = new DataRetriever({
 title : 'Visualization'
 });
 dr.getAllMeasures();
-console.log("STARTING SECOND");*/
+//console.log("STARTING SECOND");*/
 /*
 var dr2 = new DataRetriever({title: 'New York'});
 dr2.getAllMeasures();
  */
 var test = function () {
-	//console.log(dr.getJSONString());
-	//console.log(dr2.getJSONString());
+	////console.log(dr.getJSONString());
+	////console.log(dr2.getJSONString());
 }
 //-----------------------------------------------------------------------------

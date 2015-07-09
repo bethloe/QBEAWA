@@ -43,7 +43,7 @@ var MoveableBricksEventHandler = function (vals) {
 					sum *= connectors[i].brick0.getTotalScore();
 				else if (mathOperations[connectors[i].operation] == '/')
 					sum /= connectors[i].brick0.getTotalScore();
-				//console.log("SUEM: " + sum + " BRICK0: " + connectors[i].brick0.getDescription());
+				////console.log("SUEM: " + sum + " BRICK0: " + connectors[i].brick0.getDescription());
 				sum = calculateQMScore(connectors[i].brick0, sum);
 			}
 		}
@@ -128,7 +128,7 @@ var MoveableBricksEventHandler = function (vals) {
 		var moveableBricksToLoad = dataToLoad.moveableBricks;
 		var connectorsToLoad = dataToLoad.connectors;
 		for (var i = 0; i < moveableBricksToLoad.length; i++) {
-			console.log("x : " + moveableBricksToLoad[i].x + " y: " + moveableBricksToLoad[i].y);
+			//console.log("x : " + moveableBricksToLoad[i].x + " y: " + moveableBricksToLoad[i].y);
 			var qmBrick = new QMBrick({
 					ctx : ctx,
 					x : moveableBricksToLoad[i].x,
@@ -185,12 +185,12 @@ var MoveableBricksEventHandler = function (vals) {
 	}
 
 	moveableBricksEventHandler.createFormulaForQM = function () {
-		console.log("createFormulaForQM");
+		//console.log("createFormulaForQM");
 		var qmArray = [];
 		for (var i = 0; i < moveableBricks.length; i++) {
 			var brick = moveableBricks[i];
 			if (brick.getType() == 'resultMoveable') {
-				console.log("createFormulaForQM into if");
+				//console.log("createFormulaForQM into if");
 				qmArray.push(createFormulaForQM(brick, "", true));
 			}
 		}
@@ -206,7 +206,7 @@ var MoveableBricksEventHandler = function (vals) {
 	}
 
 	moveableBricksEventHandler.getConnectorsInJsonFormat = function () {
-		console.log(JSON.stringify(connectors));
+		//console.log(JSON.stringify(connectors));
 		var connectorsJsonStringArray = [];
 
 		for (var i = 0; i < connectors.length; i++) {
@@ -243,7 +243,7 @@ var MoveableBricksEventHandler = function (vals) {
 			var connector = connectors[i];
 			var brick0 = connector.brick0; //moveableBricks[connector.brick0];
 			var brick1 = connector.brick1; //moveableBricks[connector.brick1];
-			//console.log(brick0.getDescription() + " "+brick1.getDescription() + " " +brick1.getY() + " < " + (brick0.getY() + brick0.getHeight()));
+			////console.log(brick0.getDescription() + " "+brick1.getDescription() + " " +brick1.getY() + " < " + (brick0.getY() + brick0.getHeight()));
 			if ((brick1.getY() > brick0.getY() + brick0.getHeight() && (brick1.getX() >= brick0.getX() && brick1.getX() <= brick0.getX() + brick0.getWidth())) ||
 				(brick1.getY() > brick0.getY() + brick0.getHeight() && (brick1.getX() + brick1.getWidth() <= brick0.getX() + brick0.getX() && brick1.getX() + brick1.getWidth() >= brick0.getX()))) {
 				utility_drawArrow(ctx, brick0.getX() + brick0.getWidth() / 2, brick0.getY() + brick0.getHeight(), brick1.getX() + brick0.getWidth() / 2, brick1.getY(), mathOperations[connector.operation], connector.color, connector.lineWidth);
@@ -686,10 +686,10 @@ var MoveableBricksEventHandler = function (vals) {
 		var toY = currentMovableBrick.getY();
 		var dx = 0;
 		var dy = 0;
-		console.log(currentMovableBrick.getDescription() + ": " + fromX + " " + fromY + " " + toX + " " + toY);
+		//console.log(currentMovableBrick.getDescription() + ": " + fromX + " " + fromY + " " + toX + " " + toY);
 		if (toX >= fromX) {
 		dx = (toX - fromX);
-		console.log(currentMovableBrick.getDescription() + ": " + currentMovableBrick.getX() + " " + dx);
+		//console.log(currentMovableBrick.getDescription() + ": " + currentMovableBrick.getX() + " " + dx);
 		currentMovableBrick.setX(currentMovableBrick.getX() + dx);
 		} else {
 		dx = (fromX - toX) ;
@@ -723,7 +723,7 @@ var MoveableBricksEventHandler = function (vals) {
 
 					if (toX >= fromX) {
 						dx = (toX - fromX);
-						console.log("ZOOM IN : " + currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
+						//console.log("ZOOM IN : " + currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
 						currentMovableBrick.setX(currentMovableBrick.getX() + dx);
 					} else {
 						dx = (fromX - toX);
@@ -774,10 +774,10 @@ var MoveableBricksEventHandler = function (vals) {
 		var toY = currentMovableBrick.getY();
 		var dx = 0;
 		var dy = 0;
-		console.log(currentMovableBrick.getDescription() + ": " + fromX + " " + fromY + " " + toX + " " + toY);
+		//console.log(currentMovableBrick.getDescription() + ": " + fromX + " " + fromY + " " + toX + " " + toY);
 		if (toX >= fromX) {
 		dx = (toX - fromX) / 2;
-		console.log(currentMovableBrick.getDescription() + ": " + currentMovableBrick.getX() + " " + dx);
+		//console.log(currentMovableBrick.getDescription() + ": " + currentMovableBrick.getX() + " " + dx);
 		currentMovableBrick.setX(currentMovableBrick.getX() - dx);
 		} else {
 		dx = (fromX - toX) / 2;
@@ -811,7 +811,7 @@ var MoveableBricksEventHandler = function (vals) {
 
 					if (toX >= fromX) {
 						dx = (toX - fromX) / 2;
-						console.log(currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
+						//console.log(currentMovableBrick.getDescription() + ": " + " " + fromX + " " + toX + " " + dx);
 						if (dx > 100)
 							currentMovableBrick.setX(currentMovableBrick.getX() - dx);
 					} else {

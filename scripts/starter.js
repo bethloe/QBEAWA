@@ -30,7 +30,7 @@
 
 
     function startVisualization(){
-        console.log("Status: Testing with Dataset " + this.datasetId);
+        //console.log("Status: Testing with Dataset " + this.datasetId);
         $("#eexcess_loading").fadeIn('fast');
 
         var arguments = {

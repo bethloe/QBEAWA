@@ -338,7 +338,7 @@ var QMBrick = function (vals) {
 
 	qmBrick.compare = function (toCompare) {
 		//TODO ADD AN ID
-		//console.log("compare: " + xPos + " == " + toCompare.getX() + " && " + yPos + " == " + toCompare.getY() + " && " + type + " == " + toCompare.getType() + " && " + description + " == " + toCompare.getDescription());
+		////console.log("compare: " + xPos + " == " + toCompare.getX() + " && " + yPos + " == " + toCompare.getY() + " && " + type + " == " + toCompare.getType() + " && " + description + " == " + toCompare.getDescription());
 		if (xPos == toCompare.getX() && yPos == toCompare.getY() && type == toCompare.getType() && description == toCompare.getDescription())
 			return true;
 		return false;
@@ -353,7 +353,7 @@ var QMBrick = function (vals) {
 	}
 
 	qmBrick.getTotalScore = function () {
-		//console.log("DESCRIPSTION: " + description + " weight : "+weight + " value: " + value + " total socre: " + parseFloat(weight * value));
+		////console.log("DESCRIPSTION: " + description + " weight : "+weight + " value: " + value + " total socre: " + parseFloat(weight * value));
 		return parseFloat(weight * value);
 	}
 

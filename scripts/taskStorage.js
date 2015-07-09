@@ -47,13 +47,13 @@ function TaskStorage() {
     
     TaskStorage.prototype.restore = function(){
         var previous = previousResults();
-        //console.log(JSON.stringify(previous));
+        ////console.log(JSON.stringify(previous));
         setObject('evaluationResults', previous);
         setObject('userCount', parseInt(previous[previous.length - 1].user));
         this.userCount = getObject('userCount');
         this.evaluationResults = getObject('evaluationResults');
-        console.log('new results');
-        console.log(this.evaluationResults);
+        //console.log('new results');
+        //console.log(this.evaluationResults);
         
     };
 
@@ -86,7 +86,7 @@ function TaskStorage() {
                 case 'T4-60':   return 'circular economy'; break;
             }
         }
-        console.log(JSON.stringify(previous));
+        //console.log(JSON.stringify(previous));
     }
     
 

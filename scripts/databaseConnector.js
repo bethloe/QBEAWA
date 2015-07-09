@@ -9,7 +9,7 @@ var DatabaseConnector = function (vals) {
 			formula : formula
 		})
 		.done(function (data) {
-			console.log(data);
+			//console.log(data);
 		//	alert("Formula saved!");
 		});
 	}
@@ -21,7 +21,7 @@ var DatabaseConnector = function (vals) {
 			QMVizData : content
 		})
 		.done(function (data) {
-			console.log(data);
+			//console.log(data);
 			//alert("Visualization data saved!");
 		});
 	}
@@ -52,7 +52,7 @@ var DatabaseConnector = function (vals) {
 			text : text
 		})
 		.done(function (data) {
-			console.log(data);
+			//console.log(data);
 			//alert("Equation saved!");
 		});
 	}
@@ -64,7 +64,7 @@ var DatabaseConnector = function (vals) {
 			QMVizData : content
 		})
 		.done(function (data) {
-			console.log(data);
+			//console.log(data);
 			//alert("Visualization data saved!");
 		});
 	}
@@ -102,7 +102,7 @@ var DatabaseConnector = function (vals) {
 			equationName : name
 		})
 		.done(function (data) {
-			console.log(data);
+			//console.log(data);
 			//alert(data);
 		});
 	}

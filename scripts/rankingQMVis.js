@@ -263,7 +263,7 @@ function RankingQMVis(domRoot, visControllerInterface) {
 	};
 
 	var normData = function () {
-		console.log("calculateMaxNormForMeasure");
+		//console.log("calculateMaxNormForMeasure");
 		/*var eNorm = 0;
 		data.forEach(function (d, i) { //Iteration over all articles
 			eNorm += Math.sqrt(d.score * d.score) * Math.sqrt(d.score * d.score);
@@ -294,7 +294,7 @@ function RankingQMVis(domRoot, visControllerInterface) {
 		data = _data;
 		normData();
 		data.forEach(function (d, i) {
-			console.log("draw: " + d.name + " " + d.score);
+			//console.log("draw: " + d.name + " " + d.score);
 		});
 		/******************************************************
 		 *	Define canvas dimensions
@@ -449,7 +449,7 @@ function RankingQMVis(domRoot, visControllerInterface) {
 		/*        svg.selectAll('.x.axis text')
 		.text(function(text){
 		//if(parseFloat(text) == 0.0) return ""; return text;
-		console.log((parseFloat(text) * 100) + '%');
+		//console.log((parseFloat(text) * 100) + '%');
 		this.parentNode.appendChild(this);
 		return (parseFloat(text) * 100) + '%';
 		});*/

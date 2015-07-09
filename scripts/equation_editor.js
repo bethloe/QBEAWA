@@ -129,10 +129,10 @@ var EquationEditor = function (vals) {
 		equationEditor.resetData();
 		equationEditor.setMode("single"); //mode = "multi";
 		equationEditor.setInterfaceToMode();
-		//console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
+		////console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
 		for (var i = 0; i < currentDataArray.length; i++) {
 			var data = currentDataArray[i];
-			//console.log("DATA: " + JSON.stringify(data));
+			////console.log("DATA: " + JSON.stringify(data));
 			var color = data.type == "metric" ? "#08519c" : "#21B571";
 			if (i + 1 < currentDataArray.length) {
 
@@ -186,10 +186,10 @@ var EquationEditor = function (vals) {
 		equationEditor.setMode("single"); //mode = "multi";
 
 		equationEditor.setInterfaceToMode();
-		//console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
+		////console.log("SUM MULTI CURRENT DATA ARRAY: " + currentDataArray.length);
 		for (var i = 0; i < currentDataArray.length; i++) {
 			var data = currentDataArray[i];
-			//console.log("DATA: " + JSON.stringify(data));
+			////console.log("DATA: " + JSON.stringify(data));
 			var color = data.type == "metric" ? "#08519c" : "#21B571";
 			if (i + 1 < currentDataArray.length) {
 
@@ -217,7 +217,7 @@ var EquationEditor = function (vals) {
 			}
 
 		}
-		console.log("HERE prodMulti");
+		//console.log("HERE prodMulti");
 		$("#eexcess_equation_composer_table").css("display", "inline");
 		//$("#eexcess_equation_composer_table2").css("display", "none");
 		checkProgressArray();
@@ -300,7 +300,7 @@ var EquationEditor = function (vals) {
 	}
 
 	equationEditor.highlightBox = function (id) {
-		//console.log("HIGHLIGHT BOX " + 'equation' + id);
+		////console.log("HIGHLIGHT BOX " + 'equation' + id);
 
 		$(equationStack).children(".eexcess_equation_empty_box").css({
 			"border" : "5px solid red"
@@ -350,7 +350,7 @@ var EquationEditor = function (vals) {
 		currentlySelectedBoxId = id;
 		currentlySelectedBox = '#equation' + id;
 		if ($('#equation' + id).attr("type") == "brickP") {
-			//console.log("TEST " + '#equation' + id);
+			////console.log("TEST " + '#equation' + id);
 			$('#equation' + id).css({
 				"border" : "5px solid blue"
 			});
@@ -381,7 +381,7 @@ var EquationEditor = function (vals) {
 	}
 
 	equationEditor.print = function () {
-		//console.log("EQUATIONE EDITOR: progressArrayPosition: " + progressArrayPosition + " Array LENGHT: " + progressArray.length);
+		////console.log("EQUATIONE EDITOR: progressArrayPosition: " + progressArrayPosition + " Array LENGHT: " + progressArray.length);
 	}
 
 	equationEditor.undo = function () {
@@ -399,7 +399,7 @@ var EquationEditor = function (vals) {
 	}
 
 	equationEditor.deleteSelectedElement = function () {
-		//console.log("HERE: " + currentlySelectedBox + " " + $(currentlySelectedBox).attr("type"));
+		////console.log("HERE: " + currentlySelectedBox + " " + $(currentlySelectedBox).attr("type"));
 		if ($(currentlySelectedBox).attr("type") == "box" || $(currentlySelectedBox).attr("type") == "filledBox") {
 			if ($('#equation' + (currentlySelectedBoxId - 1)).html() !== undefined)
 				$('#equation' + (currentlySelectedBoxId - 1)).remove();
@@ -443,7 +443,7 @@ var EquationEditor = function (vals) {
 		}
 	}
 	equationEditor.addBeforeSelected = function () {
-		//console.log("addBeforeSelected");
+		////console.log("addBeforeSelected");
 		if (!isAddBeforeSelected) {
 			$("#divAddBeforeSelected").css({
 				"background" : "red"
@@ -462,7 +462,7 @@ var EquationEditor = function (vals) {
 	}
 
 	equationEditor.addAfterSlected = function () {
-		//console.log("addAfterSlected");
+		////console.log("addAfterSlected");
 		if (!isAddAfterSelected) {
 			$("#divAddBeforeSelected").css({
 				"background" : "none"
@@ -525,7 +525,7 @@ var EquationEditor = function (vals) {
 				//1. We have to break it down into the detail view
 				//Maybe we should use a hidden div to do that
 				var backupCurrentView = $(equationStack).html();
-				console.log("equationEditor.showWholeEquation()");
+				//console.log("equationEditor.showWholeEquation()");
 				equationEditor.showWholeEquation();
 				//2. Now we can rank it normally
 				visController.rankWithEquation(getEquation());
@@ -598,13 +598,13 @@ var EquationEditor = function (vals) {
 	//FROM VIS:
 	equationEditor.fillGap = function (data) {
 		if (currentlySelectedBoxId != -1) {
-			//console.log("FILL GAP: " + JSON.stringify(data));
+			////console.log("FILL GAP: " + JSON.stringify(data));
 			/*<div class=\"div-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all\" aria-disabled=\"false\"> <div class=\"ui-slider-range ui-widget-header ui-corner-all ui-slider-range-min\" style=\"width: 100%;\"></div> <a class=\"ui-slider-handle ui-state-default ui-corner-all\" href=\"#\" style=\"left: 100%;\"></a></div>*/
 			var output = "<div is-selected = \"false\" unselectable = \"on\" onselectstart = \"return false\" onmousedown = \"return false\" type=\"filledBox\" id=\"equation" + currentlySelectedBoxId + "\" onclick=\"equationEditor.highlightBox(" + currentlySelectedBoxId + ")\" class=\"eexcess_equation_tag_in_box\" style=\"font-size:16px; border: 0.2em solid #21B571; display: inline-block; background: #21B571;\"><div id=\"neededText\">" + data.name + "</div></div>";
 
 			$("#equation" + currentlySelectedBoxId).replaceWith(output);
 			$("<div class='div-slider'></div>").appendTo($("#equation" + currentlySelectedBoxId)).slider(sliderOptions);
-			//console.log("adjustNewElementsToShrinkLevel: " + currentlySelectedBoxId);
+			////console.log("adjustNewElementsToShrinkLevel: " + currentlySelectedBoxId);
 			adjustNewElementsToShrinkLevel(currentlySelectedBoxId);
 			//$(equationStack).append(output);
 			currentlySelectedBoxId = -1;
@@ -622,7 +622,7 @@ var EquationEditor = function (vals) {
 	}
 	equationEditor.loadMetric = function (name, htmlValue, eraseZoomArray, color) {
 		color = color != undefined ? color : "#d95f02";
-		console.log("LOAD METRIC: " + color);
+		//console.log("LOAD METRIC: " + color);
 		equationEditor.setInterfaceToMode();
 		//$("#equition_stack_main").css("display", "inline-flex");
 		//$("#eexcess_equation_composer").css("display", "inline-flex");
@@ -638,15 +638,15 @@ var EquationEditor = function (vals) {
 		$(equationStack).html(htmlValue);
 		$(equationStack).find("div").each(function () {
 			var id = $(this).attr("id");
-			//	console.log("$(this).css(font-size): " + $(this).css("font-size"));
+			//	//console.log("$(this).css(font-size): " + $(this).css("font-size"));
 
-			console.log("ID: " + id);
+			//console.log("ID: " + id);
 			if (id != undefined) {
 				var res = id.split("quation");
 				if (res.length > 1) {
 					var fontSize = $(this).css("font-size");
 					fontSize = parseInt(fontSize.split("px")[0]);
-					console.log("FONTSIZE: " + fontSize);
+					//console.log("FONTSIZE: " + fontSize);
 					if (parseInt(fontSize) < 16)
 						shrinkLevel = 2;
 					if (parseInt(res[1]) > idCnt) {
@@ -657,7 +657,7 @@ var EquationEditor = function (vals) {
 		});
 		idCnt++;
 		repairSliders();
-		//console.log("LOAD IDCNT: " + idCnt);
+		////console.log("LOAD IDCNT: " + idCnt);
 		nameOfLoadedMetric = name;
 		rerank();
 		shrinkElementsIfNecessary(1);
@@ -666,10 +666,10 @@ var EquationEditor = function (vals) {
 	}
 
 	var replaceHelper = function (idToReplace, name) {
-		//console.log("MULTILOADHELPER");
+		////console.log("MULTILOADHELPER");
 		//equationEditor.resetData();
 
-		//console.log("INTO REPLACE HELPER");
+		////console.log("INTO REPLACE HELPER");
 		$("#" + idToReplace).replaceWith(" <div type=\"brickP\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\">(</div></div> ");
 		adjustNewElementsToShrinkLevel(idCnt - 1);
 		$(" <div type=\"brickA\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\">)</div></div> ").insertAfter("#equation" + (idCnt - 2));
@@ -677,6 +677,38 @@ var EquationEditor = function (vals) {
 		var allVizs = visController.getAllVizs();
 		if (allVizs[name] != null) {
 			$(allVizs[name]).insertAfter("#equation" + (idCnt - 2));
+			var cnt = 0;
+			$(equationStack).find("div").each(function () {
+				////console.log("MULTILOADHELPER: " + $(this).attr("id") + " TYPE: " + $(this).attr("type"));
+				if ($(this).attr("id") != undefined) {
+					if ($(this).attr("id").indexOf("equation") > -1) {
+						$(this).attr("id", "equation" + (cnt));
+						$(this).attr("onclick", "equationEditor.highlightBox(" + (cnt) + ")");
+						cnt++;
+						idCnt = cnt;
+					}
+				}
+			});
+			$(equationStack).find(".div-slider").each(function () {
+				var sliderValue = $(this).attr("sliderValue");
+				////console.log("SLIDER VALUE: " + sliderValue);
+				$(this).slider(sliderOptions);
+				$(this).slider("value", sliderValue);
+			});
+
+		} else
+			alert("replaceHelper ERROR SHOULD NEVER HAPPEN");
+	}
+
+	var mutiLoadHelper = function (name) {
+		////console.log("MULTILOADHELPER");
+		//equationEditor.resetData();
+		$(equationStack).append(" <div type=\"brickP\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\">(</div></div> ");
+
+		adjustNewElementsToShrinkLevel(idCnt - 1);
+		var allVizs = visController.getAllVizs();
+		if (allVizs[name] != null) {
+			$(equationStack).append(allVizs[name]);
 			var cnt = 0;
 			$(equationStack).find("div").each(function () {
 				//console.log("MULTILOADHELPER: " + $(this).attr("id") + " TYPE: " + $(this).attr("type"));
@@ -688,43 +720,11 @@ var EquationEditor = function (vals) {
 						idCnt = cnt;
 					}
 				}
-			});
-			$(equationStack).find(".div-slider").each(function () {
-				var sliderValue = $(this).attr("sliderValue");
-				//console.log("SLIDER VALUE: " + sliderValue);
-				$(this).slider(sliderOptions);
-				$(this).slider("value", sliderValue);
-			});
-
-		} else
-			alert("replaceHelper ERROR SHOULD NEVER HAPPEN");
-	}
-
-	var mutiLoadHelper = function (name) {
-		//console.log("MULTILOADHELPER");
-		//equationEditor.resetData();
-		$(equationStack).append(" <div type=\"brickP\" id=\"equation" + (idCnt) + "\" class=\"eexcess_equation_text\" onclick=\"equationEditor.highlightBox(" + (idCnt++) + ")\"><div id=\"neededText\">(</div></div> ");
-
-		adjustNewElementsToShrinkLevel(idCnt - 1);
-		var allVizs = visController.getAllVizs();
-		if (allVizs[name] != null) {
-			$(equationStack).append(allVizs[name]);
-			var cnt = 0;
-			$(equationStack).find("div").each(function () {
-				console.log("MULTILOADHELPER: " + $(this).attr("id") + " TYPE: " + $(this).attr("type"));
-				if ($(this).attr("id") != undefined) {
-					if ($(this).attr("id").indexOf("equation") > -1) {
-						$(this).attr("id", "equation" + (cnt));
-						$(this).attr("onclick", "equationEditor.highlightBox(" + (cnt) + ")");
-						cnt++;
-						idCnt = cnt;
-					}
-				}
 
 			});
 			$(equationStack).find(".div-slider").each(function () {
 				var sliderValue = $(this).attr("sliderValue");
-				//console.log("SLIDER VALUE: " + sliderValue);
+				////console.log("SLIDER VALUE: " + sliderValue);
 				$(this).slider(sliderOptions);
 				$(this).slider("value", sliderValue);
 			});
@@ -743,7 +743,7 @@ var EquationEditor = function (vals) {
 		$(equationStackCombination).html("");
 		currentDataArray = dataArray.slice();
 		alpha = true;
-		//console.log("currentDataArray: " + currentDataArray.length);
+		////console.log("currentDataArray: " + currentDataArray.length);
 		equationEditor.setMode("multi");
 		var helpIdCnt = 60000;
 		$(equationStackCombination).append("<div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\"> <font face=\"Symbol\">a</font> </div></div><div  type=\"symbol\" id=\"equation" + (helpIdCnt++) + "\" class=\"eexcess_equation_text\"><div id=\"neededText\">{</div></div>");
@@ -778,7 +778,7 @@ var EquationEditor = function (vals) {
 			if ($(this).attr("id") != undefined) {
 				if (getNameOfHTMLId($(this).attr("id")) != "") {
 
-					//console.log("SHOWWHOLEEQUATION: " + getNameOfHTMLId($(this).attr("id")));
+					////console.log("SHOWWHOLEEQUATION: " + getNameOfHTMLId($(this).attr("id")));
 					replaceHelper($(this).attr("id"), getNameOfHTMLId($(this).attr("id")));
 					equationEditor.showWholeEquation();
 				}
@@ -802,7 +802,7 @@ var EquationEditor = function (vals) {
 		$(equationStack).find('*').each(function () {
 			//allElementsString += $(this).val();
 			if (this.id.indexOf("equation") > -1) {
-				//console.log();
+				////console.log();
 				var weight = $(this).find(".div-slider").slider("value");
 				$(this).find(".div-slider").attr("sliderValue", weight);
 				if (weight >= 0 && weight <= 1)
@@ -810,10 +810,10 @@ var EquationEditor = function (vals) {
 
 				allElementsString += $(this).find("#neededText").html();
 
-				//console.log("HTML: " + $(this).find("#neededText").html() + " SLIDER VALUE: " + $(this).find(".div-slider").slider("value"));
+				////console.log("HTML: " + $(this).find("#neededText").html() + " SLIDER VALUE: " + $(this).find(".div-slider").slider("value"));
 			}
 		});
-		//console.log("ALLE: " + allElementsString);
+		////console.log("ALLE: " + allElementsString);
 		/*
 		allElementsString = "pow(" + allElementsString + ",2)";
 		allElementsString = "pow(" + allElementsString + ",1/2)";
@@ -835,13 +835,13 @@ var EquationEditor = function (vals) {
 		}
 		//allElementsString = allElementsString.replace(/flesch/g, '9');
 		//allElementsString = allElementsString.replace(/kincaid/g, '7');
-		console.log("BEFORE PARSING: " + allElementsString);
-		//console.log("RESULT: " + math.eval(allElementsString));
+		//console.log("BEFORE PARSING: " + allElementsString);
+		////console.log("RESULT: " + math.eval(allElementsString));
 
 		return allElementsString;
 	}
 	equationEditor.createNewQM = function () {
-		console.log("SAVE");
+		//console.log("SAVE");
 		$('#QM_Text').html($('#QM_TEXT_EDIT').val());
 		$('#QM_Text').css("display", "inline");
 		$('#edit_Icon_QM_Text').css("display", "inline-flex");
@@ -849,10 +849,10 @@ var EquationEditor = function (vals) {
 		$('#QM_TEXT_EDIT').remove();
 
 		if (nameOfLoadedMetric != "" && nameOfLoadedMetric != "temp") {
-			console.log("SAVE2");
+			//console.log("SAVE2");
 			var answer = confirm('Overwrite existing metric?');
 			if (answer) {
-				//console.log('yes');
+				////console.log('yes');
 				var backupCurrentView = $(equationStack).html();
 				equationEditor.showWholeEquation();
 				var equation = getEquation();
@@ -875,12 +875,12 @@ var EquationEditor = function (vals) {
 					alert("ERROR");
 			}
 		} else {
-			console.log("SAVE3 " + nameOfLoadedMetric);
+			//console.log("SAVE3 " + nameOfLoadedMetric);
 			var name = prompt("Quality Metric name:", "Insert name here!");
 			if (name != null) {
 
 				if (nameOfLoadedMetric == "temp" || nameOfLoadedMetric == "") {
-					console.log("IN HERE");
+					//console.log("IN HERE");
 					$(".equationStackSmall").html("<div class=\"eexcess_keyword_tag\"  style=\"background: #d95f02\">" + name + "</div>");
 					nameOfLoadedMetric = name;
 				}
@@ -890,7 +890,7 @@ var EquationEditor = function (vals) {
 				$(equationStack).html(backupCurrentView);
 				repairSliders();
 				var vizData = $(equationStack).html();
-				//console.log("vizData: " + vizData);
+				////console.log("vizData: " + vizData);
 				visController.newQMFromEquationComposer(name, equation, vizData);
 			} else
 				alert("ERROR");
@@ -898,8 +898,8 @@ var EquationEditor = function (vals) {
 	}
 
 	var brickCounter = function (string, startpoint) {
-		//console.log("string: " + string);
-		//console.log("string: " + string[startpoint]);
+		////console.log("string: " + string);
+		////console.log("string: " + string[startpoint]);
 		var brickCnt = 1;
 		for (var i = startpoint + 1; i < string.length; i++) {
 			if (string[i] == "(") {
@@ -915,8 +915,8 @@ var EquationEditor = function (vals) {
 	}
 
 	var brickCounterBackward = function (string, startpoint) {
-		//console.log("stringB: " + string);
-		//console.log("stringB: " + string[startpoint]);
+		////console.log("stringB: " + string);
+		////console.log("stringB: " + string[startpoint]);
 		var brickCnt = 1;
 		for (var i = startpoint - 1; i >= 0; i--) {
 			if (string[i] == ")") {
@@ -936,25 +936,25 @@ var EquationEditor = function (vals) {
 		if (allElementsString.indexOf("<sup type=\"pow\">") > -1) {
 
 			//newString = allElementsString.substring(0, allElementsString.indexOf("<sup type=\"radical\">"));
-			//console.log("NEW STRING1: " + newString);
+			////console.log("NEW STRING1: " + newString);
 			var begin = allElementsString.indexOf("<sup type=\"pow\">") + "<sup type=\"pow\">".length;
 			if (allElementsString.indexOf("</sup>") > -1) {
 				var end = allElementsString.indexOf("</sup>");
-				//console.log("BEGIN: " + begin + " END: " + end);
+				////console.log("BEGIN: " + begin + " END: " + end);
 				var exponent = allElementsString.substring(begin, end);
-				//console.log("EXPONENT: " + exponent);
+				////console.log("EXPONENT: " + exponent);
 				newString += "," + exponent + ")";
-				//console.log("NEW STRING1: " + newString);
+				////console.log("NEW STRING1: " + newString);
 
 				newString += allElementsString.substring(end + "</sup>".length, allElementsString.length);
-				//console.log("NEW STRING2: " + newString);
+				////console.log("NEW STRING2: " + newString);
 
 				var firstBrick = brickCounterBackward(allElementsString, begin - "<sup type=\"pow\">".length - 1);
 				newString = allElementsString.substring(firstBrick, begin - "<sup type=\"pow\">".length - 1) + newString;
-				//console.log("NEW STRING3: " + newString);
+				////console.log("NEW STRING3: " + newString);
 
 				newString = allElementsString.substring(0, firstBrick) + "pow" + newString;
-				//console.log("NEW STRING4: " + newString);
+				////console.log("NEW STRING4: " + newString);
 
 			} else {
 				//alert("EXP error2")
@@ -970,34 +970,34 @@ var EquationEditor = function (vals) {
 
 	var checkForLogarithms = function (allElementsString) {
 		var newString = "";
-		//console.log("HERE: " + allElementsString.indexOf("log"));
+		////console.log("HERE: " + allElementsString.indexOf("log"));
 		if (allElementsString.indexOf("<sub type=\"logarithm\">") > -1) {
 			newString = allElementsString.substring(0, allElementsString.indexOf("<sub type=\"logarithm\">"));
 			newString += "(";
-			//console.log("NEW STRING1: " + newString);
+			////console.log("NEW STRING1: " + newString);
 			var begin = allElementsString.indexOf("<sub type=\"logarithm\">") + "<sub type=\"logarithm\">".length;
 			if (allElementsString.indexOf("</sub>") > -1) {
 				var end = allElementsString.indexOf("</sub>");
-				//console.log("BEGIN: " + begin + " END: " + end);
+				////console.log("BEGIN: " + begin + " END: " + end);
 				var base = allElementsString.substring(begin, end);
-				//console.log("BASE: " + base);
+				////console.log("BASE: " + base);
 				var lastBrick = brickCounter(allElementsString, allElementsString.indexOf("</sub>") + "</sub>".length + 1);
 				newString += allElementsString.substring(allElementsString.indexOf("</sub>") + "</sub>".length, lastBrick);
-				//console.log("NEW STRING2: " + newString);
+				////console.log("NEW STRING2: " + newString);
 				newString += (")/log(" + base + "))");
-				//console.log("NEW STRING3: " + newString);
+				////console.log("NEW STRING3: " + newString);
 				newString += allElementsString.substring(lastBrick + 1, allElementsString.length);
-				//console.log("NEW STRING4: " + newString);
+				////console.log("NEW STRING4: " + newString);
 
 			} else {
 				//alert("LOG error2");
-				//console.log("LOG error2");
+				////console.log("LOG error2");
 				return false;
 			}
 
 		} else {
 			//alert("LOG error1");
-			//console.log("LOG error1");
+			////console.log("LOG error1");
 			return false;
 		}
 
@@ -1006,24 +1006,24 @@ var EquationEditor = function (vals) {
 
 	var checkForRadicals = function (allElementsString) {
 		var newString = "";
-		//console.log("HERE: " + allElementsString.indexOf("√"));
+		////console.log("HERE: " + allElementsString.indexOf("√"));
 		if (allElementsString.indexOf("<sup type=\"radical\">") > -1) {
 			newString = allElementsString.substring(0, allElementsString.indexOf("<sup type=\"radical\">"));
-			//console.log("NEW STRING1: " + newString);
+			////console.log("NEW STRING1: " + newString);
 			var begin = allElementsString.indexOf("<sup type=\"radical\">") + "<sup type=\"radical\">".length;
 			if (allElementsString.indexOf("</sup>") > -1) {
 				var end = allElementsString.indexOf("</sup>");
-				//console.log("BEGIN: " + begin + " END: " + end);
+				////console.log("BEGIN: " + begin + " END: " + end);
 				var exponent = allElementsString.substring(begin, end);
-				//console.log("EXPONENT: " + exponent);
+				////console.log("EXPONENT: " + exponent);
 				newString += "pow";
 				var lastBrick = brickCounter(allElementsString, allElementsString.indexOf("√") + 1);
 				newString += allElementsString.substring(allElementsString.indexOf("√") + 1, lastBrick);
-				//console.log("NEW STRING2: " + newString);
+				////console.log("NEW STRING2: " + newString);
 				newString += (",1/" + exponent + ")");
-				//console.log("NEW STRING3: " + newString);
+				////console.log("NEW STRING3: " + newString);
 				newString += allElementsString.substring(lastBrick + 1, allElementsString.length);
-				//console.log("NEW STRING4: " + newString);
+				////console.log("NEW STRING4: " + newString);
 			} else {
 				//alert("error2")
 
@@ -1039,11 +1039,11 @@ var EquationEditor = function (vals) {
 	}
 
 	var adjustNewElementsToShrinkLevel = function (id) {
-		console.log("------------------ adjustNewElementsToShrinkLevel " + shrinkLevel + " ------------------");
-		console.log("EQUATIONID: " + id);
+		//console.log("------------------ adjustNewElementsToShrinkLevel " + shrinkLevel + " ------------------");
+		//console.log("EQUATIONID: " + id);
 		for (var i = 2; i <= shrinkLevel; i++) {
 			if ($("#equation" + id).attr("type") == "box" || $("#equation" + id).attr("type") == "filledBox") {
-				console.log("----------------------------> adjustNewElementsToShrinkLevel");
+				//console.log("----------------------------> adjustNewElementsToShrinkLevel");
 				var newWidth = parseInt($("#equation" + id).width()) / 2;
 				var newHeight = parseInt($("#equation" + id).height()) / 2;
 				$("#equation" + id).css("width", newWidth + "px");
@@ -1053,39 +1053,39 @@ var EquationEditor = function (vals) {
 				var newFontSize = oldFontSize - (oldFontSize / 4);
 				$("#equation" + id).css("font-size", newFontSize + "px");
 
-				console.log("#equation" + id + " TYPE: " + $("#equation" + id).attr("type") + " width: " + newWidth + " FONT-SIZE: " + $("#equation" + id).css("font-size"));
+				//console.log("#equation" + id + " TYPE: " + $("#equation" + id).attr("type") + " width: " + newWidth + " FONT-SIZE: " + $("#equation" + id).css("font-size"));
 			} else if ($("#equation" + id).attr("class") == "eexcess_equation_text") {
 				var newHeight = parseInt($("#equation" + id).height()) / 2;
 				//$("#equation" + id).css("height", newHeight + "px");
 				//$("#equation" + id).css("line-height", newHeight + "px");
-				//console.log("LINE HIGHT: " + $("#equation" + id).css("line-height"));
+				////console.log("LINE HIGHT: " + $("#equation" + id).css("line-height"));
 			}
 		}
 
-		//	console.log("END: ------------------ adjustNewElementsToShrinkLevel ------------------");
+		//	//console.log("END: ------------------ adjustNewElementsToShrinkLevel ------------------");
 	}
 
 	var shrinkElementsIfNecessary = function (operation) {
-		console.log("------------------ shrinkElementsIfNecessary ------------------");
+		//console.log("------------------ shrinkElementsIfNecessary ------------------");
 
 		if (userMode != "normal") {
 			var sumWidth = 200;
-			//console.log("HTML: " + $(equationStack).html());
+			////console.log("HTML: " + $(equationStack).html());
 			$(equationStack).find("*").each(function () {
 				if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox" || $(this).attr("class") == "eexcess_equation_text") {
-					//console.log($(this).id + " widht: " + $(this).width());
+					////console.log($(this).id + " widht: " + $(this).width());
 					sumWidth += $(this).width();
 				}
 			});
 
 			//Use the variable shrinkLevel
-			//	console.log("SUM WIDTH: " + sumWidth + " > equationStack width " + $(equationStack).width());
+			//	//console.log("SUM WIDTH: " + sumWidth + " > equationStack width " + $(equationStack).width());
 			if (sumWidth > ($(equationStack).width()) && shrinkLevel < 2) {
 				if ((operation == -1 || operation == 1)) {
 					shrinkLevel++;
-					console.log("--------------------> +shrinklevel: " + shrinkLevel);
+					//console.log("--------------------> +shrinklevel: " + shrinkLevel);
 					$(equationStack).find("*").each(function () {
-						//	console.log($(this).attr("id") +" TYPE: " + $(this).attr("type"));
+						//	//console.log($(this).attr("id") +" TYPE: " + $(this).attr("type"));
 						if ($(this).attr("type") == "box" || $(this).attr("type") == "filledBox") {
 							var newWidth = parseInt($(this).width()) / 2;
 							var newHeight = parseInt($(this).height()) / 2;
@@ -1093,19 +1093,19 @@ var EquationEditor = function (vals) {
 							//$(this).css("height", newHeight + "px");
 							var fontSize = $(this).css("font-size");
 							var oldFontSize = parseInt(fontSize.split("px")[0]);
-							console.log("+font-size old: " + oldFontSize);
+							//console.log("+font-size old: " + oldFontSize);
 							var newFontSize = oldFontSize - (oldFontSize / 4);
 							$(this).css("font-size", newFontSize + "px");
-							console.log("+font-size: " + newFontSize);
+							//console.log("+font-size: " + newFontSize);
 						} else if ($(this).attr("class") == "eexcess_equation_text") {
 							var newHeight = parseInt($(this).height()) / 2;
 							//$(this).css("height", newHeight + "px");
 							//$(this).css("line-height", newHeight + "px");
-							//console.log("LINE HIGHT: " + $(this).css("line-height"));
+							////console.log("LINE HIGHT: " + $(this).css("line-height"));
 						}
 						//	$(this).css("line-height", newHeight + "px");
 					});
-					//console.log("SHRINK ELEMENTS");
+					////console.log("SHRINK ELEMENTS");
 					shrinkElementsIfNecessary(1);
 				}
 			}
@@ -1119,10 +1119,10 @@ var EquationEditor = function (vals) {
 							//$(this).css("height", newHeight + "px");
 							var fontSize = $(this).css("font-size");
 							var oldFontSize = parseInt(fontSize.split("px")[0]);
-							console.log("-font-size old: " + oldFontSize);
+							//console.log("-font-size old: " + oldFontSize);
 							var newFontSize = (oldFontSize * 100) / (100 - 25);
 							$(this).css("font-size", newFontSize + "px");
-							console.log("-font-size: " + newFontSize);
+							//console.log("-font-size: " + newFontSize);
 							//$(this).css("line-height", newHeight + "px");
 						} else if ($(this).attr("class") == "eexcess_equation_text") {
 							var newHeight = parseInt($(this).height()) * 2;
@@ -1130,15 +1130,15 @@ var EquationEditor = function (vals) {
 							//	$(this).css("line-height", newHeight + "px");
 						}
 					});
-					//console.log("EXTEND ELEMENTS");
+					////console.log("EXTEND ELEMENTS");
 					shrinkLevel--;
-					console.log("--------------------> -shrinklevel: " + shrinkLevel);
+					//console.log("--------------------> -shrinklevel: " + shrinkLevel);
 
 					shrinkElementsIfNecessary(1);
 				}
 			}
 		}
-		console.log("END ------------------ shrinkElementsIfNecessary ------------------");
+		//console.log("END ------------------ shrinkElementsIfNecessary ------------------");
 	}
 
 	var getNameOfHTMLId = function (htmlId) {
@@ -1175,18 +1175,18 @@ var EquationEditor = function (vals) {
 
 	}
 	var printZoomArray = function () {
-		console.log("--------------> Zoom Array: ")
+		//console.log("--------------> Zoom Array: ")
 		for (var i = 0; i < zoomArray.length; i++) {
-			console.log("--------------> " + i + " " + zoomArray[i]);
+			//console.log("--------------> " + i + " " + zoomArray[i]);
 		}
-		console.log("<--------------")
+		//console.log("<--------------")
 
 	}
 	//EVENTS:
 	equationEditor.showMetric = function (id) {
 		var name = getNameOfId(id);
 		if (name != "") {
-			console.log("NAME: " + name);
+			//console.log("NAME: " + name);
 			var help = nameOfLoadedMetric;
 			var allVizs = visController.getAllVizs();
 			if (allVizs[name]) {
@@ -1214,7 +1214,7 @@ var EquationEditor = function (vals) {
 	equationEditor.showMetricCombination = function (id, color) {
 		var name = getNameOfId(id);
 		if (name != "") {
-			console.log("NAME: " + name + " " + color);
+			//console.log("NAME: " + name + " " + color);
 			var help = nameOfLoadedMetric;
 			var allVizs = visController.getAllVizs();
 			if (allVizs[name]) {
@@ -1267,7 +1267,7 @@ var EquationEditor = function (vals) {
 					visController.clearSelectedTagsForEquationEditorArray();
 				}
 				isShiftPressed = isShiftPressedPar;
-				//console.log("shift pressed: " + isShiftPressed);
+				////console.log("shift pressed: " + isShiftPressed);
 			}
 		}
 	}
@@ -1356,7 +1356,7 @@ var EquationEditor = function (vals) {
 	}
 
 	equationEditor.rankQMs = function () {
-		console.log("rankQMs");
+		//console.log("rankQMs");
 		if (areDataAvailable) {
 			visController.rankQMs();
 		}
@@ -1380,11 +1380,11 @@ var EquationEditor = function (vals) {
 				showTextOfQM = false;
 			}
 		}
-		console.log("showTextOfQM");
+		//console.log("showTextOfQM");
 	}
 
 	equationEditor.editQMText = function () {
-		console.log("editQMText");
+		//console.log("editQMText");
 		$('#equation_stack_text_of_QM').append("<textarea style=\"width: 100%;\" id=\"QM_TEXT_EDIT\" class=\"boxsizingBorder\">" + $('#QM_Text').html() + "</textarea>")
 		$('#QM_Text').css("display", "none");
 		$('#edit_Icon_QM_Text').css("display", "none");

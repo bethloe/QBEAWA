@@ -69,13 +69,13 @@ var DataRetriever = function (vals) {
 	var handleFlesch = function (JSONResponse) {
 		var text = JSON.parse(JSON.stringify(JSONResponse));
 		var extractPlainText = text.query.pages[Object.keys(text.query.pages)[0]].extract;
-		//console.log(extractPlainText);
+		////console.log(extractPlainText);
 		if (extractPlainText != undefined) {
 			var stat = new textstatistics(extractPlainText);
 			var flesch = stat.fleschKincaidReadingEase();
 			var kincaid = stat.fleschKincaidGradeLevel();
-			//console.log(flesch);
-			//console.log(kincaid);
+			////console.log(flesch);
+			////console.log(kincaid);
 			$("#Flesch").text(flesch);
 			$("#Kincaid").text(kincaid);
 			GLOBAL_JSON.flesch = flesch;
@@ -182,7 +182,7 @@ var DataRetriever = function (vals) {
 			if (internalLinks.hasOwnProperty("continue")) {
 				if (internalLinks.continue.hasOwnProperty("iwcontinue")) {
 					//GET REST OF THE DATA:
-					//console.log("IW CONTINUE: " + internalLinks.continue.iwcontinue);
+					////console.log("IW CONTINUE: " + internalLinks.continue.iwcontinue);
 					retrieveData(GLOBAL_linkToAPI + "action=query&prop=iwlinks&format=json&iwlimit=max&titles=" + GLOBAL_title + "&iwcontinue=" + internalLinks.continue.iwcontinue + "&continue", handleInternalLinks);
 				} else {}
 			} else {
@@ -216,7 +216,7 @@ var DataRetriever = function (vals) {
 	}
 
 	var handleArticleLength = function (JSONResponse) {
-		//console.log(JSON.stringify(JSONResponse));
+		////console.log(JSON.stringify(JSONResponse));
 		var articleData = JSON.parse(JSON.stringify(JSONResponse));
 		var articleLength = articleData.query.pages[Object.keys(articleData.query.pages)[0]].length;
 		if(articleLength != undefined){
@@ -230,9 +230,9 @@ var DataRetriever = function (vals) {
 
 	var handleUserData = function (JSONResponse) {
 		var userData = JSON.parse(JSON.stringify(JSONResponse));
-		//console.log(JSON.stringify(userData.query.users[0]));
+		////console.log(JSON.stringify(userData.query.users[0]));
 		if (userData.query.users[0].hasOwnProperty("groups")) {
-			//console.log("REGISTERED USER " + userData.query.users[0].name);
+			////console.log("REGISTERED USER " + userData.query.users[0].name);
 			var groups = userData.query.users[0].groups;
 			var admin = false;
 			for (var i = 0; i < groups.length; i++) {
@@ -267,11 +267,11 @@ var DataRetriever = function (vals) {
 			GLOBAL_cntEditsHELP += 1;
 			if (GLOBAL_mapUsernames.hasOwnProperty(userData.query.users[0].name)) {
 
-				//console.log("ANONYMOUS USER1: " + userData.query.users[0].name);
+				////console.log("ANONYMOUS USER1: " + userData.query.users[0].name);
 				GLOBAL_mapUsernames[userData.query.users[0].name][1] += 1;
 				GLOBAL_mapUsernames[userData.query.users[0].name][0] = VAL_ANONYMOUS;
 			} else {
-				//console.log("ANONYMOUS USER: " + userData.query.users[0].name);
+				////console.log("ANONYMOUS USER: " + userData.query.users[0].name);
 				GLOBAL_mapUsernames[userData.query.users[0].name] = [VAL_ANONYMOUS, 1]
 			}
 		}
@@ -297,7 +297,7 @@ var DataRetriever = function (vals) {
 					GLOBAL_mapUsernames[username][1] += 1;
 					GLOBAL_cntEditsHELP += 1;
 				} else {
-					//console.log("user " + username + "is not in list");
+					////console.log("user " + username + "is not in list");
 					//Get all userdata (admin, registered or anonymous)
 					GLOBAL_mapUsernames[username] = ['', 0]; // Asynchronous that's why I do it!
 					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&list=users&ususers=" + username + "&usprop=groups&continue", handleUserData);
@@ -310,7 +310,7 @@ var DataRetriever = function (vals) {
 					retrieveData(GLOBAL_linkToAPI + "action=query&format=json&prop=revisions&titles=" + GLOBAL_title + "&rvcontinue=" + revisions.continue.rvcontinue + "&rvlimit=max&rvprop=user&continue", handleEditData);
 				}
 			} else {
-				console.log("WE ARE AT THE END2");
+				//console.log("WE ARE AT THE END2 : " + GLOBAL_title);
 				
 				$("#totalNumEdits").text(GLOBAL_cntEdits);
 
@@ -397,18 +397,18 @@ var DataRetriever = function (vals) {
 	return dataRetriver;
 };
 //test:
-/*console.log("STARTING FIRST");
+/*//console.log("STARTING FIRST");
 var dr = new DataRetriever({
 title : 'Visualization'
 });
 dr.getAllMeasures();
-console.log("STARTING SECOND");*/
+//console.log("STARTING SECOND");*/
 /*
 var dr2 = new DataRetriever({title: 'New York'});
 dr2.getAllMeasures();
  */
 var test = function () {
-	//console.log(dr.getJSONString());
-	//console.log(dr2.getJSONString());
+	////console.log(dr.getJSONString());
+	////console.log(dr2.getJSONString());
 }
 //-----------------------------------------------------------------------------

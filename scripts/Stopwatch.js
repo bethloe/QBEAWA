@@ -38,7 +38,7 @@ var Stopwatch = function(elem, options) {
   }
 
   function start() {
-	//console.log("IN start");
+	////console.log("IN start");
     if (!interval) {
       offset   = Date.now();
       interval = setInterval(update, options.delay);
@@ -47,7 +47,7 @@ var Stopwatch = function(elem, options) {
 
   function stop() {
   
-	//console.log("IN stop() " + clock);
+	////console.log("IN stop() " + clock);
     if (interval) {
       clearInterval(interval);
       interval = null;

@@ -21,7 +21,7 @@
             timestamp = d.getFullYear() + '-' + (parseInt(d.getMonth()) + 1) + '-' + 
                 d.getDate() + '_' + d.getHours() + '.' + d.getMinutes() + '.' + d.getSeconds();
 
-        console.log(scriptURL);
+        //console.log(scriptURL);
         $.generateFile({
             filename	: 'evaluation_results_' + timestamp + '.txt',
             content		: JSON.stringify(taskStorage.getEvaluationResults()),
@@ -60,8 +60,8 @@
                 }
             });
         });
-       // console.log('linked_user_doc_qk');
-        //console.log(linked_user_doc_qk);
+       // //console.log('linked_user_doc_qk');
+        ////console.log(linked_user_doc_qk);
 
         function getKeywords(query, questionNumber, kw_aux) {
             var index = kw_aux.getIndexOf(query, 'query');
@@ -77,16 +77,16 @@
             // Call server
             $.post(host, dataToSend)
             .done(function(reqData){
-                //console.log(JSON.parse(reqData));
+                ////console.log(JSON.parse(reqData));
                 successfulInsertions++;
             })
             .fail(function(jqXHR, textStatus) {
-                console.log(jqXHR.responseJSON.message);
+                //console.log(jqXHR.responseJSON.message);
             });
         });
         
         setTimeout(function() {
-            console.log('Total links = ' + linked_user_doc_qk.length + ' --- Successful insertions = ' + successfulInsertions);
+            //console.log('Total links = ' + linked_user_doc_qk.length + ' --- Successful insertions = ' + successfulInsertions);
         }, 5000);
     
     };

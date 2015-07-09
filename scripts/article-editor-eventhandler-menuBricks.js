@@ -231,17 +231,17 @@ var ArticleEditorMenuBricksEventHandler = function (vals) {
 			for (var i = 0; i < menuBricks.length; i++) {
 				menuBrickJsonStringArray.push(JSON.parse(menuBricks[i].toJSONString()));
 			}
-			//console.log(JSON.stringify(menuBrickJsonStringArray));
+			////console.log(JSON.stringify(menuBrickJsonStringArray));
 			jsonObject.menuBricks = menuBrickJsonStringArray;
 			jsonObject.moveableBricks = controller.getMoveableBricksInJsonFormat();
 			jsonObject.connectors = controller.getConnectorsInJsonFormat();
-			//console.log(JSON.stringify(jsonObject));
+			////console.log(JSON.stringify(jsonObject));
 
 			//Create the formula
 			var qmArray = controller.createFormulaForQM();
-			/*console.log("LENGTH: " + qmArray.length);
+			/*//console.log("LENGTH: " + qmArray.length);
 			for (var i = 0; i < qmArray.length; i++) {
-			console.log("FROMULA: " + qmArray[i]);
+			//console.log("FROMULA: " + qmArray[i]);
 			}*/
 			controller.saveQMFormula(qmArray, JSON.stringify(jsonObject));
 			return (true);

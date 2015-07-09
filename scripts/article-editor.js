@@ -91,10 +91,10 @@ var ArticleEditorController = function (vals) {
 	});
 	var onMouseWheel = function (e) {
 		/*var wheel = e.wheelDelta / 120; //n or -n
-		console.log("WHEEL: " + wheel);
+		//console.log("WHEEL: " + wheel);
 		if (wheel == 1) {
 		scale += 0.2;
-		console.log(scale);
+		//console.log(scale);
 		ctx.scale(scale, scale);
 		} else if (wheel == -1) {
 		scale -= 0.2;
@@ -150,7 +150,7 @@ var ArticleEditorController = function (vals) {
 	}
 
 	articleEditorController.test = function () {
-		console.log("TEST");
+		//console.log("TEST");
 	}
 
 	articleEditorController.calculateQMScore = function (brick) {
@@ -166,7 +166,7 @@ var ArticleEditorController = function (vals) {
 	}
 
 	articleEditorController.setData = function (d) {
-		console.log("SET DATA");
+		//console.log("SET DATA");
 		data = d;
 		menuBricksEventHandler.setData(data);
 		moveableBricksEventHandler.setData(data);

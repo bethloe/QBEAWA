@@ -29,9 +29,10 @@ var getVisController = function () {
 var setDataToVisController = function () {
 	
 	GLOBAL_showRevisions = false;
+	visController.setBackColors();
 	visController.init(articles);
 	visController.hidePreparingMessage();
-	$("#backButton").css("display", "none");
+	$(".backButton").css("display", "none");
 }
 
 var searchArticle = function (keyword, maxNumSearch, equationEditor) {
@@ -45,7 +46,7 @@ var searchArticle = function (keyword, maxNumSearch, equationEditor) {
 
 	//showAllData();
 	/*window.setInterval(function () {
-	console.log("IN HERE");
+	//console.log("IN HERE");
 	showAllDataTest();
 	}, 2000);*/
 	GLOBAL_interval = setInterval(showAllDataAsList, 1000);
@@ -83,7 +84,7 @@ var handleSearchFeaturedArticles = function (JSONResponse) {
 			retrieveData(GLOBAL_linkToAPI + "action=query&list=search&format=json&srsearch=" + GLOBAL_keyWord + "&srlimit=10&srprop=&continue", handleSearch);
 		}
 	} else {
-		console.log("SEARCH IS DONE");
+		//console.log("SEARCH IS DONE");
 	}
 }
 /*
@@ -125,7 +126,7 @@ var handleSearch = function (JSONResponse) {
 			retrieveData(GLOBAL_linkToAPI + "action=query&list=search&format=json&srsearch=" + GLOBAL_keyWord + "&srlimit=max&rsoffset=" + articles.continue.sroffset + "&srprop=&continue", handleSearch);
 		}
 	} else {
-		console.log("SEARCH IS DONE");
+		//console.log("SEARCH IS DONE");
 	}
 }
 var doneCounter = 0;
@@ -150,8 +151,9 @@ var showAllDataAsList = function () {
 		}
 		inloop = true;
 	}
-	if(!inloop)
+	if(!inloop){
 		done = false;
+	}
 
 	if (GLOBAL_generatingDataCnt == 0) {
 		visController.updateHeaderInfoSection("Generating Data.");
@@ -169,18 +171,13 @@ var showAllDataAsList = function () {
 
 	//----------------------------------------------------------------------
 	if (done) {
-
+		//console.log("DONE!");
 		doneCounter++;
+		
 		if (doneCounter >= 2) {
 			clearInterval(GLOBAL_interval);
-
 			visController.updateHeaderInfoSection("Generation done!");
 
-			/*var array = [];
-			for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
-			array.push(GLOBAL_dataCollector[i].getJSONString());
-			}
-			console.log("OUTPUT: " + JSON.stringify(array));*/
 
 			for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
 				var jsonData = JSON.parse(GLOBAL_dataCollector[i].getJSONString());
@@ -212,7 +209,7 @@ var showAllDataAsList = function () {
 				}
 				articles.data.push(
 					temp);
-				//console.log(JSON.stringify(temp));
+				////console.log(JSON.stringify(temp));
 			}
 			GLOBAL_showRevisions = false;
 			visController.init(articles);
@@ -222,7 +219,7 @@ var showAllDataAsList = function () {
 }
 
 var showAllDataAsTable = function () {
-	//console.log("LENGTH: " + GLOBAL_dataCollector.length);
+	////console.log("LENGTH: " + GLOBAL_dataCollector.length);
 	var done = true;
 
 	for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
@@ -241,7 +238,7 @@ var showAllDataAsTable = function () {
 																																																																													<th>Article Median Revert Time (no permissions)</th><th>Information noise(content) (Have to figure that out)</th>";
 
 		for (var i = 0; i < GLOBAL_dataCollector.length; i++) {
-			//console.log(GLOBAL_dataCollector[i].getJSONString());
+			////console.log(GLOBAL_dataCollector[i].getJSONString());
 			var jsonData = JSON.parse(GLOBAL_dataCollector[i].getJSONString());
 			content += "<tr><td>" + jsonData.title + "</td><td>" + jsonData.numEdits + "</td><td>" + jsonData.numRegisteredUserEdits + "</td><td>" + jsonData.numAnonymousUserEdits + "</td><td>" + jsonData.numAdminUserEdits + "</td> \
 																																																																																																																							<td>" + jsonData.adminEditShare + "</td><td>" + jsonData.numUniqueEditors + "</td><td>" + jsonData.articleLength + "</td><td>" + jsonData.currency + "</td><td>" + jsonData.internalLinks + "</td> \

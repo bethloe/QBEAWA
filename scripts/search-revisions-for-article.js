@@ -47,7 +47,7 @@ var searchRevision = function (articleTitle, revid, maxNumSearch, equationEditor
 
 var handleSearchRevision = function (JSONResponse) {
 	var articles = JSON.parse(JSON.stringify(JSONResponse));
-	console.log("-------------> " + JSON.stringify(JSONResponse));
+	//console.log("-------------> " + JSON.stringify(JSONResponse));
 	var JSONArticleTitles2 = articles.query.pages[Object.keys(articles.query.pages)[0]].revisions;
 	var JSONArticleTitles = JSONArticleTitles2[0];
 	if (JSONArticleTitles != undefined) {
@@ -56,7 +56,7 @@ var handleSearchRevision = function (JSONResponse) {
 		}
 		if (!GLOBAL_CrawledArticlesRev.hasOwnProperty(JSONArticleTitles.revid)) {
 			GLOBAL_CrawledArticlesRev[JSONArticleTitles.revid] = 1;
-			console.log("....................> " + JSONArticleTitles.revid);
+			//console.log("....................> " + JSONArticleTitles.revid);
 			var dr = new DataRetrieverRevisions({
 					title : GLOBAL_articleTitle + "&oldid=" + JSONArticleTitles.revid,
 					numberRev : (GLOBAL_searchCountRev ),
@@ -70,7 +70,7 @@ var handleSearchRevision = function (JSONResponse) {
 	if (JSONArticleTitles.hasOwnProperty("parentid")) {
 		retrieveData(GLOBAL_linkToAPIRev + "action=query&format=json&prop=revisions&revids=" + JSONArticleTitles.parentid + "&rvprop=ids|user&continue", handleSearchRevision);
 	} else {
-		console.log("SEARCH IS DONE");
+		//console.log("SEARCH IS DONE");
 	}
 }
 var doneCounterRev = 0;
@@ -78,13 +78,13 @@ var showAllDataAsListRev = function () {
 	//CHECK IF WE ARE DONE:
 	var done = true;
 
-	console.log("showAllDataAsList");
+	//console.log("showAllDataAsList");
 
 	var crawledArticles = 0;
 	var inloop = false;
 	for (var i = 0; i < GLOBAL_dataCollectorRev.length; i++) {
 		var jsonData = JSON.parse(GLOBAL_dataCollectorRev[i].getJSONString());
-		console.log("NUM ELEMENTS: " + Object.keys(jsonData).length + " < " + GLOBAL_numElementsRev);
+		//console.log("NUM ELEMENTS: " + Object.keys(jsonData).length + " < " + GLOBAL_numElementsRev);
 		if (Object.keys(jsonData).length < GLOBAL_numElementsRev)
 			done = false;
 		else {
@@ -110,7 +110,7 @@ var showAllDataAsListRev = function () {
 	}
 
 	if (GLOBAL_dataCollectorRev.length < GLOBAL_maxNumSearchRev) {
-			console.log("ARTICLES RETRIEVED: " + GLOBAL_dataCollectorRev.length + " < " + GLOBAL_maxNumSearchRev);
+			//console.log("ARTICLES RETRIEVED: " + GLOBAL_dataCollectorRev.length + " < " + GLOBAL_maxNumSearchRev);
 			done = false;
 	}
 	//----------------------------------------------------------------------
@@ -128,12 +128,12 @@ var showAllDataAsListRev = function () {
 			for (var i = 0; i < GLOBAL_dataCollectorRev.length; i++) {
 			array.push(GLOBAL_dataCollectorRev[i].getJSONString());
 			}
-			console.log("OUTPUT: " + JSON.stringify(array));*/
+			//console.log("OUTPUT: " + JSON.stringify(array));*/
 
 			for (var i = 0; i < GLOBAL_dataCollectorRev.length; i++) {
 				var jsonData = JSON.parse(GLOBAL_dataCollectorRev[i].getJSONString());
 				//Calculation of the QMs.
-				console.log("jsonData: " + GLOBAL_dataCollectorRev[i].getJSONString());
+				//console.log("jsonData: " + GLOBAL_dataCollectorRev[i].getJSONString());
 				var authority = 0.2 * jsonData.numUniqueEditors + 0.2 * jsonData.numEdits + 0.1 * /*Connectivity*/
 					1 + 0.3 * /*Num. of Reverts*/
 					1 + 0.2 * jsonData.externalLinks + 0.1 * jsonData.numRegisteredUserEdits + 0.2 * jsonData.numAnonymousUserEdits;
@@ -160,7 +160,7 @@ var showAllDataAsListRev = function () {
 				}
 				articles.data.push(
 					temp);
-				//console.log(JSON.stringify(temp));
+				////console.log(JSON.stringify(temp));
 			}
 			GLOBAL_showRevisions = true;
 			visController.init(articles);
@@ -170,7 +170,7 @@ var showAllDataAsListRev = function () {
 }
 
 var showAllDataAsTable = function () {
-	//console.log("LENGTH: " + GLOBAL_dataCollectorRev.length);
+	////console.log("LENGTH: " + GLOBAL_dataCollectorRev.length);
 	var done = true;
 
 	for (var i = 0; i < GLOBAL_dataCollectorRev.length; i++) {
@@ -189,7 +189,7 @@ var showAllDataAsTable = function () {
 																																																																															<th>Article Median Revert Time (no permissions)</th><th>Information noise(content) (Have to figure that out)</th>";
 
 		for (var i = 0; i < GLOBAL_dataCollectorRev.length; i++) {
-			//console.log(GLOBAL_dataCollectorRev[i].getJSONString());
+			////console.log(GLOBAL_dataCollectorRev[i].getJSONString());
 			var jsonData = JSON.parse(GLOBAL_dataCollectorRev[i].getJSONString());
 			content += "<tr><td>" + jsonData.title + "</td><td>" + jsonData.numEdits + "</td><td>" + jsonData.numRegisteredUserEdits + "</td><td>" + jsonData.numAnonymousUserEdits + "</td><td>" + jsonData.numAdminUserEdits + "</td> \
 																																																																																																																										<td>" + jsonData.adminEditShare + "</td><td>" + jsonData.numUniqueEditors + "</td><td>" + jsonData.articleLength + "</td><td>" + jsonData.currency + "</td><td>" + jsonData.internalLinks + "</td> \
