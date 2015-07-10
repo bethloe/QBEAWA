@@ -8,6 +8,7 @@ var ArticleController = function (vals) {
 	var data = null;
 	var phpConnector = null;
 	var isLoggedIn = false;
+	var editingEnable = true;
 
 	//ArticleRenderers
 	var articleRenderers = [];
@@ -27,7 +28,9 @@ var ArticleController = function (vals) {
 	var dataManipulator;
 
 	var sensiumRequester;
-
+	articleController.setEditingEnable = function(ee){
+		editingEnable = ee;
+	}
 	function update() {
 		var type = "continuous";
 		var roundness = 0.5;
@@ -36,8 +39,8 @@ var ArticleController = function (vals) {
 		if (!GLOBAL_forComparing) {
 			options = {
 				dataManipulation : {
-					enabled : true,
-					initiallyVisible : true
+					enabled : editingEnable,
+					initiallyVisible : editingEnable
 				},
 				smoothCurves : {
 					type : 'continuous',
@@ -69,8 +72,8 @@ var ArticleController = function (vals) {
 	if (!GLOBAL_forComparing) {
 		opt = {
 			dataManipulation : {
-				enabled : true,
-				initiallyVisible : true
+				enabled : editingEnable,
+				initiallyVisible : editingEnable
 			},
 			onConnect : function (data, callback) {
 				dataManipulator.connectNodes(data, callback);
