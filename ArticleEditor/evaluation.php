@@ -1021,6 +1021,7 @@ browserWindowWidth = $(window).width();
 		}
 	});
 	var param1var = getQueryVariable("title");
+	var param2var = getQueryVariable("oldid");
 
 	//alert('Query Variable ' + param1var);
 	function getQueryVariable(variable) {
@@ -1032,11 +1033,18 @@ browserWindowWidth = $(window).width();
 				return pair[1];
 			}
 		}
-		alert('Query Variable ' + variable + ' not found');
+		//alert('Query Variable ' + variable + ' not found');
 	}
 	param1var = param1var.replace(/%20/g, " ");
+	//alert(param2var);
+	if(param2var != undefined){
+	
+	$("#articleName").attr("value", param1var+"&oldid="+param2var);
+	$("#titleofthearticle").html( param1var+"&oldid="+param2var);
+	}else{
 	$("#articleName").attr("value", param1var);
 	$("#titleofthearticle").html( param1var);
+	}
 	articleControllerMain.setEditingEnable(false);
 articleControllerMain.retrieveData();
   });
