@@ -23,6 +23,7 @@ var ArticleController = function (vals) {
 	var GLOBAL_loginName = "";
 	var GLOBAL_divContainer = vals.networkTag;
 	var GLOBAL_forComparing = vals.forComparing;
+	var GLOBAL_showWikiPage = false;
 
 	var articleController = {};
 	var dataManipulator;
@@ -657,6 +658,14 @@ var ArticleController = function (vals) {
 
 	articleController.torf = function () {
 		return GLOBAL_forComparing;
+	}
+	
+	articleController.showWikiPage = function(showWiki){
+		GLOBAL_showWikiPage = showWiki;
+	}
+	
+	articleController.getShowWiki = function(){
+		return GLOBAL_showWikiPage;
 	}
 	//-------------------- EVENTS ----------------------
 

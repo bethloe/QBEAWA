@@ -1002,9 +1002,11 @@ font-family: 'WebSymbolsRegular', cursive;
   			$("#wikiTextInner").children().remove();
   			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "\" style=\"width: 100%; height: 100%\"></iframe>");
   			console.log("toggle on");
+			articleControllerMain.showWikiPage(true);
   		} else {
   			articleControllerMain.showTheWholeArticleInMainView();
   			console.log("toggle off");
+			articleControllerMain.showWikiPage(false);
   		}
   	});
   	$('#mytoggle_detail_drawing').toggles({

@@ -1728,7 +1728,7 @@ var ArticleRenderer = function (vals) {
 					GLOBAL_controller.addNode();
 			}
 			if (item.type == "text") {
-				if (isScroll) {
+				if (isScroll && !articleControllerMain.getShowWiki()) {
 					$('#editor_section_name').html(item.title);
 					$('#wikiTextInner').scrollTop(0);
 					$("#ediotr_section_selector").val(item.title)
