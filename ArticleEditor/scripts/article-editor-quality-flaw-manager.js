@@ -6,8 +6,8 @@ var QualityFlawManager = function (vals) {
 
 	var cleanUpTags = [{
 			name : "{{unreferenced",
-			alias : "The article does not contain any references or sources!",
-			description : "This article does not cite any references or sources. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
+			alias : "A section does not contain any sources!",
+			description : "This section does not cite any references or sources. Please help improve this article by adding citations to reliable sources. Unsourced material may be challenged and removed."
 		}, {
 			name : "{{citations missing",
 			alias : "This article is missing citations and/or footnotes!",
