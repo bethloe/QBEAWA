@@ -143,7 +143,7 @@
     }
 	#qualityParameters{
 	position:relative;
-	height: 200px;
+	height: 250px;
 	overflow-x: auto; 
 	overflow-y: auto;
 	}
