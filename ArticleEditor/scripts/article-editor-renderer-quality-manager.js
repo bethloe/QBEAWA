@@ -34,6 +34,16 @@ var QualityManager = function (vals) {
 		}
 		return n;
 	}
+	
+	function numberOfInternalLinks(textOfSection){
+			var patt = /\[\[[^\]\]]*\]\]/g;
+				var res = textOfSection.match(patt);
+			var ret = 0;
+			if(res != null)
+				ret = res.length;
+			return ret;
+	}
+	
 	function trimToOneParagraph(textOfSection, sectionName) {
 		var hIndex = textOfSection.indexOf(sectionName);
 		var hi = 0;
@@ -104,7 +114,8 @@ var QualityManager = function (vals) {
 			//for(var i = 0; i < properties.iwlinks.length; i++){
 			//	console.log("LINKS: " + JSON.stringify(properties.iwlinks[i]));
 			//}
-			var allLinks = properties.links.length;
+			var allLinks = numberOfInternalLinks(textOfSection);//properties.links.length;
+			console.log("SECTION: " + sectionName + " NUMBER ALL LINKS: " + allLinks); 
 			var qualityImages = adaptValue(numImages / good_numPics);
 			var qualityExternalRefs = adaptValue(externalRefs / good_extLinks);
 			//var qualityInternalLinks = adaptValue(internalLinks / good_iwlinks);
