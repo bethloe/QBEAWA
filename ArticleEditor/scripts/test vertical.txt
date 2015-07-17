@@ -844,7 +844,15 @@ var ArticleRenderer = function (vals) {
 		}
 		return maxHeight;
 	}
-
+	function getMaxWidthOfLevelType(level, type) {
+		var items = GLOBAL_data.nodes.get();
+		var maxWidth = -1;
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].wikiLevel == level && items[i].width > maxWidth && idInRange(items[i].id) && items[i].type == type)
+				maxWidth = items[i].width;
+		}
+		return maxWidth;
+	}
 	articleRenderer.showOverview = function () {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
@@ -867,6 +875,7 @@ var ArticleRenderer = function (vals) {
 		var items = GLOBAL_data.nodes.get();
 		var currentlevelCnt = getMaxLevel();
 		var sumHeight = 0;
+		var sumWidthGlobal = 0;
 		var heightCnt = 0;
 		var currentLevelMaxXRef = 0;
 		var currentLevelMaxXImg = 0;
@@ -875,7 +884,7 @@ var ArticleRenderer = function (vals) {
 		var oldLevelMaxX = 0;
 		var addXSections = 200;
 		var addXText = 50;
-		var addY = 500;
+		var addY = 0;
 		var refOffset = 3000;
 		var sectionOffset = 100;
 		var bottomLevel = true;
@@ -883,6 +892,11 @@ var ArticleRenderer = function (vals) {
 		var xMult = 0;
 		for (var clc = currentlevelCnt; clc >= -1; clc--) {
 			items = GLOBAL_data.nodes.get();
+
+			var maxWidthTextNodes = getMaxWidthOfLevelType(clc, "text");
+			var maxWidthSectionNodes = getMaxWidthOfLevelType(clc, "section");
+			var maxWidthImageNodes = getMaxWidthOfLevelType(clc, "img");
+			var maxWidthRefNodes = getMaxWidthOfLevelType(clc, "ref") + refOffset;
 
 			var maxHeightTextNodes = getMaxHeightOfLevelType(clc, "text");
 			var maxHeightSectionNodes = getMaxHeightOfLevelType(clc, "section");
@@ -919,8 +933,10 @@ var ArticleRenderer = function (vals) {
 			}
 
 			sumWidth = 0;
-			if (itemFoundInLevel)
+			if (itemFoundInLevel) {
 				sumHeight += maxHeightImageNodes;
+				sumWidthGlobal += maxWidthImageNodes;
+			}
 			xMult = 0;
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
@@ -953,8 +969,11 @@ var ArticleRenderer = function (vals) {
 			}
 
 			sumWidth = 0;
-			if (itemFoundInLevel)
+			sumH = 0;
+			if (itemFoundInLevel) {
 				sumHeight += maxHeightRefNodes;
+				sumWidthGlobal += maxHeightRefNodes;
+			}
 			xMult = 0;
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
@@ -968,13 +987,12 @@ var ArticleRenderer = function (vals) {
 
 					GLOBAL_data.nodes.update({
 						id : item.id,
-						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
-						//title : sumWidth + (item.width / 2) + 2000,
-						/*space between*/
-						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
+						x : bottomLevel ? (GLOBAL_maxY + (item.width / 2)) : (GLOBAL_maxY + (sumWidthGlobal + (item.width / 2) + addY * heightCnt)),
+						y : sumH == 0 ? 0 : sumH + (item.height / 2) + addXText * xMult
 					});
 					xMult++;
 					sumWidth += (item.width);
+					sumH += (item.height);
 					//console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
 					currentLevelMaxXText = sumWidth + (item.width / 2) + addXText * xMult;
 
@@ -984,30 +1002,32 @@ var ArticleRenderer = function (vals) {
 				}
 			}
 
-			if (itemFoundInLevel)
+			if (itemFoundInLevel) {
 				sumHeight += maxHeightTextNodes;
+				sumWidthGlobal += maxHeightTextNodes;
+			}
 
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
 			}
 
 			sumWidth = 0;
+			sumH = 0;
 			itemFoundInLevel = false;
 			items = GLOBAL_data.nodes.get();
 			xMult = 0;
 			for (var i = 0; i < items.length; i++) {
 				var item = items[i];
 				if (item.type == 'section' && idInRange(item.id) && item.wikiLevel == clc) {
-
 					GLOBAL_data.nodes.update({
 						id : item.id,
-						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXSections * xMult,
-						//title : sumWidth + (item.width / 2) + 2000,
-						/*space between*/
-						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + sectionOffset + addY * heightCnt))
+						x : bottomLevel ? (GLOBAL_maxY + (item.width / 2)) : (GLOBAL_maxY + (sumWidthGlobal + (item.width / 2) + addY * heightCnt)),
+						y : sumH == 0 ? 0 : sumH + (item.height / 2) + addXSections * xMult
 					});
+
 					xMult++;
 					sumWidth += (item.width);
+					sumH += (item.height);
 					//	console.log("Type : " + item.id + " " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
 					currentLevelMaxXSection = sumWidth + (item.width / 2) + addXSections * xMult;
 
@@ -1017,8 +1037,11 @@ var ArticleRenderer = function (vals) {
 				}
 			}
 
-			if (itemFoundInLevel)
+			if (itemFoundInLevel) {
 				sumHeight += maxHeightSectionNodes;
+				sumWidthGlobal += maxHeightTextNodes;
+			}
+
 			heightCnt++;
 			bottomLevel = false;
 			itemFoundInLevel = false;
@@ -1617,15 +1640,15 @@ var ArticleRenderer = function (vals) {
 	}
 	var getAliasToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "Reading Difficulty * Word Count";
+			return "Flesch-Reading-Ease * Word Count";
 		else if (realName == "qualityKincaid")
-			return "Level of experience";
+			return "Flesch-Kincaid-Grade-Level";
 		else if (realName == "qualityImages")
-			return "Amount of Images";
+			return "Enough Images";
 		else if (realName == "qualityExternalRefs")
-			return "Amount of External References";
+			return "Enough External References";
 		else if (realName == "qualityAllLinks")
-			return "Amount of Links";
+			return "Enough Links";
 		else if (realName == "score")
 			return "Score of the section";
 		else
@@ -1634,9 +1657,9 @@ var ArticleRenderer = function (vals) {
 	}
 	var getTooltipToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "This measure combines the Flesch-Reading-Ease (Reading Difficulty) with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
+			return "This measure combines the Flesch-Reading-Ease with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
 		else if (realName == "qualityKincaid")
-			return "The Level of experience is measured with the help of the Flesch-Kincaid-Grade-Level which should help to check the readability of the section. The default value is 14. So a 14 year old person should have no problem to read this section! ";
+			return "The Flesch-Kincaid-Grade-Level should help to check the readability of the section. The default value is 14. So a 14 year old person should have no problem to read this section! ";
 		else if (realName == "qualityImages")
 			return "Are there enough images referenced in the section. By default 4 is set to be the optimal value. ";
 		else if (realName == "qualityExternalRefs")
@@ -1730,13 +1753,6 @@ var ArticleRenderer = function (vals) {
 			}
 			if (item.type == "text") {
 				if (isScroll) {
-					if (GLOBAL_wikiPageActive) {
-						$("#wikiTextInner").children().remove();
-						var sectionName = item.title;
-						var sectionNameHelp = sectionName.replace(/ /g, "_");
-						console.log("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#" + sectionNameHelp + "\" style=\"width: 100%; height: 100%\"></iframe>");
-						$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#" + sectionNameHelp + "\" style=\"width: 100%; height: 100%\"></iframe>");
-					}
 					$('#editor_section_name').html(item.title);
 					$('#wikiTextInner').scrollTop(0);
 					$("#ediotr_section_selector").val(item.title)
@@ -1846,7 +1862,7 @@ var ArticleRenderer = function (vals) {
 				if (showQualityFlag) {
 					var masterItem = articleRenderer.getItem(item.masterId);
 					var allKeys = Object.keys(item.allQulityParameters);
-					var qmStr = "<h2 > Section: <span style=\"color: blue\"><b>" + item.title + "</b></span></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
+					var qmStr = "<h2 ><b>" + masterItem.label + "</b></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
 					//qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
 					for (var i = 0; i < allKeys.length; i++) {
 						console.log("allkeys: " + JSON.stringify(item.allQulityParameters));

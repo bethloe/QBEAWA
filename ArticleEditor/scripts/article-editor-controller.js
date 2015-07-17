@@ -222,6 +222,7 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.showReferences = function () {
+		GLOBAL_logger.log("showReferences");
 		if ($('#showReferences a span').attr("class") == "ca-icon") {
 			$('#showReferences a span').attr("class", "ca-icon-selected");
 			$('#showReferences a div h2').attr("class", "ca-main-selected");
@@ -263,6 +264,7 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.showImages = function () {
+		GLOBAL_logger.log("showImages");
 		if ($('#showImages a span').attr("class") == "ca-icon") {
 			$('#showImages a span').attr("class", "ca-icon-selected");
 			$('#showImages a div h2').attr("class", "ca-main-selected");
@@ -305,11 +307,13 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.doRedraw = function () {
+		GLOBAL_logger.log("doRedraw");
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].doRedraw();
 		}
 	}
 	articleController.semanticZooming = function () {
+		GLOBAL_logger.log("semanticZooming");
 		if (!GLOBAL_forComparing) {
 			if ($('#semTd').attr("class") == "menuHelper2") {
 				$('#semTd').attr("class", "menuHelper3");
@@ -328,6 +332,7 @@ var ArticleController = function (vals) {
 		}
 	}
 	articleController.showOverview = function () {
+		GLOBAL_logger.log("showOverview");
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].showOverview();
 		}
@@ -374,7 +379,16 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.highlightSectionInTree = function (sectionName) {
+		if(GLOBAL_wikiPageActive){
+			$("#wikiTextInner").children().remove();
+			
+			var sectionNameHelp = sectionName.replace(/ /g, "_");
+			console.log("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#"+sectionNameHelp+"\" style=\"width: 100%; height: 100%\"></iframe>");
+  			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#"+sectionNameHelp+"\" style=\"width: 100%; height: 100%\"></iframe>");
+		}
 		$("#editor_section_name").html(sectionName);
+		$('#ediotr_section_selector option').filter(function(){ return $(this).text()===sectionName;}).prop('selected', true);
+		
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].highlightSectionInTree(sectionName);
 		}
@@ -537,6 +551,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.goToSection = function (sectionName, tag) {
+		GLOBAL_logger.log("goToSection: " + sectionName + " Tag: " + tag);
 		//HIGHLIGHT TAG FIRST:
 		$(".highlight").contents().unwrap();
 		$('#wikiTextInner *').highlight(tag, "highlight");
@@ -685,6 +700,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.onZoom = function (properties) {
+		GLOBAL_logger.log("onZoom");
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].onZoom(properties);
 		}

@@ -99,7 +99,11 @@ var QualityManager = function (vals) {
 
 			var numImages = properties.images.length;
 			var externalRefs = properties.externallinks.length + refsInSection;
-			//var internalLinks = properties.iwlinks.length;
+			var internalLinks = properties.iwlinks.length;
+			//console.log("HERE!!! " + sectionName + " " + properties.iwlinks.length);
+			//for(var i = 0; i < properties.iwlinks.length; i++){
+			//	console.log("LINKS: " + JSON.stringify(properties.iwlinks[i]));
+			//}
 			var allLinks = properties.links.length;
 			var qualityImages = adaptValue(numImages / good_numPics);
 			var qualityExternalRefs = adaptValue(externalRefs / good_extLinks);

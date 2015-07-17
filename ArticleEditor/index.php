@@ -11,6 +11,7 @@
   <script type="text/javascript" src="scripts/utility.js"></script>
   <script type="text/javascript" src="scripts/rawData.js"></script>
   <script type="text/javascript" src="libs/underscore-min.js" ></script>
+  <script type="text/javascript" src="scripts/logger.js"></script>
   <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
   <script type="text/javascript" src="scripts/article-editor-quality-flaw-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-sensium-requester.js"></script>

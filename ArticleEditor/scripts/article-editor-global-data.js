@@ -16,3 +16,6 @@ var influenceExternalRefs = parseFloat((100/numberOfMetrics)/100);
 var influenceAllLinks = parseFloat((100/numberOfMetrics)/100);
 //------------------------------------------------------------------------------
 var currentImageSrc; 
+var GLOBAL_logger=new Logger(); 
+var GLOBAL_fs;
+var GLOBAL_wikiPageActive = false;

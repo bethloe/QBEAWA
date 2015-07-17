@@ -26,12 +26,13 @@ function deleteEqualsSigns(str, cnt /*to cancle the procedure*/
 }
 
 function hexToRgb(hex) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-    } : null;
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result ? {
+		r : parseInt(result[1], 16),
+		g : parseInt(result[2], 16),
+		b : parseInt(result[3], 16)
+	}
+	 : null;
 }
 
 String.prototype.replaceAt = function (index, character) {
@@ -140,3 +141,117 @@ jQuery.fn.highlight = function (str, className) {
 		});
 	});
 };
+
+function errorHandler(e) {
+	var msg = '';
+
+	switch (e.name) {
+	case FileError.QUOTA_EXCEEDED_ERR:
+		msg = 'QUOTA_EXCEEDED_ERR';
+		break;
+	case FileError.NOT_FOUND_ERR:
+		msg = 'NOT_FOUND_ERR';
+		break;
+	case FileError.SECURITY_ERR:
+		msg = 'SECURITY_ERR';
+		break;
+	case FileError.INVALID_MODIFICATION_ERR:
+		msg = 'INVALID_MODIFICATION_ERR';
+		break;
+	case FileError.INVALID_STATE_ERR:
+		msg = 'INVALID_STATE_ERR';
+		break;
+	default:
+		msg = 'Unknown Error: ' + e.name + " MESSAGE: " + e.message;
+		break;
+	};
+
+	console.log('Error: ' + msg);
+}
+
+function createNewLogFile(fs) {
+
+	var now = new Date();
+	var logFileName = now.getTime() / 1000;
+	GLOBAL_fs = fs;
+	console.log("GLOABAL FS: " + GLOBAL_fs + " " + logFileName + ".txt");
+	fs.root.getFile("C:\\"+logFileName + ".txt", {
+		create : true,
+		exclusive : true
+	}, function (fileEntry) {
+
+		// Create a FileWriter object for our FileEntry (log.txt).
+		fileEntry.createWriter(function (fileWriter) {
+
+			fileWriter.onwriteend = function (e) {
+				console.log('Write completed.');
+			};
+
+			fileWriter.onerror = function (e) {
+				console.log('Write failed: ' + e.toString());
+			};
+
+			// Create a new Blob and write it to log.txt.
+			var blob = new Blob(['Lorem Ipsum'], {
+					type : 'text/plain'
+				});
+
+			fileWriter.write(blob);
+
+		}, errorHandler);
+
+	}, errorHandler);
+
+	GLOBAL_logger = logFileName;
+}
+
+function logToFile(fileName, message) {
+	console.log("sdfGLOABAL FS: " + GLOBAL_fs);
+	GLOBAL_fs.root.getFile(fileName, {
+		create : false
+	}, function (fileEntry) {
+
+		// Create a FileWriter object for our FileEntry (log.txt).
+		fileEntry.createWriter(function (fileWriter) {
+
+			fileWriter.seek(fileWriter.length); // Start write position at EOF.
+
+			// Create a new Blob and write it to log.txt.
+			var blob = new Blob([message], {
+					type : 'text/plain'
+				});
+
+			fileWriter.write(blob);
+
+		}, errorHandler);
+
+	}, errorHandler);
+
+}
+
+function saveStringToDisk(str) {
+	window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+
+	window.requestFileSystem(window.TEMPORARY, 1024 * 1024, function (fs) {
+		fs.root.getFile('test.bin', {
+			create : true
+		}, function (fileEntry) { // test.bin is filename
+			fileEntry.createWriter(function (fileWriter) {
+				var arr = new Uint8Array(3); // data length
+
+				arr[0] = 97; // byte data; these are codes for 'abc'
+				arr[1] = 98;
+				arr[2] = 99;
+
+				var blob = new Blob([str]);
+
+				fileWriter.addEventListener("writeend", function () {
+					// navigate to file, will download
+					location.href = fileEntry.toURL();
+				}, false);
+
+				fileWriter.write(blob);
+			}, function () {});
+		}, function () {});
+	}, function () {});
+}

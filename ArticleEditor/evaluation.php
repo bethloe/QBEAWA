@@ -8,9 +8,11 @@
   
   <script type="text/javascript" src="scripts/article-editor-high-quality-values.js"></script>
   <script type="text/javascript" src="libs/jquery-1.10.2.js" charset="utf-8"></script>
+  <script type="text/javascript" src="libs/jQueryTwFile.js" charset="utf-8"></script>
   <script type="text/javascript" src="scripts/utility.js"></script>
   <script type="text/javascript" src="scripts/rawData.js"></script>
   <script type="text/javascript" src="libs/underscore-min.js" ></script>
+  <script type="text/javascript" src="scripts/logger.js"></script>
   <script type="text/javascript" src="scripts/article-editor-global-data.js"></script>
   <script type="text/javascript" src="scripts/article-editor-quality-flaw-manager.js"></script>
   <script type="text/javascript" src="scripts/article-editor-sensium-requester.js"></script>
@@ -850,7 +852,9 @@ font-family: 'WebSymbolsRegular', cursive;
   	}
   }
   $(document).ready(function () {
-  	function scrollHorizontally(e) {
+	//window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+//	window.requestFileSystem(window.TEMPORARY, 5*1024*1024 /*5MB*/, createNewLogFile, errorHandler);
+	function scrollHorizontally(e) {
   		e = window.event || e;
   		var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
   		document.getElementById('mainContent').scrollLeft -= (delta * 40); // Multiplied by 40
@@ -948,14 +952,18 @@ font-family: 'WebSymbolsRegular', cursive;
   	});
   	$('#mytoggle').on('toggle', function (e, active) {
   		if (active) {
+  			GLOBAL_wikiPageActive = true;
+  			GLOBAL_logger.log("show wikipage");
   			$("#wikiTextInner").children().remove();
   			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "\" style=\"width: 100%; height: 100%\"></iframe>");
   			console.log("toggle on");
-			articleControllerMain.showWikiPage(true);
+  			articleControllerMain.showWikiPage(true);
   		} else {
+  			GLOBAL_wikiPageActive = false;
+  			GLOBAL_logger.log("hide wikipage");
   			articleControllerMain.showTheWholeArticleInMainView();
   			console.log("toggle off");
-			articleControllerMain.showWikiPage(false);
+  			articleControllerMain.showWikiPage(false);
   		}
   	});
   	$('#mytoggle_detail_drawing').toggles({
@@ -1062,9 +1070,10 @@ articleControllerMain.retrieveData();
 		$('#notification-' + notificationID).remove();
 
 	}
-	
-		
+
+
 	$("#ediotr_section_selector").change(function () {
+		GLOBAL_logger.log("ediotr_section_selector change");
 		console.log("Section changed: " + this.value);
 		articleControllerMain.highlightSectionInTree(this.value);
 		var item = this.value;
@@ -1074,10 +1083,13 @@ articleControllerMain.retrieveData();
 		var desired = item.replace(/[^\w\s]/gi, '');
 		var idStr = desired.replace(/ /g, "_");
 		var help = "#" + idStr;
-		$('#wikiTextInner').animate({
-			scrollTop : $(help).offset().top - 300
-		},
-			'slow');
+
+		if (!articleControllerMain.getShowWiki()) {
+			$('#wikiTextInner').animate({
+				scrollTop : $(help).offset().top - 300
+			},
+				'slow');
+		}
 	});
 </script>
 
