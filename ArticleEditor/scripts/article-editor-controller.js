@@ -377,7 +377,12 @@ var ArticleController = function (vals) {
 		//TODO: Do a refactoring so that it work for more than one article at the end
 		dataManipulator.showTheWholeArticle(articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
-
+	
+	articleController.highlightSectionInTreeWithScrolling = function(sectionName){
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].highlightSectionInTree(sectionName, true);
+		}
+	}
 	articleController.highlightSectionInTree = function (sectionName) {
 		if(GLOBAL_wikiPageActive){
 			$("#wikiTextInner").children().remove();

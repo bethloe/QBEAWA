@@ -955,7 +955,11 @@ font-family: 'WebSymbolsRegular', cursive;
   			GLOBAL_wikiPageActive = true;
   			GLOBAL_logger.log("show wikipage");
   			$("#wikiTextInner").children().remove();
-  			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "\" style=\"width: 100%; height: 100%\"></iframe>");
+			var help = $("#ediotr_section_selector").val();
+			help = help.replace(/ /g, "_");
+			help = "#" + help;
+			console.log("--------------------------------- <iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() +help+"\" style=\"width: 100%; height: 100%\"></iframe>");
+  			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + help+"\" style=\"width: 100%; height: 100%\"></iframe>");
   			console.log("toggle on");
   			articleControllerMain.showWikiPage(true);
   		} else {
@@ -964,6 +968,7 @@ font-family: 'WebSymbolsRegular', cursive;
   			articleControllerMain.showTheWholeArticleInMainView();
   			console.log("toggle off");
   			articleControllerMain.showWikiPage(false);
+			articleControllerMain.highlightSectionInTreeWithScrolling($("#ediotr_section_selector").val());
   		}
   	});
   	$('#mytoggle_detail_drawing').toggles({
