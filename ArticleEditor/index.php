@@ -1093,6 +1093,11 @@ browserWindowWidth = $(window).width();
 		
 	$("#ediotr_section_selector").change(function () {
 		console.log("Section changed: " + this.value);
+		if(this.value == "Select a section")
+			return;
+		
+		$('#ediotr_section_selector option').filter(function(){ return $(this).text()==="Select a section"}).remove();
+		
 		articleControllerMain.highlightSectionInTree(this.value);
 		var item = this.value;
 		$('#editor_section_name').html(item);

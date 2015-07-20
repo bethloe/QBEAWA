@@ -529,6 +529,10 @@ var ArticleRenderer = function (vals) {
 		.find('option')
 		.remove();
 		$('#ediotr_section_selector').append($('<option>', {
+				value : 'Select a section',
+				text : 'Select a section'
+			}));
+		$('#ediotr_section_selector').append($('<option>', {
 				value : 'Introduction',
 				text : 'Introduction'
 			}));
@@ -1625,7 +1629,7 @@ var ArticleRenderer = function (vals) {
 		else if (realName == "qualityExternalRefs")
 			return "Amount of External References";
 		else if (realName == "qualityAllLinks")
-			return "Amount of Links";
+			return "Amount of internal Wikipedia-links";
 		else if (realName == "score")
 			return "Score of the section";
 		else

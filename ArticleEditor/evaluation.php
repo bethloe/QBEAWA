@@ -1075,6 +1075,11 @@ articleControllerMain.retrieveData();
 	$("#ediotr_section_selector").change(function () {
 		GLOBAL_logger.log("ediotr_section_selector change");
 		console.log("Section changed: " + this.value);
+		if(this.value == "Select a section")
+			return;
+		
+		$('#ediotr_section_selector option').filter(function(){ return $(this).text()==="Select a section"}).remove();
+		
 		articleControllerMain.highlightSectionInTree(this.value);
 		var item = this.value;
 		$('#editor_section_name').html(item);
