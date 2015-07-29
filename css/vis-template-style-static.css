@@ -1078,7 +1078,7 @@ list-style-type: none;
 .eexcess_ritem_container {
     display: inline-flex;
     align-items: center;
-    width: calc(100% - 120px);
+    width: calc(100% - 140px);
     height: 100%;
     margin-left: 2px;
     vertical-align: top;
@@ -1091,7 +1091,7 @@ list-style-type: none;
 .eexcess_favicon_section {
     display: inline-flex;
     float: right;
-    width: 60px;
+    width: 80px;
     margin-right: 2px;
     vertical-align: top;
 }

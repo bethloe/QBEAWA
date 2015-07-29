@@ -746,9 +746,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																																				                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																																				                   </div>\
-																																																																																																																																								   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																																																																																																							                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																																							                   </div>\
+																																																																																																																																											   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -833,6 +833,10 @@ var VisController = function () {
 
 		// bind droppable behavior to tag box
 		//$(tagBox).droppable(BEHAVIOR.droppableOptions);
+		console.log("BUILD CLOUD");
+		
+			statActivated = false;
+		equationEditor.setInterfaceToMode();
 	};
 
 	TAGCLOUD.dropTagInTagBox = function (tag) {
@@ -2259,12 +2263,12 @@ var VisController = function () {
 		////console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																																																																																																												<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																																					                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																																					                </div>\
-																																																																																																																																									<div id=\"eexcess_canvas_rankQM\"></div> \
-																																																																																																																																									 \
-																																																																																																																																									  </div>");
+																																																																																																															<div id=\"rank_QMs\" style=\"display:none\">\
+																																																																																																																																								                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																																								                </div>\
+																																																																																																																																												<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																																																																																																												 \
+																																																																																																																																												  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -2548,7 +2552,7 @@ var VisController = function () {
 
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																																																																																																																																											{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																																																																																																																																															{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");
