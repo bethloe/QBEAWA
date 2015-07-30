@@ -593,22 +593,36 @@ var VisController = function () {
 		var FN = 0;
 
 		//////console.log("qmRankingArrayInclScores.length: " + qmRankingArrayInclScores.length);
-		for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
-			////////console.log("HERE: " +  qmRankingArray[i].name + " "  +  qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score+  " "+qmRankingArrayInclScores[j].name );
-			if (j < toCheckLength) {
-				if (qmRankingArrayInclScores[j].featured) {
-					TP++;
-				} else
-					FP++;
+		/*for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
+		////////console.log("HERE: " +  qmRankingArray[i].name + " "  +  qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score+  " "+qmRankingArrayInclScores[j].name );
+		if (j < toCheckLength) {
+		if (qmRankingArrayInclScores[j].featured) {
+		TP++;
+		} else
+		FP++;
 
-			}
-			if (j >= toCheckLength) {
-				if (!qmRankingArrayInclScores[j].featured) {
-					TN++;
-				} else
-					FN++;
+		}
+		if (j >= toCheckLength) {
+		if (!qmRankingArrayInclScores[j].featured) {
+		TN++;
+		} else
+		FN++;
+		}
+		}*/
+		for (var j = 0; j < qmRankingArrayInclScores.length; j++) {
+			console.log("HERE: " + qmRankingArrayInclScores[j].featured + " " + qmRankingArrayInclScores[j].score + " " + qmRankingArrayInclScores[j].name);
+			console.log("HERE2: " + qmRankingArrayInclScores[j].score + ">=" + GLOBAL_threshold + "&&" + qmRankingArrayInclScores[j].featured);
+			if (qmRankingArrayInclScores[j].score >= GLOBAL_threshold && qmRankingArrayInclScores[j].featured) {
+				TP++;
+			} else if (qmRankingArrayInclScores[j].score < GLOBAL_threshold && !qmRankingArrayInclScores[j].featured) {
+				TN++;
+			} else if (qmRankingArrayInclScores[j].score >= GLOBAL_threshold && !qmRankingArrayInclScores[j].featured) {
+				FP++;
+			} else if (qmRankingArrayInclScores[j].score < GLOBAL_threshold && qmRankingArrayInclScores[j].featured) {
+				FN++;
 			}
 		}
+		console.log("HERE3: TP:" + TP + " " + TN + " " + FP + " " + FN);
 
 		var retArray = [];
 		retArray.push(TP);
@@ -680,11 +694,15 @@ var VisController = function () {
 		.on("click", function (data) {
 
 			$(visPanelCanvas).css('display', 'inline-block');
+
+			currentlyInComparison.splice(0, currentlyInComparison.length);
+			$("#changehreshold").css("display", "none");
 			$("#eexcess_vis_panel_canvas_stat").css('display', 'none');
 			clearStat();
 			if (equationEditor.isShiftPressed() == false) {
 				//	////console.log("buildTagCloud ON CLICK " + data.name + " " + allVizs[data.name]);
 
+				GLOBAL_logger.log("Show Metric: " + data.name);
 				visController.clearSelectedTagsForEquationEditorArray();
 				equationEditor.setMode("single");
 				equationEditor.loadMetric(data.name, allVizs[data.name], true);
@@ -695,6 +713,7 @@ var VisController = function () {
 				//}
 			} else {
 				//	////console.log("HILF: " + d3.select(this).attr("ImSelected"));
+
 				if (d3.select(this).attr("ImSelected") == "true") {
 					////console.log("IN HERE");
 					d3.select(this).attr("ImSelected", false);
@@ -732,7 +751,11 @@ var VisController = function () {
 				e.stopPropagation();
 			////console.log("CLICKED!");
 
+			currentlyInComparison.splice(0, currentlyInComparison.length);
+			GLOBAL_logger.log("Select Metric to combine: " + data.name);
 			$(visPanelCanvas).css('display', 'inline-block');
+
+			$("#changehreshold").css("display", "none");
 			$("#eexcess_vis_panel_canvas_stat").css('display', 'none');
 			clearStat();
 			var object = {
@@ -746,9 +769,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																																							                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																																							                   </div>\
-																																																																																																																																											   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																																																																																																																                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																																																                   </div>\
+																																																																																																																																																				   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -778,6 +801,7 @@ var VisController = function () {
 		})
 		.on("click", function (data) {
 			if (equationEditor.isShiftPressed() == false) {
+				GLOBAL_logger.log("Select Measure to fillGap: " + data.name);
 				equationEditor.fillGap(data)
 			} else {
 				if (d3.select(this).attr("ImSelected") == "true") {
@@ -812,6 +836,8 @@ var VisController = function () {
 			if (!e)
 				var e = window.event;
 			e.cancelBubble = true;
+
+			GLOBAL_logger.log("Select Measure to combine: " + data.name);
 			if (e.stopPropagation)
 				e.stopPropagation();
 			////console.log("CLICKED!");
@@ -834,8 +860,8 @@ var VisController = function () {
 		// bind droppable behavior to tag box
 		//$(tagBox).droppable(BEHAVIOR.droppableOptions);
 		console.log("BUILD CLOUD");
-		
-			statActivated = false;
+
+		statActivated = false;
 		equationEditor.setInterfaceToMode();
 	};
 
@@ -1180,6 +1206,8 @@ var VisController = function () {
 			////console.log(JSON.stringify(d));
 			var actualIndex = rankingModel.getActualIndex(i);
 			var currentData = data[actualIndex];
+
+			GLOBAL_logger.log("Edit article clicked: " + currentData.title);
 			window.open('http://localhost/ArticleEditor/index3.php?title=' + currentData.title);
 		});
 
@@ -1194,6 +1222,8 @@ var VisController = function () {
 			////console.log("CLICK ON REVISION");
 			var actualIndex = rankingModel.getActualIndex(i);
 			var currentData = data[actualIndex];
+
+			GLOBAL_logger.log("Show revisions clicked: " + currentData.title);
 			var order = prompt("How many revisions do you want to retrieve?", "2");
 			if (order != null) {
 				searchRevision(currentData.title, 0, order, equationEditor, visController);
@@ -1211,6 +1241,8 @@ var VisController = function () {
 			e.cancelBubble = true;
 			if (e.stopPropagation)
 				e.stopPropagation();
+
+			GLOBAL_logger.log("PLUS ICON CLICKED");
 			console.log("PLUS_ICON");
 			//////console.log(d3.select(this).node().parentNode);
 			//////console.log(d3.select(d3.select(this).node().parentNode).node().parentNode);
@@ -1251,6 +1283,8 @@ var VisController = function () {
 			if (e.stopPropagation)
 				e.stopPropagation();
 			console.log("MINUS_ICON");
+
+			GLOBAL_logger.log("MINUS ICON CLICKED");
 			var itemID = d3.select(d3.select(d3.select(this).node().parentNode).node().parentNode).select(".eexcess_ritem_title").attr("id");
 
 			var indexToDelete = -1;
@@ -1947,7 +1981,58 @@ var VisController = function () {
 	 * */
 
 	var visController = {};
+	visController.thresholdChanged = function () {
+		
+			GLOBAL_logger.log("thresholdChanged: " + GLOBAL_threshold);
+		for (var i = 0; i < currentlyInComparison.length; i++) {
+			var name = currentlyInComparison[i];
+			if (statCounter < 4)
+				statCounter++;
+			else
+				statCounter = 1;
+			GLOBAL_logger.log("compareQMStat: " + name);
+			$("#h1stat" + statCounter).empty();
+			$("#h1stat" + statCounter).html(name);
+			//Calculate Precision, Recall and F1:
+			var recall = 0;
+			var precision = 0;
+			var F = 0;
 
+			var TP = 0;
+			var TN = 0;
+			var FP = 0;
+			var FN = 0;
+			var TPTNFPFN = generateQMRankingForOneMetric(name);
+			if (TPTNFPFN != false) {
+				TP = TPTNFPFN[0];
+				TN = TPTNFPFN[1];
+				FP = TPTNFPFN[2];
+				FN = TPTNFPFN[3];
+				var recall = parseFloat(TP / (TP + FN)).toFixed(2);
+				var precison = parseFloat(TP / (TP + FP)).toFixed(2);
+				var F = parseFloat((2 * recall * precison) / (precision + recall)).toFixed(2);
+				////console.log("TP: +" + TP + " TN: " + TN + " FP: " + FP + " FN: " + FN);
+
+			} else
+				alert("ERROR SHOULD NEVER HAPPEN!");
+			$("#stat" + statCounter).empty();
+			if (statDefaultHeight == 0) {
+				statDefaultHeight = $("#divstat" + statCounter).height();
+				statDefaultWidth = $("#divstat" + statCounter).width();
+			}
+			$("#stat" + statCounter).css('height', statDefaultHeight - 40);
+			$("#stat" + statCounter).css('width', statDefaultWidth / 2);
+			$("#metersstat" + statCounter).empty();
+			$("#metersstat" + statCounter).css('height', statDefaultHeight - 40);
+			//$("#metersstat" + statCounter).css('line-height', (statDefaultHeight - 40)+'px');
+			$("#metersstat" + statCounter).css('width', statDefaultWidth / 2 - 20);
+			$("#metersstat" + statCounter).append('<table  ><tr><td>Recall</td><td>  <meter id="recall' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + recall + '"></meter></td><td>' + recall + '</td></tr><tr><td>Precision </td><td><meter id="percision' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + precison + '"></meter></td><td>' + precison + '</td></tr><tr><td>F1-score</td><td><meter id="f1' + statCounter + '" style="width:100px" min="0" max="2" low="0.8" high="1.6" optimum="2" value="' + F + '"></td><td>' + F + '</td></tr></table>');
+			$("#stat" + statCounter).append('<canvas id="canvasstat' + statCounter + '" width=' + $("#stat1").width() + ' height=' + $("#stat1").height() + '></canvas>');
+			//	var colors = ['rgb(165,0,38)', 'rgb(215,48,39)', 'rgb(244,109,67)', 'rgb(253,174,97)', 'rgb(254,224,139)', 'rgb(255,255,191)', 'rgb(217,239,139)', 'rgb(166,217,106)', 'rgb(102,189,99)', 'rgb(26,152,80)', 'rgb(0,104,55)'];
+			drawPrecisionRecall("canvasstat" + statCounter, 0, 0, $("#canvasstat" + statCounter).width(), $("#canvasstat" + statCounter).height(), "rgb(209,219,201)", "rgb(241,241,241)", "rgb(201,246,171)", "rgb(255,178,172)", parseFloat(FN / 50).toFixed(2), parseFloat(TN / 50).toFixed(2), parseFloat(TP / 50).toFixed(2), parseFloat(FP / 50).toFixed(2), FN, TN, TP, FP);
+		}
+	}
+	var currentlyInComparison = [];
 	visController.enableStat = function () {
 		if (!statActivated) {
 			statActivated = true;
@@ -1962,12 +2047,14 @@ var VisController = function () {
 				if (e.stopPropagation)
 					e.stopPropagation();
 				////console.log("CLICKED!");
+				$("#changehreshold").css("display", "inline-block");
 				$(visPanelCanvas).css('display', 'none');
 				$("#eexcess_vis_panel_canvas_stat").css('display', 'inline-block');
 				if (statCounter < 4)
 					statCounter++;
 				else
 					statCounter = 1;
+				GLOBAL_logger.log("compareQMStat: " + data.name);
 				$("#h1stat" + statCounter).empty();
 				$("#h1stat" + statCounter).html(data.name);
 				//Calculate Precision, Recall and F1:
@@ -1979,6 +2066,7 @@ var VisController = function () {
 				var TN = 0;
 				var FP = 0;
 				var FN = 0;
+				currentlyInComparison.push(data.name);
 				var TPTNFPFN = generateQMRankingForOneMetric(data.name);
 				if (TPTNFPFN != false) {
 					TP = TPTNFPFN[0];
@@ -2130,9 +2218,11 @@ var VisController = function () {
 	}
 
 	visController.setNormMethod = function (normMethod, p) {
+		GLOBAL_logger.log("visController.setNormMethod " + normMethod);
 		rankingModel.setNormMethod(normMethod, p);
 	}
 	visController.setNormMethodRank = function (normMethod, p) {
+		GLOBAL_logger.log("visController.setNormMethodRank " + normMethod);
 		rankingModel.setNormMethodRank(normMethod, p);
 	}
 	visController.deleteWholeQM = function (nameOfQM) {
@@ -2184,6 +2274,8 @@ var VisController = function () {
 	}
 
 	var generateQMRanking = function (qmRankingArray) {
+
+		GLOBAL_logger.log("generateQMRanking");
 		var allEquations = rankingModel.getEquations();
 		//dataForQMRanking /*see rankingQMsData.js*/
 		/*for (var r = 0; r < dataForQMRanking.length; r++) {
@@ -2263,12 +2355,12 @@ var VisController = function () {
 		////console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																																																																																																															<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																																								                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																																								                </div>\
-																																																																																																																																												<div id=\"eexcess_canvas_rankQM\"></div> \
-																																																																																																																																												 \
-																																																																																																																																												  </div>");
+																																																																																																																								<div id=\"rank_QMs\" style=\"display:none\">\
+																																																																																																																																																	                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																																																	                </div>\
+																																																																																																																																																					<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																																																																																																																					 \
+																																																																																																																																																					  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -2552,7 +2644,7 @@ var VisController = function () {
 
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																																																																																																																																															{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																																																																																																																																																											{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

@@ -28,6 +28,7 @@ var getVisController = function () {
 }
 
 var searchRevision = function (articleTitle, revid, maxNumSearch, equationEditor, visControllerPar) {
+	GLOBAL_logger.log("search Revision: " + articleTitle +  " number: " + maxNumSearch);
 	GLOBAL_keyWordRev = revid; //keyword;
 	GLOBAL_articleTitle = articleTitle;
 	GLOBAL_maxNumSearchRev = maxNumSearch; //maxNumSearch;

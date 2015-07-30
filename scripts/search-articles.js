@@ -27,7 +27,7 @@ var getVisController = function () {
 }
 
 var setDataToVisController = function () {
-	
+	GLOBAL_logger.log("get back for revision history");
 	GLOBAL_showRevisions = false;
 	visController.setBackColors();
 	visController.init(articles);
@@ -36,6 +36,7 @@ var setDataToVisController = function () {
 }
 
 var searchArticle = function (keyword, maxNumSearch, equationEditor) {
+	GLOBAL_logger.log("search Article: " + $("#article-name").val() +  " number: " + parseInt($("#max-num").val()));
 	GLOBAL_keyWord = $("#article-name").val(); //keyword;
 	GLOBAL_maxNumSearch = parseInt($("#max-num").val()); //maxNumSearch;
 	GLOBAL_searchCount = 0;

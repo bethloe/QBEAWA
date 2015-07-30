@@ -1,4 +1,8 @@
+var GLOBAL_username = "";
+var GLOBAL_logger = new Logger();
+
 var GLOBAL_showRevisions = false;
+var GLOBAL_threshold = 0.1; //For Recall, precision, F1-score
 
 var RANKING_STATUS = {
     new : 'new',

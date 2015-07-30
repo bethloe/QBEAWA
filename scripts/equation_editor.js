@@ -28,6 +28,7 @@ var EquationEditor = function (vals) {
 
 	//INSERTS: ----------------------------------------------------------------
 	equationEditor.simpleSymbol = function (symbol) {
+		GLOBAL_logger.log("simpleSymbol " + symbol); 
 		if (!checkIfOperationIsPermitted())
 			return;
 		if ($(equationStack).children().length == 0) {
@@ -251,7 +252,7 @@ var EquationEditor = function (vals) {
 	//-------------------------------------------------------------------------
 	//-------------------------------------------------------------------------
 	equationEditor.clearEquationComposer = function () {
-
+		GLOBAL_logger.log("clearEquationComposer");
 		$("#draw_stacked_div").css("display", "none");
 		visController.resetColorOfQMMetrics();
 		visController.resetHighlighting();
@@ -401,20 +402,27 @@ var EquationEditor = function (vals) {
 	equationEditor.deleteSelectedElement = function () {
 		////console.log("HERE: " + currentlySelectedBox + " " + $(currentlySelectedBox).attr("type"));
 		if ($(currentlySelectedBox).attr("type") == "box" || $(currentlySelectedBox).attr("type") == "filledBox") {
+			GLOBAL_logger.log("deleteSelectedElement box or filledBox");
 			if ($('#equation' + (currentlySelectedBoxId - 1)).html() !== undefined)
 				$('#equation' + (currentlySelectedBoxId - 1)).remove();
 			else
 				$('#equation' + (currentlySelectedBoxId + 1)).remove();
 		} else if ($(currentlySelectedBox).attr("type") == "radical" || $(currentlySelectedBox).attr("type") == "logarithm" || $(currentlySelectedBox).attr("type") == "exponent") {
+			GLOBAL_logger.log("deleteSelectedElement radical or logarithm or exponent");
 			$('#equation' + (currentlySelectedBoxId - 1)).remove();
 			$('#equation' + (currentlySelectedBoxId - 2)).remove();
 		} else if ($(currentlySelectedBox).attr("type") == "brickP") {
+			GLOBAL_logger.log("deleteSelectedElement brickP");
 			$('#equation' + (currentlySelectedBoxId + 1)).remove();
 		} else if ($(currentlySelectedBox).attr("type") == "brickA") {
+			GLOBAL_logger.log("deleteSelectedElement brickA");
 			$('#equation' + (currentlySelectedBoxId - 1)).remove();
 		} else if (currentlySelectedBox == "") {
+
 			var answer = confirm('Are you sure you want to delete the whole QM?');
 			if (answer) {
+
+				GLOBAL_logger.log("deleteSelectedElement delete the whole thing");
 				visController.deleteWholeQM(nameOfLoadedMetric);
 				equationEditor.clearEquationComposer();
 				return;
@@ -428,7 +436,7 @@ var EquationEditor = function (vals) {
 	}
 	var mathTable = 1;
 	equationEditor.hideMenuEquationEditor = function () {
-
+		GLOBAL_logger.log("MATH BUTTON PRESSED");
 		if ($("#eexcess_equation_composer_table2").is(":visible")) {
 			$("#eexcess_equation_composer_table2").hide("slow");
 			mathTable = 2;
@@ -444,6 +452,8 @@ var EquationEditor = function (vals) {
 	}
 	equationEditor.addBeforeSelected = function () {
 		////console.log("addBeforeSelected");
+
+		GLOBAL_logger.log("addBeforeSelected");
 		if (!isAddBeforeSelected) {
 			$("#divAddBeforeSelected").css({
 				"background" : "red"
@@ -463,6 +473,7 @@ var EquationEditor = function (vals) {
 
 	equationEditor.addAfterSlected = function () {
 		////console.log("addAfterSlected");
+		GLOBAL_logger.log("addAfterSlected");
 		if (!isAddAfterSelected) {
 			$("#divAddBeforeSelected").css({
 				"background" : "none"
@@ -848,6 +859,8 @@ var EquationEditor = function (vals) {
 		$('#edit_Icon_QM_Text_Return').css("display", "none");
 		$('#QM_TEXT_EDIT').remove();
 
+		GLOBAL_logger.log("createNewQM");
+
 		if (nameOfLoadedMetric != "" && nameOfLoadedMetric != "temp") {
 			//console.log("SAVE2");
 			var answer = confirm('Overwrite existing metric?');
@@ -870,6 +883,8 @@ var EquationEditor = function (vals) {
 					$(equationStack).html(backupCurrentView);
 					repairSliders();
 					var vizData = $(equationStack).html();
+
+					GLOBAL_logger.log("createNewQM: " + name);
 					visController.newQMFromEquationComposer(name, equation, vizData);
 				} else
 					alert("ERROR");
@@ -1231,6 +1246,7 @@ var EquationEditor = function (vals) {
 		printZoomArray();
 	}
 	equationEditor.showMore = function () {
+		GLOBAL_logger.log("showMore");
 		if (zoomArray.length > 0) {
 			equationEditor.resetData();
 			var name = zoomArray[zoomArray.length - 1];
@@ -1357,6 +1373,7 @@ var EquationEditor = function (vals) {
 
 	equationEditor.rankQMs = function () {
 		//console.log("rankQMs");
+		GLOBAL_logger.log("rankQMs");
 		if (areDataAvailable) {
 			visController.rankQMs();
 		}
@@ -1399,6 +1416,7 @@ var EquationEditor = function (vals) {
 	}
 
 	equationEditor.setUserMode = function (userModePar) {
+		GLOBAL_logger.log("setUserMode " + userModePar);
 		if (userModePar == "advanced" && userMode == "advanced") {
 			userMode = "normal";
 			equationEditor.setInterfaceToMode();
@@ -1506,6 +1524,10 @@ var EquationEditor = function (vals) {
 			$("#eexcess_equation_controls").css("display", "none");
 
 		}
+	}
+	
+	equationEditor.thresholdChanged = function(){
+		visController.thresholdChanged();
 	}
 	return equationEditor;
 }

@@ -17,6 +17,7 @@ if ($conn->connect_error) {
 header("Content-type: text/plain");
 
 $operation = $_POST ['operation'];
+$username = $_POST ['username'];
 
 if($operation == 'storeFormula'){
 	$name = $_POST ['name'];
@@ -73,11 +74,11 @@ if($operation == 'storeEquation'){
 	$equation = $_POST ['equation'];
 	$text = $_POST ['text'];
 	//$sql = "insert into formulas (f_content) values ('"+ $formula +"')";
-	$sql = "insert into equations (e_name, e_content, e_text) VALUES ('".$name."', '".$equation."', '".$text."')";
+	$sql = "insert into equations".$username." (e_name, e_content, e_text) VALUES ('".$name."', '".$equation."', '".$text."')";
 	if ($conn->query($sql) === TRUE) {
 		echo "operation storeEquation done ";
 	} else {
-		$sql = "update equations set e_content = '".$equation."' , e_text = '".$text."'  where e_name = '".$name."'";
+		$sql = "update equations".$username." set e_content = '".$equation."' , e_text = '".$text."'  where e_name = '".$name."'";
 		if ($conn->query($sql) === TRUE) {
 			echo "operation storeEquation done ";
 		} else {
@@ -85,7 +86,7 @@ if($operation == 'storeEquation'){
 		}
 	}
 }else if($operation == 'getAllEquations'){
-	$sql = "SELECT e_name, e_content FROM equations";
+	$sql = "SELECT e_name, e_content FROM equations".$username."";
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		// output data of each row
@@ -99,7 +100,7 @@ if($operation == 'storeEquation'){
 		echo "no results";
 	}	
 }else if($operation == 'getAllEquationTexts'){
-	$sql = "SELECT e_name, e_text FROM equations";
+	$sql = "SELECT e_name, e_text FROM equations".$username."";
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		// output data of each row
@@ -115,11 +116,11 @@ if($operation == 'storeEquation'){
 }else if($operation == 'storeEquationViz'){
 	$qmvizName = $_POST ['QMVizName'];
 	$qmvizData = $_POST ['QMVizData'];
-	$sql = "insert into equationviz (ev_name, ev_content) VALUES ('". $qmvizName ."','".$qmvizData."')";
+	$sql = "insert into equationviz".$username." (ev_name, ev_content) VALUES ('". $qmvizName ."','".$qmvizData."')";
 	if ($conn->query($sql) === TRUE) {
 		echo "operation storeVizToQM done ";
 	} else {
-		$sql = "update equationviz set ev_content = '".$qmvizData."' where ev_name = '".$qmvizName."'";
+		$sql = "update equationviz".$username." set ev_content = '".$qmvizData."' where ev_name = '".$qmvizName."'";
 		if ($conn->query($sql) === TRUE) {
 			echo "operation storeVizToQM done ";
 		} else {
@@ -127,7 +128,7 @@ if($operation == 'storeEquation'){
 		}
 	}
 }else if($operation == 'getEquationViz'){
-	$sql = "SELECT ev_name, ev_content FROM equationviz";
+	$sql = "SELECT ev_name, ev_content FROM equationviz".$username."";
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		// output data of each row
@@ -142,9 +143,9 @@ if($operation == 'storeEquation'){
 	}	
 }else if($operation == 'delteEquationInclViz'){
 	$name = $_POST ['equationName'];
-	$sql = "DELETE FROM equations where e_name='".$name."'";
+	$sql = "DELETE FROM equations".$username." where e_name='".$name."'";
 	if ($conn->query($sql) === TRUE) {
-		$sql = "DELETE FROM equationviz where ev_name='".$name."'";
+		$sql = "DELETE FROM equationviz".$username." where ev_name='".$name."'";
 		if ($conn->query($sql) === TRUE) {
 			echo "operation delteEquationInclViz done ";
 		}else {

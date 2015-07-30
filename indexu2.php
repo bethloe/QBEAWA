@@ -214,8 +214,6 @@ and open the template in the editor.
 					</table>
 					</div>
 				<div id="ranking_norm_selector" style="position: relative;">
-					<div  id="changehreshold" style="cursor: pointer; position: relative; display:none; text-align: left; padding-left:10px;" > Change threshold: <input id="threshold" type="range"  min="0" max="1" step="0.01" value="0.1"/> <span id="valBox">0.1</span> </div>
-					
 					<div class="backButton"  style="cursor: pointer; display: none; position: relative; text-align: left; padding-top: 5px; padding-left:10px;" onclick="setDataToVisController()"> <img src="media/arrow_left.png" width="20px" /> </div>
 					<table align="center" ><tr><td> Norm: </td><td>  <select id="normRankingSelector">
 					<option value="default"  id="defaultRank" title="taxicab nrom">taxicab norm</option>
@@ -326,6 +324,7 @@ and open the template in the editor.
 		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
 		<script type="text/javascript" src="scripts/QMformula-editor.js"></script>
 		<script>
+		GLOBAL_username = "u2";
 		document.onkeydown = function (event) {
 			if (event.keyCode == 16)
 				equationEditor.shiftPressed(true);
@@ -346,13 +345,6 @@ and open the template in the editor.
 		
 	
 		$(document).ready(function () {
-			$("#threshold").change(function (e) {
-				
-				$("#valBox").html($(this).val());
-				GLOBAL_threshold = $(this).val();
-				equationEditor.thresholdChanged();
-			});
-		
 			$('#show_equation_composer_toggle2').toggles({
 				clicker : $('.clickme')
 			});

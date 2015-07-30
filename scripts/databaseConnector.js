@@ -6,7 +6,8 @@ var DatabaseConnector = function (vals) {
 		$.post("database.php", {
 			operation : "storeFormula",
 			name : name,
-			formula : formula
+			formula : formula,
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			//console.log(data);
@@ -18,7 +19,8 @@ var DatabaseConnector = function (vals) {
 		$.post("database.php", {
 			operation : "storeVizToQM",
 			QMVizName : name,
-			QMVizData : content
+			QMVizData : content,
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			//console.log(data);
@@ -28,7 +30,8 @@ var DatabaseConnector = function (vals) {
 
 	databaseConnector.getAllFormulas = function (callbackFunction) {
 		$.post("database.php", {
-			operation : "getAllFormulas"
+			operation : "getAllFormulas",
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			callbackFunction(data)
@@ -37,7 +40,8 @@ var DatabaseConnector = function (vals) {
 
 	databaseConnector.getAllQMVizs = function (callbackFunction) {
 		$.post("database.php", {
-			operation : "getAllQMVizs"
+			operation : "getAllQMVizs",
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			callbackFunction(data)
@@ -49,7 +53,8 @@ var DatabaseConnector = function (vals) {
 			operation : "storeEquation",
 			name : name,
 			equation : equation, 
-			text : text
+			text : text,
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			//console.log(data);
@@ -61,7 +66,8 @@ var DatabaseConnector = function (vals) {
 		$.post("database.php", {
 			operation : "storeEquationViz",
 			QMVizName : name,
-			QMVizData : content
+			QMVizData : content,
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			//console.log(data);
@@ -71,7 +77,8 @@ var DatabaseConnector = function (vals) {
 
 	databaseConnector.getAllEquations = function (callbackFunction) {
 		$.post("database.php", {
-			operation : "getAllEquations"
+			operation : "getAllEquations",
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			callbackFunction(data)
@@ -80,7 +87,8 @@ var DatabaseConnector = function (vals) {
 
 	databaseConnector.getAllEquationTexts = function (callbackFunction) {
 		$.post("database.php", {
-			operation : "getAllEquationTexts"
+			operation : "getAllEquationTexts",
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			callbackFunction(data)
@@ -89,7 +97,8 @@ var DatabaseConnector = function (vals) {
 	
 	databaseConnector.getEquationViz = function (callbackFunction) {
 		$.post("database.php", {
-			operation : "getEquationViz"
+			operation : "getEquationViz",
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			callbackFunction(data)
@@ -99,7 +108,8 @@ var DatabaseConnector = function (vals) {
 	databaseConnector.delteEquationInclViz = function(name) {
 	$.post("database.php", {
 			operation : "delteEquationInclViz",
-			equationName : name
+			equationName : name,
+			username : GLOBAL_username
 		})
 		.done(function (data) {
 			//console.log(data);
