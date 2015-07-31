@@ -44,7 +44,7 @@ and open the template in the editor.
 		<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 		<script type="text/javascript" src="scripts/Stopwatch.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="scripts/formulasForNOrmalization.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/formulasForNormalization.js" charset="utf-8"> </script>
 		
         <script type="text/javascript" src="scripts/colorsForRanking.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingQMsData.js" charset="utf-8"></script>
@@ -94,7 +94,7 @@ and open the template in the editor.
 				
 				  
 				Keyword: <input type="text" id="article-name" value="Visualization" /> 
-				 Max. number of results: <input type="number" id="max-num" value="5"/>
+				 Max. number of results: <input type="number" id="max-num" value="50"/>
 				 <button onclick="searchArticle('visualization',50,equationEditor)"> retrieve data </button> 
 		
 	  		</section>
@@ -214,6 +214,8 @@ and open the template in the editor.
 					</table>
 					</div>
 				<div id="ranking_norm_selector" style="position: relative;">
+					<div  id="changehreshold" style="cursor: pointer; position: relative; display:none; text-align: left; padding-left:10px;" > Change threshold: <input id="threshold" type="range"  min="0" max="1" step="0.01" value="0.1"/> <span id="valBox">0.1</span> </div>
+					
 					<div class="backButton"  style="cursor: pointer; display: none; position: relative; text-align: left; padding-top: 5px; padding-left:10px;" onclick="setDataToVisController()"> <img src="media/arrow_left.png" width="20px" /> </div>
 					<table align="center" ><tr><td> Norm: </td><td>  <select id="normRankingSelector">
 					<option value="default"  id="defaultRank" title="taxicab nrom">taxicab norm</option>
@@ -345,6 +347,13 @@ and open the template in the editor.
 		
 	
 		$(document).ready(function () {
+			$("#threshold").change(function (e) {
+				
+				$("#valBox").html($(this).val());
+				GLOBAL_threshold = $(this).val();
+				equationEditor.thresholdChanged();
+			});
+		
 			$('#show_equation_composer_toggle2').toggles({
 				clicker : $('.clickme')
 			});

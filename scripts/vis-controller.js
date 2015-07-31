@@ -1982,7 +1982,8 @@ var VisController = function () {
 
 	var visController = {};
 	visController.thresholdChanged = function () {
-		
+		clearStat();
+		statCounter = 0;
 			GLOBAL_logger.log("thresholdChanged: " + GLOBAL_threshold);
 		for (var i = 0; i < currentlyInComparison.length; i++) {
 			var name = currentlyInComparison[i];

@@ -44,7 +44,7 @@ and open the template in the editor.
 		<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 		<script type="text/javascript" src="scripts/Stopwatch.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="scripts/formulasForNOrmalization.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/formulasForNormalization.js" charset="utf-8"> </script>
 		
         <script type="text/javascript" src="scripts/colorsForRanking.js" charset="utf-8"></script>
         <script type="text/javascript" src="scripts/rankingQMsData.js" charset="utf-8"></script>
@@ -94,7 +94,7 @@ and open the template in the editor.
 				
 				  
 				Keyword: <input type="text" id="article-name" value="Visualization" /> 
-				 Max. number of results: <input type="number" id="max-num" value="5"/>
+				 Max. number of results: <input type="number" id="max-num" value="50"/>
 				 <button onclick="searchArticle('visualization',50,equationEditor)"> retrieve data </button> 
 		
 	  		</section>
