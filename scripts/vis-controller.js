@@ -769,9 +769,9 @@ var VisController = function () {
 		});
 
 		$("#eexcess_qm_container").append("<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																																																                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																																																                   </div>\
-																																																																																																																																																				   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
+																																																																																																																																																																		                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																																																																		                   </div>\
+																																																																																																																																																																						   <div  style=\"display:none\" id=\"eexcess_canvas_rankQM\"></div>");
 
 		d3.select(measuresContainer).selectAll(tagClassMeasures)
 		.data(measures)
@@ -1984,7 +1984,7 @@ var VisController = function () {
 	visController.thresholdChanged = function () {
 		clearStat();
 		statCounter = 0;
-			GLOBAL_logger.log("thresholdChanged: " + GLOBAL_threshold);
+		GLOBAL_logger.log("thresholdChanged: " + GLOBAL_threshold);
 		for (var i = 0; i < currentlyInComparison.length; i++) {
 			var name = currentlyInComparison[i];
 			if (statCounter < 4)
@@ -2009,9 +2009,19 @@ var VisController = function () {
 				TN = TPTNFPFN[1];
 				FP = TPTNFPFN[2];
 				FN = TPTNFPFN[3];
-				var recall = parseFloat(TP / (TP + FN)).toFixed(2);
-				var precison = parseFloat(TP / (TP + FP)).toFixed(2);
-				var F = parseFloat((2 * recall * precison) / (precision + recall)).toFixed(2);
+				if ((parseFloat(TP) + parseFloat(FN)) > 0)
+					recall = parseFloat(parseFloat(TP) / (parseFloat(TP) + parseFloat(FN))).toFixed(2);
+				else
+					recall = 0;
+				if (parseFloat(TP) + parseFloat(FP) > 0)
+					precision = parseFloat(parseFloat(TP) / (parseFloat(TP) + parseFloat(FP))).toFixed(2);
+				else
+					precision = 0;
+				if (parseFloat(precision) + parseFloat(recall) > 0)
+					F = parseFloat((parseFloat(2) * parseFloat(recall) * parseFloat(precision)) / (parseFloat(precision) + parseFloat(recall))).toFixed(2);
+				else
+					F = 0;
+				console.log("F: " + F)
 				////console.log("TP: +" + TP + " TN: " + TN + " FP: " + FP + " FN: " + FN);
 
 			} else
@@ -2027,7 +2037,7 @@ var VisController = function () {
 			$("#metersstat" + statCounter).css('height', statDefaultHeight - 40);
 			//$("#metersstat" + statCounter).css('line-height', (statDefaultHeight - 40)+'px');
 			$("#metersstat" + statCounter).css('width', statDefaultWidth / 2 - 20);
-			$("#metersstat" + statCounter).append('<table  ><tr><td>Recall</td><td>  <meter id="recall' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + recall + '"></meter></td><td>' + recall + '</td></tr><tr><td>Precision </td><td><meter id="percision' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + precison + '"></meter></td><td>' + precison + '</td></tr><tr><td>F1-score</td><td><meter id="f1' + statCounter + '" style="width:100px" min="0" max="2" low="0.8" high="1.6" optimum="2" value="' + F + '"></td><td>' + F + '</td></tr></table>');
+			$("#metersstat" + statCounter).append('<table  ><tr><td>Recall</td><td>  <meter id="recall' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + recall + '"></meter></td><td>' + recall + '</td></tr><tr><td>Precision </td><td><meter id="percision' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + precision + '"></meter></td><td>' + precision + '</td></tr><tr><td>F1-score</td><td><meter id="f1' + statCounter + '" style="width:100px" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + F + '"></td><td>' + F + '</td></tr></table>');
 			$("#stat" + statCounter).append('<canvas id="canvasstat' + statCounter + '" width=' + $("#stat1").width() + ' height=' + $("#stat1").height() + '></canvas>');
 			//	var colors = ['rgb(165,0,38)', 'rgb(215,48,39)', 'rgb(244,109,67)', 'rgb(253,174,97)', 'rgb(254,224,139)', 'rgb(255,255,191)', 'rgb(217,239,139)', 'rgb(166,217,106)', 'rgb(102,189,99)', 'rgb(26,152,80)', 'rgb(0,104,55)'];
 			drawPrecisionRecall("canvasstat" + statCounter, 0, 0, $("#canvasstat" + statCounter).width(), $("#canvasstat" + statCounter).height(), "rgb(209,219,201)", "rgb(241,241,241)", "rgb(201,246,171)", "rgb(255,178,172)", parseFloat(FN / 50).toFixed(2), parseFloat(TN / 50).toFixed(2), parseFloat(TP / 50).toFixed(2), parseFloat(FP / 50).toFixed(2), FN, TN, TP, FP);
@@ -2074,9 +2084,28 @@ var VisController = function () {
 					TN = TPTNFPFN[1];
 					FP = TPTNFPFN[2];
 					FN = TPTNFPFN[3];
-					var recall = parseFloat(TP / (TP + FN)).toFixed(2);
-					var precison = parseFloat(TP / (TP + FP)).toFixed(2);
-					var F = parseFloat((2 * recall * precison) / (precision + recall)).toFixed(2);
+					/*recall = parseFloat(TP / (TP + FN)).toFixed(2);
+					precision = parseFloat(TP / (TP + FP)).toFixed(2);
+
+					var fHelper = parseFloat( recall * precision);
+					var fHelper2 = parseFloat(precision) + parseFloat(recall);
+					F = parseFloat(2 *(fHelper / fHelper2)).toFixed(2);
+					console.log("RECALL: " + recall + " PRECISION: " + precision);
+					console.log("fh: " + fHelper + " fh2: " + fHelper2);
+					console.log("F: " + F);*/
+
+					if ((parseFloat(TP) + parseFloat(FN)) > 0)
+						recall = parseFloat(parseFloat(TP) / (parseFloat(TP) + parseFloat(FN))).toFixed(2);
+					else
+						recall = 0;
+					if (parseFloat(TP) + parseFloat(FP) > 0)
+						precision = parseFloat(parseFloat(TP) / (parseFloat(TP) + parseFloat(FP))).toFixed(2);
+					else
+						precision = 0;
+					if (parseFloat(precision) + parseFloat(recall) > 0)
+						F = parseFloat((parseFloat(2) * parseFloat(recall) * parseFloat(precision)) / (parseFloat(precision) + parseFloat(recall))).toFixed(2);
+					else
+						F = 0;
 					////console.log("TP: +" + TP + " TN: " + TN + " FP: " + FP + " FN: " + FN);
 
 				} else
@@ -2092,7 +2121,7 @@ var VisController = function () {
 				$("#metersstat" + statCounter).css('height', statDefaultHeight - 40);
 				//$("#metersstat" + statCounter).css('line-height', (statDefaultHeight - 40)+'px');
 				$("#metersstat" + statCounter).css('width', statDefaultWidth / 2 - 20);
-				$("#metersstat" + statCounter).append('<table  ><tr><td>Recall</td><td>  <meter id="recall' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + recall + '"></meter></td><td>' + recall + '</td></tr><tr><td>Precision </td><td><meter id="percision' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + precison + '"></meter></td><td>' + precison + '</td></tr><tr><td>F1-score</td><td><meter id="f1' + statCounter + '" style="width:100px" min="0" max="2" low="0.8" high="1.6" optimum="2" value="' + F + '"></td><td>' + F + '</td></tr></table>');
+				$("#metersstat" + statCounter).append('<table  ><tr><td>Recall</td><td>  <meter id="recall' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + recall + '"></meter></td><td>' + recall + '</td></tr><tr><td>Precision </td><td><meter id="percision' + statCounter + '" style="width:99%" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + precision + '"></meter></td><td>' + precision + '</td></tr><tr><td>F1-score</td><td><meter id="f1' + statCounter + '" style="width:100px" min="0" max="1" low="0.4" high="0.8" optimum="1" value="' + F + '"></td><td>' + F + '</td></tr></table>');
 				$("#stat" + statCounter).append('<canvas id="canvasstat' + statCounter + '" width=' + $("#stat1").width() + ' height=' + $("#stat1").height() + '></canvas>');
 				//	var colors = ['rgb(165,0,38)', 'rgb(215,48,39)', 'rgb(244,109,67)', 'rgb(253,174,97)', 'rgb(254,224,139)', 'rgb(255,255,191)', 'rgb(217,239,139)', 'rgb(166,217,106)', 'rgb(102,189,99)', 'rgb(26,152,80)', 'rgb(0,104,55)'];
 				drawPrecisionRecall("canvasstat" + statCounter, 0, 0, $("#canvasstat" + statCounter).width(), $("#canvasstat" + statCounter).height(), "rgb(209,219,201)", "rgb(241,241,241)", "rgb(201,246,171)", "rgb(255,178,172)", parseFloat(FN / 50).toFixed(2), parseFloat(TN / 50).toFixed(2), parseFloat(TP / 50).toFixed(2), parseFloat(FP / 50).toFixed(2), FN, TN, TP, FP);
@@ -2356,12 +2385,12 @@ var VisController = function () {
 		////console.log("rankQMs VIS CONTROLLER");
 		/*																													  <img style=\"cursor: pointer\" width=\"50\" title=\"return\" src=\"media/return.png\" onclick=\"equationEditor.returnFromRankQMs()\" />*/
 		$("#eexcess_qm_container").html("<div id=\"eexcess_qm_container_rank_button\">\
-																																																																																																																								<div id=\"rank_QMs\" style=\"display:none\">\
-																																																																																																																																																	                        <ul class=\"rank_QMs_list\"></ul>\
-																																																																																																																																																	                </div>\
-																																																																																																																																																					<div id=\"eexcess_canvas_rankQM\"></div> \
-																																																																																																																																																					 \
-																																																																																																																																																					  </div>");
+																																																																																																																																														<div id=\"rank_QMs\" style=\"display:none\">\
+																																																																																																																																																																							                        <ul class=\"rank_QMs_list\"></ul>\
+																																																																																																																																																																							                </div>\
+																																																																																																																																																																											<div id=\"eexcess_canvas_rankQM\"></div> \
+																																																																																																																																																																											 \
+																																																																																																																																																																											  </div>");
 
 		var allEquations = rankingModel.getEquations();
 		qmRankingArray = [];
@@ -2645,7 +2674,7 @@ var VisController = function () {
 
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
-																																																																																																																																																																																																																																																																																																																																											{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
+																																																																																																																																																																																																																																																																																																																																																																							{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");
 		/*var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \{\"stem\":\"Consistency\",\"term\":\"Consistency\",\"repeated\":2,\"variations\":{\"ideal\":3}},{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}, \{\"stem\":\"Volatility\",\"term\":\"Volatility\",\"repeated\":2,\"variations\":{\"worker\":9}}]");*/
 		keywords = IQMetrics; //dataset['keywords'];
 		measures = JSON.parse("[{\"name\":\"flesch\"}, {\"name\":\"kincaid\"}, {\"name\":\"numUniqueEditors\"}, {\"name\":\"numEdits\"}, {\"name\":\"externalLinks\"}, {\"name\":\"numRegisteredUserEdits\"},{\"name\":\"numAnonymousUserEdits\"}, {\"name\":\"internalLinks\"},{\"name\":\"articleLength\"}, {\"name\":\"diversity\"}, {\"name\":\"numImages\"}, {\"name\":\"adminEditShare\"}, {\"name\":\"articleAge\"}, {\"name\":\"currency\"}]");

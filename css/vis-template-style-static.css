@@ -397,7 +397,7 @@ p#p_question {
 #eexcess_controls_left_panel {
     //display: flex;
     width: 17%;
-    height: calc(100% - 1em);
+    height: 700px;/*calc(100% - 1em);*/
     padding: .5em;
     z-index: 2;
     background: -webkit-linear-gradient(top, rgba(175, 175, 175, 1), rgba(170, 170, 170, 1));
@@ -409,7 +409,7 @@ p#p_question {
     position:relative;
     overflow-y: auto;
     width: calc(100% - 0.5em);
-	height: 300px;
+	height: 200px;
    /* max-height: 50%;*/
     padding: 8px 4px;
     /*background: white;*/

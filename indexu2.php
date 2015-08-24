@@ -455,6 +455,21 @@ and open the template in the editor.
 			$('#heading_Quality_Measure').tooltip({content : 'Quality Measures are extracted data out of the wikipedia articles. <br /> You can use these measures to create new Quality Metrics or to edit already existing ones! '});
 			$('#normMeasuresTable').tooltip({content : 'In most cases it is good to bring all parameters to the same scale in order to be able to combine them. <br />For that reason you can choose between different normalization methods.'});
 			$('#rank_quality_metrics_text').tooltip({content : 'How good is each Quality Metric compared with the others? <br /> <b> Click on the toggle to find it out!</b>'});
+			
+			var wh2 = $(window).height() - 100;
+			var h = 200;
+			$("#eexcess_controls_left_panel").css("height", wh2);
+			$("#eexcess_qm_container").css("height", (wh2-h) / 2 );
+			$("#eexcess_measures_container").css("height", (wh2-h) / 2 );
+			$("#eexcess_vis_panel_canvas").css("height", wh2 -300);
+			$(window).resize(function () {
+				var wh2 = $(window).height() - 100;
+				$("#eexcess_controls_left_panel").css("height", wh2);
+				$("#eexcess_qm_container").css("height", (wh2-h) / 2 );
+				$("#eexcess_measures_container").css("height", (wh2-h) / 2 )
+				
+				$("#eexcess_vis_panel_canvas").css("height", wh2 -300);
+			});
 												  
 		});
 		</script>
