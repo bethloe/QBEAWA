@@ -1080,6 +1080,7 @@ articleControllerMain.retrieveData();
 	$("#ediotr_section_selector").change(function () {
 		GLOBAL_logger.log("ediotr_section_selector change");
 		console.log("Section changed: " + this.value);
+  		GLOBAL_logger.log("Section changed with selector: " + this.value);
 		if(this.value == "Select a section")
 			return;
 		

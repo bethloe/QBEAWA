@@ -337,6 +337,13 @@ var ArticleController = function (vals) {
 			articleRenderers[i].showOverview();
 		}
 	}
+	articleController.rotateTree = function () {
+		GLOBAL_logger.log("rotateTree");
+		for (var i = 0; i < articleRenderers.length; i++) {
+			articleRenderers[i].rotateTree();
+		}
+	}
+	
 	articleController.showQuality = function () {
 		articleController.showTheWholeArticleInMainView();
 		for (var i = 0; i < articleRenderers.length; i++) {

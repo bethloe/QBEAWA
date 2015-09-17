@@ -11,6 +11,7 @@ var ArticleRenderer = function (vals) {
 	var GLOBAL_controller = vals.controller;
 	var GLOBAL_introID = 0;
 	var GLOBAL_introTextID = 0;
+	var GLOBAL_rotateTree = false;
 	var GLOBAL_editToken = "";
 	var GLOBAL_allData = new vis.DataSet();
 	var qualityFlawManager = new QualityFlawManager();
@@ -261,7 +262,17 @@ var ArticleRenderer = function (vals) {
 			console.log("END");
 
 			GLOBAL_network.redraw();
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
+				
+		//	articleRenderer.hide();
+			setTimeout(function () {
+
+				// Something you want delayed.
+
+				GLOBAL_network.redraw();
+				articleRenderer.doRedraw();
+				articleRenderer.center();
+			}, 1000); // How long do you want the delay to be (in milliseconds)?
 		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
@@ -342,7 +353,7 @@ var ArticleRenderer = function (vals) {
 				}
 			}
 		}
-		//articleRenderer.redraw();
+		//articleRenderer.doRedraw();
 		articleRenderer.redrawEverything();
 		articleRenderer.showQuality();
 
@@ -353,7 +364,7 @@ var ArticleRenderer = function (vals) {
 			articleRenderer.showImages();
 			articleRenderer.showReferences();
 		}
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 
 	}
 
@@ -368,7 +379,7 @@ var ArticleRenderer = function (vals) {
 					fontSizeMax : 3010
 				});
 		}
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 	}
 
 	articleRenderer.hideImages = function () {
@@ -377,7 +388,7 @@ var ArticleRenderer = function (vals) {
 			if (items[i].type == 'img' && idInRange(items[i].id))
 				GLOBAL_data.nodes.remove(items[i].id);
 		}
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 	}
 	var GLOBAL_showOrHideReferences = false;
 	articleRenderer.showReferences = function () {
@@ -454,7 +465,7 @@ var ArticleRenderer = function (vals) {
 			console.log("END");
 
 			GLOBAL_network.redraw();
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
 		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
@@ -467,9 +478,20 @@ var ArticleRenderer = function (vals) {
 			}
 		}
 
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 	}
+	articleRenderer.hide = function () {
+		//console.log(articleRenderer.getBiggestXValue() + " " + articleRenderer.getBiggestYValue() + " " + articleRenderer.getSmallestXValue() + " " + articleRenderer.getSmallestYValue());
+		var object = {};
+		object.position = {
+			x : (100000 + (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue())) / 2 ,
+			y : (100000 +(articleRenderer.getSmallestYValue() + articleRenderer.getBiggestYValue())) / 2
+		};
+		object.scale = 0.02;
+		GLOBAL_network.moveTo(object);
+		//articleRendererSemanticZooming.func_overviewMode();
 
+	}
 	articleRenderer.center = function () {
 		//console.log(articleRenderer.getBiggestXValue() + " " + articleRenderer.getBiggestYValue() + " " + articleRenderer.getSmallestXValue() + " " + articleRenderer.getSmallestYValue());
 		var object = {};
@@ -500,7 +522,13 @@ var ArticleRenderer = function (vals) {
 		GLOBAL_network.moveTo(object);
 	}
 	articleRenderer.doRedraw = function () {
-		articleRenderer.redraw();
+
+		GLOBAL_network.redraw();
+		console.log("GLOBAL_rotateTree: " + GLOBAL_rotateTree);
+		if (!GLOBAL_rotateTree)
+			articleRenderer.redrawRight();
+		else
+			articleRenderer.redraw();
 	}
 
 	var defaultQualityScoreItems = function (sectionName) {
@@ -576,6 +604,15 @@ var ArticleRenderer = function (vals) {
 					masterId : from, //if from == -1 the no master
 					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
 					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
+
+					fontSize : 300,
+					fontSizeMin : 300,
+					fontSizeMax : 310,
+					value : 1000,
+
+					allowedToMoveX : true,
+					allowedToMoveY : true,
+
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
@@ -665,7 +702,10 @@ var ArticleRenderer = function (vals) {
 					masterId : from, //if from == -1 the no master
 					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
 					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
-
+					fontSize : 300,
+					fontSizeMin : 300,
+					fontSizeMax : 310,
+					value : 1000,
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
@@ -755,6 +795,10 @@ var ArticleRenderer = function (vals) {
 			allowedToMoveY : true,
 			wikiLevel : 0,
 			masterId : -1, //if from == -1 the no master
+			fontSize : 300,
+			fontSizeMin : 300,
+			fontSizeMax : 310,
+			value : 1000,
 			type : 'section'
 		});
 		GLOBAL_introID = GLOBAL_idCounter;
@@ -811,8 +855,16 @@ var ArticleRenderer = function (vals) {
 		});
 
 		GLOBAL_network.redraw();
-		articleRenderer.redraw();
-		articleRenderer.center();
+		articleRenderer.doRedraw();
+		articleRenderer.hide();
+		setTimeout(function () {
+
+			// Something you want delayed.
+
+			GLOBAL_network.redraw();
+			articleRenderer.doRedraw();
+			articleRenderer.center();
+		}, 1000); // How long do you want the delay to be (in milliseconds)?
 	}
 
 	function trimToOneParagraph(textOfSection, sectionName) {
@@ -848,25 +900,188 @@ var ArticleRenderer = function (vals) {
 		}
 		return maxHeight;
 	}
-
+	function getMaxWidthOfLevelType(level, type) {
+		var items = GLOBAL_data.nodes.get();
+		var maxWidth = -1;
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].wikiLevel == level && items[i].width > maxWidth && idInRange(items[i].id) && items[i].type == type)
+				maxWidth = items[i].width;
+		}
+		return maxWidth;
+	}
+	articleRenderer.rotateTree = function () {
+		GLOBAL_rotateTree = !GLOBAL_rotateTree;
+		articleRenderer.doRedraw();
+	}
 	articleRenderer.showOverview = function () {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			if ((item.type == 'text' || item.type == 'section') && idInRange(item.id)) {
+			/*if ((item.type == 'text') && idInRange(item.id)) {
+			GLOBAL_data.nodes.update({
+			id : item.id,
+			fontSize : 14,
+			fontSizeMin : 14,
+			fontSizeMax : 30
+			});
+			} else */
+			if (item.type == 'section' && idInRange(item.id)) {
 				GLOBAL_data.nodes.update({
 					id : item.id,
-					fontSize : 14,
-					fontSizeMin : 14,
-					fontSizeMax : 30
+					fontSize : 300,
+					fontSizeMin : 300,
+					fontSizeMax : 310,
+					value : 1000
 				});
 			}
 		}
+
 		GLOBAL_network.redraw();
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 		articleRenderer.center();
 	}
+	var GLOBAL_oldLevelMaxY = 0;
+	var drawElementType = function (type, clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxY) {
+		var itemFoundInLevel = false;
+		var addY = 9000;
+		var xMult = 0;
+		items = GLOBAL_data.nodes.get();
+		var addXText = 50;
+		var sumHeight = 0;
+		var sectionOffset = 200;
+		for (var i = 0; i < items.length; i++) {
 
+			var item = items[i];
+			if (item.type == type && idInRange(item.id) && item.wikiLevel == clc) {
+
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					x : bottomLevel ? (GLOBAL_maxX - (item.width / 2)) : (GLOBAL_maxX - (sumWidth + (item.width / 2)/*+ addY * heightCnt*/
+						)),
+					y : sumHeight == 0 ? 0 : sumHeight + (item.height / 2) + addXText * xMult + sectionOffset
+				});
+				xMult++;
+				sumHeight += (item.height + sectionOffset);
+				if (type == "text") {
+					console.log("currentLevelMaxY: " + sumHeight + " + ( " + item.height + " /   2) + " + addXText + " * " + xMult);
+				}
+				currentLevelMaxY = sumHeight + (item.height / 2) + addXText * xMult;
+
+				if (bottomLevel || (sumHeight + (item.height / 2) + addXText * xMult) > GLOBAL_oldLevelMaxY)
+					GLOBAL_oldLevelMaxY = sumHeight + (item.height / 2) + addXText * xMult;
+				itemFoundInLevel = true;
+			}
+		}
+		console.log(type + " currentLevelMaxY: " + currentLevelMaxY);
+		var ret = {
+			itemFoundInLevel : itemFoundInLevel,
+			currentLevelMaxY : currentLevelMaxY
+		};
+
+		return ret;
+	}
+
+	var shiftElementType = function (type, currentLevelMaxY, clc) {
+		items = GLOBAL_data.nodes.get();
+		console.log("INTO SHIFT ELEMENT");
+		if (currentLevelMaxY < GLOBAL_oldLevelMaxY) {
+			// console.log("OFFSET: " + offset);
+			var offset = (GLOBAL_oldLevelMaxY - currentLevelMaxY) / 2;
+			for (var i = 0; i < items.length; i++) {
+				var item = items[i];
+				if ((item.type == type) && (idInRange(item.id) && item.wikiLevel == clc)) {
+					GLOBAL_data.nodes.update({
+						id : item.id,
+						y : item.y + offset,
+						//title : item.x + offset
+					});
+					currentLevelMaxY = item.y + offset;
+				}
+			}
+		}
+		return currentLevelMaxY;
+	}
+	var GLOBAL_doRedrawCNT = 0;
+	articleRenderer.redrawRight = function () {
+		console.log("REDRAWRIGHT!");
+		var currentlevelCnt = getMaxLevel();
+		var sumWidth = 0;
+		var heightCnt = 0;
+		var currentLevelMaxYRef = 0;
+		var currentLevelMaxYImg = 0;
+		var currentLevelMaxYText = 0;
+		var currentLevelMaxYSection = 0;
+		GLOBAL_oldLevelMaxY = 0;
+		var refOffset = 3000;
+		var bottomLevel = true;
+
+		for (var clc = currentlevelCnt; clc >= -1; clc--) {
+
+			var maxWidthTextNodes = getMaxWidthOfLevelType(clc, "text");
+			var maxWidthSectionNodes = getMaxWidthOfLevelType(clc, "section");
+			var maxWidthImageNodes = getMaxWidthOfLevelType(clc, "img");
+			var maxWidthRefNodes = getMaxWidthOfLevelType(clc, "ref") + refOffset;
+			/*TO BE SURE THAT WE HAVE ENOUGH SPACE*/
+
+			//var heightAddFlag = true;
+			var itemFoundInLevel = false;
+
+			var help = drawElementType('img', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYImg);
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYImg = help.currentLevelMaxY;
+			if (itemFoundInLevel)
+				sumWidth += maxWidthImageNodes;
+
+			if (bottomLevel && itemFoundInLevel) {
+				bottomLevel = false;
+			}
+			//console.log("SUM HEIGHT: " + sumHeight + " " + bottomLevel);
+			itemFoundInLevel = false;
+			help = drawElementType('ref', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYRef);
+
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYRef = help.currentLevelMaxY;
+
+			if (itemFoundInLevel)
+				sumWidth += maxWidthRefNodes;
+
+			if (bottomLevel && itemFoundInLevel) {
+				bottomLevel = false;
+			}
+			itemFoundInLevel = false;
+			help = drawElementType('text', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYText);
+
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYText = help.currentLevelMaxY;
+			console.log("CURRENTLEVELMAXYTEXT: " + currentLevelMaxYText);
+			if (itemFoundInLevel)
+				sumWidth += maxWidthTextNodes;
+
+			if (bottomLevel && itemFoundInLevel) {
+				bottomLevel = false;
+			}
+
+			itemFoundInLevel = false;
+			help = drawElementType('section', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYSection);
+
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYSection = help.currentLevelMaxY;
+
+			if (itemFoundInLevel)
+				sumWidth += maxWidthSectionNodes;
+			heightCnt++;
+			bottomLevel = false;
+			itemFoundInLevel = false;
+			currentLevelMaxYRef = shiftElementType('ref', currentLevelMaxYRef, clc);
+			currentLevelMaxYImg = shiftElementType('img', currentLevelMaxYImg, clc);
+			currentLevelMaxYText = shiftElementType('text', currentLevelMaxYText, clc);
+			currentLevelMaxYSection = shiftElementType('section', currentLevelMaxYSection, clc);
+
+			//console.log("-------------------------LEVEL ENDS ---------------- " + sumHeight);
+
+		}
+		//repositionRefs();
+	}
 	articleRenderer.redraw = function () {
 		var items = GLOBAL_data.nodes.get();
 		var currentlevelCnt = getMaxLevel();
@@ -1528,7 +1743,7 @@ var ArticleRenderer = function (vals) {
 					GLOBAL_data.nodes.remove(item.id);
 				}
 			}
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
 			if (showReferencesFlag) {
 				hideReferences();
 				showReferences();
@@ -1544,7 +1759,7 @@ var ArticleRenderer = function (vals) {
 				GLOBAL_data.nodes.add(sectionNodes[i]);
 			}
 
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
 
 			if (showReferencesFlag) {
 				hideReferences();
@@ -1857,9 +2072,9 @@ var ArticleRenderer = function (vals) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr title=\"" + getTooltipToQualityName(allKeys[i]) + "\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
-																																																																																																																																																																																																																																																																																																																																			  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50.1\" \
-																																																																																																																																																																																																																																																																																																																																			  high=\"80.1\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																																																																																																																																																																																																																			  </td><td>" + status + "</td></tr>");
+																																																																																																																																																																																																																																																																																																																																																																																									  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50.1\" \
+																																																																																																																																																																																																																																																																																																																																																																																									  high=\"80.1\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																																																																																																																																																																																																																									  </td><td>" + status + "</td></tr>");
 					}
 					console.log("has sentiment score: " + item.sentimentScore);
 					if (item.sentimentScore != undefined) {
@@ -1871,14 +2086,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																																																																																																																																																																$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																																																																																																																																																																	if (!$(this).is(':checked')) { \
-																																																																																																																																																																																																																																																																																		articleControllerMain.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																																																																																																																																																																	} \
-																																																																																																																																																																																																																																																																																	else{\
-																																																																																																																																																																																																																																																																																		articleControllerMain.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																																																																																																																																																																	} \
-																																																																																																																																																																																																																																																																																}); </script>";
+																																																																																																																																																																																																																																																																																																																						$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																																																																																																																																																																							if (!$(this).is(':checked')) { \
+																																																																																																																																																																																																																																																																																																																								articleControllerMain.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																																																																																																																																																							} \
+																																																																																																																																																																																																																																																																																																																							else{\
+																																																																																																																																																																																																																																																																																																																								articleControllerMain.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																																																																																																																																																							} \
+																																																																																																																																																																																																																																																																																																																						}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {
