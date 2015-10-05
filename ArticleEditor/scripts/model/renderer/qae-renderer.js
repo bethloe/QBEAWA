@@ -1,4 +1,4 @@
-var ArticleRendererRevision = function (vals) {
+var ArticleRenderer = function (vals) {
 	var GLOBAL_network = vals.network;
 	var GLOBAL_minID = vals.minID;
 	var GLOBAL_maxID = vals.maxID;
@@ -11,6 +11,7 @@ var ArticleRendererRevision = function (vals) {
 	var GLOBAL_controller = vals.controller;
 	var GLOBAL_introID = 0;
 	var GLOBAL_introTextID = 0;
+	var GLOBAL_rotateTree = false;
 	var GLOBAL_editToken = "";
 	var GLOBAL_allData = new vis.DataSet();
 	var qualityFlawManager = new QualityFlawManager();
@@ -32,6 +33,7 @@ var ArticleRendererRevision = function (vals) {
 	var GLOBAL_startID = GLOBAL_minID;
 
 	var articleRenderer = {};
+
 	var articleRendererSemanticZooming = new ArticleRendererSemanticZooming({
 			network : GLOBAL_network,
 			minID : GLOBAL_minID,
@@ -94,8 +96,7 @@ var ArticleRendererRevision = function (vals) {
 	articleRenderer.setIdCounter = function (idCounter) {
 		GLOBAL_idCounter = idCounter;
 	}
-	
-	
+
 	articleRenderer.retrieveData = function () {
 		dataRetriever.setTitle(GLOBAL_articleName);
 		dataRetriever.getAllMeasures();
@@ -261,7 +262,17 @@ var ArticleRendererRevision = function (vals) {
 			console.log("END");
 
 			GLOBAL_network.redraw();
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
+
+			//	articleRenderer.hide();
+			setTimeout(function () {
+
+				// Something you want delayed.
+
+				GLOBAL_network.redraw();
+				articleRenderer.doRedraw();
+				articleRenderer.center();
+			}, 1000); // How long do you want the delay to be (in milliseconds)?
 		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
@@ -342,7 +353,7 @@ var ArticleRendererRevision = function (vals) {
 				}
 			}
 		}
-		//articleRenderer.redraw();
+		//articleRenderer.doRedraw();
 		articleRenderer.redrawEverything();
 		articleRenderer.showQuality();
 
@@ -353,7 +364,7 @@ var ArticleRendererRevision = function (vals) {
 			articleRenderer.showImages();
 			articleRenderer.showReferences();
 		}
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 
 	}
 
@@ -368,7 +379,7 @@ var ArticleRendererRevision = function (vals) {
 					fontSizeMax : 3010
 				});
 		}
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 	}
 
 	articleRenderer.hideImages = function () {
@@ -377,7 +388,7 @@ var ArticleRendererRevision = function (vals) {
 			if (items[i].type == 'img' && idInRange(items[i].id))
 				GLOBAL_data.nodes.remove(items[i].id);
 		}
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 	}
 	var GLOBAL_showOrHideReferences = false;
 	articleRenderer.showReferences = function () {
@@ -454,7 +465,7 @@ var ArticleRendererRevision = function (vals) {
 			console.log("END");
 
 			GLOBAL_network.redraw();
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
 		}
 		//Now that we have the height and the width of the images we can put them into a non overlapping position
 	}
@@ -467,9 +478,20 @@ var ArticleRendererRevision = function (vals) {
 			}
 		}
 
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 	}
+	articleRenderer.hide = function () {
+		//console.log(articleRenderer.getBiggestXValue() + " " + articleRenderer.getBiggestYValue() + " " + articleRenderer.getSmallestXValue() + " " + articleRenderer.getSmallestYValue());
+		var object = {};
+		object.position = {
+			x : (100000 + (articleRenderer.getBiggestXValue() + articleRenderer.getSmallestXValue())) / 2,
+			y : (100000 + (articleRenderer.getSmallestYValue() + articleRenderer.getBiggestYValue())) / 2
+		};
+		object.scale = 0.02;
+		GLOBAL_network.moveTo(object);
+		//articleRendererSemanticZooming.func_overviewMode();
 
+	}
 	articleRenderer.center = function () {
 		//console.log(articleRenderer.getBiggestXValue() + " " + articleRenderer.getBiggestYValue() + " " + articleRenderer.getSmallestXValue() + " " + articleRenderer.getSmallestYValue());
 		var object = {};
@@ -500,7 +522,13 @@ var ArticleRendererRevision = function (vals) {
 		GLOBAL_network.moveTo(object);
 	}
 	articleRenderer.doRedraw = function () {
-		articleRenderer.redraw();
+
+		GLOBAL_network.redraw();
+		console.log("GLOBAL_rotateTree: " + GLOBAL_rotateTree);
+		if (!GLOBAL_rotateTree)
+			articleRenderer.redrawRight();
+		else
+			articleRenderer.redraw();
 	}
 
 	var defaultQualityScoreItems = function (sectionName) {
@@ -511,7 +539,7 @@ var ArticleRendererRevision = function (vals) {
 	}
 
 	articleRenderer.fillDataNew = function () {
-		//qualityFlawManager.getQualityFlaws(dataRetriever.getRawTextWithData());
+		qualityFlawManager.getQualityFlaws(dataRetriever.getRawTextWithData());
 		articleRenderer.cleanUp();
 		var intro = dataRetriever.getIntro();
 		var title = dataRetriever.getTitle();
@@ -525,7 +553,23 @@ var ArticleRendererRevision = function (vals) {
 		var topIds = [];
 		var sameSectionPosition = [];
 
-		
+		$('#ediotr_section_selector')
+		.find('option')
+		.remove();
+		$('#ediotr_section_selector').append($('<option>', {
+				value : 'Select a section',
+				text : 'Select a section'
+			}));
+		$('#ediotr_section_selector').append($('<option>', {
+				value : 'Introduction',
+				text : 'Introduction'
+			}));
+		for (var i = 0; i < sectionInfos.length; i++) {
+			$('#ediotr_section_selector').append($('<option>', {
+					value : sectionInfos[i].line,
+					text : sectionInfos[i].line
+				}));
+		}
 		for (var i = 0; i < sectionInfos.length; i++) {
 
 			currentLevel = parseInt(sectionInfos[i].level);
@@ -560,6 +604,15 @@ var ArticleRendererRevision = function (vals) {
 					masterId : from, //if from == -1 the no master
 					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
 					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
+
+					fontSize : 300,
+					fontSizeMin : 300,
+					fontSizeMax : 310,
+					value : 1000,
+
+					allowedToMoveX : true,
+					allowedToMoveY : true,
+
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
@@ -649,7 +702,10 @@ var ArticleRendererRevision = function (vals) {
 					masterId : from, //if from == -1 the no master
 					sectionInfos : dataRetriever.getSectionContentData(sectionInfos[i].line),
 					//imagesToThisNode : dataRetriever.getSectionContentData(sectionInfos[i].line).images,
-
+					fontSize : 300,
+					fontSizeMin : 300,
+					fontSizeMax : 310,
+					value : 1000,
 					type : 'section'
 				});
 				idCnt = GLOBAL_idCounter;
@@ -739,6 +795,10 @@ var ArticleRendererRevision = function (vals) {
 			allowedToMoveY : true,
 			wikiLevel : 0,
 			masterId : -1, //if from == -1 the no master
+			fontSize : 300,
+			fontSizeMin : 300,
+			fontSizeMax : 310,
+			value : 1000,
 			type : 'section'
 		});
 		GLOBAL_introID = GLOBAL_idCounter;
@@ -795,8 +855,16 @@ var ArticleRendererRevision = function (vals) {
 		});
 
 		GLOBAL_network.redraw();
-		articleRenderer.redraw();
-		articleRenderer.center();
+		articleRenderer.doRedraw();
+		articleRenderer.hide();
+		setTimeout(function () {
+
+			// Something you want delayed.
+
+			GLOBAL_network.redraw();
+			articleRenderer.doRedraw();
+			articleRenderer.center();
+		}, 1000); // How long do you want the delay to be (in milliseconds)?
 	}
 
 	function trimToOneParagraph(textOfSection, sectionName) {
@@ -832,256 +900,187 @@ var ArticleRendererRevision = function (vals) {
 		}
 		return maxHeight;
 	}
-
+	function getMaxWidthOfLevelType(level, type) {
+		var items = GLOBAL_data.nodes.get();
+		var maxWidth = -1;
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].wikiLevel == level && items[i].width > maxWidth && idInRange(items[i].id) && items[i].type == type)
+				maxWidth = items[i].width;
+		}
+		return maxWidth;
+	}
+	articleRenderer.rotateTree = function () {
+		GLOBAL_rotateTree = !GLOBAL_rotateTree;
+		articleRenderer.doRedraw();
+	}
 	articleRenderer.showOverview = function () {
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			if ((item.type == 'text' || item.type == 'section') && idInRange(item.id)) {
+			/*if ((item.type == 'text') && idInRange(item.id)) {
+			GLOBAL_data.nodes.update({
+			id : item.id,
+			fontSize : 14,
+			fontSizeMin : 14,
+			fontSizeMax : 30
+			});
+			} else */
+			if (item.type == 'section' && idInRange(item.id)) {
 				GLOBAL_data.nodes.update({
 					id : item.id,
-					fontSize : 14,
-					fontSizeMin : 14,
-					fontSizeMax : 30
+					fontSize : 300,
+					fontSizeMin : 300,
+					fontSizeMax : 310,
+					value : 1000
 				});
 			}
 		}
+
 		GLOBAL_network.redraw();
-		articleRenderer.redraw();
+		articleRenderer.doRedraw();
 		articleRenderer.center();
 	}
-
-	articleRenderer.redraw = function () {
-		var items = GLOBAL_data.nodes.get();
-		var currentlevelCnt = getMaxLevel();
-		var sumHeight = 0;
-		var heightCnt = 0;
-		var currentLevelMaxXRef = 0;
-		var currentLevelMaxXImg = 0;
-		var currentLevelMaxXText = 0;
-		var currentLevelMaxXSection = 0;
-		var oldLevelMaxX = 0;
-		var addXSections = 200;
-		var addXText = 50;
-		var addY = 500;
-		var refOffset = 3000;
-		var sectionOffset = 100;
-		var bottomLevel = true;
-
+	var GLOBAL_oldLevelMaxY = 0;
+	var drawElementType = function (type, clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxY) {
+		var itemFoundInLevel = false;
+		var addY = 9000;
 		var xMult = 0;
-		for (var clc = currentlevelCnt; clc >= -1; clc--) {
-			items = GLOBAL_data.nodes.get();
+		items = GLOBAL_data.nodes.get();
+		var addXText = 50;
+		var sumHeight = 0;
+		var sectionOffset = 200;
+		for (var i = 0; i < items.length; i++) {
 
-			var maxHeightTextNodes = getMaxHeightOfLevelType(clc, "text");
-			var maxHeightSectionNodes = getMaxHeightOfLevelType(clc, "section");
-			var maxHeightImageNodes = getMaxHeightOfLevelType(clc, "img");
-			var maxHeightRefNodes = getMaxHeightOfLevelType(clc, "ref") + refOffset;
-			/*TO BE SURE THAT WE HAVE ENOUGH SPACE*/
+			var item = items[i];
+			if (item.type == type && idInRange(item.id) && item.wikiLevel == clc) {
 
-			var sumWidth = 0;
-			//var heightAddFlag = true;
-			var itemFoundInLevel = false;
-			xMult = 0;
+				GLOBAL_data.nodes.update({
+					id : item.id,
+					x : bottomLevel ? (GLOBAL_maxX - (item.width / 2)) : (GLOBAL_maxX - (sumWidth + (item.width / 2)/*+ addY * heightCnt*/
+						)),
+					y : sumHeight == 0 ? 0 : sumHeight + (item.height / 2) + addXText * xMult + sectionOffset
+				});
+				xMult++;
+				sumHeight += (item.height + sectionOffset);
+				if (type == "text") {
+					console.log("currentLevelMaxY: " + sumHeight + " + ( " + item.height + " /   2) + " + addXText + " * " + xMult);
+				}
+				currentLevelMaxY = sumHeight + (item.height / 2) + addXText * xMult;
 
+				if (bottomLevel || (sumHeight + (item.height / 2) + addXText * xMult) > GLOBAL_oldLevelMaxY)
+					GLOBAL_oldLevelMaxY = sumHeight + (item.height / 2) + addXText * xMult;
+				itemFoundInLevel = true;
+			}
+		}
+		console.log(type + " currentLevelMaxY: " + currentLevelMaxY);
+		var ret = {
+			itemFoundInLevel : itemFoundInLevel,
+			currentLevelMaxY : currentLevelMaxY
+		};
+
+		return ret;
+	}
+
+	var shiftElementType = function (type, currentLevelMaxY, clc) {
+		items = GLOBAL_data.nodes.get();
+		console.log("INTO SHIFT ELEMENT");
+		if (currentLevelMaxY < GLOBAL_oldLevelMaxY) {
+			// console.log("OFFSET: " + offset);
+			var offset = (GLOBAL_oldLevelMaxY - currentLevelMaxY) / 2;
 			for (var i = 0; i < items.length; i++) {
-
 				var item = items[i];
-				if (item.type == 'img' && idInRange(item.id) && item.wikiLevel == clc) {
-
+				if ((item.type == type) && (idInRange(item.id) && item.wikiLevel == clc)) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
-						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
-						//title : sumWidth + (item.width / 2) + 2000,
-						/*space between*/
-						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
+						y : item.y + offset,
+						//title : item.x + offset
 					});
-					xMult++;
-					sumWidth += (item.width);
-					//console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
-					currentLevelMaxXImg = sumWidth + (item.width / 2) + addXText * xMult;
-
-					if (bottomLevel || (sumWidth + (item.width / 2) + addXText * xMult) > oldLevelMaxX)
-						oldLevelMaxX = sumWidth + (item.width / 2) + addXText * xMult;
-					itemFoundInLevel = true;
+					currentLevelMaxY = item.y + offset;
 				}
 			}
+		}
+		return currentLevelMaxY;
+	}
+	var GLOBAL_doRedrawCNT = 0;
+	articleRenderer.redrawRight = function () {
+		console.log("REDRAWRIGHT!");
+		var currentlevelCnt = getMaxLevel();
+		var sumWidth = 0;
+		var heightCnt = 0;
+		var currentLevelMaxYRef = 0;
+		var currentLevelMaxYImg = 0;
+		var currentLevelMaxYText = 0;
+		var currentLevelMaxYSection = 0;
+		GLOBAL_oldLevelMaxY = 0;
+		var refOffset = 3000;
+		var bottomLevel = true;
 
-			sumWidth = 0;
+		for (var clc = currentlevelCnt; clc >= -1; clc--) {
+
+			var maxWidthTextNodes = getMaxWidthOfLevelType(clc, "text");
+			var maxWidthSectionNodes = getMaxWidthOfLevelType(clc, "section");
+			var maxWidthImageNodes = getMaxWidthOfLevelType(clc, "img");
+			var maxWidthRefNodes = getMaxWidthOfLevelType(clc, "ref") + refOffset;
+			/*TO BE SURE THAT WE HAVE ENOUGH SPACE*/
+
+			//var heightAddFlag = true;
+			var itemFoundInLevel = false;
+
+			var help = drawElementType('img', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYImg);
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYImg = help.currentLevelMaxY;
 			if (itemFoundInLevel)
-				sumHeight += maxHeightImageNodes;
-			xMult = 0;
+				sumWidth += maxWidthImageNodes;
+
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
 			}
 			//console.log("SUM HEIGHT: " + sumHeight + " " + bottomLevel);
-			xMult = 0;
 			itemFoundInLevel = false;
-			items = GLOBAL_data.nodes.get();
-			for (var i = 0; i < items.length; i++) {
+			help = drawElementType('ref', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYRef);
 
-				var item = items[i];
-				if (item.type == 'ref' && idInRange(item.id) && item.wikiLevel == clc) {
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYRef = help.currentLevelMaxY;
 
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
-						//title : sumWidth + (item.width / 2) + 2000,
-						/*space between*/
-						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
-					});
-					xMult++;
-					sumWidth += (item.width);
-					//console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
-					currentLevelMaxXRef = sumWidth + (item.width / 2) + addXText * xMult;
-
-					//if (bottomLevel || (sumWidth + (item.width / 2) + addXText * xMult) > oldLevelMaxX)
-					//	oldLevelMaxX = sumWidth + (item.width / 2) + addXText * xMult;
-					itemFoundInLevel = true;
-				}
-			}
-
-			sumWidth = 0;
 			if (itemFoundInLevel)
-				sumHeight += maxHeightRefNodes;
-			xMult = 0;
+				sumWidth += maxWidthRefNodes;
+
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
 			}
 			itemFoundInLevel = false;
-			items = GLOBAL_data.nodes.get();
-			for (var i = 0; i < items.length; i++) {
+			help = drawElementType('text', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYText);
 
-				var item = items[i];
-				if (item.type == 'text' && idInRange(item.id) && item.wikiLevel == clc) {
-
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXText * xMult,
-						//title : sumWidth + (item.width / 2) + 2000,
-						/*space between*/
-						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY * heightCnt))
-					});
-					xMult++;
-					sumWidth += (item.width);
-					//console.log("Type : " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
-					currentLevelMaxXText = sumWidth + (item.width / 2) + addXText * xMult;
-
-					if (bottomLevel || (sumWidth + (item.width / 2) + addXText * xMult) > oldLevelMaxX)
-						oldLevelMaxX = sumWidth + (item.width / 2) + addXText * xMult;
-					itemFoundInLevel = true;
-				}
-			}
-
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYText = help.currentLevelMaxY;
+			console.log("CURRENTLEVELMAXYTEXT: " + currentLevelMaxYText);
 			if (itemFoundInLevel)
-				sumHeight += maxHeightTextNodes;
+				sumWidth += maxWidthTextNodes;
 
 			if (bottomLevel && itemFoundInLevel) {
 				bottomLevel = false;
 			}
 
-			sumWidth = 0;
 			itemFoundInLevel = false;
-			items = GLOBAL_data.nodes.get();
-			xMult = 0;
-			for (var i = 0; i < items.length; i++) {
-				var item = items[i];
-				if (item.type == 'section' && idInRange(item.id) && item.wikiLevel == clc) {
+			help = drawElementType('section', clc, bottomLevel, sumWidth, heightCnt, currentLevelMaxYSection);
 
-					GLOBAL_data.nodes.update({
-						id : item.id,
-						x : sumWidth == 0 ? 0 : sumWidth + (item.width / 2) + addXSections * xMult,
-						//title : sumWidth + (item.width / 2) + 2000,
-						/*space between*/
-						y : bottomLevel ? (GLOBAL_maxY - (item.height / 2)) : (GLOBAL_maxY - (sumHeight + (item.height / 2) + sectionOffset + addY * heightCnt))
-					});
-					xMult++;
-					sumWidth += (item.width);
-					//	console.log("Type : " + item.id + " " + item.type + " " + item.width + " " + item.x + " " + item.y + " " + (GLOBAL_maxY - (sumHeight + (item.height / 2) + addY)));
-					currentLevelMaxXSection = sumWidth + (item.width / 2) + addXSections * xMult;
-
-					if (bottomLevel || (sumWidth + (item.width / 2) + addXSections * xMult) > oldLevelMaxX)
-						oldLevelMaxX = sumWidth + (item.width / 2) + addXSections * xMult;
-
-				}
-			}
+			itemFoundInLevel = help.itemFoundInLevel;
+			currentLevelMaxYSection = help.currentLevelMaxY;
 
 			if (itemFoundInLevel)
-				sumHeight += maxHeightSectionNodes;
+				sumWidth += maxWidthSectionNodes;
 			heightCnt++;
 			bottomLevel = false;
 			itemFoundInLevel = false;
-			items = GLOBAL_data.nodes.get();
-			if (currentLevelMaxXRef < oldLevelMaxX) {
-				// console.log("OFFSET: " + offset);
-				var offset = (oldLevelMaxX - currentLevelMaxXRef) / 2;
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					if ((item.type == 'ref') && (idInRange(item.id) && item.wikiLevel == clc)) {
-						GLOBAL_data.nodes.update({
-							id : item.id,
-							x : item.x + offset,
-							//title : item.x + offset
-						});
-						currentLevelMaxXRef = item.x + offset;
-					}
-				}
-			}
-			items = GLOBAL_data.nodes.get();
-			if (currentLevelMaxXImg < oldLevelMaxX) {
-				// console.log("OFFSET: " + offset);
-				var offset = (oldLevelMaxX - currentLevelMaxXImg) / 2;
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					if ((item.type == 'img') && (idInRange(item.id) && item.wikiLevel == clc)) {
-						GLOBAL_data.nodes.update({
-							id : item.id,
-							x : item.x + offset,
-							//title : item.x + offset
-						});
-						currentLevelMaxXImg = item.x + offset;
-					}
-				}
-			}
-			items = GLOBAL_data.nodes.get();
-			if (currentLevelMaxXText < oldLevelMaxX) {
-				// console.log("OFFSET: " + offset);
-				var offset = (oldLevelMaxX - currentLevelMaxXText) / 2;
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					if ((item.type == 'text') && (idInRange(item.id) && item.wikiLevel == clc)) {
-						GLOBAL_data.nodes.update({
-							id : item.id,
-							x : item.x + offset,
-							//title : item.x + offset
-						});
-						currentLevelMaxXText = item.x + offset;
-					}
-				}
-			}
-			items = GLOBAL_data.nodes.get();
-			if (currentLevelMaxXSection < oldLevelMaxX) {
-				var offset = (oldLevelMaxX - currentLevelMaxXSection) / 2;
-				//	console.log("currentLevelMaxX : " + currentLevelMaxX + " oldLEVELMAXX : " + oldLevelMaxX + " OFFSET: " + offset);
-				for (var i = 0; i < items.length; i++) {
-					var item = items[i];
-					if (item.type == 'section' && idInRange(item.id) && item.wikiLevel == clc) {
+			currentLevelMaxYRef = shiftElementType('ref', currentLevelMaxYRef, clc);
+			currentLevelMaxYImg = shiftElementType('img', currentLevelMaxYImg, clc);
+			currentLevelMaxYText = shiftElementType('text', currentLevelMaxYText, clc);
+			currentLevelMaxYSection = shiftElementType('section', currentLevelMaxYSection, clc);
 
-						//	console.log("UPDATING ID: " + item.id + " before " + item.x + " after " + parseFloat(item.x + offset));
-						GLOBAL_data.nodes.update({
-							id : item.id,
-							x : parseFloat(item.x + offset),
-							//title : "ID: " + item.id + (item.x + offset)
-						});
-						currentLevelMaxXSection = item.x + offset;
-					}
-				}
-			}
 			//console.log("-------------------------LEVEL ENDS ---------------- " + sumHeight);
 
 		}
-
-		repositionRefs();
-
+		//repositionRefs();
 	}
 
 	function getAllReferencesToSectionText(id) {
@@ -1119,72 +1118,6 @@ var ArticleRendererRevision = function (vals) {
 			}
 		}
 
-	}
-
-	var isColor = false;
-	articleRenderer.colorLevels = function () {
-		console.log("ISCOLOR: " + isColor);
-		isColor = !isColor;
-		console.log("ISCOLOR2: " + isColor);
-		var currentlevelCnt = getMaxLevel();
-		for (var clc = currentlevelCnt; clc >= 0; clc--) {
-			colorAllNodesOfLevel(clc, isColor ? getRandomColor() : "#97C2FC");
-		}
-	}
-
-	function colorAllNodesOfLevel(level, color) {
-		var items = GLOBAL_data.nodes.get();
-		for (var i = 0; i < items.length; i++) {
-			var item = items[i];
-			if (item.wikiLevel == level && idInRange(item.id)) {
-				GLOBAL_data.nodes.update({
-					id : item.id,
-					color : {
-						background : color,
-						border : '#2B7CE9',
-						highlight : {
-							background : '#D2E5FF',
-							border : '#2B7CE9'
-						}
-					}
-				});
-			}
-
-		}
-	}
-
-	articleRenderer.showNode = function (network, id) {
-		if (idInRange(id)) {
-			var item = GLOBAL_data.nodes.get(id);
-			if (item.type == "img") {
-				var object = {};
-				object.position = {
-					x : item.x,
-					y : item.y
-				};
-				object.scale = 0.5;
-				network.moveTo(object);
-			}
-		}
-	}
-
-	articleRenderer.selectAllNodes = function () {
-		var arrayToSelect = [];
-
-		var allIDs = GLOBAL_data.nodes.getIds();
-		var inAllIDs = false;
-		for (var i = GLOBAL_startID; i < GLOBAL_idCounter; i++) {
-			inAllIDs = false;
-			for (var j = 0; j < allIDs.length; j++) {
-				if (allIDs[j] == i) {
-					inAllIDs = true;
-				}
-			}
-			if (inAllIDs) {
-				arrayToSelect.push(i);
-			}
-		}
-		GLOBAL_network.selectNodes(arrayToSelect, true);
 	}
 
 	articleRenderer.getBiggestXValue = function () {
@@ -1428,29 +1361,17 @@ var ArticleRendererRevision = function (vals) {
 	}
 
 	function getTextOfSection(sectionTitle) {
-		//console.log("GETTEXTOFSECTION");
 		var stringToSearch = "== \xA7" + sectionTitle + " ==";
 		var articleText = dataRetriever.getRawText();
 		var index = articleText.indexOf(stringToSearch);
-		if (sectionTitle.split("Early years").length > 1) {
-			//console.log("INDEX1 : " + index);
-			//console.log("STRING TO SEARCH: " + stringToSearch);
-			//console.log("ARTICLETEXT:  " + articleText);
-		}
 		if (index == -1) {
 			stringToSearch = "== " + sectionTitle + " ==";
 			index = articleText.indexOf(stringToSearch);
-			/*	if (sectionTitle.split("Early years").length > 1) {
-			console.log("INDEX2 : " + index);
-			console.log("STRING TO SEARCH: " + stringToSearch);
-			console.log("ARTICLETEXT:  " + articleText);
-			}*/
 			if (index == -1) {
 				stringToSearch = sectionTitle;
 				index = articleText.indexOf(stringToSearch);
 			}
 		}
-		//console.log("index: " + index);
 		var str = articleText.substring((index + stringToSearch.length), articleText.length);
 
 		str = deleteEqualsSigns(str, 0);
@@ -1462,9 +1383,6 @@ var ArticleRendererRevision = function (vals) {
 		else
 			ret = str;
 		ret.replace("=", " ");
-		//console.log("----------------------------> |" + sectionTitle + "|" + sectionTitle.split("Early years").length );
-		//	if (sectionTitle.split("Early years").length > 1)
-		//	console.log("RETURN : " + ret);
 		return ret;
 	}
 
@@ -1512,7 +1430,7 @@ var ArticleRendererRevision = function (vals) {
 					GLOBAL_data.nodes.remove(item.id);
 				}
 			}
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
 			if (showReferencesFlag) {
 				hideReferences();
 				showReferences();
@@ -1528,7 +1446,7 @@ var ArticleRendererRevision = function (vals) {
 				GLOBAL_data.nodes.add(sectionNodes[i]);
 			}
 
-			articleRenderer.redraw();
+			articleRenderer.doRedraw();
 
 			if (showReferencesFlag) {
 				hideReferences();
@@ -1547,12 +1465,11 @@ var ArticleRendererRevision = function (vals) {
 		}
 	}
 	articleRenderer.retrievingDataAnimation = function (text) {
-		//$("#overallScore").html("<b>" + text + "</b>");
-		$("#workingAnimationCompare").html(text);
+		$("#workingAnimation").html(text);
 	}
 
 	articleRenderer.retrievingDataDone = function (text) {
-		$("#workingAnimationCompare").html("<b>" + text + "</b>");
+		$("#workingAnimation").html("<b>" + text + "</b>");
 		GLOBAL_controller.closeEditDialog();
 		articleRenderer.showQuality();
 	}
@@ -1600,29 +1517,40 @@ var ArticleRendererRevision = function (vals) {
 				});
 
 			}
+
+			if (GLOBAL_controller.getShowSensium()) {
+
+				var sensiumRequester = GLOBAL_controller.getSensiumRequester();
+
+				sensiumRequester.setSensiumText(null, null);
+
+				sensiumRequester.doRequest(0);
+			}
 		}
 		selectHelper = false;
 	}
 	var getAliasToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "Flesch-Reading-Ease * Word Count";
+			return "Reading Difficulty * Word Count";
 		else if (realName == "qualityKincaid")
-			return "Flesch-Kincaid-Grade-Level";
+			return "Level of experience";
 		else if (realName == "qualityImages")
-			return "Enough Images";
+			return "Amount of Images";
 		else if (realName == "qualityExternalRefs")
-			return "Enough External References";
+			return "Amount of External References";
 		else if (realName == "qualityAllLinks")
-			return "Enough Links";
+			return "Amount of internal Wikipedia-links";
 		else if (realName == "score")
 			return "Score of the section";
+		else
+			return "";
 
 	}
 	var getTooltipToQualityName = function (realName) {
 		if (realName == "qualityFleschWordCount")
-			return "This measure combines the Flesch-Reading-Ease with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
+			return "This measure combines the Flesch-Reading-Ease (Reading Difficulty) with the word count in order to get a meaningful statement about how well-written the section is and if it is long enough.";
 		else if (realName == "qualityKincaid")
-			return "The Flesch-Kincaid-Grade-Level should help to check the readability of the section. The default value is 14. So a 14 year old person should have no problem to read this section! ";
+			return "The Level of experience is measured with the help of the Flesch-Kincaid-Grade-Level which should help to check the readability of the section. The default value is 14. So a 14 year old person should have no problem to read this section! ";
 		else if (realName == "qualityImages")
 			return "Are there enough images referenced in the section. By default 4 is set to be the optimal value. ";
 		else if (realName == "qualityExternalRefs")
@@ -1660,12 +1588,12 @@ var ArticleRendererRevision = function (vals) {
 		colorTextBasedOnTheQulityValue();
 		currentSelectedSectionIndex = -1;
 		currentSelectedSectionId = -1;
-		//console.log("CID: " + currentSelectedSectionId);
-		//console.log("ON SELECT " + properties.nodes);
-		//GLOBAL_network.focusOnNode(properties.nodes);
+		var showSensium = GLOBAL_controller.getShowSensium();
 		if (properties.nodes.length == 1) {
 			var item = GLOBAL_data.nodes.get(properties.nodes[0]);
 			console.log("ON SELECT2 " + item);
+
+			GLOBAL_logger.log("onSelect: " + item.title);
 			//Highlight all elements which are connected to that
 			selectHelper = true;
 			var edges = GLOBAL_data.edges.get();
@@ -1694,31 +1622,47 @@ var ArticleRendererRevision = function (vals) {
 					});
 				}
 			}
-
-			/*
-			var connectedNodes = GLOBAL_network.getConnectedNodes(item.id);
-			for(var i = 0; i < connectedNodes.length; i++){
-			var connectedItemID = connectedNodes[i];
-			console.log("connectedItemID: " + (connectedItemID));
-			//GLOBAL_data.nodes.update({id : connectedItemID, color: {border: 'red'}});
-			}*/
 			//------------------------------------------------------------
 			if ((item.type == "section" || item.type == "text") && isAddNodeMode) {
 				currentSelectedSectionIndex = item.index;
 				currentSelectedSectionId = item.id;
-				//	console.log("CID1: " + currentSelectedSectionId);
 				if (item.title == "Introduction")
 					alert("This operation is not allowed!");
 				else
 					GLOBAL_controller.addNode();
 			}
 			if (item.type == "text") {
+
+				if (showSensium) {
+					var sensiumRequester = GLOBAL_controller.getSensiumRequester();
+					var text = item.rawText;
+					var textforSensium = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+					textforSensium = textforSensium.toString().replace(/"/g, '\\"');
+					sensiumRequester.setSensiumText(textforSensium, item.title);
+					sensiumRequester.doRequest(0);
+				}
+
 				if (isScroll) {
-				
+					if (GLOBAL_wikiPageActive) {
+						$("#wikiTextInner").children().remove();
+						var sectionName = item.title;
+						var sectionNameHelp = sectionName.replace(/ /g, "_");
+						console.log("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#" + sectionNameHelp + "\" style=\"width: 100%; height: 100%\"></iframe>");
+						$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#" + sectionNameHelp + "\" style=\"width: 100%; height: 100%\"></iframe>");
+					}
+					$('#editor_section_name').html(item.title);
+					$('#wikiTextInner').scrollTop(0);
+					$("#ediotr_section_selector").val(item.title)
 
 					var desired = item.title.replace(/[^\w\s]/gi, '');
 					var idStr = desired.replace(/ /g, "_");
 					var help = "#" + idStr;
+					if (!articleControllerMain.getShowWiki() && $(help).offset() != undefined) {
+						$('#wikiTextInner').animate({
+							scrollTop : $(help).offset().top - 300
+						},
+							'slow');
+					}
 				}
 
 				var items = GLOBAL_data.nodes.get();
@@ -1731,13 +1675,11 @@ var ArticleRendererRevision = function (vals) {
 						if (result != null) {
 							GLOBAL_data.nodes.update({
 								id : innerItem.id,
-								//title : item.quality,
 								color : {
 									background : "rgba(" + result.r + ", " + result.g + ", " + result.b + ", 1)"
 								}
 							});
 						}
-						//		console.log("INNERITEM: " + innerItem.color.background);
 					}
 
 				}
@@ -1793,36 +1735,26 @@ var ArticleRendererRevision = function (vals) {
 								}
 							});
 						}
-						//		console.log("INNERITEM: " + innerItem.color.background);
 					}
 
 				}
-				/*GLOBAL_data.nodes.update({
-				id : item.id,
-				//title : item.quality,
-				color : {
-				background : "rgba(200, 54, 54, 0.5)",
-				border : 'blue',
-				borderWidth : 10
-				}
-				});*/
 				currentSelectedSectionIndex = item.index;
 				currentSelectedSectionId = item.id;
-				//	console.log("CID2: " + currentSelectedSectionId);
 				var text = item.label;
+				$("#editor").html(text);
 
 				if (showQualityFlag) {
 					var masterItem = articleRenderer.getItem(item.masterId);
 					var allKeys = Object.keys(item.allQulityParameters);
-					var qmStr = "<h2 ><b>" + masterItem.label + "</b></h2><table border='1' width='360' style=' position: relative; max-width: 360px' >";
-					//qmStr += ("<tr bgcolor=\"white\"><td><b>" + masterItem.label + "</b></td><td></td><td></td></tr>");
+					var qmStr = "<h2 > Section: <span style=\"color: blue\"><b>" + item.title + "</b></span></h2><table border='1' width='400' style=' position: relative; max-width: 400px' >";
 					for (var i = 0; i < allKeys.length; i++) {
+						console.log("allkeys: " + JSON.stringify(item.allQulityParameters));
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr title=\"" + getTooltipToQualityName(allKeys[i]) + "\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
-																																																																																																																																																																																																																																																																																																														  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50.1\" \
-																																																																																																																																																																																																																																																																																																														  high=\"80.1\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																																																																																																																																																																																														  </td><td>" + status + "</td></tr>");
+																																																																																																																																																																																																																																																																																																																																																																																																														  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50.1\" \
+																																																																																																																																																																																																																																																																																																																																																																																																														  high=\"80.1\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																																																																																																																																																																																																																																														  </td><td>" + status + "</td></tr>");
 					}
 					console.log("has sentiment score: " + item.sentimentScore);
 					if (item.sentimentScore != undefined) {
@@ -1834,32 +1766,32 @@ var ArticleRendererRevision = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																																																																																																																																																	$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																																																																																																																																																		if (!$(this).is(':checked')) { \
-																																																																																																																																																																																																																																																																			articleControllerCompare.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																																																																																																																																																		} \
-																																																																																																																																																																																																																																																																		else{\
-																																																																																																																																																																																																																																																																			articleControllerCompare.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																																																																																																																																																		} \
-																																																																																																																																																																																																																																																																	}); </script>";
-					$("#qualityParametersRev").html(qmStr);
+																																																																																																																																																																																																																																																																																																																																					$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																																																																																																																																																																																						if (!$(this).is(':checked')) { \
+																																																																																																																																																																																																																																																																																																																																							articleControllerMain.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																																																																																																																																																																						} \
+																																																																																																																																																																																																																																																																																																																																						else{\
+																																																																																																																																																																																																																																																																																																																																							articleControllerMain.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																																																																																																																																																																						} \
+																																																																																																																																																																																																																																																																																																																																					}); </script>";
+					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {
 				var allKeys = Object.keys(item.imageInfos);
-				var qmStr = "<table border='1' width='360' style=' width:360px; max-width: 360px' >";
+				var qmStr = "<table border='1' width='400' style=' width:400px; max-width: 400px' >";
 				for (var i = 0; i < allKeys.length; i++) {
 					qmStr += ("<tr bgcolor=\"" + "white" + "\"><td>" + allKeys[i] + "</td><td>" + item.imageInfos[allKeys[i]] + "</td><td>" + "OK" + "</td></tr>");
 				}
 				qmStr += "</table>";
-				$("#qualityParametersRev").html(qmStr);
+				$("#qualityParameters").html(qmStr);
 			} else if (item.type == "section") {
-				var qmStr = "<table border='1' width='360' style=' width:360px; max-width: 360px' >";
+				var qmStr = "<table border='1' width='400' style=' width:400px; max-width: 400px' >";
 				var bgColor = item.quality < 0.5 ? "red" : "white";
 				var status = item.quality < 0.5 ? "improve" : "OK";
 
 				qmStr += ("<tr bgcolor=\"" + bgColor + "\"><td>" + "Section score: " + "</td><td>" + parseFloat(item.quality).toFixed(2) + "</td><td>" + status + "</td></tr>");
 				qmStr += "</table>";
-				$("#qualityParametersRev").html(qmStr);
+				$("#qualityParameters").html(qmStr);
 			}
 		}
 	}
@@ -1929,17 +1861,6 @@ var ArticleRendererRevision = function (vals) {
 				y : newY
 			});
 		}
-		/*
-		void DrawCirclePoints(int points, double radius, Point center){
-		double slice = 2 * Math.PI / points;
-		for (int i = 0; i < points; i++){
-		double angle = slice * i;
-		int newX = (int)(center.X + radius * Math.Cos(angle));
-		int newY = (int)(center.Y + radius * Math.Sin(angle));
-		Point p = new Point(newX, newY);
-		Console.WriteLine(p);
-		}
-		}*/
 		var pointCnt = 0;
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
@@ -1960,11 +1881,6 @@ var ArticleRendererRevision = function (vals) {
 		var options = {
 			scale : 8
 		};
-		//GLOBAL_network.focusOnNode(properties.nodes, options);
-		//SHOW JUST THE SELECTED ELEMENT AND ALL ELEMENTES WHICH ARE CONNECTED TO THIS ELEMENT
-		//TODO WILL BECOME A PROBLEM WHEN ADDING ELEMENTS IS POSSIBLE
-
-		console.log("ON DOUBLE CLICK");
 		var id = properties.nodes;
 
 		if (idInRange(id)) {
@@ -2036,32 +1952,11 @@ var ArticleRendererRevision = function (vals) {
 			articleRenderer.showOverview();
 		}
 	}
-	function generateRawText(text, title) {
-		var rawText = "";
-		var rawTextCnt = 0;
-		var bracketCnt = 0;
-		for (var i = 0; i < text.length; i++) {
-			if (text[i] == "{") {
-				bracketCnt++;
-			} else if (bracketCnt == 0) {
-				rawText += text[i];
-			} else if (text[i] == "}") {
-				bracketCnt--;
-			}
-		}
-		rawText = rawText.replace(/[\n\[&\/\\#,+()$~%.'":*?<>{}\]]/g, '');
-		//console.log("TITLE: " + title + " rawTEXTLENGT: " + rawText.length);
-		return rawText;
-	}
-
 	articleRenderer.setSentimentScoreOfSection = function (sectionName, sentimentScore) {
-		//	console.log("articleRenderer.setSentimentScoreOfSection : " + sectionName);
 		var items = GLOBAL_data.nodes.get();
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
-			//console.log(item.type +" && "+ item.title + " == " +sectionName);
 			if (idInRange(item.id) && item.type == "text" && item.title == sectionName) {
-				//console.log("SET SENTIMENT SCORE OF SECTION : " + item.title);
 				GLOBAL_data.nodes.update({
 					id : item.id,
 					sentimentScore : sentimentScore
@@ -2092,9 +1987,8 @@ var ArticleRendererRevision = function (vals) {
 		}
 		sum = parseFloat(sum / cnt);
 		sum = sum.toFixed(2);
-		$('#progressBarOverallScoreRev').val(sum * 100);
-		$('#overallScoreRev').html("<b>Quality score of this article:</b> " + sum);
-		//alert("THE OVERALL QUALITY: " + sum);
+		$('#progressBarOverallScore').val(sum * 100);
+		$('#overallScore').html("<b>Quality score of this article:</b> " + sum);
 		//AND NOW THE SCORE FOR THE SECTIONS
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
@@ -2104,7 +1998,6 @@ var ArticleRendererRevision = function (vals) {
 					numTextElements : 0
 				};
 				var sectionData = calculateScoreForSection(item.id, object);
-			//	console.log("sectionName: " + item.title + " score: " + sectionData.score + " numTextElements " + sectionData.numTextElements);
 				var calcultedQuality = 0;
 				if (sectionData.numTextElements != 0)
 					calcultedQuality = parseFloat(sectionData.score / sectionData.numTextElements).toFixed(2);
@@ -2112,11 +2005,10 @@ var ArticleRendererRevision = function (vals) {
 					id : item.id,
 					quality : calcultedQuality
 				});
-				//console.log("item.title: " + item.title);
 				if (item.title == GLOBAL_articleName) {
 
-					$('#progressBarOverallScoreRev').val(parseFloat((sectionData.score / sectionData.numTextElements) * 100).toFixed(2));
-					$('#overallScoreRev').html("<b>Quality score of this article:</b> " + parseFloat((sectionData.score / sectionData.numTextElements)).toFixed(2));
+					$('#progressBarOverallScore').val(parseFloat((sectionData.score / sectionData.numTextElements) * 100).toFixed(2));
+					$('#overallScore').html("<b>Quality score of this article:</b> " + parseFloat((sectionData.score / sectionData.numTextElements)).toFixed(2));
 				}
 			}
 		}
@@ -2221,18 +2113,20 @@ var ArticleRendererRevision = function (vals) {
 	}
 
 	articleRenderer.saveWholeArticle = function () {
-		/*var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
+		var url = "http://en.wikipedia.org/w/api.php?action=edit&format=xml";
 		var text = "";
-	
+		$('#wikiTextInner').children().each(function () {
+			text += ("\n" + $(this).html());
+		});
 
 		text = text.replaceHtmlEntites();
 		console.log("TEXT: " + text);
 		text = text.replace(/&/g, "and");
 		//alert("INDEX: " + sectionItem.index);
-		console.log("EDIT TOKEN: " + articleController.getEditToken());
-		var params = "action=edit&title=" + GLOBAL_articleName + "&token=" + articleController.getEditToken() + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
+		console.log("EDIT TOKEN: " + articleControllerMain.getEditToken());
+		var params = "action=edit&title=" + GLOBAL_articleName + "&token=" + articleControllerMain.getEditToken() + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
 		//UPDATING TEXT TO WIKIPEDIA!
-		GLOBAL_controller.uploadWholeArticle(url, params);*/
+		GLOBAL_controller.uploadWholeArticle(url, params);
 		//Second reload article happens in callback method
 	}
 

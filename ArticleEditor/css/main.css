@@ -1,0 +1,300 @@
+#mainContent{
+  position: relative; width: 100%; left: 10px; overflow-x: auto; overflow-y: hidden; height: 700px;
+  }
+    #mynetwork {
+	position:absolute;
+	  top: 40px;
+      width: 700px;
+      height: 320px;
+      border: 1px solid lightgray;
+	  float: left;
+	  background-color:white;
+    }   
+
+	#mynetworkCompare{
+      width: 360px;
+      height: 320px;
+	  background-color:white;
+    }   
+	
+	
+  .ui-resizable-helper { border: 2px dotted #00F; }
+	#wikiText {
+	position:absolute;
+	left: 700px;
+	 width: 700px;
+      height: 680px;
+      border: 1px solid lightgray;
+	  background-color:white;
+	  margin-right: 5px; 
+	  margin-left: 5px; 
+	  overflow: hidden;
+	}
+	#wikiIFrame{
+	position:absolute;
+	left: 1420px;
+	 width: 700px;
+      height: 700px;
+      border: 1px solid lightgray;
+	  background-color:white;
+	  margin-right: 5px; 
+	  margin-left: 5px; 
+	  overflow: hidden;
+	}
+	#wikiTextInner{
+		position:absolute;
+      height: 650px;
+	 width: 100%;
+		overflow-y: scroll;
+	}
+	#optionPanel {
+	position:absolute;
+	left: 1420px;
+	height: 680px;
+	float: left; 
+	   background: -webkit-linear-gradient(#f0f0f0, #636363); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f0f0f0, #636363); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f0f0f0, #636363); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f0f0f0, #636363); /* Standard syntax (must be last) */
+	 }
+	 #optionPanelRev {
+	float: left; 
+	width:360px;
+	   background: -webkit-linear-gradient(#f0f0f0, #636363); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#f0f0f0, #636363); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#f0f0f0, #636363); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#f0f0f0, #636363); /* Standard syntax (must be last) */
+	 }
+   #mynetworkDetailView {
+	  position: absolute;
+	  top: 30px;
+      width: 400px;
+      height: 280px;
+      border: 1px solid lightgray;
+	  float: left;
+	  background-color:white;
+    }
+	#qualityParameters{
+	position:relative;
+	height: 200px;
+	overflow-x: auto; 
+	overflow-y: auto;
+	}
+ #qualityParametersRev{
+	position:relative;
+	height: 400px;
+	overflow-x: auto; 
+	overflow-y: auto;
+	}
+	
+	#qualityFlawView{
+	 top: 0px;
+      width: 400px;
+      height: 100%;
+	  float: left;
+    }
+	#qualityFlawViewText{
+	  position: absolute;
+	  top: 10px;
+      height: 100%;
+	  width: 100%;
+	  overflow-y: auto;
+	}
+	
+	 #editor {
+	  background-color:white; overflow:scroll; height:350px; width: 400px;}
+	 
+    table.legend_table {
+      font-size: 11px;
+      border-width:1px;
+      border-color:#d3d3d3;
+      border-style:solid;
+    }
+    table.legend_table,td {
+      border-width:1px;
+      border-color:#d3d3d3;
+      border-style:solid;
+      padding: 2px;
+    }
+    div.table_content {
+      width:80px;
+      text-align:center;
+    }
+    div.table_description {
+      width:100px;
+    }
+
+    #operation {
+      font-size:28px;
+    }
+    #network-popUp {
+      display:none;
+      position:absolute;
+      top:350px;
+      left:170px;
+      z-index:299;
+      width:250px;
+      height:120px;
+      background-color: #f9f9f9;
+      border-style:solid;
+      border-width:3px;
+      border-color: #5394ed;
+      padding:10px;
+      text-align: center;
+    }
+	
+	#eexcess_equation_controls{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 40px;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+	#eexcess_equation_controls_sensium{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 40px;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+	display: none;
+}
+
+	#eexcess_equation_controls2{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 40px;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+	#eexcess_equation_controls3{
+	position: relative;
+    display: inline-flex;
+    width: 100%;
+    height: 40px;
+    min-height: 2.5em;
+    background: -webkit-linear-gradient(top, rgba(245, 245, 245, 1), rgba(200, 200, 200, 1));
+    box-shadow: inset .1em .1em .5em #ccc, inset -.1em -.1em .5em #ccc;
+}
+
+.icon{
+	cursor: pointer;
+	border: 0px solid black;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+}
+
+.icon:hover{
+	cursor: pointer;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 2px;
+	background-color: white;
+}
+
+#editor_section_name{
+	font-family: "arial";
+    font-weight: bold;
+	line-height:  2.5em;
+	vertical-align: middle;
+}
+
+#editor_section_combobox{
+	font-family: "arial";
+    font-weight: bold;
+	line-height:  2.5em;
+	vertical-align: middle;
+}
+
+#editor_section_combobox select {
+
+ border: 1px solid #000; 
+ font-size: 14px;
+ color: #000;
+ background: #ccc; 
+ padding: 2px; 
+
+
+   }
+
+
+
+
+.notificationDiv{
+	cursor: pointer;
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	color: white;
+	height: 50px;
+	line-height: 50px;
+	vertical-align: middle;
+	background-color: #525252;
+	border: 1px solid #bdbdbd;
+	-moz-border-radius-topright:12px;
+	-webkit-border-top-right-radius:12px;
+	border-top-right-radius:12px;
+	
+	-moz-border-radius-topleft:12px;
+	-webkit-border-top-left-radius:12px;
+	border-top-left-radius:12px;
+	
+	-moz-border-radius-bottomright:12px;
+	-webkit-border-bottom-right-radius:12px;
+	border-bottom-right-radius:12px;
+	
+	-moz-border-radius-bottomleft:12px;
+	-webkit-border-bottom-left-radius:12px;
+	border-bottom-left-radius:12px;
+
+}
+
+.notificationDiv:hover{
+
+	background-color: #bdbdbd;
+}
+
+.highlight{
+background-color: #ff2;
+}
+
+.menuHelper{
+ font-family: 'WebSymbolsRegular', cursive;
+    font-size: 40px;
+	cursor: pointer;
+}
+.menuHelper2{
+font-family: 'WebSymbolsRegular', cursive;
+    font-size: 25px;
+	cursor: pointer;
+}
+.menuHelper3{
+
+font-family: 'WebSymbolsRegular', cursive;
+    font-size: 25px;
+	cursor: pointer;
+	background-color: white;
+}
+.menuHelper2:hover{
+	background-color: white;
+}
+.menuHelper:hover{
+	background-color: white;
+}
+
+#workingAnimationCompare{
+	
+ font-family: 'WebSymbolsRegular', cursive;
+    font-size: 40px;
+	cursor: pointer;
+}
+.sensiumTable{
+	width: 100%;
+}

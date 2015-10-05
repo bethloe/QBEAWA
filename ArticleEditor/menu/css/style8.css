@@ -77,6 +77,12 @@
     height: 50%;
     top: 50%;
 }
+.ca-content2{
+    position: absolute;
+    left: 0px;
+    width: 100%;
+    top: 40%;
+}
 .ca-main{
     font-size: 20px;
     opacity: 0.8;

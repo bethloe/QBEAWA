@@ -10,16 +10,52 @@ if ($operation == 'sensium') {
 	}
 } else if ($operation == 'sensiumURLRequest') {
 	try {
-		echo sensiumURLRequest();
+		echo sensiumURLRequest('Sentiment');
 	} catch (Exception $e) {
 		echo "FAILED: ".$e->getMessage();
 	}
 } else if ($operation == 'sensiumTextRequest') {
 	try {
-		echo sensiumTextRequest();
+		echo sensiumTextRequest('Sentiment');
 	} catch (Exception $e) {
 		echo "";
 		//echo "FAILED: ".$e->getMessage();
+	}
+}else if ($operation == 'sensiumSummarize') {
+	try {
+		echo sensiumURLRequest('Summary');
+	} catch (Exception $e) {
+		echo "FAILED: ".$e->getMessage();
+	}
+}else if ($operation == 'sensiumSummarizeText') {
+	try {
+		echo sensiumTextRequest('Summary');
+	} catch (Exception $e) {
+		echo "FAILED: ".$e->getMessage();
+	}
+}else if ($operation == 'sensiumEventExtraction') {
+	try {
+		echo sensiumURLRequest('TemporalEvents');
+	} catch (Exception $e) {
+		echo "FAILED: ".$e->getMessage();
+	}
+}else if ($operation == 'sensiumEventExtractionText') {
+	try {
+		echo sensiumTextRequest('TemporalEvents');
+	} catch (Exception $e) {
+		echo "FAILED: ".$e->getMessage();
+	}
+}else if ($operation == 'sensiumEntitiyExtraction') {
+	try {
+		echo sensiumURLRequest('Entities');
+	} catch (Exception $e) {
+		echo "FAILED: ".$e->getMessage();
+	}
+}else if ($operation == 'sensiumEntitiyExtractionText') {
+	try {
+		echo sensiumTextRequest('Entities');
+	} catch (Exception $e) {
+		echo "FAILED: ".$e->getMessage();
 	}
 }
 
@@ -52,11 +88,11 @@ function httpRequest($url, $post = "") {
 	return $xml;
 }
 
-function sensiumURLRequest() {
+function sensiumURLRequest($type) {
 	$API_url = "http://api.sensium.io/v1/extract";
 	$API_key = "9f31a709-5d40-4eb4-bb79-43cac4030cfb";
 	$url = $_POST['url'];
-	$params = '{"apiKey" : "'.$API_key.'", "url" : "'.$url.'", "language": "en",  "extractors": ["Sentiment"]}';
+	$params = '{"apiKey" : "'.$API_key.'", "url" : "'.$url.'", "language": "en",  "extractors": ["'.$type.'"]}';
 	$data = httpRequest($API_url, $params);
 	if (empty($data)) {
 		throw new Exception("No data received from server. Check that API is enabled.");
@@ -64,12 +100,12 @@ function sensiumURLRequest() {
 	return $data;
 }
 
-function sensiumTextRequest() {
+function sensiumTextRequest($type) {
 	$API_url = "http://api.sensium.io/v1/extract";
 	$API_key = "9f31a709-5d40-4eb4-bb79-43cac4030cfb";
 	$text = $_POST['text'];
 
-	$params = '{"apiKey" : "'.$API_key.'", "text" : "'.$text.'", "language": "en",  "extractors": ["Sentiment"]}';
+	$params = '{"apiKey" : "'.$API_key.'", "text" : "'.$text.'", "language": "en",  "extractors": ["'.$type.'"]}';
 	$data = httpRequest($API_url, $params);
 	$data = $_POST['sectionName']."||splithere||".$data;
 	if (empty($data)) {

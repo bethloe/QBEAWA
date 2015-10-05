@@ -24,12 +24,15 @@ var ArticleController = function (vals) {
 	var GLOBAL_divContainer = vals.networkTag;
 	var GLOBAL_forComparing = vals.forComparing;
 	var GLOBAL_showWikiPage = false;
+	var GLOBAL_showSensium = false;
+	var GLOBAL_wikiTextInnerHTMLOld = null;
+	var GLOBAL_eexcessEquationControlsOld = null;
 
 	var articleController = {};
 	var dataManipulator;
 
-	var sensiumRequester;
-	articleController.setEditingEnable = function(ee){
+	var sensiumRequester = null;
+	articleController.setEditingEnable = function (ee) {
 		editingEnable = ee;
 	}
 	function update() {
@@ -83,7 +86,6 @@ var ArticleController = function (vals) {
 				dataManipulator.editNodes(data, callback);
 			},
 			onAdd : function (data, callback) {
-				console.log("IN HERE");
 				dataManipulator.addNode(data);
 			},
 			physics : {
@@ -121,7 +123,6 @@ var ArticleController = function (vals) {
 				dataManipulator.editNodes(data, callback);
 			},
 			onAdd : function (data, callback) {
-				console.log("IN HERE");
 				dataManipulator.addNode(data);
 			},
 			physics : {
@@ -197,7 +198,7 @@ var ArticleController = function (vals) {
 	}
 
 	articleController.getSensiumRequester = function () {
-		console.log("ArticleController.GETSENSIUMREQUESTER " + GLOBAL_forComparing + " " + JSON.stringify(sensiumRequester));
+			
 		return sensiumRequester;
 	}
 
@@ -343,7 +344,7 @@ var ArticleController = function (vals) {
 			articleRenderers[i].rotateTree();
 		}
 	}
-	
+
 	articleController.showQuality = function () {
 		articleController.showTheWholeArticleInMainView();
 		for (var i = 0; i < articleRenderers.length; i++) {
@@ -384,23 +385,25 @@ var ArticleController = function (vals) {
 		//TODO: Do a refactoring so that it work for more than one article at the end
 		dataManipulator.showTheWholeArticle(articleRenderers[0].getDataRetriever(), articleRenderers[0].getQualityManager());
 	}
-	
-	articleController.highlightSectionInTreeWithScrolling = function(sectionName){
+
+	articleController.highlightSectionInTreeWithScrolling = function (sectionName) {
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].highlightSectionInTree(sectionName, true);
 		}
 	}
 	articleController.highlightSectionInTree = function (sectionName) {
-		if(GLOBAL_wikiPageActive){
+		if (GLOBAL_wikiPageActive) {
 			$("#wikiTextInner").children().remove();
-			
+
 			var sectionNameHelp = sectionName.replace(/ /g, "_");
-			console.log("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#"+sectionNameHelp+"\" style=\"width: 100%; height: 100%\"></iframe>");
-  			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#"+sectionNameHelp+"\" style=\"width: 100%; height: 100%\"></iframe>");
+			console.log("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#" + sectionNameHelp + "\" style=\"width: 100%; height: 100%\"></iframe>");
+			$("#wikiTextInner").append("<iframe src=\"https://en.wikipedia.org/?title=" + $("#articleName").val() + "#" + sectionNameHelp + "\" style=\"width: 100%; height: 100%\"></iframe>");
 		}
 		$("#editor_section_name").html(sectionName);
-		$('#ediotr_section_selector option').filter(function(){ return $(this).text()===sectionName;}).prop('selected', true);
-		
+		$('#ediotr_section_selector option').filter(function () {
+			return $(this).text() === sectionName;
+		}).prop('selected', true);
+
 		for (var i = 0; i < articleRenderers.length; i++) {
 			articleRenderers[i].highlightSectionInTree(sectionName);
 		}
@@ -686,13 +689,73 @@ var ArticleController = function (vals) {
 	articleController.torf = function () {
 		return GLOBAL_forComparing;
 	}
-	
-	articleController.showWikiPage = function(showWiki){
+
+	articleController.showWikiPage = function (showWiki) {
 		GLOBAL_showWikiPage = showWiki;
 	}
-	
-	articleController.getShowWiki = function(){
+
+	articleController.getShowWiki = function () {
 		return GLOBAL_showWikiPage;
+	}
+	articleController.showSensiumPanel = function () {
+		console.log("SHOW SENSIUM PANEL");
+		//LOAD IT TO $('#wikiText')
+		if (sensiumRequester != null) {
+			if (!GLOBAL_showSensium) {
+				GLOBAL_wikiTextInnerHTMLOld = $('#wikiTextInner').html();
+				GLOBAL_eexcessEquationControlsOld = $('#eexcess_equation_controls').html();
+				$('#eexcess_equation_controls').html("");
+				$('#wikiTextInner').html("");
+				$('#eexcess_equation_controls').append('<div id="iconSensiumSummarize" class="icon"  onclick="articleControllerMain.sensiumSummariser()" > <img src="media/summary.png" height="30"/ title="Summarization" > </div>');
+				$('#eexcess_equation_controls').append('<div id="iconSensiumEvent" class="icon" onclick="articleControllerMain.sensiumEventExtraction()" > <img src="media/eventExtraction.png" height="30"/ title="Temporal Event Extraction" > </div>');
+				$('#eexcess_equation_controls').append('<div id="iconSensiumKey"  class="icon" onclick="articleControllerMain.sensiumKeyphraseExtraction()" > <img src="media/keywordExtraction.png" height="30"/ title="Keyphrase Extraction" > </div>');
+				$('#eexcess_equation_controls').append('<div id="iconSensiumEntity" class="icon" onclick="articleControllerMain.sensiumEntity()" > <img src="media/entity.png" height="30"/ title="Keyphrase Extraction" > </div>');
+
+				$('#showSensiumPanel').css("background-color", "#000");
+
+				sensiumRequester.setURL("https://en.wikipedia.org/wiki/" + $("#articleName").val());
+				
+				var url = "https://en.wikipedia.org/wiki/" + $("#articleName").val();
+				//sensiumRequester.sensiumSummarize(url);
+				
+				sensiumRequester.doRequest(1);
+			} else {
+				$('#wikiTextInner').html(GLOBAL_wikiTextInnerHTMLOld);
+				$('#eexcess_equation_controls').html(GLOBAL_eexcessEquationControlsOld);
+
+				$('#showSensiumPanel').css("background-color", "grey");
+				GLOBAL_wikiTextInnerHTMLOld = null;
+				GLOBAL_eexcessEquationControlsOld = null;
+
+			}
+			GLOBAL_showSensium = !GLOBAL_showSensium;
+		}else{
+			alert("Please retrieve an article first!");
+		}
+	}
+
+	articleController.sensiumSummariser = function () {
+		//var url = "https://en.wikipedia.org/wiki/" + $("#articleName").val();
+		//console.log(url);
+		
+		sensiumRequester.doRequest(1);
+		//sensiumRequester.sensiumSummarize(url);
+	}
+
+	articleController.sensiumEventExtraction = function () {
+
+		sensiumRequester.doRequest(2);
+		//sensiumRequester.sensiumEventExtraction("https://en.wikipedia.org/wiki/" + $("#articleName").val());
+	}
+
+	articleController.sensiumKeyphraseExtraction = function () {
+		sensiumRequester.doRequest(4);
+		//sensiumRequester.sensiumKeyphraseExtraction("https://en.wikipedia.org/wiki/" + $("#articleName").val());
+	}
+
+	articleController.sensiumEntity = function () {
+		sensiumRequester.doRequest(3);
+		//sensiumRequester.sensiumEntitiyExtraction("https://en.wikipedia.org/wiki/" + $("#articleName").val());
 	}
 	//-------------------- EVENTS ----------------------
 
@@ -725,6 +788,14 @@ var ArticleController = function (vals) {
 		}
 	}
 
+	articleController.getShowSensium = function(){
+		return GLOBAL_showSensium;
+	}
+	
+	articleController.getSensiumRequester = function(){
+		return sensiumRequester;
+	}
+	
 	articleController.onDoubleClick = function (properties) {
 		//console.log("ON DOUBLE CLICK " + JSON.stringify(properties));
 		//Select everything (does not work with doubleclick if someone can fix it
