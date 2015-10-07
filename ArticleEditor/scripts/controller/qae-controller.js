@@ -887,9 +887,9 @@ var ArticleController = function (vals) {
 
 		network.on('dragEnd', this.onDragEnd);
 
-		network.on('hoverNode', this.onhoverNode);
+		//network.on('hoverNode', this.onhoverNode);
 
-		network.on('blurNode', this.onblurNode);
+		//network.on('blurNode', this.onblurNode);
 
 		update();
 	}

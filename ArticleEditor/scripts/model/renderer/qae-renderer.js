@@ -631,7 +631,7 @@ var ArticleRenderer = function (vals) {
 					//console.log("LINE: " + sectionInfos[i].line);
 					var rawText = getTextOfSection(sectionInfos[i].line);
 
-					//console.log("-----------------------> " + sectionInfos[i].line + " ---- > " + textOfSection);
+					//console.log(sectionInfos[i].line + " rawText: " + rawText);
 					//console.log("LENGTH: " + textOfSection.length);
 					if (textOfSection != "" && textOfSection.length > 10) {
 
@@ -724,6 +724,7 @@ var ArticleRenderer = function (vals) {
 					var originalText = textOfSection;
 					if (textOfSection != "" && textOfSection.length > 10) {
 
+				//		console.log(sectionInfos[i].line + " rawText: " + rawText);
 						var value = textOfSection.split(' ').length;
 						//		textOfSection = repalceNewLineWithTwoNewLines(textOfSection, "\n", "\n\n", 1);
 						textOfSection = replaceCharacterWithAnother(textOfSection, " ", '\n', 10);
@@ -1359,23 +1360,20 @@ var ArticleRenderer = function (vals) {
 			ret = "";
 		return ret;
 	}
-
+	
 	function getTextOfSection(sectionTitle) {
-		var stringToSearch = "== \xA7" + sectionTitle + " ==";
+		sectionTitle = escapeRegExp(sectionTitle);
+
 		var articleText = dataRetriever.getRawText();
-		var index = articleText.indexOf(stringToSearch);
-		if (index == -1) {
-			stringToSearch = "== " + sectionTitle + " ==";
-			index = articleText.indexOf(stringToSearch);
-			if (index == -1) {
-				stringToSearch = sectionTitle;
-				index = articleText.indexOf(stringToSearch);
-			}
-		}
-		var str = articleText.substring((index + stringToSearch.length), articleText.length);
-
+		var re = new RegExp("={2,}.*" + sectionTitle + ".*={2,}", "i");
+		var stringToSearch = re.exec(articleText);
+		var index =  articleText.search(re);
+		
+		//console.log(articleText);
+		var cut = index + stringToSearch[0].length;
+		var str = articleText.substring(cut, articleText.length);
+		
 		str = deleteEqualsSigns(str, 0);
-
 		index = str.indexOf("==");
 		var ret = "";
 		if (index > -1)
@@ -1383,8 +1381,11 @@ var ArticleRenderer = function (vals) {
 		else
 			ret = str;
 		ret.replace("=", " ");
+		
 		return ret;
+		
 	}
+
 
 	articleRenderer.onZoom = function (properties) {
 		if (semanticZooming)
@@ -1636,6 +1637,7 @@ var ArticleRenderer = function (vals) {
 				if (showSensium) {
 					var sensiumRequester = GLOBAL_controller.getSensiumRequester();
 					var text = item.rawText;
+					console.log("SHOWSENSIUM TEXT: " + text);
 					var textforSensium = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
 					textforSensium = textforSensium.toString().replace(/"/g, '\\"');
 					sensiumRequester.setSensiumText(textforSensium, item.title);
@@ -1752,9 +1754,9 @@ var ArticleRenderer = function (vals) {
 						var bgColor = item.allQulityParameters[allKeys[i]] < 0.5 ? "red" : "white";
 						var status = item.allQulityParameters[allKeys[i]] < 0.5 ? "improve" : "OK";
 						qmStr += ("<tr title=\"" + getTooltipToQualityName(allKeys[i]) + "\" bgcolor=\"" + bgColor + "\"><td>" + getAliasToQualityName(allKeys[i]) + "</td><td> \
-																																																																																																																																																																																																																																																																																																																																																																																																														  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50.1\" \
-																																																																																																																																																																																																																																																																																																																																																																																																														  high=\"80.1\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
-																																																																																																																																																																																																																																																																																																																																																																																																														  </td><td>" + status + "</td></tr>");
+																																																																																																																																																																																																																																																																																																																																																																																																																																																								  <meter title=\"" + item.allQulityParameters[allKeys[i]].toFixed(2) + "\" min=\"0\" max=\"100\" low=\"50.1\" \
+																																																																																																																		  high=\"80.1\" optimum=\"100\" value=\"" + (item.allQulityParameters[allKeys[i]].toFixed(2) * 100) + "\"></meter> \
+																																																																																																																																																																																																																																																																																																																																																																																																																																																								  </td><td>" + status + "</td></tr>");
 					}
 					console.log("has sentiment score: " + item.sentimentScore);
 					if (item.sentimentScore != undefined) {
@@ -1766,14 +1768,14 @@ var ArticleRenderer = function (vals) {
 						qmStr += ("<tr bgcolor=\"white\"><td>add to overall quality socre</td><td style=\"width:15px\"><input style=\"width:15px\" id=\"checkboxTextQualityTable\" type=\"checkbox\" value=\"" + item.id + "\"></td><td></td></tr>");
 					qmStr += "</table>";
 					qmStr += "<script> 	\
-																																																																																																																																																																																																																																																																																																																																					$('#checkboxTextQualityTable').mousedown(function () { \
-																																																																																																																																																																																																																																																																																																																																						if (!$(this).is(':checked')) { \
-																																																																																																																																																																																																																																																																																																																																							articleControllerMain.changeValueOfCheckbox($(this).val(), true); \
-																																																																																																																																																																																																																																																																																																																																						} \
-																																																																																																																																																																																																																																																																																																																																						else{\
-																																																																																																																																																																																																																																																																																																																																							articleControllerMain.changeValueOfCheckbox($(this).val(), false); \
-																																																																																																																																																																																																																																																																																																																																						} \
-																																																																																																																																																																																																																																																																																																																																					}); </script>";
+																																																																																																																																																																																																																																																																																																																																																																			$('#checkboxTextQualityTable').mousedown(function () { \
+																																																																																																																																																																																																																																																																																																																																																																				if (!$(this).is(':checked')) { \
+																																																																																																																																																																																																																																																																																																																																																																					articleControllerMain.changeValueOfCheckbox($(this).val(), true); \
+																																																																																																																																																																																																																																																																																																																																																																				} \
+																																																																																																																																																																																																																																																																																																																																																																				else{\
+																																																																																																																																																																																																																																																																																																																																																																					articleControllerMain.changeValueOfCheckbox($(this).val(), false); \
+																																																																																																																																																																																																																																																																																																																																																																				} \
+																																																																																																																																																																																																																																																																																																																																																																			}); </script>";
 					$("#qualityParameters").html(qmStr);
 				}
 			} else if (item.type == "img") {
@@ -2040,24 +2042,9 @@ var ArticleRenderer = function (vals) {
 		for (var i = 0; i < items.length; i++) {
 			var item = items[i];
 			if (idInRange(item.id)) {
-				/*if (item.quality == 0) {
-				GLOBAL_data.nodes.update({
-				id : item.id,
-				//title : item.quality,
-				color : {
-				background : "#FF0000",
-				border : '#2B7CE9',
-				highlight : {
-				background : '#D2E5FF',
-				border : '#2B7CE9'
-				}
-				}
-				});
-				} else */
 				if (item.quality >= 0 && item.quality <= 0.5 - overallScoreInterval) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
-						//title : item.quality,
 						color : {
 							background : "#FF4500",
 							border : '#2B7CE9',
@@ -2070,7 +2057,6 @@ var ArticleRenderer = function (vals) {
 				} else if (item.quality > 0.5 - overallScoreInterval && item.quality <= 0.8 - overallScoreInterval) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
-						//title : item.quality,
 						color : {
 							background : "#FFA500",
 							border : '#2B7CE9',
@@ -2083,7 +2069,6 @@ var ArticleRenderer = function (vals) {
 				} else if (item.quality > 0.8 - overallScoreInterval) {
 					GLOBAL_data.nodes.update({
 						id : item.id,
-						//title : item.quality,
 						color : {
 							background : "#00FF00",
 							border : '#2B7CE9',
@@ -2094,20 +2079,6 @@ var ArticleRenderer = function (vals) {
 						}
 					});
 				}
-				/*else if (item.quality > 0.9 - overallScoreInterval) {
-				GLOBAL_data.nodes.update({
-				id : item.id,
-				//title : item.quality,
-				color : {
-				background : "#00EE00",
-				border : '#2B7CE9',
-				highlight : {
-				background : '#D2E5FF',
-				border : '#2B7CE9'
-				}
-				}
-				});
-				}*/
 			}
 		}
 	}
@@ -2118,21 +2089,13 @@ var ArticleRenderer = function (vals) {
 		$('#wikiTextInner').children().each(function () {
 			text += ("\n" + $(this).html());
 		});
-
 		text = text.replaceHtmlEntites();
-		console.log("TEXT: " + text);
 		text = text.replace(/&/g, "and");
-		//alert("INDEX: " + sectionItem.index);
-		console.log("EDIT TOKEN: " + articleControllerMain.getEditToken());
 		var params = "action=edit&title=" + GLOBAL_articleName + "&token=" + articleControllerMain.getEditToken() + "&text=" + text + "&contentformat=text/x-wiki&contentmodel=wikitext";
 		//UPDATING TEXT TO WIKIPEDIA!
 		GLOBAL_controller.uploadWholeArticle(url, params);
 		//Second reload article happens in callback method
 	}
-
-	/*articleRenderer.showTheWholeArticle = function(){
-
-	}*/
 
 	articleRenderer.reset = function () {
 		qualityManager.reset();
