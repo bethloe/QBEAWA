@@ -160,7 +160,7 @@ var ArticleController = function (vals) {
 				controller : articleController
 			});
 		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/w/index.php?title=" + articleName);
-		var articleRenderer = new ArticleRenderer({
+		var articleRenderer = new ArticleLogic({
 				network : network,
 				minID : minID,
 				maxID : maxID,
@@ -657,7 +657,7 @@ var ArticleController = function (vals) {
 			});
 		sensiumRequester.sensiumURLRequest("https://en.wikipedia.org/w/index.php?title=" + articleName);
 		console.log("ArticleController.retrieveRevision " + GLOBAL_forComparing + " " + sensiumRequester);
-		var articleRenderer = new ArticleRendererRevision({
+		var articleRenderer = new ArticleLogicRevision({
 				network : network,
 				minID : minID,
 				maxID : maxID,

@@ -1,10 +1,10 @@
 var Logger = function (vals) {
-	var doLog = false;
+	var isLogger = false;
 	var logger = {};
 	var now = new Date();
 	var logFileName = now.getTime() / 1000;
 	logger.log = function (logMessage) {
-		if (doLog) {
+		if (isLogger) {
 			$.post("logger.php", {
 				fileName : logFileName,
 				logMessage : logMessage

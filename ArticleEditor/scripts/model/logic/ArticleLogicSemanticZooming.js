@@ -1,4 +1,4 @@
-var ArticleRendererSemanticZooming = function (vals) {
+var ArticleLogicSemanticZooming = function (vals) {
 	var GLOBAL_network = vals.network;
 	var GLOBAL_minID = vals.minID;
 	var GLOBAL_maxID = vals.maxID;

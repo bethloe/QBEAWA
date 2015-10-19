@@ -34,22 +34,23 @@
   
   <script type="text/javascript" src="scripts/model/predefinedData/qae-high-quality-values.js"></script>
   <script type="text/javascript" src="scripts/model/utility.js"></script>
-  <script type="text/javascript" src="scripts/model/logger.js"></script>
+  <script type="text/javascript" src="scripts/model/Logger.js"></script>
   <script type="text/javascript" src="scripts/model/predefinedData/qae-global-data.js"></script>
-  <script type="text/javascript" src="scripts/model/predefinedData/qae-quality-flaw-manager.js"></script>
-  <script type="text/javascript" src="scripts/model/dataRetrieval/qae-sensium-requester.js"></script>
-  <script type="text/javascript" src="scripts/model/dataRetrieval/qae-sensium-requester-revision.js"></script>
-  <script type="text/javascript" src="scripts/model/dataRetrieval/qae-php-requests.js"></script>
-  <script type="text/javascript" src="scripts/model/dataRetrieval/retrieve-data.js"></script>
-  <script type="text/javascript" src="scripts/model/dataRetrieval/retrieve-data-with-revid.js"></script>
-  <script type="text/javascript" src="scripts/model/qae-data-manipulation.js"></script>
-  <script type="text/javascript" src="scripts/model/qae-data-manipulation-revision.js"></script>
-  <script type="text/javascript" src="scripts/model/renderer/qae-renderer-quality-manager.js"></script>
-  <script type="text/javascript" src="scripts/model/renderer/qae-renderer-semantic-zooming.js"></script>
-  <script type="text/javascript" src="scripts/model/renderer/qae-renderer.js"></script>
-  <script type="text/javascript" src="scripts/model/renderer/qae-renderer-revision.js"></script>
+  <script type="text/javascript" src="scripts/model/predefinedData/QualityFlawManager.js"></script>
+  <script type="text/javascript" src="scripts/model/dataRetrieval/SensiumRequester.js"></script>
+  <script type="text/javascript" src="scripts/model/dataRetrieval/SensiumRequesterRevision.js"></script>
+  <script type="text/javascript" src="scripts/model/dataRetrieval/PhpConnector.js"></script>
+  <script type="text/javascript" src="scripts/model/dataRetrieval/DataRetriever.js"></script>
+  <script type="text/javascript" src="scripts/model/dataRetrieval/DataRetrieverRevision.js"></script>
+  <script type="text/javascript" src="scripts/model/DataManipulator.js"></script>
+  <script type="text/javascript" src="scripts/model/DataManipulatorRevision.js"></script>
+  <script type="text/javascript" src="scripts/model/logic/QualityManager.js"></script>
+  <script type="text/javascript" src="scripts/model/logic/ArticleLogicSemanticZooming.js"></script>
+  <script type="text/javascript" src="scripts/model/logic/ArticleLogic.js"></script>
+  <script type="text/javascript" src="scripts/model/logic/ArticleLogicRevision.js"></script>
   
-  <script type="text/javascript" src="scripts/controller/qae-controller.js"></script>
+  <script type="text/javascript" src="scripts/controller/ArticleController.js"></script>
+  <script type="text/javascript" src="scripts/options.js" charset="utf-8"></script>
   
   <link rel="stylesheet" type="text/css" href="menu/css/demo.css" />
   <link rel="stylesheet" type="text/css" href="menu/css/style8.css" />
@@ -58,6 +59,8 @@
   
   <!-- main layout -->
   <link rel="stylesheet" type="text/css" href="css/main.css" />
+  
+  <link rel="shortcut icon" href="favicon.ico"/> 
 
 </head>
 
@@ -372,6 +375,5 @@
 	</script>
 
 	<script type="text/javascript" src="scripts/view/qae-view-observer.js"></script>
-	<script type="text/javascript" src="scripts/model/qae-settings.js"></script>
 </body>
 </html>

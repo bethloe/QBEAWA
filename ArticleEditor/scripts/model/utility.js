@@ -15,6 +15,32 @@ function getRandomColor() {
 	return color;
 }
 
+function getTextOfSection(sectionTitle, dataRetriever) {
+		sectionTitle = escapeRegExp(sectionTitle);
+
+		var articleText = dataRetriever.getRawText();
+		var re = new RegExp("={2,}.*" + sectionTitle + ".*={2,}", "i");
+		var stringToSearch = re.exec(articleText);
+		var index =  articleText.search(re);
+		
+		//console.log(articleText);
+		var cut = index + stringToSearch[0].length;
+		var str = articleText.substring(cut, articleText.length);
+		
+		str = deleteEqualsSigns(str, 0);
+		index = str.indexOf("==");
+		var ret = "";
+		if (index > -1)
+			ret = str.substr(0, index);
+		else
+			ret = str;
+		ret.replace("=", " ");
+		
+		return ret;
+		
+	}
+
+
 function deleteEqualsSigns(str, cnt /*to cancle the procedure*/
 ) {
 	if (str.search("==") == 0 && cnt < 5)
