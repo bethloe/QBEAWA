@@ -43,33 +43,30 @@ and open the template in the editor.
 	
 		<script type="text/javascript" src="libs/MathJax-master/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
-		<script type="text/javascript" src="scripts/Stopwatch.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="scripts/formulasForNormalization.js" charset="utf-8"> </script>
 		
-        <script type="text/javascript" src="scripts/colorsForRanking.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/rankingQMsData.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/logger.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/globals.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/rankingArray.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/rankingModel.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/rankingVis.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/rankingQMVis.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/settings.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/utils.js" charset="utf-8"></script>
-        <script type="text/javascript" src="scripts/taskStorage.js" charset="utf-8"></script>
-		<script type="text/javascript" src="scripts/retrieve-data.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="scripts/retrieve-data-revisions.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="scripts/search-revisions-for-article.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/model/utils/Stopwatch.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/view/utils/formulasForNormalization.js" charset="utf-8"> </script>
 		
-		<script type="text/javascript" src="scripts/popup.js"></script>
-		<script type="text/javascript" src="scripts/utility.js"></script>
-		<script type="text/javascript" src="scripts/QMformula-editor-brick.js"></script>
-		<script type="text/javascript" src="scripts/QMformula-editor-eventhandler-moveableBricks.js"></script>
-		<script type="text/javascript" src="scripts/QMformula-editor-eventhandler-menuBricks.js"></script>
-		<script type="text/javascript" src="scripts/databaseConnector.js" charset="utf-8"> </script>
+        <script type="text/javascript" src="scripts/model/utils/colorsForRanking.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/model/ranking/rankingQMsData.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/model/utils/Logger.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/model/globals.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/model/ranking/RankingArray.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/model/ranking/RankingModel.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/view/ranking/RankingVis.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/view/ranking/RankingQMVis.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/options.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/model/settings.js" charset="utf-8"></script>
+        <script type="text/javascript" src="scripts/model/utils/utils.js" charset="utf-8"></script>
+		<script type="text/javascript" src="scripts/model/dataRetrieval/DataRetriever.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/model/dataRetrieval/search-articles.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/model/dataRetrieval/DataRetrieverRevisions.js" charset="utf-8"> </script>
+		<script type="text/javascript" src="scripts/model/dataRetrieval/search-revisions-for-article.js" charset="utf-8"> </script>
 		
-         <script type="text/javascript" src="scripts/equation_editor.js" charset="utf-8"></script>
+		<script type="text/javascript" src="scripts/view/popup.js"></script>
+		<script type="text/javascript" src="scripts/model/DatabaseConnector.js" charset="utf-8"> </script>
+		
+         <script type="text/javascript" src="scripts/model/EquationEditor.js" charset="utf-8"></script>
 
         <link rel="stylesheet" type="text/css" href="css/general-style.css" />
         <link rel="stylesheet" type="text/css" href="css/popup.css" />
@@ -322,9 +319,8 @@ and open the template in the editor.
  
     </div>
         <div id="task_question_message"></div>
-        <script type="text/javascript" src="scripts/vis-controller.js" charset="utf-8"></script>
-		<script type="text/javascript" src="scripts/search-articles.js" charset="utf-8"> </script>
-		<script type="text/javascript" src="scripts/QMformula-editor.js"></script>
+        <script type="text/javascript" src="scripts/controller/VisController.js" charset="utf-8"></script>
+		<script type="text/javascript" src="scripts/model/dataRetrieval/search-articles.js" charset="utf-8"> </script>
 		<script>
 		document.onkeydown = function (event) {
 			if (event.keyCode == 16)

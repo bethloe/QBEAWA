@@ -134,7 +134,7 @@ var VisController = function () {
 	nounInflector.attach();
 
 	// User Evaluations variables
-	var taskStorage = new TaskStorage(),
+	/*var taskStorage = new TaskStorage(),
 	currentTask,
 	currentQuestion,
 	startTime,
@@ -146,10 +146,9 @@ var VisController = function () {
 		"tool-aided" : "",
 		'overall-time' : 0,
 		'questions-results' : []
-	};
+	};*/
 
 	/////////////////////
-	var qmEditorController = null;
 
 	var statCounter = 0;
 	var statActivated = false;
@@ -193,9 +192,7 @@ var VisController = function () {
 		//////console.log("listItemDblclicked");
 		var actualIndex = rankingModel.getActualIndex(i);
 		var currentData = data[actualIndex];
-		qmEditorController.setValues(currentData);
-		qmEditorController.setShowValues(true);
-
+	
 		openQMEditor();
 
 	};
@@ -244,12 +241,6 @@ var VisController = function () {
 	////////	Click on tag	////////
 
 	EVTHANDLER.clickOnTag = function (tag) {
-		//////console.log("clickOnTag " + tag.text());
-		/*var qmName = tag.text();
-		//databaseConnector.getAllQMVizs
-		qmEditorController.loadData(allVizs[qmName]);
-		qmEditorController.setShowValues(false);
-		openQMEditor();*/
 	};
 
 	////////	Draggable	////////
@@ -653,7 +644,13 @@ var VisController = function () {
 		var qmRankingArrayHelper = [];
 		for (var i = 0; i < keywords.length; i++) {
 			var object = {};
-			object.name = keywords[i].term;
+			console.log("help: " + keywords[i].term);
+			if(keywords[i].term == "diversity"){
+				object.name = "numBrokenLinks";
+			}
+			else{
+				object.name = keywords[i].term;
+			}
 			object.score = 0;
 			qmRankingArrayHelper.push(object);
 		}
@@ -2663,15 +2660,7 @@ var VisController = function () {
 
 		data = articles['data']; // contains the data to be visualized
 		// query = dataset['query'];				// string representing the query that triggered the current recommendations
-		if (qmEditorController == null) {
-			qmEditorController = new Controller({
-					data : data,
-					visController : visController
-				});
-		} else {
-			qmEditorController.setData(data);
-		}
-
+	
 		//TODO CHANGE THIS!!!!!
 		var IQMetrics = JSON.parse("[{\"stem\":\"Authority\",\"term\":\"Authority\",\"repeated\":29,\"variations\":{\"woman\":127}},{\"stem\":\"Completeness\",\"term\":\"Completeness\",\"repeated\":2,\"variations\":{\"persistence\":4}}, \
 																																																																																																																																																																																																																																																																																																																																																																							{\"stem\":\"role\",\"term\":\"Complexity\",\"repeated\":2,\"variations\":{\"role\":8}},{\"stem\":\"Informativeness\",\"term\":\"Informativeness\",\"repeated\":2,\"variations\":{\"advancement\":6,\"advance\":1}}, \																																{\"stem\":\"Currency\",\"term\":\"Currency\",\"repeated\":2,\"variations\":{\"worker\":9}}]");

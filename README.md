@@ -5,10 +5,10 @@ Quality based editing and assessment of Wikipedia articles.
 
 This repo includes two tools:
 
-1. The Quality Analyzer which enables users to create and compare Quality Metrics. Futhermore, users can rank Wikipedia articles based these metrics.
-2. The Quality Assisted Editor enables users to check the Quality of an article with low expenditure
+1. The Ranking Tool which enables users to rank Wikipedia articles based on Qulity Metrics
+2. The Quality Assisted Editor which enables users to check the Quality of an article with low expenditure
 
-# The Quality Analyzer
+# The Ranking Tool
 
 ![](https://github.com/bethloe/QBEAWA/blob/master/screenshot.PNG)
 
